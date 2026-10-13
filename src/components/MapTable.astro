@@ -1,0 +1,56 @@
+---
+import mapdb from '../data/maps.json';
+const maps = Object.values(mapdb.maps).filter((m) => m && m.name);
+const biomes = [...new Set(maps.map((m) => m.biome).filter(Boolean))].sort();
+---
+<div class="nr-toolbar">
+  <input id="map-q" type="search" placeholder="搜索：地图名 / 生物群系 / 编号…" />
+  <select id="map-biome">
+    <option value="">全部生物群系</option>
+    {biomes.map((b) => <option value={b}>{b}</option>)}
+  </select>
+  <label class="nr-check"><input type="checkbox" id="map-town" /> 只看城镇</label>
+  <span class="nr-count" id="map-count">{maps.length} 张</span>
+</div>
+<table id="map-table">
+  <thead>
+    <tr><th>ID</th><th>名称</th><th>等级</th><th>生物群系</th><th>大陆</th><th>城镇</th></tr>
+  </thead>
+  <tbody>
+    {maps.map((m) => (
+      <tr data-name={(m.name || '').toLowerCase()} data-biome={m.biome || ''} data-town={m.town ? '1' : '0'}>
+        <td>{m.id}</td>
+        <td>{m.name}</td>
+        <td>{m.level}</td>
+        <td>{m.biome}</td>
+        <td>{m.continent}</td>
+        <td>{m.town ? '✔' : ''}</td>
+      </tr>
+    ))}
+  </tbody>
+</table>
+
+<script>
+  const q = document.getElementById('map-q');
+  const biome = document.getElementById('map-biome');
+  const town = document.getElementById('map-town');
+  const rows = [...document.querySelectorAll('#map-table tbody tr')];
+  const count = document.getElementById('map-count');
+  function apply() {
+    const s = (q.value || '').toLowerCase().trim();
+    const b = biome.value;
+    const t = town.checked;
+    let n = 0;
+    for (const r of rows) {
+      const ok = (!s || r.dataset.name.includes(s) || r.textContent.toLowerCase().includes(s))
+        && (!b || r.dataset.biome === b)
+        && (!t || r.dataset.town === '1');
+      r.style.display = ok ? '' : 'none';
+      if (ok) n++;
+    }
+    count.textContent = n + ' 张';
+  }
+  q.addEventListener('input', apply);
+  biome.addEventListener('change', apply);
+  town.addEventListener('change', apply);
+</script>

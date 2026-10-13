@@ -1,0 +1,18 @@
+---
+title: 技能天赋模拟器（旧版）
+description: 基于 EA 版天赋数据的 Norroth 6 职业天赋树模拟器。
+gameVersion: "EA"
+verifiedDate: 2026-10-13
+versionStatus: 1.0-pending
+---
+
+export const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+<iframe class="talent-frame" src={`${base}/talent/index.html`} title="Norroth 技能天赋模拟器" loading="lazy"></iframe>
+
+> 操作：左键 +1 ｜ 右键 -1 ｜ Shift ±5。光明 / 黑暗阵营互斥。
+>
+> **资料状态**：本模拟器使用 **EA 版**天赋数据（6 职业、阵营互斥）。正式版职业与技能结构尚未完成对照，
+> 相关数值 **1.0 上线后待验证**。
+>
+> 如果上方无法显示，可[在新窗口打开模拟器](/norr-wiki/talent/index.html)。

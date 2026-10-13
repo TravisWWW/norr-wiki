@@ -1,0 +1,50 @@
+---
+import bestiary from '../data/bestiary.json';
+const monsters = bestiary.filter((m) => m && m.name);
+const types = [...new Set(monsters.map((m) => m.type).filter(Boolean))].sort();
+---
+<div class="nr-toolbar">
+  <input id="be-q" type="search" placeholder="搜索：怪物名 / 生物群系 / 掉落…" />
+  <select id="be-type">
+    <option value="">全部类型</option>
+    {types.map((t) => <option value={t}>{t}</option>)}
+  </select>
+  <span class="nr-count" id="be-count">{monsters.length} 种</span>
+</div>
+<table id="be-table">
+  <thead>
+    <tr><th>ID</th><th>名称</th><th>类型</th><th>等级</th><th>生物群系</th><th>拾荒掉落</th></tr>
+  </thead>
+  <tbody>
+    {monsters.map((m) => (
+      <tr data-type={m.type || ''}>
+        <td>{m.id}</td>
+        <td>{m.name}</td>
+        <td>{m.type}</td>
+        <td>{m.levelRange}</td>
+        <td>{(m.biomes || []).join('、')}</td>
+        <td>{(m.scavenging || []).join('、')}</td>
+      </tr>
+    ))}
+  </tbody>
+</table>
+
+<script>
+  const q = document.getElementById('be-q');
+  const type = document.getElementById('be-type');
+  const rows = [...document.querySelectorAll('#be-table tbody tr')];
+  const count = document.getElementById('be-count');
+  function apply() {
+    const s = (q.value || '').toLowerCase().trim();
+    const t = type.value;
+    let n = 0;
+    for (const r of rows) {
+      const ok = (!s || r.textContent.toLowerCase().includes(s)) && (!t || r.dataset.type === t);
+      r.style.display = ok ? '' : 'none';
+      if (ok) n++;
+    }
+    count.textContent = n + ' 种';
+  }
+  q.addEventListener('input', apply);
+  type.addEventListener('change', apply);
+</script>

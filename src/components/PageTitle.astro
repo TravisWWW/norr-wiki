@@ -1,0 +1,83 @@
+---
+const PAGE_TITLE_ID = '_top';
+
+const data = Astro.locals.starlightRoute.entry.data as Record<string, any>;
+const title = data.title as string;
+
+const STATUS_LABELS: Record<string, { text: string; tone: string }> = {
+  'ea-verified': { text: 'EA 版已验证', tone: 'ea' },
+  '1.0-announced': { text: '1.0 官方已公布', tone: 'announced' },
+  '1.0-pending': { text: '1.0 待验证', tone: 'pending' },
+  mixed: { text: 'EA 已验证 · 1.0 待验证', tone: 'mixed' },
+};
+
+const status = data.versionStatus ? STATUS_LABELS[data.versionStatus as string] : undefined;
+const gameVersion = data.gameVersion as string | undefined;
+const verifiedDate = data.verifiedDate as string | undefined;
+const showMeta = Boolean(status || gameVersion || verifiedDate);
+---
+
+<h1 id={PAGE_TITLE_ID}>{title}</h1>
+
+{showMeta && (
+  <div class="nr-version">
+    {status && <span class={`nr-version-badge nr-version-${status.tone}`}>{status.text}</span>}
+    {gameVersion && <span class="nr-version-item">资料版本：{gameVersion}</span>}
+    {verifiedDate && <span class="nr-version-item">核对日期：{String(verifiedDate)}</span>}
+  </div>
+)}
+
+<style>
+  @layer starlight.core {
+    h1 {
+      margin-top: 1rem;
+      font-size: var(--sl-text-h1);
+      line-height: var(--sl-line-height-headings);
+      font-weight: 600;
+      color: var(--sl-color-white);
+    }
+  }
+
+  .nr-version {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 0.75rem;
+    margin: 0.6rem 0 0.2rem;
+    font-size: var(--sl-text-xs);
+    color: var(--sl-color-gray-3);
+  }
+
+  .nr-version-badge {
+    display: inline-block;
+    padding: 0.1rem 0.5rem;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    font-weight: 600;
+    line-height: 1.5;
+  }
+
+  .nr-version-ea {
+    color: #7dd3a0;
+    border-color: #2f6b45;
+    background: rgba(47, 107, 69, 0.18);
+  }
+
+  .nr-version-announced {
+    color: #7fb6ff;
+    border-color: #2f4f7a;
+    background: rgba(47, 79, 122, 0.18);
+  }
+
+  .nr-version-pending {
+    color: #e0b96a;
+    border-color: #7a5f2f;
+    background: rgba(122, 95, 47, 0.18);
+  }
+
+  .nr-version-mixed {
+    color: #c9a0ff;
+    border-color: #5a3f7a;
+    background: rgba(90, 63, 122, 0.18);
+  }
+</style>

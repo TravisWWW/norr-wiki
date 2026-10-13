@@ -1,0 +1,107 @@
+[
+ {
+  "boss": "Marious, Lord of Ratdom",
+  "level": 5,
+  "key": "",
+  "coords": "826/1537",
+  "enemyImg": "69"
+ },
+ {
+  "boss": "Tree of Life",
+  "level": 7,
+  "key": "",
+  "coords": "799/1208",
+  "enemyImg": "63"
+ },
+ {
+  "boss": "The Baron",
+  "level": 9,
+  "key": "",
+  "coords": "1074/1426",
+  "enemyImg": "189"
+ },
+ {
+  "boss": "The Devourer",
+  "level": 10,
+  "key": "",
+  "coords": "624/1130",
+  "enemyImg": "134"
+ },
+ {
+  "boss": "Spider Queen",
+  "level": 15,
+  "key": "",
+  "coords": "1387/1728",
+  "enemyImg": "102"
+ },
+ {
+  "boss": "Arcelia",
+  "level": 19,
+  "key": "",
+  "coords": "1135/1837",
+  "enemyImg": "142"
+ },
+ {
+  "boss": "Kraken Mother",
+  "level": 20,
+  "key": "",
+  "coords": "1006/1683",
+  "enemyImg": "133"
+ },
+ {
+  "boss": "Medusa",
+  "level": 25,
+  "key": "",
+  "coords": "1303/1096",
+  "enemyImg": "144"
+ },
+ {
+  "boss": "The Leech Demon",
+  "level": 29,
+  "key": "",
+  "coords": "1530/1854",
+  "enemyImg": "169"
+ },
+ {
+  "boss": "Yurk, the Ogre",
+  "level": 30,
+  "key": "",
+  "coords": "2487/1127",
+  "enemyImg": "190"
+ },
+ {
+  "boss": "Amosh, the Yeti",
+  "level": 35,
+  "key": "",
+  "coords": "1752/266",
+  "enemyImg": "191"
+ },
+ {
+  "boss": "Queen Acasia",
+  "level": 39,
+  "key": "",
+  "coords": "1169/843",
+  "enemyImg": "192"
+ },
+ {
+  "boss": "Ape King Goliathor",
+  "level": 40,
+  "key": "",
+  "coords": "3316/1712",
+  "enemyImg": "218"
+ },
+ {
+  "boss": "Grimble",
+  "level": 45,
+  "key": "",
+  "coords": "2735/654",
+  "enemyImg": "229"
+ },
+ {
+  "boss": "Ghrorak",
+  "level": 49,
+  "key": "",
+  "coords": "581/900",
+  "enemyImg": "231"
+ }
+]

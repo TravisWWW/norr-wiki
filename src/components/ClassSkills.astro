@@ -1,0 +1,44 @@
+---
+import skills from '../data/skills.json';
+const { cls } = Astro.props;
+const data = skills[cls];
+const slug = cls.toLowerCase();
+const portrait = `${import.meta.env.BASE_URL}img/classes/${slug}_large.png`;
+const fmt = (r) => {
+  const base = `${r.stat} ${r.v1}${r.unit}`;
+  return r.per ? `${base}（每级 +${r.per}${r.unit}）` : base;
+};
+---
+<div class="nr-class-head">
+  <img class="nr-class-portrait" src={portrait} alt={cls} loading="lazy" />
+  <div class="nr-class-meta">
+    <div class="nr-class-name">{cls}</div>
+    <div class="nr-class-sub">技能树 · 官方 Lv.20 口径（值 = Lv.1 + (等级-1) × 每级增量）</div>
+  </div>
+</div>
+
+{data.groups.map((g) => (
+  <section class="nr-skill-group">
+    <h3>{g.name}</h3>
+    <table>
+      <thead>
+        <tr><th>技能</th><th>类型</th><th>需求</th><th>效果（Lv1 → Lv20）</th></tr>
+      </thead>
+      <tbody>
+        {g.skills.map((sk) => (
+          <tr>
+            <td><b>{sk.name}</b></td>
+            <td>
+              {sk.type}
+              {sk.mana ? ` · ${sk.mana} MP` : ''}
+              {sk.cd ? ` · CD ${sk.cd}` : ''}
+              {sk.alignment ? ` · ${sk.alignment}` : ''}
+            </td>
+            <td>{Array.isArray(sk.requires) ? sk.requires.join(' / ') : (sk.requires || '—')}</td>
+            <td>{sk.rows && sk.rows.length ? sk.rows.map(fmt).join('；') : (sk.raw20 || []).join('；')}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </section>
+))}

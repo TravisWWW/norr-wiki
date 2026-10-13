@@ -1,0 +1,270 @@
+/* ==========================================================================
+   Norroth Wiki — 视觉主题（对齐 Norroth 游戏本体）
+   调色板与字体取自 legacy.norroth.com/styles/P20250903/style.css.php
+   ========================================================================== */
+
+@font-face {
+  font-family: 'Norroth';
+  src: url('../fonts/Norroth-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root,
+:root[data-theme='dark'] {
+  /* 游戏本体取色 */
+  --nr-bg:        #14151a;
+  --nr-panel:     #1f1f23;   /* --clr_bgr_main */
+  --nr-panel-2:   #28292b;
+  --nr-panel-3:   #382d27;
+  --nr-line:      #141516;
+  --nr-hair:      #2b2b31;
+  --nr-gold:      #eebb66;
+  --nr-gold-2:    #f0cb6c;
+  --nr-gold-dim:  #a9853f;
+  --nr-text:      #fad089;   /* --clr_font_main */
+  --nr-text-soft: #d8d1c3;   /* 正文：降低暖黄饱和度，金色留给标题/链接/重点 */
+  --nr-dim:       #9a8f7a;
+
+  /* 稀有度（游戏内 .text-*） */
+  --nr-normal:    #a2a09d;
+  --nr-magic:     #3592d9;
+  --nr-rare:      #fae922;
+  --nr-epic:      #ae14c2;
+  --nr-mystical:  #ffa405;
+  --nr-ascended:  #41f38c;
+
+  /* Starlight 主题变量覆盖 */
+  --sl-color-accent-low:  #3a2c14;
+  --sl-color-accent:      #eebb66;
+  --sl-color-accent-high: #fad089;
+
+  --sl-color-bg:          var(--nr-bg);
+  --sl-color-bg-nav:      #1b1b20;
+  --sl-color-bg-sidebar:  #1b1b20;
+  --sl-color-bg-inline-code: #26262c;
+  --sl-color-text:        var(--nr-text-soft);
+  --sl-color-text-accent: var(--nr-text);
+  --sl-color-text-invert: #14151a;
+  --sl-color-hairline:        var(--nr-hair);
+  --sl-color-hairline-light:  var(--nr-hair);
+  --sl-color-hairline-shade:  #0e0e11;
+
+  --sl-color-white:   #fad089;
+  --sl-color-gray-1:  #e2cba0;
+  --sl-color-gray-2:  #cbb98f;
+  --sl-color-gray-3:  #9a8f7a;
+  --sl-color-gray-4:  #6f6757;
+  --sl-color-gray-5:  #3a3a42;
+  --sl-color-gray-6:  #26262c;
+  --sl-color-black:   #14151a;
+
+  --nr-serif: 'Norroth', 'Iowan Old Style', 'Palatino Linotype', 'Songti SC', 'Noto Serif SC', Georgia, serif;
+}
+
+/* ---------- 基础 ---------- */
+html { scrollbar-color: var(--nr-gold-dim) var(--nr-bg); }
+body {
+  /* 中文正文以阅读效率为主：无衬线；标题/品牌保留 Norroth 字体 */
+  font-family: 'Noto Sans SC', 'Microsoft YaHei', 'PingFang SC', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  background-color: var(--nr-bg);
+  background-image:
+    radial-gradient(1200px 600px at 50% -18%, rgba(238,187,102,.10), transparent 60%),
+    linear-gradient(180deg, #16171d 0%, #121317 100%);
+  background-attachment: fixed;
+}
+
+/* 标题用金色 + 轻微描边，接近游戏观感 */
+.sl-markdown-content :is(h1,h2,h3,h4) {
+  font-family: var(--nr-serif);
+  color: var(--nr-text);
+  letter-spacing: .3px;
+  text-shadow: 0 1px 0 #000;
+}
+.sl-markdown-content h2 {
+  border-bottom: 1px solid var(--nr-hair);
+  padding-bottom: .35rem;
+}
+a { color: var(--nr-gold); }
+a:hover { color: var(--nr-gold-2); }
+
+/* ---------- 顶栏 ---------- */
+header.header {
+  background: linear-gradient(180deg, #1d1d22, #17171b);
+  border-bottom: 1px solid var(--nr-line);
+  box-shadow: 0 1px 0 rgba(238,187,102,.10);
+}
+.site-title {
+  font-family: var(--nr-serif);
+  color: var(--nr-text) !important;
+  letter-spacing: .5px;
+  font-size: 1.15rem;
+}
+
+/* ---------- 侧边栏 ---------- */
+#starlight__sidebar, .sidebar-content {
+  background: linear-gradient(180deg, #1b1b20, #161619);
+  border-inline-end: 1px solid var(--nr-line);
+}
+.sidebar-content a {
+  color: var(--nr-text-soft);
+  border-radius: 6px;
+}
+.sidebar-content a:hover { color: var(--nr-text); background: rgba(238,187,102,.08); }
+.sidebar-content a[aria-current='page'] {
+  color: #14151a;
+  background: linear-gradient(180deg, var(--nr-gold-2), var(--nr-gold));
+  font-weight: 600;
+}
+.sidebar-content summary { color: var(--nr-gold); }
+
+/* ---------- 首页 hero ---------- */
+.hero {
+  position: relative;
+  border: 1px solid var(--nr-line);
+  border-radius: 12px;
+  padding: clamp(1.5rem, 4vw, 3rem);
+  background-image:
+    linear-gradient(90deg, rgba(12,11,10,.88) 0%, rgba(12,11,10,.55) 48%, rgba(12,11,10,.18) 100%),
+    url('../img/screen_01.jpg');
+  background-size: cover;
+  background-position: center 35%;
+  min-height: 270px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  box-shadow: inset 0 0 0 1px rgba(238,187,102,.08), 0 12px 40px rgba(0,0,0,.5);
+  overflow: hidden;
+}
+.hero h1 {
+  font-family: var(--nr-serif);
+  color: var(--nr-text);
+  text-shadow: 3px 3px #000;
+}
+.hero .tagline { color: var(--nr-text-soft); }
+.hero .actions .sl-link-button {
+  border-radius: 6px;
+  border: 1px solid var(--nr-line);
+  box-shadow: 0 2px 0 #0c0c0f;
+  font-weight: 600;
+}
+/* 主按钮：金底 + 深色字（未分层样式，压过 Starlight 分层默认与全局 a 颜色） */
+.hero .actions .sl-link-button.primary {
+  background: linear-gradient(180deg, var(--nr-gold-2), var(--nr-gold));
+  color: #14151a;
+  border-color: #8a6a2f;
+}
+.hero .actions .sl-link-button.primary:hover { color: #14151a; }
+/* 次按钮：暗底 + 浅色字，避免金字低对比 */
+.hero .actions .sl-link-button.minimal {
+  background: rgba(16,17,21,.78);
+  color: #f3e6c4;
+  border: 1px solid var(--nr-gold-dim);
+  padding-inline: 1.125rem;
+}
+.hero .actions .sl-link-button.minimal:hover { color: #fff3d6; border-color: var(--nr-gold); }
+
+/* ---------- 卡片 / 分类入口 ---------- */
+.card, .card-grid > .card {
+  background: linear-gradient(180deg, var(--nr-panel-2), var(--nr-panel));
+  border: 1px solid var(--nr-line);
+  border-bottom-width: 2px;
+  border-radius: 8px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.03);
+}
+.card .title { color: var(--nr-text); }
+.card a { color: var(--nr-gold); }
+
+/* 可点击分类卡（首页） */
+.cat-grid { display: grid; gap: .75rem; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); margin: 1rem 0 1.5rem; }
+.cat {
+  display: block; text-decoration: none;
+  background: linear-gradient(180deg, var(--nr-panel-2), var(--nr-panel));
+  border: 1px solid #39342d; border-bottom: 2px solid var(--nr-line);
+  border-radius: 8px; padding: .9rem 1rem;
+  box-shadow: inset 0 1px 0 rgba(238,187,102,.05);
+  transition: transform .12s ease, border-color .12s ease, box-shadow .12s ease;
+}
+.cat:hover { transform: translateY(-2px); border-color: var(--nr-gold-dim); box-shadow: 0 8px 22px rgba(0,0,0,.45); }
+.cat .t { font-family: var(--nr-serif); color: var(--nr-text); font-size: 1.05rem; font-weight: 600; display: flex; align-items: center; gap: .5rem; }
+.cat .t .cat-ico { display: inline-flex; flex: 0 0 auto; width: 20px; height: 20px; color: var(--nr-gold); }
+.cat .t .cat-ico svg { width: 20px; height: 20px; }
+.cat .d { color: var(--nr-dim); font-size: .85rem; margin-top: .3rem; }
+.cat .e { color: var(--nr-gold-dim); font-size: .78rem; margin-top: .5rem; }
+
+/* ---------- 表格 ---------- */
+.sl-markdown-content table {
+  display: table;
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .92rem;
+}
+.sl-markdown-content :is(th, td) {
+  border: 1px solid var(--nr-hair);
+  padding: .4rem .6rem;
+  vertical-align: top;
+}
+.sl-markdown-content th {
+  background: var(--nr-panel-2);
+  color: var(--nr-text);
+  white-space: nowrap;
+}
+.sl-markdown-content tr:nth-child(even) td { background: rgba(255,255,255,.02); }
+/* 窄屏：允许换行，避免整页横向滚动 */
+@media (max-width: 720px) {
+  .sl-markdown-content table { display: block; overflow-x: auto; }
+  .sl-markdown-content th { white-space: normal; }
+}
+
+/* ---------- 提示块 ---------- */
+.sl-markdown-content blockquote {
+  border-inline-start: 3px solid var(--nr-gold);
+  background: rgba(238,187,102,.06);
+  border-radius: 0 6px 6px 0;
+}
+.sl-markdown-content :not(pre) > code {
+  background: #26262c;
+  border: 1px solid var(--nr-hair);
+  color: var(--nr-gold-2);
+}
+
+/* ---------- 稀有度徽章（正文可用） ---------- */
+.r-normal   { color: var(--nr-normal); }
+.r-magic    { color: var(--nr-magic); }
+.r-rare     { color: var(--nr-rare); }
+.r-epic     { color: var(--nr-epic); }
+.r-mystical { color: var(--nr-mystical); }
+.r-ascended { color: var(--nr-ascended); }
+
+/* ---------- 模拟器 ---------- */
+.talent-frame {
+  width: 100%; height: 82vh;
+  border: 1px solid var(--nr-line); border-radius: 8px;
+  background: #12141c;
+}
+
+/* ---------- 其它 ---------- */
+/* Hero 图像：完整显示，不裁切（修正横版 logo 被 cover 裁掉左右的问题） */
+.hero > img, .hero > .hero-html img, .hero .hero-html img {
+  width: 100%;
+  height: auto;
+  max-height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 6px 18px rgba(0,0,0,.6));
+}
+/* 强制暗色观感：隐藏主题切换 */
+starlight-theme-select, .theme-select { display: none !important; }
+
+/* ---------- P3：数据页工具栏 / 职业图标 / 职业页头 ---------- */
+.nr-toolbar{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center;margin:.6rem 0 1rem}
+.nr-toolbar input[type=search]{flex:1 1 240px;min-width:180px;padding:.45rem .7rem;border-radius:6px;border:1px solid var(--nr-hair);background:#1b1b20;color:var(--nr-text-soft)}
+.nr-toolbar select{padding:.45rem .6rem;border-radius:6px;border:1px solid var(--nr-hair);background:#1b1b20;color:var(--nr-text-soft)}
+.nr-check{display:inline-flex;gap:.35rem;align-items:center;color:var(--nr-text-soft);font-size:.9rem}
+.nr-count{color:var(--nr-gold);font-size:.85rem;margin-inline-start:auto}
+.nr-ci{width:22px;height:22px;vertical-align:-6px;margin-inline-end:.35rem;border-radius:4px}
+.nr-class-head{display:flex;gap:1rem;align-items:center;margin:.4rem 0 1.2rem;padding:.8rem 1rem;border:1px solid var(--nr-line);border-radius:10px;background:linear-gradient(180deg,var(--nr-panel-2),var(--nr-panel))}
+.nr-class-portrait{height:96px;width:auto;filter:drop-shadow(0 6px 16px rgba(0,0,0,.6))}
+.nr-class-name{font-size:1.5rem;color:var(--nr-text);font-weight:700}
+.nr-class-sub{color:var(--nr-dim);font-size:.82rem;margin-top:.2rem}
+.nr-skill-group h3{color:var(--nr-gold);margin-top:1.4rem}
