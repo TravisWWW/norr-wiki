@@ -17,9 +17,22 @@ const rows = recipes.map((r) => ({
   vcount: r.variants.length,
 }));
 
-const tierMap = new Map();
-for (const r of recipes) if (r.tier && !tierMap.has(r.tier)) tierMap.set(r.tier, r.tierNum == null ? 99 : r.tierNum);
-const tiers = [...tierMap.entries()].sort((a, b) => a[1] - b[1]).map(([en, num]) => ({ en, num }));
+const catZh = Object.fromEntries(categories.map((c) => [c.en, c.zh]));
+const profMeta = Object.fromEntries(professions.map((p) => [p.id, { zh: p.zh, en: p.en, classes: p.classes }]));
+
+const profCats = {};   // prof -> { cat: count }
+const profTiers = {};  // prof -> { tier: num }
+const allTiers = {};
+for (const r of recipes) {
+  (profCats[r.prof] ||= {});
+  profCats[r.prof][r.cat] = (profCats[r.prof][r.cat] || 0) + 1;
+  if (r.tier) {
+    (profTiers[r.prof] ||= {});
+    profTiers[r.prof][r.tier] = r.tierNum == null ? 99 : r.tierNum;
+    allTiers[r.tier] = r.tierNum == null ? 99 : r.tierNum;
+  }
+}
+const facet = { catZh, profMeta, profCats, profTiers, allCats: categories.map((c) => c.en), allTiers };
 
 const levels = [
   { v: '1-9', label: 'Lv1–9' },
@@ -44,7 +57,7 @@ const base = import.meta.env.BASE_URL;
     </select>
     <select id="cc-tier">
       <option value="">全部 Tier</option>
-      {tiers.map((t) => <option value={t.en}>{'T' + t.num + ' ' + t.en}</option>)}
+      {[...Object.entries(allTiers)].sort((a, b) => a[1] - b[1]).map(([en, num]) => <option value={en}>{'T' + num + ' ' + en}</option>)}
     </select>
     <select id="cc-lvl">
       <option value="">全部等级</option>
@@ -57,6 +70,7 @@ const base = import.meta.env.BASE_URL;
     </select>
     <span class="nr-count" id="cc-count"></span>
   </div>
+  <div class="cc-summary" id="cc-summary"></div>
   <p class="cc-hint" id="cc-hint">共 {recipes.length} 条配方 · 数据来源：{meta.source}（{meta.tierCoverage}）</p>
   <ul id="cc-list" class="cc-list">
     {rows.map((r) => (
@@ -74,10 +88,13 @@ const base = import.meta.env.BASE_URL;
   </ul>
 </div>
 
+<script type="application/json" id="cc-facet" set:html={JSON.stringify(facet)}></script>
+
 <script>
   const root = document.querySelector('.cc');
   if (root) {
     const base = ((root.getAttribute('data-base') || '/').replace(/\/+$/, '')) + '/';
+    const facet = JSON.parse(document.getElementById('cc-facet').textContent);
     const q = document.getElementById('cc-q');
     const fProf = document.getElementById('cc-prof');
     const fCat = document.getElementById('cc-cat');
@@ -86,10 +103,12 @@ const base = import.meta.env.BASE_URL;
     const fKind = document.getElementById('cc-kind');
     const count = document.getElementById('cc-count');
     const hint = document.getElementById('cc-hint');
+    const summary = document.getElementById('cc-summary');
     const rows = [...document.querySelectorAll('#cc-list .cc-row')];
     let db = null;
 
     const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+    const catLabel = (en) => (facet.catZh[en] ? facet.catZh[en] + ' ' + en : en);
     const matChip = (m) => '<button type="button" class="cc-chip" data-mat="' + esc(m.n) + '">' + (m.q == null ? '?' : m.q) + '× ' + esc(m.n) + '</button>';
 
     function inLvl(lv, range) {
@@ -98,6 +117,32 @@ const base = import.meta.env.BASE_URL;
       const n = +lv;
       const [a, b] = range.split('-').map(Number);
       return n >= a && n <= b;
+    }
+
+    function rebuildFacets() {
+      const p = fProf.value;
+      const cats = p ? Object.keys(facet.profCats[p] || {}) : facet.allCats.slice();
+      const curCat = fCat.value;
+      fCat.innerHTML = '<option value="">全部类型</option>' + cats.map((c) => '<option value="' + esc(c) + '">' + esc(catLabel(c)) + (p ? ' (' + facet.profCats[p][c] + ')' : '') + '</option>').join('');
+      fCat.value = cats.includes(curCat) ? curCat : '';
+
+      const tmap = p ? (facet.profTiers[p] || {}) : facet.allTiers;
+      const curTier = fTier.value;
+      const tiers = Object.keys(tmap).sort((a, b) => tmap[a] - tmap[b]);
+      fTier.innerHTML = '<option value="">全部 Tier</option>' + tiers.map((t) => '<option value="' + esc(t) + '">T' + tmap[t] + ' ' + esc(t) + '</option>').join('');
+      fTier.value = tiers.includes(curTier) ? curTier : '';
+
+      renderSummary();
+    }
+
+    function renderSummary() {
+      const p = fProf.value;
+      if (!p) { summary.innerHTML = ''; return; }
+      const pm = facet.profMeta[p] || { zh: p, en: '', classes: '' };
+      const cats = Object.entries(facet.profCats[p] || {});
+      summary.innerHTML =
+        '<span class="cc-sum-label">' + esc(pm.zh + ' ' + pm.en) + ' 可制作：</span>' +
+        cats.map(([c, n]) => '<button type="button" class="cc-chip cc-catchip" data-cat="' + esc(c) + '">' + esc(catLabel(c)) + ' <small>' + n + '</small></button>').join('');
     }
 
     function apply() {
@@ -115,8 +160,12 @@ const base = import.meta.env.BASE_URL;
         if (ok) n++;
       }
       count.textContent = n + ' 条';
-      if (s) hint.textContent = '搜索「' + q.value.trim() + '」：' + n + ' 条结果（匹配成品名或材料名）';
-      else hint.textContent = '共 ' + rows.length + ' 条配方';
+      const parts = [];
+      if (p) parts.push((facet.profMeta[p] || {}).zh || p);
+      if (c) parts.push(catLabel(c));
+      if (t) parts.push('T' + (fTier.selectedOptions[0] ? fTier.selectedOptions[0].textContent.replace(/^T\d+\s*/, '') : t));
+      if (s) parts.push('“' + q.value.trim() + '”');
+      hint.textContent = (parts.length ? '筛选：' + parts.join(' · ') + ' → ' : '共 ') + n + ' 条配方';
     }
 
     async function ensureDb() {
@@ -175,7 +224,7 @@ const base = import.meta.env.BASE_URL;
         const id = jump.getAttribute('data-jump');
         const target = document.querySelector('#cc-list .cc-row[data-id="' + CSS.escape(id) + '"]');
         if (target) {
-          fProf.value = ''; fCat.value = ''; fTier.value = ''; fLvl.value = ''; fKind.value = ''; q.value = '';
+          fProf.value = ''; rebuildFacets(); fCat.value = ''; fTier.value = ''; fLvl.value = ''; fKind.value = ''; q.value = '';
           apply();
           target.scrollIntoView({ behavior: 'smooth', block: 'center' });
           const box = target.querySelector('.cc-detail');
@@ -187,7 +236,14 @@ const base = import.meta.env.BASE_URL;
       if (head) openDetail(head.closest('.cc-row'));
     });
 
-    for (const el of [q, fProf, fCat, fTier, fLvl, fKind]) el.addEventListener('input', apply);
+    summary.addEventListener('click', (e) => {
+      const b = e.target.closest('.cc-catchip');
+      if (b) { fCat.value = b.getAttribute('data-cat'); apply(); }
+    });
+
+    fProf.addEventListener('change', () => { rebuildFacets(); apply(); });
+    for (const el of [q, fCat, fTier, fLvl, fKind]) el.addEventListener('input', apply);
+    rebuildFacets();
     apply();
   }
 </script>
@@ -196,6 +252,8 @@ const base = import.meta.env.BASE_URL;
   .cc-toolbar { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; margin-block: .5rem 1rem; }
   .cc-toolbar input[type='search'] { flex: 1 1 16rem; min-width: 12rem; }
   .cc-toolbar select { flex: 0 1 auto; }
+  .cc-summary { display: flex; flex-wrap: wrap; gap: .35rem; align-items: center; margin: 0 0 .6rem; }
+  .cc-sum-label { color: var(--nr-gold); font-size: .85rem; margin-right: .2rem; }
   .cc-hint { color: var(--nr-dim); font-size: .85rem; margin: 0 0 .75rem; }
   .cc-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: .35rem; }
   .cc-row { border: 1px solid var(--nr-hair); border-radius: 6px; background: var(--nr-panel); overflow: hidden; }
@@ -214,6 +272,8 @@ const base = import.meta.env.BASE_URL;
   .cc-vlabel { color: var(--nr-dim); font-size: .78rem; margin-right: .2rem; }
   .cc-chip, .cc-jump { border: 1px solid var(--nr-hair); background: var(--nr-panel-2); color: var(--nr-text-soft); border-radius: 4px; padding: .1rem .45rem; font-size: .8rem; cursor: pointer; font: inherit; }
   .cc-chip:hover, .cc-jump:hover { border-color: var(--nr-gold-dim); color: var(--nr-text); }
+  .cc-chip small { color: var(--nr-dim); }
+  .cc-catchip { border-color: var(--nr-gold-dim); }
   .cc-jump { display: block; text-align: left; margin: .2rem 0; width: 100%; }
   .cc-jump small { color: var(--nr-dim); }
   .cc-none { color: var(--nr-dim); font-style: italic; }
