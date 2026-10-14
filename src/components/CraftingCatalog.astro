@@ -20,8 +20,8 @@ const rows = recipes.map((r) => ({
 const catZh = Object.fromEntries(categories.map((c) => [c.en, c.zh]));
 const profMeta = Object.fromEntries(professions.map((p) => [p.id, { zh: p.zh, en: p.en, classes: p.classes }]));
 
-const profCats = {};   // prof -> { cat: count }
-const profTiers = {};  // prof -> { tier: num }
+const profCats = {};
+const profTiers = {};
 const allTiers = {};
 for (const r of recipes) {
   (profCats[r.prof] ||= {});
@@ -70,7 +70,7 @@ const base = import.meta.env.BASE_URL;
     </select>
     <span class="nr-count" id="cc-count"></span>
   </div>
-  <div class="cc-summary" id="cc-summary"></div>
+  <div class="cc-summary" id="cc-summary" hidden></div>
   <p class="cc-hint" id="cc-hint">共 {recipes.length} 条配方 · 数据来源：{meta.source}（{meta.tierCoverage}）</p>
   <ul id="cc-list" class="cc-list">
     {rows.map((r) => (
@@ -137,12 +137,16 @@ const base = import.meta.env.BASE_URL;
 
     function renderSummary() {
       const p = fProf.value;
-      if (!p) { summary.innerHTML = ''; return; }
+      if (!p) { summary.hidden = true; summary.innerHTML = ''; return; }
       const pm = facet.profMeta[p] || { zh: p, en: '', classes: '' };
       const cats = Object.entries(facet.profCats[p] || {});
+      const total = cats.reduce((a, e) => a + e[1], 0);
+      summary.hidden = false;
       summary.innerHTML =
-        '<span class="cc-sum-label">' + esc(pm.zh + ' ' + pm.en) + ' 可制作：</span>' +
-        cats.map(([c, n]) => '<button type="button" class="cc-chip cc-catchip" data-cat="' + esc(c) + '">' + esc(catLabel(c)) + ' <small>' + n + '</small></button>').join('');
+        '<div class="cc-sum-head">' + esc(pm.zh + ' ' + pm.en) + ' · 归属 ' + esc(pm.classes) + ' · 共 ' + cats.length + ' 类 / ' + total + ' 条配方</div>' +
+        '<div class="cc-sum-grid">' + cats.map(([c, n]) =>
+          '<button type="button" class="cc-sum-item" data-cat="' + esc(c) + '"><span class="cc-sum-name">' + esc(catLabel(c)) + '</span><span class="cc-sum-num">' + n + '</span></button>'
+        ).join('') + '</div>';
     }
 
     function apply() {
@@ -163,7 +167,7 @@ const base = import.meta.env.BASE_URL;
       const parts = [];
       if (p) parts.push((facet.profMeta[p] || {}).zh || p);
       if (c) parts.push(catLabel(c));
-      if (t) parts.push('T' + (fTier.selectedOptions[0] ? fTier.selectedOptions[0].textContent.replace(/^T\d+\s*/, '') : t));
+      if (t) parts.push('Tier ' + t);
       if (s) parts.push('“' + q.value.trim() + '”');
       hint.textContent = (parts.length ? '筛选：' + parts.join(' · ') + ' → ' : '共 ') + n + ' 条配方';
     }
@@ -237,13 +241,22 @@ const base = import.meta.env.BASE_URL;
     });
 
     summary.addEventListener('click', (e) => {
-      const b = e.target.closest('.cc-catchip');
+      const b = e.target.closest('.cc-sum-item');
       if (b) { fCat.value = b.getAttribute('data-cat'); apply(); }
     });
 
     fProf.addEventListener('change', () => { rebuildFacets(); apply(); });
     for (const el of [q, fCat, fTier, fLvl, fKind]) el.addEventListener('input', apply);
+
+    // deep-link: ?prof=alchemy&cat=Staff&tier=...&lvl=1-9&kind=item&q=...
+    const params = new URLSearchParams(location.search);
+    if (params.get('prof')) fProf.value = params.get('prof');
     rebuildFacets();
+    if (params.get('cat')) fCat.value = params.get('cat');
+    if (params.get('tier')) fTier.value = params.get('tier');
+    if (params.get('lvl')) fLvl.value = params.get('lvl');
+    if (params.get('kind')) fKind.value = params.get('kind');
+    if (params.get('q')) q.value = params.get('q');
     apply();
   }
 </script>
@@ -252,8 +265,12 @@ const base = import.meta.env.BASE_URL;
   .cc-toolbar { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; margin-block: .5rem 1rem; }
   .cc-toolbar input[type='search'] { flex: 1 1 16rem; min-width: 12rem; }
   .cc-toolbar select { flex: 0 1 auto; }
-  .cc-summary { display: flex; flex-wrap: wrap; gap: .35rem; align-items: center; margin: 0 0 .6rem; }
-  .cc-sum-label { color: var(--nr-gold); font-size: .85rem; margin-right: .2rem; }
+  .cc-summary { margin: 0 0 .75rem; border: 1px solid var(--nr-hair); border-radius: 6px; background: var(--nr-panel); padding: .6rem .7rem; }
+  .cc-sum-head { color: var(--nr-gold); font-size: .85rem; margin-bottom: .5rem; }
+  .cc-sum-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr)); gap: .4rem; }
+  .cc-sum-item { display: flex; justify-content: space-between; align-items: center; gap: .5rem; border: 1px solid var(--nr-hair); background: var(--nr-panel-2); color: var(--nr-text-soft); border-radius: 4px; padding: .25rem .5rem; font: inherit; font-size: .82rem; cursor: pointer; text-align: left; }
+  .cc-sum-item:hover { border-color: var(--nr-gold-dim); color: var(--nr-text); }
+  .cc-sum-num { color: var(--nr-dim); font-size: .75rem; flex: 0 0 auto; }
   .cc-hint { color: var(--nr-dim); font-size: .85rem; margin: 0 0 .75rem; }
   .cc-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: .35rem; }
   .cc-row { border: 1px solid var(--nr-hair); border-radius: 6px; background: var(--nr-panel); overflow: hidden; }
@@ -272,8 +289,6 @@ const base = import.meta.env.BASE_URL;
   .cc-vlabel { color: var(--nr-dim); font-size: .78rem; margin-right: .2rem; }
   .cc-chip, .cc-jump { border: 1px solid var(--nr-hair); background: var(--nr-panel-2); color: var(--nr-text-soft); border-radius: 4px; padding: .1rem .45rem; font-size: .8rem; cursor: pointer; font: inherit; }
   .cc-chip:hover, .cc-jump:hover { border-color: var(--nr-gold-dim); color: var(--nr-text); }
-  .cc-chip small { color: var(--nr-dim); }
-  .cc-catchip { border-color: var(--nr-gold-dim); }
   .cc-jump { display: block; text-align: left; margin: .2rem 0; width: 100%; }
   .cc-jump small { color: var(--nr-dim); }
   .cc-none { color: var(--nr-dim); font-style: italic; }

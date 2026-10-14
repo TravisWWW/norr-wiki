@@ -19,6 +19,114 @@ sources:
 - 配方按子类分 3 档，解锁等级 **Lv1 / Lv5 / Lv9**。
 - 做出来的食物提供**治疗 + buff**；成品可自用或卖店。
 
+## 各制作专业能做什么
+
+> 每个专业可制作的**物品类型**与配方数量如下；点「在图鉴中查看」可跳转到[制作配方图鉴](/norr-wiki/professions/crafting-catalog/)，并按该专业自动筛选（图鉴支持关键词、类型、Tier、等级过滤与材料反查）。
+
+### 裁缝 Tailoring
+
+**归属职业**：Archmage / Druid ｜ **可制作 8 类 / 150 条配方** ｜ [在图鉴中查看 →](/norr-wiki/professions/crafting-catalog/?prof=tailoring)
+
+布甲（轻甲，75% 属性进全抗、25% 进防御），另有法书（副手）。
+
+类型：材料 / 半成品 Materials（25）、腰带 Belts（15）、靴子 Boots（15）、手套 Gloves（15）、头盔 Helmets（15）、护腿 Leggings（15）、胸甲 Chests（15）、法书（副手） Encased Tome（35）。
+
+### 炼金 Alchemy
+
+**归属职业**：Archmage ｜ **可制作 8 类 / 75 条配方** ｜ [在图鉴中查看 →](/norr-wiki/professions/crafting-catalog/?prof=alchemy)
+
+药水（法力 / 生命 / 回春 / 增益）、法杖 / 魔杖，以及鱼油与宝珠。
+
+类型：法力药水 Mana（5）、增益药水 Buffs（20）、回春药水 Rejuvenation（5）、生命药水 Health（5）、法杖 Staff（15）、魔杖 Wand（15）、鱼油 Oils（5）、宝珠 Orb（5）。
+
+### 铸武 Weaponsmithing
+
+**归属职业**：Berserker ｜ **可制作 7 类 / 120 条配方** ｜ [在图鉴中查看 →](/norr-wiki/professions/crafting-catalog/?prof=weaponsmithing)
+
+金属武器，5 个金属档（Copper → Iron → Bronze → Steel → Mithril）。
+
+类型：材料 / 半成品 Materials（30）、斧 Axes（15）、剑 Swords（15）、权杖 Scepters（15）、匕首 Daggers（15）、锤（钝器） Maces（15）、长矛 Spears（15）。
+
+### 铸甲 Armorsmithing
+
+**归属职业**：Zealot ｜ **可制作 8 类 / 130 条配方** ｜ [在图鉴中查看 →](/norr-wiki/professions/crafting-catalog/?prof=armorsmithing)
+
+金属重甲（板甲），含盾牌。
+
+类型：材料 / 半成品 Materials（25）、腰带 Belts（15）、靴子 Boots（15）、手套 Gloves（15）、头盔 Helmets（15）、护腿 Leggings（15）、盾牌 Shields（15）、胸甲 Chests（15）。
+
+### 烹饪 Cooking
+
+**归属职业**：全职业 ｜ **可制作 6 类 / 86 条配方** ｜ [在图鉴中查看 →](/norr-wiki/professions/crafting-catalog/?prof=cooking)
+
+菜肴（蔬菜 / 鱼 / 水果 / 肉 / 混合 / 节日），提供治疗与 buff。
+
+类型：节日 Holiday（6）、Mucky Mucky（16）、Scrap Scrap（16）、Low Quality Low Quality（16）、Medium Quality Medium Quality（16）、Quality Quality（16）。
+
+### 珠宝 Jeweling
+
+**归属职业**：Archmage / Zealot ｜ **可制作 3 类 / 55 条配方** ｜ [在图鉴中查看 →](/norr-wiki/professions/crafting-catalog/?prof=jeweling)
+
+宝石切割（Rough → Cabochon → Round → Princess → Emerald → Radiant）与首饰。
+
+类型：宝石（成品） Jewels（5）、首饰 Jewelry（15）、宝石（切割） Gem（35）。
+
+### 木工 Carpentry
+
+**归属职业**：Ranger ｜ **可制作 2 类 / 40 条配方** ｜ [在图鉴中查看 →](/norr-wiki/professions/crafting-catalog/?prof=carpentry)
+
+木料（杆 / 棍 / 板 / 柄 / 卷轴）与弩。
+
+类型：材料 / 半成品 Materials（25）、弩 Crossbow（15）。
+
+### 制图 Cartography
+
+**归属职业**：Archmage / Ranger / Zealot / Rogue ｜ **可制作 3 类 / 60 条配方** ｜ [在图鉴中查看 →](/norr-wiki/professions/crafting-catalog/?prof=cartography)
+
+墨水、卷轴、蓝图、远征地图、回城卷轴与鉴定卷轴。
+
+类型：材料 / 半成品 Materials（15）、远征地图 Maps（25）、卷轴 Scrolls（20）。
+
+### 石工 Stonemasonry
+
+**归属职业**：Berserker ｜ **可制作 1 类 / 25 条配方** ｜ [在图鉴中查看 →](/norr-wiki/professions/crafting-catalog/?prof=stonemasonry)
+
+石料：精炼石、砖、地砖、柱与碎石。
+
+类型：材料 / 半成品 Materials（25）。
+
+### 工具 Toolsmithing
+
+**归属职业**：Rogue ｜ **可制作 4 类 / 75 条配方** ｜ [在图鉴中查看 →](/norr-wiki/professions/crafting-catalog/?prof=toolsmithing)
+
+采集工具（镐 / 锄 / 斧 / 钓竿）、投掷武器与盗贼武器（拳刃 / 三叉 / 双轮刃）。
+
+类型：材料 / 半成品 Materials（10）、工具 Tools（35）、投掷武器 Throwing（15）、武器（拳刃等） Weapons（15）。
+
+### 制皮 Leatherworking
+
+**归属职业**：Berserker / Druid / Ranger / Rogue ｜ **可制作 8 类 / 225 条配方** ｜ [在图鉴中查看 →](/norr-wiki/professions/crafting-catalog/?prof=leatherworking)
+
+皮甲，按骨 / 鳞 / 翅 / 哥布林 / 甲壳决定词条，含小盾。
+
+类型：材料 / 半成品 Materials（60）、腰带 Belts（25）、盾牌 Shields（15）、胸甲 Chests（25）、手套 Gloves（25）、头盔 Helmets（25）、护腿 Leggings（25）、靴子 Boots（25）。
+
+### 狩猎 Hunting
+
+**归属职业**：Berserker / Druid / Ranger / Zealot / Rogue ｜ **可制作 6 类 / 155 条配方** ｜ [在图鉴中查看 →](/norr-wiki/professions/crafting-catalog/?prof=hunting)
+
+远程弓、拳套与首饰（用拾尸来的尸块）。
+
+类型：弓 Bow（15）、材料 / 半成品 Materials（35）、拳套 Cestus（15）、项链 Necklace（30）、耳环 Earrings（30）、戒指 Rings（30）。
+
+### 养宠 Petbreeding
+
+**归属职业**：Druid ｜ **可制作 2 类 / 20 条配方** ｜ [在图鉴中查看 →](/norr-wiki/professions/crafting-catalog/?prof=petbreeding)
+
+宠物与宠物粮。
+
+类型：宠物 Pets（15）、材料 / 半成品 Materials（5）。
+
 ## 制作机制
 
 - 制作每次约 **+36 经验**（Lv1 配方），约为采集（+10）的 3.6 倍。
