@@ -79,6 +79,7 @@ export default defineConfig({
 						{ label: '地图、移动与传送', slug: 'world/movement' },
 						{ label: '地图清单', slug: 'world/maps' },
 						{ label: '怪物图鉴', slug: 'world/bestiary' },
+						{ label: 'NPC 与设施查询', slug: 'world/facilities' },
 					],
 				},
 				{

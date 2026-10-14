@@ -1,0 +1,88 @@
+---
+import mapdb from '../data/maps.json';
+const TYPE_ZH = {
+  gathering: '采集点', trap: '陷阱', quest_board: '任务板', smugglers_route: '走私路线',
+  cooking: '厨师 / 烹饪台', hunter: '猎人', leatherworker: '制皮师', inn: '旅店',
+  post_office: '邮局', stonemason: '石匠', cartographer: '制图师', toolsmith: '工具匠',
+  tailor: '裁缝', armorsmith: '铸甲师', weaponsmith: '铸武器师', stash: '仓库',
+  jeweler: '珠宝匠', carpenter: '木匠', alchemist: '炼金师', petbreeder: '宠物饲养员',
+  merchant: '商人', news_board: '新闻板', trading_post: '交易站', wishing_well: '许愿井',
+  item_specialist: '物品专家', dungeon: '副本入口', fisherman: '渔夫', guilds: '公会',
+  boss: 'Boss', helper: '助手', dock: '码头', collect_scrap: '废料回收',
+  entrance: '入口', arena_merchant: '竞技场商人', event_gate: '活动门', laurel_market: '月桂市场',
+};
+const base = import.meta.env.BASE_URL.replace(/\/$/, '') + '/';
+const maps = Object.values(mapdb.maps).filter((m) => m && m.name);
+const rows = [];
+for (const mp of maps) {
+  for (const n of (mp.npc || [])) {
+    rows.push({
+      type: n[0], typeZh: TYPE_ZH[n[0]] || n[0], name: n[1] || '（未命名）',
+      map: mp.name, town: mp.town ? 1 : 0, coords: n[2] || '',
+    });
+  }
+}
+rows.sort((a, b) => a.map.localeCompare(b.map) || a.type.localeCompare(b.type) || a.name.localeCompare(b.name));
+const typeList = [...new Set(rows.map((r) => r.type))].sort((a, b) => (TYPE_ZH[a] || a).localeCompare(TYPE_ZH[b] || b));
+const mapList = [...new Set(rows.map((r) => r.map))].sort();
+const townCount = rows.filter((r) => r.town).length;
+---
+<div class="nr-toolbar">
+  <input id="fa-q" type="search" placeholder="搜索：设施名 / 地图名…" autocomplete="off" />
+  <select id="fa-type"><option value="">全部类型</option>{typeList.map((t) => <option value={t}>{TYPE_ZH[t] || t}</option>)}</select>
+  <select id="fa-map"><option value="">全部地图</option>{mapList.map((m) => <option value={m}>{m}</option>)}</select>
+  <label class="nr-check"><input type="checkbox" id="fa-town" /> 只看城镇</label>
+  <span class="nr-count" id="fa-count"></span>
+</div>
+<table id="fa-table">
+  <thead><tr><th>设施 / NPC</th><th>类型</th><th>所在地图</th><th>坐标</th></tr></thead>
+  <tbody>
+    {rows.map((r) => (
+      <tr data-name={(r.name || '').toLowerCase()} data-map={r.map} data-type={r.type} data-town={r.town}>
+        <td>{r.name}</td>
+        <td>{r.typeZh}</td>
+        <td><a href={`${base}world/maps/?q=${encodeURIComponent(r.map)}`}>{r.map}</a>{r.town ? <span class="fa-town-tag">城镇</span> : null}</td>
+        <td>{r.coords || '—'}</td>
+      </tr>
+    ))}
+  </tbody>
+</table>
+<p class="nr-note">共 <b>{rows.length}</b> 条设施 / NPC 记录，覆盖 <b>{mapList.length}</b> 张地图（其中城镇 <b>{townCount}</b> 条）。点地图名可跳到地图清单对应条目。数据来自地图勘察记录，缺失坐标显示为「—」。</p>
+
+<script>
+  const q = document.getElementById('fa-q');
+  const type = document.getElementById('fa-type');
+  const map = document.getElementById('fa-map');
+  const town = document.getElementById('fa-town');
+  const tbody = document.querySelector('#fa-table tbody');
+  const rows = [...tbody.querySelectorAll('tr')];
+  const count = document.getElementById('fa-count');
+  function apply() {
+    const s = (q.value || '').toLowerCase().trim();
+    const t = type.value, m = map.value;
+    let n = 0;
+    for (const r of rows) {
+      const ok = (!s || r.dataset.name.includes(s) || r.dataset.map.toLowerCase().includes(s))
+        && (!t || r.dataset.type === t) && (!m || r.dataset.map === m)
+        && (!town.checked || r.dataset.town === '1');
+      r.style.display = ok ? '' : 'none';
+      if (ok) n++;
+    }
+    count.textContent = n + ' 条';
+  }
+  q.addEventListener('input', apply);
+  type.addEventListener('change', apply);
+  map.addEventListener('change', apply);
+  town.addEventListener('change', apply);
+  const params = new URLSearchParams(location.search);
+  if (params.get('q')) q.value = params.get('q');
+  if (params.get('type')) type.value = params.get('type');
+  if (params.get('map')) map.value = params.get('map');
+  if (params.get('town') === '1') town.checked = true;
+  apply();
+</script>
+
+<style>
+  .nr-note { color: var(--nr-dim); font-size: .8rem; margin-top: .5rem; }
+  .fa-town-tag { font-size: .7rem; color: var(--nr-gold); border: 1px solid var(--nr-gold-dim); border-radius: 3px; padding: 0 .3rem; margin-left: .35rem; }
+</style>

@@ -1,0 +1,29 @@
+---
+title: NPC 与设施查询
+description: 按类型 / 地图查询全站 NPC 与设施位置（商人、制作台、任务板、传送点等）。
+gameVersion: "EA"
+verifiedDate: 2026-10-14
+versionStatus: ea-verified
+sources:
+  - type: observed
+    reference: 游戏内地图勘察记录
+---
+
+import FacilityTable from '../../../components/FacilityTable.astro';
+
+按 **设施类型 / 所在地图** 筛选，或直接搜索设施名与地图名。点地图名可跳到[地图清单](/norr-wiki/world/maps/)对应条目。
+
+> 数据来自地图勘察记录（EA 版）。坐标格式为 `横-纵`；缺失坐标显示为「—」。
+> 制作台 / 商人的价格与库存见[商人与药水](/norr-wiki/equipment/vendors/)，制作配方见[制作配方图鉴](/norr-wiki/professions/crafting-catalog/)。
+
+<FacilityTable />
+
+## 相关
+
+- [地图清单](/norr-wiki/world/maps/)
+- [商人与药水](/norr-wiki/equipment/vendors/)
+- [任务板与日志](/norr-wiki/quests/boards/)
+
+## 资料来源
+
+- 游戏内地图勘察记录（EA 版）：设施类型、名称与坐标。
