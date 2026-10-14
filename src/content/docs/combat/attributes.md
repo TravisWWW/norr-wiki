@@ -37,6 +37,11 @@ sources:
 - **Life Regeneration**：每点每 5 秒回 0.1 血（战斗外）/ 每回合 0.1 血（战斗中）。
 - **Resilience** 只减 Life Steal / Mana Steal / **Silence / Fear**，**不减 Root / Stun**。
 
+### 属性 tooltip 的读法【官方】
+
+- 属性 tooltip **行末的 `(x%)`** 表示**命中该属性的概率**（不是数值加成）。例如某词条写作 `+5 Fire Damage (30%)`，指有 30% 概率命中该属性。
+- **伤害加成只放大对应类型的技能**：`+ Fire Damage` **只作用于火系技能**，`+ Bleed Damage` **只作用于会造成 Bleed 的技能**——不是通用增伤。
+
 ## 六职业每级成长【官方职业页】
 
 每级自动获得的属性（`基础值 + 每级增量`），**此外每级还有 5 点自由属性点**。

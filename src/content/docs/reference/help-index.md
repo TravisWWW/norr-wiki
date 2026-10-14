@@ -12,6 +12,10 @@ sources:
 > 来源：`legacy.norroth.com` 的游戏内帮助文档（Help File）。**legacy 站点共 88 篇**。
 > id 会随版本重排，正文以游戏内实际内容为准。
 
+> **1.0 变化【官方】**：帮助文件在 6 个月内从 **88 页扩到 171 页**，新增 Personal Estates、Crafting Queue、
+> Support（Account / Payments / Technical）、Gathering 地点总览、Emojis 等；官方称「所有公式与信息都写进帮助文件了」。
+> 本页的 id 全表为 **EA（legacy）口径**，1.0 的 id 与条目需上线后重新核对。
+
 ## 按分类的 id 全表（EA 版，88 篇）
 
 ### 入门 / 属性 / 规则

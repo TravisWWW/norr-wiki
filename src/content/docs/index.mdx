@@ -21,6 +21,7 @@ import { Card, CardGrid, LinkCard } from '@astrojs/starlight/components';
 export const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
 export const cats = [
+  ['<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l2.6 6.3 6.8.5-5.2 4.4 1.6 6.6L12 16.9 6.2 19.8l1.6-6.6L2.6 8.8l6.8-.5z"/></svg>', '1.0 正式版', 'release/v1-overview/', '发售与开服 · 机制变更 · 职业平衡 · 内容清单'],
   ['<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M15.6 8.4l-2.3 5.3-5.3 2.3 2.3-5.3z"/></svg>', '新手入门', 'getting-started/intro/', '游戏介绍 · 两个站点 · 注册排障'],
   ['<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.3"/><path d="M4.8 20c1.3-3.7 4-5.6 7.2-5.6s5.9 1.9 7.2 5.6"/></svg>', '职业与技能', 'classes/', '6 大职业 · 技能树 · 天赋模拟器'],
   ['<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4l7.5 7.5M20 4l-7.5 7.5M12 12l6.5 6.5M12 12l-6.5 6.5"/><path d="M4 4h3.4M4 4v3.4M20 4h-3.4M20 4v3.4"/></svg>', '战斗与成长', 'combat/mechanics/', '战斗机制 · 属性 · 经验 · 公式 · 洗点'],
@@ -54,7 +55,17 @@ export const cats = [
 <LinkCard title="技能天赋模拟器（旧版）" href={`${base}/tools/talent/`} description="基于 EA 版天赋数据：6 职业天赋树，左键 +1 / 右键 -1 / Shift ±5，光明·黑暗阵营互斥。" />
 <LinkCard title="制作配方图鉴" href={`${base}/professions/crafting-catalog/`} description="按专业 / 类型 / Tier / 等级筛选 13 个制作专业的全部配方，支持材料反查。" />
 
-### 正式版（1.0）新增系统（官方已公布，详情待核实）
+### 1.0 正式版
+
+> **Norroth 1.0 于 2026-10-16 发售（13:00 CET）**：全新引擎 / 服务器 / 数据库，**独立开新服**，旧服保留为 **Legacy Server**。
+> 以下为官方公告口径，**1.0 上线后待实测核验**。
+
+<LinkCard title="1.0 发布与开服" href={`${base}/release/v1-overview/`} description="发售日与开服时间 · 双服务器 · 账号与 Legacy 奖励码 · Steam · 官方 FAQ · 时间线。" />
+<LinkCard title="1.0 机制变更" href={`${base}/release/v1-changes/`} description="副本免费进入与三难度 · 队伍系统 · 自动战斗重做 · 珠宝 6 组 · Masterworking · Gather Queue · 分线 · 等级上限 60。" />
+<LinkCard title="1.0 职业平衡" href={`${base}/release/v1-class-balance/`} description="伤害与异常重做、通用数值改动（攻速 / 闪避 / 暴击 / 吸血 / 逃跑）与各职业调整。" />
+<LinkCard title="1.0 内容清单" href={`${base}/release/v1-content/`} description="30+ 新地图 · 新副本与难度 · 事件系统 · 新敌人生态 · 功能总表。" />
+
+### 1.0 新增系统（官方已公布，详情待核实）
 
 <LinkCard title="订阅与付费服务" href={`${base}/systems/subscription/`} description="停止 Patreon、改为游戏内订阅；档位与权益待正式版公布。" />
 <LinkCard title="住房系统" href={`${base}/systems/housing/`} description="玩家可拥有住房；获取方式与建造材料待补充。" />

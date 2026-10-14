@@ -32,6 +32,16 @@ export default defineConfig({
 			sidebar: [
 				{ label: '开始', items: [{ label: '游戏介绍与入门', slug: 'getting-started/intro' }] },
 				{
+					label: '1.0 正式版',
+					items: [
+						{ label: '1.0 发布与开服', slug: 'release/v1-overview' },
+						{ label: '1.0 机制变更', slug: 'release/v1-changes' },
+						{ label: '1.0 职业平衡', slug: 'release/v1-class-balance' },
+						{ label: '1.0 内容清单', slug: 'release/v1-content' },
+						{ label: 'EA 版本演进', slug: 'release/ea-history' },
+					],
+				},
+				{
 					label: '职业与技能',
 					items: [
 						{ label: '职业总览', slug: 'classes' },
@@ -99,6 +109,7 @@ export default defineConfig({
 					label: '游戏系统',
 					items: [
 						{ label: '经济与货币', slug: 'systems/economy' },
+						{ label: '角色与账号', slug: 'systems/characters' },
 						{ label: '订阅与付费服务', slug: 'systems/subscription' },
 						{ label: '住房系统', slug: 'systems/housing' },
 						{ label: '船只与航海', slug: 'systems/sailing' },
