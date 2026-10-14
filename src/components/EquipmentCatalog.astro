@@ -109,7 +109,8 @@ const base = import.meta.env.BASE_URL;
         '<div class="cc-dmeta">' + esc([it.group, it.catZh, it.tier ? (it.tier + (it.tierZh ? ' ' + it.tierZh : '')) : '', it.level != null ? '物品等级 Lv' + it.level : ''].filter(Boolean).join(' · ')) + '</div>' +
         '<div class="cc-sec"><b>职业限制</b>：' + (it.equipClass ? esc(it.equipClass) : '—') + (it.twoHanded ? ' · 双手' : '') + '</div>' +
         '<div class="cc-sec"><b>基础属性</b><ul class="cc-stats">' + stats + '</ul></div>' +
-        '<div class="cc-sec"><b>如何获得</b>：由 <b>' + esc(it.profZh) + '</b> 制作；材料：' + mats + '</div>' +
+        '<div class="cc-sec"><b>来源 · 制作</b>：由 <b>' + esc(it.profZh) + '</b> 制作；材料：' + mats + '</div>' +
+        (it.vendor ? '<div class="cc-sec"><b>来源 · 商店</b>：' + esc(it.vendor) + '</div>' : '') +
         '<div class="cc-sec"><a href="' + base + 'professions/crafting-catalog/?prof=' + esc(it.prof) + '">在制作配方图鉴中查看 →</a></div>';
       box.hidden = false; btn.setAttribute('aria-expanded', 'true');
     }

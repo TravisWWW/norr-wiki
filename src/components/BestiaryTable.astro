@@ -1,8 +1,8 @@
 ---
 import bestiary from '../data/bestiary.json';
 import mapdb from '../data/maps.json';
-const mapBiomes = new Set(Object.values(mapdb.maps).map((m) => m.biome).filter(Boolean));
 const monsters = bestiary.filter((m) => m && m.name);
+const mapBiomes = new Set(Object.values(mapdb.maps).map((m) => m.biome).filter(Boolean));
 const types = [...new Set(monsters.map((m) => m.type).filter(Boolean))].sort();
 const biomes = [...new Set(monsters.flatMap((m) => m.biomes || []).filter(Boolean))].sort();
 const levels = [
@@ -17,7 +17,7 @@ const rows = monsters.map((m) => {
     id: m.id, name: m.name, type: m.type || '', levelRange: m.levelRange || '',
     lo: lo == null ? '' : lo, hi: hi == null ? '' : hi,
     wide: (lo != null && hi != null && hi - lo >= 50) ? 1 : 0,
-    biomes: (m.biomes || []), scavenging: (m.scavenging || []).join('、'),
+    biomes: (m.biomes || []), scavenging: (m.scavenging || []),
   };
 });
 const wideCount = rows.filter((r) => r.wide).length;
@@ -36,17 +36,29 @@ const wideCount = rows.filter((r) => r.wide).length;
   </thead>
   <tbody>
     {rows.map((m) => (
-      <tr data-name={(m.name || '').toLowerCase()} data-type={m.type} data-biome={m.biomes.join('、')} data-lo={m.lo} data-hi={m.hi} data-wide={m.wide}>
-        <td>{m.name}{m.wide ? ' <span class="be-tag">特殊</span>' : ''}</td>
-        <td>{m.type || '—'}</td>
-        <td>{m.levelRange || '—'}</td>
-        <td>{m.biomes.length ? m.biomes.map((b) => (mapBiomes.has(b) ? <a href={`${base}world/maps/?biome=${encodeURIComponent(b)}`}>{b}</a> : <span class="be-plain" title="该区域暂无对应地图">{b}</span>)) : '—'}</td>
-        <td>{m.scavenging || '—'}</td>
-      </tr>
+      <>
+        <tr class="be-row" data-name={(m.name || '').toLowerCase()} data-type={m.type} data-biome={m.biomes.join('、')} data-lo={m.lo} data-hi={m.hi} data-wide={m.wide}>
+          <td><button type="button" class="be-name" aria-expanded="false">{m.name}</button>{m.wide ? <span class="be-tag">特殊</span> : null}</td>
+          <td>{m.type || '—'}</td>
+          <td>{m.levelRange || '—'}</td>
+          <td>{m.biomes.length ? m.biomes.map((b) => (mapBiomes.has(b) ? <a href={`${base}world/maps/?biome=${encodeURIComponent(b)}`}>{b}</a> : <span class="be-plain" title="该区域暂无对应地图">{b}</span>)) : '—'}</td>
+          <td>{m.scavenging.length ? m.scavenging.join('、') : '—'}</td>
+        </tr>
+        <tr class="be-detail" hidden>
+          <td colspan="5">
+            <div class="be-dgrid">
+              <div><b>类型</b>：{m.type || '—'}</div>
+              <div><b>等级范围</b>：{m.levelRange || '—'}{m.wide ? <span class="be-tag">范围很宽，可能是跨区 / 特殊敌人</span> : null}</div>
+              <div><b>分布区域</b>：{m.biomes.length ? m.biomes.map((b) => (mapBiomes.has(b) ? <a href={`${base}world/maps/?biome=${encodeURIComponent(b)}`}>{b}</a> : <span class="be-plain">{b}</span>)) : '—'}</div>
+              <div><b>拾荒掉落</b>：{m.scavenging.length ? m.scavenging.map((s) => <span class="be-chip">{s}</span>) : '—'}</div>
+            </div>
+          </td>
+        </tr>
+      </>
     ))}
   </tbody>
 </table>
-<p class="nr-note">共 {monsters.length} 种；其中 <b>{wideCount}</b> 种等级范围较宽（≥50，标记为「特殊」）。点「分布区域」里的地图名可跳到该地图。缺失字段显示为「—」。</p>
+<p class="nr-note">共 {monsters.length} 种；其中 <b>{wideCount}</b> 种等级范围较宽（≥50，标记为「特殊」）。点怪物名展开详情；点「分布区域」里的地图名可跳到该地图。缺失字段显示为「—」。</p>
 
 <script>
   const q = document.getElementById('be-q');
@@ -55,7 +67,7 @@ const wideCount = rows.filter((r) => r.wide).length;
   const lvl = document.getElementById('be-lvl');
   const wide = document.getElementById('be-wide');
   const tbody = document.querySelector('#be-table tbody');
-  const rows = [...tbody.querySelectorAll('tr')];
+  const rows = [...tbody.querySelectorAll('.be-row')];
   const count = document.getElementById('be-count');
   function overlap(lo, hi, range) { if (!range) return true; if (lo === '' || hi === '') return false; const [a, b] = range.split('-').map(Number); return +lo <= b && +hi >= a; }
   function apply() {
@@ -69,10 +81,21 @@ const wideCount = rows.filter((r) => r.wide).length;
         && (!wide.checked || r.dataset.wide === '1')
         && overlap(r.dataset.lo, r.dataset.hi, l);
       r.style.display = ok ? '' : 'none';
+      const d = r.nextElementSibling;
+      if (d && d.classList.contains('be-detail') && !ok) d.hidden = true;
       if (ok) n++;
     }
     count.textContent = n + ' 种';
   }
+  tbody.addEventListener('click', (e) => {
+    const btn = e.target.closest('.be-name');
+    if (!btn) return;
+    const row = btn.closest('.be-row');
+    const d = row.nextElementSibling;
+    if (!d || !d.classList.contains('be-detail')) return;
+    d.hidden = !d.hidden;
+    btn.setAttribute('aria-expanded', d.hidden ? 'false' : 'true');
+  });
   q.addEventListener('input', apply);
   type.addEventListener('change', apply);
   biome.addEventListener('change', apply);
@@ -92,4 +115,9 @@ const wideCount = rows.filter((r) => r.wide).length;
   .nr-note { color: var(--nr-dim); font-size: .8rem; margin-top: .5rem; }
   #be-table td a, #be-table td .be-plain { margin-right: .35rem; }
   .be-plain { color: var(--nr-dim); }
+  .be-name { background: none; border: 0; color: var(--nr-text); font: inherit; font-weight: 600; cursor: pointer; padding: 0; text-align: left; }
+  .be-name:hover { color: var(--nr-gold); }
+  .be-detail td { background: var(--nr-bg); }
+  .be-dgrid { display: grid; gap: .3rem; font-size: .86rem; }
+  .be-chip { border: 1px solid var(--nr-hair); background: var(--nr-panel-2); color: var(--nr-text-soft); border-radius: 4px; padding: .05rem .4rem; font-size: .78rem; margin: 0 .25rem .25rem 0; display: inline-block; }
 </style>
