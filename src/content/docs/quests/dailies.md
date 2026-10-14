@@ -57,25 +57,34 @@ sources:
 Finish a Battle Arena Fight（需 Lv15）、Upgrade an Item's Rarity（通常亏）、Sell on the Trading Post
 （需邮箱验证）、Feed Your Pet（需宠物）、Deposit to a Guild Upgrade（需公会）。
 
-## 4. 哪些日常最好做（收益/成本排序）
+## 4. 各日常的耗时与成本（客观字段）
 
-**每条都固定 10 点，点数是等价的 —— 排序看的是「额外奖励 vs 花的时间/钱」。**
+每条都固定 **10 点**，点数等价；下表给出**预估耗时 / 成本 / 前置条件**，按当天面板自行取舍。
 
-### S 级 —— 免费、几秒、不用跑图，每轮必做
-Claim Your Daily Gift、Accept a Board Quest、Repair Item(s)、Kill an Enemy、
-Gather a Resource / Collect Scrap、Craft、Sell Resource to Vendor、Mass Salvage、Buy on the Trading Post。
+| 任务 | 预估耗时 | 成本 | 前置 / 条件 |
+|---|---|---|---|
+| Claim Your Daily Gift | 几秒 | 免费 | 无 |
+| Accept a Board Quest | 几秒 | 免费 | 需在城里 |
+| Repair Item(s) | 几秒 | 少量金币 | 需在铁匠处 |
+| Kill an Enemy | 1 次战斗 | 免费 | 出城 |
+| Gather a Resource | 1 次采集 | 工具耐久 | 需采集点 |
+| Collect Scrap | 2 段流程 | 免费 | 野外杂物点 |
+| Craft a Material / Equipment | 1 次制作 | 材料 | 需制作台 |
+| Sell Resource to Vendor | 几秒 | 免费 | 需商人 |
+| Mass Salvage Item(s) | 几秒 | 需垃圾装备 | 铁匠处 |
+| Buy on the Trading Post | 几秒 | 需金币 | 需站在交易站 |
+| Use the Wishing Well | 几秒 | 3 币 | 许愿井 |
+| Refine an Item's Quality | 1 次精炼 | 金币（Q31+ 可能碎裂） | 需去 Elundi 的物品专家 |
+| Enter a Dungeon | 1 次进本 | 1 把钥匙 | 需对应钥匙 |
+| Upgrade an Item's Rarity | 1 次升稀有 | 金币 + 材料（通常亏） | Elundi |
+| Sell on the Trading Post | 几秒 | 手续费 | 需邮箱验证 |
+| Feed Your Pet | 几秒 | 1 块饲料 | 需宠物 |
+| Deposit to a Guild Upgrade | 几秒 | 材料 / 金币 | 需公会 |
+| Buy Item(s) from the Celestial Market | 几秒 | 真钱 | 氪金 |
+| Finish a Battle Arena Fight | 1 场 PvP | 战令 | 需 Lv15 |
 
-> S 级共约 **11 条 = 110 点**。只要当天面板有 10 条 S 级，**随便做 10 条就 100 点**。
-
-### A 级 —— 小成本、收益好
-Use the Wishing Well（3 币，可能出高阶装备）、Enter a Dungeon（1 把钥匙）。
-
-### B 级 —— 要跑 Elundi，只在顺路/已到时做
-Refine an Item's Quality；Upgrade an Item's Rarity（通常亏）。
-
-### 结论
-**最优解 = 冲满 120 点**：把当天面板里所有 **S 级**做完（≈110 点），再补 **A 级**任意 1~2 条即满。
-在 El Caspar 一圈约 10 分钟就能做完。
+> **可选效率参考**：先做当天面板里「免费 / 几秒」的条目（通常已接近 100 点），再补 1~2 条即满 120 点；
+> 在 El Caspar 一圈约 10 分钟可做满。
 
 ## 5. 精炼（Refine）细节
 

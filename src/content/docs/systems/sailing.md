@@ -3,7 +3,7 @@ title: 船只与航海
 description: 正式版造船与航海说明（官方已公布，细节待补充）。
 gameVersion: "1.0"
 verifiedDate: 2026-10-13
-versionStatus: 1.0-announced
+versionStatus: mixed
 sources:
   - type: official
     reference: 官方商店页（Steam）

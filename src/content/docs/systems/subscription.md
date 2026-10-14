@@ -3,7 +3,7 @@ title: 订阅与付费服务
 description: 正式版订阅体系变化与现有付费商店说明。
 gameVersion: "1.0"
 verifiedDate: 2026-10-13
-versionStatus: 1.0-announced
+versionStatus: mixed
 sources:
   - type: official
     reference: 开发者公告（2026-09-13）

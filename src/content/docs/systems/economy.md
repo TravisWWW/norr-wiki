@@ -34,6 +34,9 @@ sources:
 
 **币值换算**：**1 Gold = 100 Silver = 10000 Bronze**。
 
+> **命名说明**：游戏内货币统一为 **Coins**（Bronze / Silver / Gold 三级），文中「金币」泛指 Coins，
+> **不是**独立货币；真钱货币是 **Norroth Coins**（氪金），两者勿混淆。
+
 ## 打怪与卖店的收入
 
 - 单只普通怪掉金币 + 1-2 个材料（Slate、Mucky X、药水、Rarity Token 等）。

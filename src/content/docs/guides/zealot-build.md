@@ -36,6 +36,19 @@ Zealot（狂热者）是**近战 + 法术混合**职业，**光明 / 黑暗双�
 - 长 CD 大招（`Overwhelming Light` CD9、`Phalanx` CD6）手动用，挂机收益低。
 - 技能点可洗（Reset Skills）：**第一次免费**，之后按面板当前报价收费，技能实验成本较低。
 
+## 装备与词条
+
+| 阶段 | 武器 | 防具 | 词条优先 |
+|---|---|---|---|
+| 前期 Lv1–19 | 剑 / 锤（单手）+ 盾 | 金属重甲或皮甲 | Defense / 抗性 → Max Life |
+| 中期 Lv20–39 | Bronze / Steel 剑锤 + 盾 | 对应档重甲 | 命中 / 暴击 / 破甲 |
+| 后期 Lv40+ | Mithril 剑锤 + 盾 | Mithril 重甲 | 先保减伤，再堆伤害 |
+
+- Zealot 可用 **剑 / 锤 + 盾**；盾系技能（`Smite` / `Shield Bash` / `Phalanx`）**必须装备盾**。
+- 防具来源：**Armorsmithing 铸甲**（金属重甲，含盾），或市场 / 掉落。
+- 词条取舍：**先保证 Defense / 抗性够用**，再堆 Power 相关词条；命中不足优先补 Hit Rating。
+- 可制作装备见[制作配方图鉴](/norr-wiki/professions/crafting-catalog/?prof=armorsmithing)。
+
 ## 技能栏与自动战斗
 
 - **自动战斗只读技能栏第 2–5 格**；第 1 格是写死的普通攻击，改不了。

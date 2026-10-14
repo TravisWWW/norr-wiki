@@ -41,7 +41,7 @@ sources:
 | 10 | The Ratman Speaks | Sewers 42/17 | 25 币 |
 | 11 | Bearded Man: Ratman | El Caspar | （后续） |
 
-**进入 Sewers 的条件就是主线第 5 环 `Meeting The Ratman`。**
+**进入 Sewers 的条件就是主线第 5 环 `Meeting The Ratman`。** 每环的**前置 = 上一环**，完成后自动接到下一环。
 
 ## 3. Sewers（下水道）
 
@@ -51,8 +51,8 @@ sources:
 
 ## 4. 任务系统的其它口径
 
-- **接任务**：任何地点都能接。
-- **交任务**：用「finish」。
+- **接任务**：任何地点都能接（不必站在 NPC 前）。
+- **交任务**：在任务日志里点 **Finish / 完成**。
 - **放弃**：cancel。
 - **奖励进掉落窗**，必须领取。
 - 任务日志分 **Main / Side / Daily / Order / Bounty** 五类；**同时可持有约 7 个任务**。

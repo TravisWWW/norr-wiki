@@ -17,6 +17,20 @@ sources:
 - 主要玩法：副本与 Boss、**深渊塔**、世界 Boss（Overlords）、Void Rifts、竞技场、Event Gate、Expeditions。
 - 各副本入口坐标与推荐等级见下表。
 
+## 各玩法速览（按解锁 / 入场）
+
+| 玩法 | 解锁 / 入场 | 消耗 | 说明 |
+|---|---|---|---|
+| Dungeons 副本 | 走到副本门 + 对应钥匙 | 1 把钥匙 | 见下方钥匙与副本表 |
+| Abyssal Tower 深渊塔 | Activities 面板（Normal 免钥匙） | 无 / 钥匙（上层） | 逐层挑战 |
+| Overlords 世界 Boss | 定时刷新（01:00 / 10:00 / 19:00） | 无 | 全服事件 |
+| Void Rifts 虚空裂隙 | 地图上的裂隙 | 无 | 波次战斗 |
+| Battle Arena 竞技场 | 需 **Lv15** | Battle Token | PvP，失败扣战斗经验 |
+| Event Gate 活动门 | 上交 Fragment 开启 | Fragment | 限时事件 |
+| Expeditions 探险 | 建造船只后出海 | 地图物品 | 见[船只与航海](/norr-wiki/systems/sailing/) |
+
+> 本页作为**高阶玩法总览**；副本、世界 Boss、竞技场与事件各自规则见对应小节。
+
 ## 1. 钥匙（Keys）【官方】
 
 > 钥匙是消耗品，用来开 **Strongboxes（箱子）** 和 **Dungeon Doors（副本门）**。
