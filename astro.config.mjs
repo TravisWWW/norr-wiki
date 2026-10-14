@@ -115,7 +115,7 @@ export default defineConfig({
 					label: '参考',
 					items: [
 						{ label: '游戏帮助文档', slug: 'reference/help-index' },
-						{ label: '内容规范', slug: 'reference/content-spec' },
+						{ label: '参与编辑', slug: 'reference/content-spec' },
 					],
 				},
 				{
