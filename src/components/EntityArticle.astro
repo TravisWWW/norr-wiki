@@ -8,26 +8,42 @@ const translated: Record<string, string> = { Low: '低', Medium: '中', High: '�
 const t = (value: string) => translated[value] ? `${translated[value]}（${value}）` : value || '未收录';
 const professionalQuests = e.kind === 'profession' ? (await import('../data/live-research.json')).default.quests.filter((q) => q.requirement.startsWith(e.id + ' ')) : [];
 const recipeTier = (level: number) => level <= 9 ? 'Copper' : level <= 19 ? 'Iron' : level <= 29 ? 'Bronze' : level <= 39 ? 'Steel' : 'Mithril';
+const recipeGroups = new Map();
+const useGroups = new Map();
+if (e.kind === 'item') {
+  for (const r of e.recipes) {
+    const key = JSON.stringify([r.cat, r.tier, r.level, r.equipClass, r.twoHanded, r.stats, r.variants]);
+    if (!recipeGroups.has(key)) recipeGroups.set(key, []);
+    recipeGroups.get(key).push(r);
+  }
+  for (const r of e.usedBy) {
+    const quantities = [...new Set(r.variants.flatMap((v) => v.mats.filter((m) => m.n === e.name).map((m) => m.q ?? '?')))];
+    const key = JSON.stringify([r.name, quantities]);
+    if (!useGroups.has(key)) useGroups.set(key, { name: r.name, quantities, professions: new Map() });
+    useGroups.get(key).professions.set(r.prof, r.profZh);
+  }
+}
 ---
 <p class="nr-entry-trail"><a href={`${base}reference/database/`}>资料数据库</a> / {category}</p>
 
 {e.kind === 'item' && <>
   <p>{e.name} {e.isMaterial ? '作为材料被制作配方使用。' : '为已收录的制作成品。'}以下将制作来源与使用它的配方放在一起；未收录的商人、掉落与任务来源不表示不存在。</p>
   <h2 id="obtain">获取与制作</h2>
-  {e.recipes.length === 0 ? <p>本数据库尚未收录该材料自身的制作配方。采集、商人或掉落的具体来源仍需核验；可先查<a href={`${base}professions/gathering-locations/`}>官方采集地点</a>与<a href={`${base}equipment/vendors/`}>商人资料</a>。</p> : e.recipes.map((r) => {
-    const current = recipeLive.get(r.id);
+  {e.recipes.length === 0 ? <p>本数据库尚未收录该材料自身的制作配方。采集、商人或掉落的具体来源仍需核验；可先查<a href={`${base}professions/gathering-locations/`}>官方采集地点</a>与<a href={`${base}equipment/vendors/`}>商人资料</a>。</p> : [...recipeGroups.values()].map((group) => {
+    const r = group[0];
+    const verifiedSources = group.filter((entry) => recipeLive.has(entry.id)).map((entry) => `${entry.profZh}：帮助 ${recipeLive.get(entry.id).helpId}`);
     return <section class="nr-recipe-block">
-      <h3>{r.profZh} · {r.catZh}{r.level != null ? ` · 物品等级 ${r.level}` : ''}</h3>
-      <p><a href={url('profession', r.prof)}>专业与制作条件</a> · Tier：{r.tier || '未收录'}{r.equipClass ? ` · 限制：${r.equipClass}` : ''}{r.twoHanded ? ' · 双手' : ''}</p>
+      <h3>{r.catZh}{r.level != null ? ` · 物品等级 ${r.level}` : ''}</h3>
+      <p>可制作专业：{group.map((entry, i) => <>{i > 0 && ' / '}<a href={url('profession', entry.prof)}>{entry.profZh}</a></>)} · Tier：{r.tier || '未收录'}{r.equipClass ? ` · 限制：${r.equipClass}` : ''}{r.twoHanded ? ' · 双手' : ''}</p>
       {equipmentIds.has(r.id) && <p>装备类型：{r.catZh}。属性为已收录的固定附加属性，不代表随机词条、鉴定后的最终面板或强化结果。</p>}
       {r.stats?.length > 0 && <ul>{r.stats.map((s) => <li>+{s}</li>)}</ul>}
       <h4>材料配方{r.variants.length > 1 ? `（${r.variants.length} 种替代方案）` : ''}</h4>
       {r.variants.map((v, i) => <p>{r.variants.length > 1 && <strong>方案 {i + 1}：</strong>}{v.mats.map((m, j) => <>{j > 0 && ' + '}{m.q ?? '?'} × {entityByName.has(m.n) ? <a href={url('item', m.n)}>{m.n}</a> : m.n}</>)}</p>)}
-      <p class="nr-source-note">{current ? `配方名称、物品等级、材料与数量于 2026-10-14 从官方帮助 ${current.helpId} 核对。` : '此配方沿用已有 EA 帮助资料，本次未由解析器完整对应。'}物品等级与专业解锁等级不同，实际可制作条件以游戏内为准。<a href={`${base}professions/crafting-catalog/?recipe=${encodeURIComponent(r.id)}`}>在配方图鉴中查看</a></p>
+      <p class="nr-source-note">{verifiedSources.length ? `配方名称、物品等级、材料与数量于 2026-10-14 对应核对（${verifiedSources.join('；')}）。` : '此配方沿用已有 EA 帮助资料，本次未由解析器完整对应。'}{verifiedSources.length < group.length && verifiedSources.length > 0 && '其余专业来源沿用历史记录。'}物品等级与专业解锁等级不同，实际可制作条件以游戏内为准。<a href={`${base}professions/crafting-catalog/?recipe=${encodeURIComponent(r.id)}`}>在配方图鉴中查看</a></p>
     </section>;
   })}
   <h2 id="uses">用于哪些成品？</h2>
-  {e.usedBy.length ? <div class="nr-table-scroll" role="region" tabindex="0" aria-label="材料用途"><table><thead><tr><th>成品</th><th>专业</th><th>材料数量</th></tr></thead><tbody>{e.usedBy.map((r) => <tr><td><a href={url('item', r.name)}>{r.name}</a></td><td><a href={url('profession', r.prof)}>{r.profZh}</a></td><td>{[...new Set(r.variants.flatMap((v) => v.mats.filter((m) => m.n === e.name).map((m) => m.q ?? '?')))].join(' / ')}（按替代配方）</td></tr>)}</tbody></table></div> : <p>尚未收录以该物品为材料的后续配方。自用效果请结合对应专业、物品与装备规则阅读。</p>}
+  {e.usedBy.length ? <div class="nr-table-scroll" role="region" tabindex="0" aria-label="材料用途"><table><thead><tr><th>成品</th><th>可制作专业</th><th>材料数量</th></tr></thead><tbody>{[...useGroups.values()].map((r) => <tr><td><a href={url('item', r.name)}>{r.name}</a></td><td>{[...r.professions].map(([prof, zh], i) => <>{i > 0 && ' / '}<a href={url('profession', prof)}>{zh}</a></>)}</td><td>{r.quantities.join(' / ')}（按替代配方）</td></tr>)}</tbody></table></div> : <p>尚未收录以该物品为材料的后续配方。自用效果请结合对应专业、物品与装备规则阅读。</p>}
   {e.quests.length > 0 && <><h2 id="quest-uses">相关专业任务</h2><ul>{e.quests.map((q) => <li><a href={url('quest', q.id)}>{q.name}</a> · {q.items.filter((i) => i.name === e.name).map((i) => i.quantity).join(' / ')} 件 · {q.requirement}</li>)}</ul><p>仅关联本次可查看的六项任务，不是全部任务用途。</p></>}
   <h2 id="limits">其他来源与使用限制</h2><p>装备掉落概率、实时市场报价、具体商人库存、关联任务与成就尚未完整关联，不据此推荐收益排名。强化规则见<a href={`${base}equipment/item-specialist/`}>物品专家</a>；一般物品规则见<a href={`${base}equipment/items/`}>物品与容器</a>。</p>
 </>}

@@ -1,6 +1,6 @@
 ---
 title: 技能系统
-description: 技能点机制、技能解锁与阵营、Zealot 与 Ranger 技能全表。
+description: 技能点、解锁、阵营与技能栏规则；具体技能树集中在职业页。
 gameVersion: "EA"
 verifiedDate: 2026-10-13
 versionStatus: ea-verified
@@ -15,7 +15,7 @@ sources:
 
 - 角色面板顶部显示**未分配技能点**。
 - **升级时获得 5 点属性点 + 2 点技能点**。
-- 技能等级上限 **20**（职业页数值均为 Lv.20 口径）；**单个技能等级 ≤ 角色等级 − 1**。
+- 技能等级上限 **20**（具体数值按职业页标注的等级口径阅读）；**单个技能等级 ≤ 角色等级 − 1**。
 - 解锁门槛是「角色等级 + 武器/盾前置」，与技能点无关。例：`smite` / `shield_bash` / `phalanx` 需要盾，
   `hammer_mastery` 需要锤类武器。
 - 技能点可洗（Reset Skills）：**第一次免费**，之后按角色面板上的**当前报价**收费（价格动态）。
@@ -28,108 +28,33 @@ sources:
   Rogue 的 Radiant/Shadow 系）**同一角色只能选一边**，对立阵营的技能锁定。换阵营 = 重练。
 - 技能数值通常以 **Lv.20** 口径公布；面板 tooltip 会给出当前等级效果与「Added with next Level」的每级增量。
 
-## Zealot 完整技能树【官方】
+<span id="zealot-完整技能树官方"></span>
+<span id="武器精通weapon-mastery"></span>
+<span id="光明系light-mastery需-light-阵营"></span>
+<span id="黑暗系dark-mastery需-dark-阵营"></span>
+<span id="杂项misc"></span>
+<span id="ranger-游侠技能全表官方"></span>
+<span id="弓精通组bow-mastery10-个"></span>
+<span id="匕首精通组dagger-mastery9-个"></span>
+<span id="杂项组misc8-个"></span>
+<span id="其它职业的技能树"></span>
 
-数值均为 **Lv.20** 口径。`Requires:` = 武器/盾前置；`Alignment:` = 阵营限定。
+## 职业技能树
 
-### 武器精通（Weapon Mastery）
+各职业技能、武器前置与具体效果集中在职业页维护：
 
-| 技能 | 前置 | 类型 | Lv.20 数值 |
-|---|---|---|---|
-| **Blade Mastery** | Shortsword / Scimitar / Warblade | 被动 | +43% Weapon Damage、+24% Hit Rating |
-| **Hammer Mastery** | Great Club / Heavy Flail / Warhammer | 被动 | +43% Weapon Damage、+24% Critical Strike |
+- [Archmage 法师](/norr-wiki/classes/archmage/)
+- [Berserker 狂战士](/norr-wiki/classes/berserker/)
+- [Druid 德鲁伊](/norr-wiki/classes/druid/)
+- [Ranger 游侠](/norr-wiki/classes/ranger/)
+- [Rogue 盗贼](/norr-wiki/classes/rogue/)
+- [Zealot 狂热者](/norr-wiki/classes/zealot/)
 
-### 光明系（Light Mastery，需 Light 阵营）
+职业页展示 Lv.1 基础效果与每级成长；已有 Zealot、Ranger 的 Lv.20 历史参考表也归入对应职业页的折叠区。数值口径以该表的说明为准。
 
-| 技能 | 蓝/lvl | CD | 类型 | Lv.20 数值 |
-|---|---|---|---|---|
-| **Lighting Of Spirit** | — | — | 被动 | +5 Light Damage、+86% Light Damage |
-| **Bright Strike** | 5 | 2 回合 | Attack | +200 Weapon Damage、+10 Light、+220% Light |
-| **Overwhelming Light** | 20 | 9 回合（持续 5） | Buff | +20 Light Damage、+96% Light Damage |
-| **Light Aura** | 15 | 7 回合（持续 4） | Buff | +29 Block Chance、+10 Block Rating、+95% Block Rating |
-| **Holy Blast** | 10 | 6 回合 | Spell | +125% 致盲、+210 Light、+210% Light |
-| **Blinding Touch** | 20 | 9 回合 | Attack（3 段） | +30 Weapon、+190% Weapon、+30 Light、+228% Light、+58% 致盲 |
-| **Holy Body Armor** | 15 | 10 回合（持续 4） | Buff | +300 Base Defense、+95% Base Defense、+30 Base Resist、+57% Base Resist |
-| **Holy Light Bubble** | — | 10 回合（持续 7） | Buff | +100 Evasion、+38% Evasion、+10 Attack Speed、+38% Attack Speed |
+## 技能栏与自动战斗
 
-### 黑暗系（Dark Mastery，需 Dark 阵营）
-
-结构与光明系**完全对称**，只换元素与副效果：
-
-`Shadow Strike`（=Bright Strike，改 Dark）、`Overwhelming Dark`、`Dark Leech Aura`
-（+125 Life Steal / +57%、+4 Mana Steal / +28.5%）、`Unholy Shroud`（致 Fear）、
-`Fearing Touch`（3 段 + Fear）、`Unholy Barrier`（+300 Def / +95%、+210 Thorn / +19%、+50 Fortitude / +95%）、
-`Spirit Breaker`（Debuff：−100 Max Life / −19%、−15 Mana / −95%）、`Darkening Of Spirit`（被动 +5 Dark / +86%）。
-
-### 杂项（Misc）
-
-| 技能 | 蓝/lvl | CD | 前置 | Lv.20 数值 |
-|---|---|---|---|---|
-| **Shield Mastery** | — | — | Round/Kite/Tower Shield | 被动 +20 Block Rating、+38% Block Rating、+6.75 Block Chance |
-| **Balanced Strike** | 10 | 4 | — | Attack +10 Weapon/+190%、+10 Dark/+190%、+10 Light/+190% |
-| **Smite** | — | 3 | 盾 | Attack +100% 眩晕、+162% Weapon |
-| **Shield Bash** | — | 3 | 盾 | Attack +200% Weapon |
-| **Phalanx** | 10 | 6 | 盾 | Spell +1500 Shield、+133% Shield |
-| **Balanced Touch** | 20 | 9 | — | Attack（2 段）+30 Weapon/+190%、+30 Light/+228%、+30 Dark/+190% |
-| **Shield Throw** | 10 | 3 | 盾 | Ranged +10 Weapon/+95%、+100% 沉默、+38% 眩晕 |
-| **Invigoration** | — | — | — | 被动 +100 Maximum Life、+95% Maximum Life |
-| **Mana Influx** | — | — | — | 被动 +20 Mana、+95% Mana |
-| **Royal Blood** | — | — | — | 被动 +10 Magic Find/+38%、+10 Gold Find/+38% |
-| **True Vigor** | — | 7（持续 4） | — | Buff +100 Hit Rating、+38% Hit Rating |
-
-## Ranger 游侠技能全表【官方】
-
-数值为 **Lv.20** 口径（个别技能官方标 Lv.5）。两组武器精通 + 杂项共 27 个技能，技能等级上限 20。
-
-### 弓精通组（Bow Mastery，10 个）
-
-| 技能 | 类型 | 蓝/lvl | CD | 前置武器 | Lv.20 |
-|---|---|---|---|---|---|
-| Bow Mastery | 被动 | — | — | Slingshot/Short Bow/Recurve/Compound/Longbow | +43% Weapon Dmg、+24% Atk Speed |
-| Crossbow Mastery | 被动 | — | — | Pistol/Recurve/Repeating/Compound Crossbow/Arbalest | +43% Weapon Dmg、+24% Armor Pen |
-| Double Shot | Ranged(2段) | 2 | 3 | 弓/弩 | +60% Weapon Dmg |
-| Splintering Shot | Ranged | 5 | 2 | 弓/弩 | +10 Bleed、+125% Bleed、+72% 致流血 |
-| Poison Shot | Ranged | 5 | 2 | 弓/弩 | +10 Poison、+125% Poison、+72% 感染 |
-| Bodkin Arrow | Ranged | 5 | 5 | 弓/弩 | +134% Weapon Dmg、+72% 眩晕 |
-| Rapid Fire | Ranged(3段) | 10 | 4 | 弓/弩 | +40% Weapon Dmg、+115% Atk Speed |
-| Pin Down | Ranged | 10 | 4 | 弓/弩 | +144% Weapon Dmg、+115% Root、+115% 感染 |
-| Sharp Arrow | Ranged | 5 | 3 | 弓/弩 | +67% Weapon Dmg、+58% 致流血、+24% Crit Strike |
-| Arrow Barrage | Ranged(5段) | 25 | 12 | 弓/弩 | +5 Strikes、+10 Weapon Dmg、+152% Weapon Dmg |
-
-### 匕首精通组（Dagger Mastery，9 个）
-
-| 技能 | 类型 | 蓝/lvl | CD | 前置武器 | Lv.20 |
-|---|---|---|---|---|---|
-| Dagger Mastery | 被动 | — | — | Shiv/Dirk/Kris Dagger | +43% Weapon Dmg、+10% 致流血 |
-| Double Dagger Throw | Ranged(2段) | 2 | 3 | 匕首 | +20 Weapon Dmg、+152% Weapon Dmg、+20 Atk Speed、+95% Atk Speed |
-| Jagged Dagger Throw | Ranged | 5 | 3 | 匕首 | +20 Weapon Dmg、+152% Weapon Dmg、+10 Bleed、+57% Bleed、+67% 致流血 |
-| Poison Dagger Throw | Ranged | 5 | 3 | 匕首 | +20 Weapon Dmg、+152% Weapon Dmg、+10 Poison、+57% Poison、+67% 感染 |
-| Boomerang Dagger | Ranged | 5 | 5 | 匕首 | +134% Weapon Dmg、+72% 眩晕 |
-| Back Stab | Attack | — | 3 | 匕首 | +120% Weapon Dmg、+77% Crit Chance |
-| Knee Cutter | Attack | 10 | 4 | 匕首 | +163% Weapon Dmg、+115% Root、+115% 致流血 |
-| Throat Cutter | Attack | 5 | 3 | 匕首 | +105% Weapon Dmg、+20% 致流血、+72% 沉默、+57% Bleed |
-| Serpentine Strike | Attack(2段) | 25 | 12 | 匕首 | +153% Weapon Dmg、+20 Crit Chance、+95% Crit Chance、+315% Poison、+100% 感染 |
-
-### 杂项组（Misc，8 个）
-
-| 技能 | 类型 | 蓝/lvl | CD | 限制 | Lv.20 |
-|---|---|---|---|---|---|
-| Bandage | AoE | 25 | 7 | — | +2000 Healing |
-| Improved Sight | 被动 | — | — | — | +86% Hit Rating、+24% Crit Strike |
-| Improved Reflexes | 被动 | — | — | — | +67% Evasion |
-| Animal Hunter | 被动 | — | — | — | +40% 对动物伤害 |
-| Bounty Hunter | 被动 | — | — | — | +40% 对人形伤害 |
-| Hawk Attack | Spell(2段) | 20 | 15 | **Light** 阵营 | +20 Light、+190% Light、+100% 致盲、+43% 致流血 |
-| Crow Attack | Spell(2段) | 20 | 15 | **Dark** 阵营 | +20 Dark、+190% Dark、+100% 致恐惧、+43% 致流血 |
-| Natural Resistance | 被动 | — | — | 官方标 **Lv.5** | +20 Base Resist、+4% Base Resist（每级 +1%） |
-
-> Ranger 定位：**Dexterity（命中/暴击）+ Agility（闪避/攻速）**，武器为弓/弩/飞刀；
-> 专属生活技能 Cartography / Cooking / Hunting / Leatherworking / **Carpentry**。
-
-## 其它职业的技能树
-
-6 个职业的技能数（EA 版）：**Archmage 27、Berserker 30、Druid 27、Ranger 27、Rogue 29、Zealot 29**。
-其余职业的完整技能表可在游戏内**职业页**（帮助文档的职业条目）查看，含名称 / 类型 / 蓝耗 / CD / 前置武器 / 打击数 / 阵营 + Lv.20 数值。
+EA 第 1 格固定为普通攻击，自动战斗读取第 2–5 格。技能解锁后还需加入实际技能栏；武器、阵营与冷却条件仍需满足。配置取舍见职业攻略，点数重置见[洗点](/norr-wiki/combat/respec/)。
 
 ## 相关
 

@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { sections, flattenItems } from '../src/navigation.mjs';
+import { sections, sidebar, flattenItems } from '../src/navigation.mjs';
 import { entities, entityPath } from '../src/lib/database.mjs';
 
 const root = path.resolve('dist');
@@ -8,6 +8,11 @@ const base = '/norr-wiki/';
 const origin = 'https://traviswww.github.io';
 const files = fs.readdirSync(root, { recursive: true }).filter((file) => file.endsWith('.html'));
 const errors = new Set();
+const navigationOwners = new Set();
+for (const item of flattenItems(sidebar)) {
+  if (navigationOwners.has(item.slug)) errors.add(`Duplicate primary navigation entry: ${item.slug}`);
+  navigationOwners.add(item.slug);
+}
 let checked = 0;
 const existsCache = new Map();
 const anchorCache = new Map();
@@ -32,11 +37,7 @@ for (const file of files) {
     }
   }
 }
-for (const section of sections) {
-  for (const slug of [section.landing, ...flattenItems(section.items).map((item) => item.slug)]) {
-    if (!fs.existsSync(path.join(root, slug, 'index.html'))) errors.add(`Navigation: missing ${slug}`);
-  }
-}
+for (const slug of navigationOwners) if (!exists(path.join(root, slug, 'index.html'))) errors.add(`Navigation: missing ${slug}`);
 // 检查每个内容文件都有构建路由；不依赖完整 Git 历史，适用于 Actions 浅克隆。
 const sourcePages = fs.readdirSync('src/content/docs', { recursive: true }).filter((file) => /\.mdx?$/.test(file));
 for (const file of sourcePages) {

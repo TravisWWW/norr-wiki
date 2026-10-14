@@ -1,4 +1,4 @@
-// 首页、栏目总览与侧栏共用的导航；既有文章地址保持稳定。
+// 每篇编辑页面仅有一个主要导航归属；正文允许相关链接。
 export const sections = [
   {
     "label": "入门与版本",
@@ -107,6 +107,10 @@ export const sections = [
       {
         "label": "技能系统",
         "slug": "combat/skills"
+      },
+      {
+        "label": "技能天赋模拟器（EA）",
+        "slug": "tools/talent"
       },
       {
         "label": "角色属性",
@@ -290,7 +294,7 @@ export const sections = [
             "slug": "quests/world-events"
           },
           {
-            "label": "活动与远征",
+            "label": "活动入口",
             "slug": "quests/events"
           }
         ]
@@ -368,94 +372,64 @@ export const sections = [
     "collapsed": true
   },
   {
-    "label": "攻略、工具与参考",
+    "label": "玩家攻略",
     "items": [
       {
         "label": "攻略总览",
         "slug": "guides"
       },
       {
-        "label": "玩家攻略",
-        "items": [
-          {
-            "label": "新手练级与探索路线",
-            "slug": "guides/leveling"
-          },
-          {
-            "label": "日常安排与资源预算",
-            "slug": "guides/daily-routine"
-          },
-          {
-            "label": "装备养成与更换决策",
-            "slug": "guides/equipment-progression"
-          },
-          {
-            "label": "职业自给自足矩阵",
-            "slug": "guides/crafting-matrix"
-          },
-          {
-            "label": "公会职业分配方案",
-            "slug": "guides/guild-roles"
-          },
-          {
-            "label": "狂热者配装攻略",
-            "slug": "guides/zealot-build"
-          }
-        ]
+        "label": "新手练级与探索路线",
+        "slug": "guides/leveling"
       },
       {
-        "label": "查询与工具",
-        "collapsed": true,
-        "items": [
-          {
-            "label": "资料数据库",
-            "slug": "reference/database"
-          },
-          {
-            "label": "技能天赋模拟器（旧版）",
-            "slug": "tools/talent"
-          },
-          {
-            "label": "装备图鉴",
-            "slug": "equipment/catalog"
-          },
-          {
-            "label": "制作配方图鉴",
-            "slug": "professions/crafting-catalog"
-          }
-        ]
+        "label": "日常安排与资源预算",
+        "slug": "guides/daily-routine"
       },
       {
-        "label": "资料与编辑",
-        "collapsed": true,
-        "items": [
-          {
-            "label": "全站目录与内容覆盖",
-            "slug": "reference/coverage"
-          },
-          {
-            "label": "游戏帮助文档",
-            "slug": "reference/help-index"
-          },
-          {
-            "label": "资料来源与证据等级",
-            "slug": "reference/sources"
-          },
-          {
-            "label": "参与编辑",
-            "slug": "reference/content-spec"
-          },
-          {
-            "label": "本次资料采集与截图",
-            "slug": "reference/research-2026-10-14"
-          }
-        ]
+        "label": "装备养成与更换决策",
+        "slug": "guides/equipment-progression"
+      },
+      {
+        "label": "职业自给自足矩阵",
+        "slug": "guides/crafting-matrix"
+      },
+      {
+        "label": "公会职业分配方案",
+        "slug": "guides/guild-roles"
+      },
+      {
+        "label": "狂热者配装攻略",
+        "slug": "guides/zealot-build"
       }
     ],
     "id": "guides",
     "landing": "guides",
-    "description": "按游玩目标阅读攻略；另设工具与资料参考入口。",
+    "description": "练级、日常安排、装备养成与职业分工的行动建议。",
     "collapsed": true
+  }
+];
+
+export const referenceItems = [
+  {
+    "label": "全站目录与内容覆盖",
+    "slug": "reference/coverage"
+  },
+  {
+    "label": "游戏帮助文档",
+    "slug": "reference/help-index"
+  },
+  {
+    "label": "资料来源与证据等级",
+    "slug": "reference/sources"
+  },
+  {
+    "label": "参与编辑",
+    "slug": "reference/content-spec"
+  },
+  {
+    "label": "本次资料采集与截图",
+    "slug": "reference/research-2026-10-14"
   }
 ];
 
@@ -463,4 +437,4 @@ export function flattenItems(items) {
   return items.flatMap((item) => item.items ? flattenItems(item.items) : [item]);
 }
 
-export const sidebar = [{label: "资料数据库", slug: "reference/database"}, ...sections.map(({ label, collapsed, items }) => ({ label, collapsed, items }))];
+export const sidebar = [{label: "资料数据库", slug: "reference/database"}, ...sections.map(({ label, collapsed, items }) => ({ label, collapsed, items })), {label:"资料与维护", collapsed:true, items:referenceItems}];
