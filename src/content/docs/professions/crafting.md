@@ -21,6 +21,12 @@ sources:
 
 ## 各制作专业能做什么
 
+各专业现有独立条目，连接全部已收录成品与材料链；可在[资料数据库](/norr-wiki/reference/database/)中选择“制作专业”。
+
+![Armorsmithing 帮助中的铜材料制作链：铜矿到铜锭，再到铜线、铜扣和铜板](/norr-wiki/img/research/2026-10-14/armorsmithing.png)
+
+*2026-10-14 官方帮助截图。配方数量不替代专业等级门槛；制作仍需对应职业与设施。*
+
 > 每个专业可制作的**物品类型**与配方数量如下；点「在图鉴中查看」可跳转到[制作配方图鉴](/norr-wiki/professions/crafting-catalog/)，并按该专业自动筛选（图鉴支持关键词、类型、Tier、等级过滤与材料反查）。
 
 ### 裁缝 Tailoring

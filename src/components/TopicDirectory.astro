@@ -1,0 +1,24 @@
+---
+import { getCollection } from 'astro:content';
+import { sections, flattenItems } from '../navigation.mjs';
+interface Props { section: string }
+const section = sections.find((item) => item.id === Astro.props.section);
+if (!section) throw new Error(`Unknown wiki section: ${Astro.props.section}`);
+const docs = await getCollection('docs');
+const byId = new Map(docs.map((doc) => [doc.id, doc]));
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const items = [...new Map(flattenItems(section.items)
+  .filter((item) => item.slug !== section.landing)
+  .map((item) => [item.slug, item])).values()];
+for (const item of items) {
+  if (!byId.has(item.slug)) throw new Error(`Missing directory page: ${item.slug}`);
+}
+---
+<div class="nr-topic-list">
+  {items.map((item) => (
+    <a class="nr-topic-link" href={`${base}/${item.slug}/`}>
+      <strong>{item.label}</strong>
+      <span>{byId.get(item.slug)?.data.description}</span>
+    </a>
+  ))}
+</div>

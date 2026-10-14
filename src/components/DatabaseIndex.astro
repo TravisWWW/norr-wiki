@@ -1,0 +1,21 @@
+---
+import { entities, labels, counts, entityPath } from '../lib/database.mjs';
+const base = import.meta.env.BASE_URL.replace(/\/$/, '') + '/';
+---
+<p>现有 <strong>{entities.length}</strong> 个资料条目，从已收录数据生成独立页面；条目数量不代表全部字段已核验或已适用于 1.0。</p>
+<div class="nr-toolbar"><label for="db-q">名称 <input id="db-q" type="search" placeholder="如 Copper Ore、Ankheg、El Caspar" /></label><label for="db-kind">类型 <select id="db-kind"><option value="">全部类型</option>{Object.entries(labels).map(([kind, label]) => <option value={kind}>{label}（{counts[kind]}）</option>)}</select></label><span id="db-count" class="nr-count">{entities.length} 条</span></div>
+<div class="nr-table-scroll" role="region" tabindex="0" aria-label="资料条目索引"><table id="db-table"><thead><tr><th>条目</th><th>类型</th></tr></thead><tbody>{entities.map((e) => <tr data-name={e.name.toLowerCase()} data-kind={e.kind}><td><a href={`${base}${entityPath(e.kind, e.key)}`}>{e.name}</a></td><td>{labels[e.kind]}</td></tr>)}</tbody></table></div>
+<script>
+  const q = document.querySelector<HTMLInputElement>('#db-q')!;
+  const kind = document.querySelector<HTMLSelectElement>('#db-kind')!;
+  const rows = [...document.querySelectorAll<HTMLTableRowElement>('#db-table tbody tr')];
+  function apply() {
+    let count = 0;
+    for (const row of rows) {
+      row.hidden = !((!q.value || row.dataset.name?.includes(q.value.trim().toLowerCase())) && (!kind.value || row.dataset.kind === kind.value));
+      if (!row.hidden) count++;
+    }
+    document.querySelector('#db-count')!.textContent = `${count} 条`;
+  }
+  q.addEventListener('input', apply); kind.addEventListener('change', apply);
+</script>

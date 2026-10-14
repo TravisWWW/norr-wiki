@@ -1,0 +1,15 @@
+---
+import { live, baseMaps, entityPath } from '../lib/database.mjs';
+const base = import.meta.env.BASE_URL.replace(/\/$/, '') + '/';
+---
+<div class="nr-toolbar"><label for="gl-q">地图 <input id="gl-q" type="search" placeholder="搜索地图名" /></label><label for="gl-skill">技能 <select id="gl-skill"><option value="">全部技能</option>{[...new Set(live.gatheringLocations.map((g) => g.skill))].map((s) => <option>{s}</option>)}</select></label></div>
+<div class="nr-table-scroll" role="region" tabindex="0" aria-label="官方采集地点"><table id="gl-table"><thead><tr><th>技能</th><th>地图</th><th>Tier</th><th>地图等级</th><th>世界坐标</th></tr></thead><tbody>{live.gatheringLocations.map((g) => {
+  const m = baseMaps.find((m) => `${m.wx}/${m.wy}` === g.coordinates);
+  return <tr data-map={g.map.toLowerCase()} data-skill={g.skill}><td>{g.skill}</td><td>{m ? <a href={`${base}${entityPath('map', m.id)}`}>{g.map}</a> : g.map}</td><td>{g.tier}</td><td>{g.level}</td><td>{g.coordinates}</td></tr>;
+})}</tbody></table></div>
+<script>
+  const q = document.querySelector<HTMLInputElement>('#gl-q')!;
+  const skill = document.querySelector<HTMLSelectElement>('#gl-skill')!;
+  function apply() { for (const row of document.querySelectorAll<HTMLTableRowElement>('#gl-table tbody tr')) row.hidden = !((!q.value || row.dataset.map?.includes(q.value.trim().toLowerCase())) && (!skill.value || row.dataset.skill === skill.value)); }
+  q.addEventListener('input', apply); skill.addEventListener('change', apply);
+</script>

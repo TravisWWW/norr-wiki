@@ -13,8 +13,11 @@ const STATUS_LABELS: Record<string, { text: string; tone: string }> = {
 
 const status = data.versionStatus ? STATUS_LABELS[data.versionStatus as string] : undefined;
 const gameVersion = data.gameVersion as string | undefined;
-const verifiedDate = data.verifiedDate as string | undefined;
-const showMeta = Boolean(status || gameVersion || verifiedDate);
+const verifiedDate = data.verifiedDate instanceof Date
+  ? data.verifiedDate.toISOString().slice(0, 10)
+  : data.verifiedDate as string | undefined;
+const reviewStatus = data.reviewStatus as string | undefined;
+const showMeta = Boolean(status || gameVersion || verifiedDate || reviewStatus);
 ---
 
 <h1 id={PAGE_TITLE_ID}>{title}</h1>
@@ -23,6 +26,7 @@ const showMeta = Boolean(status || gameVersion || verifiedDate);
   <div class="nr-version">
     {status && <span class={`nr-version-badge nr-version-${status.tone}`}>{status.text}</span>}
     {gameVersion && <span class="nr-version-item">资料版本：{gameVersion}</span>}
+    {reviewStatus && <span class="nr-version-item">{reviewStatus}</span>}
     {verifiedDate && <span class="nr-version-item">核对日期：{String(verifiedDate)}</span>}
   </div>
 )}

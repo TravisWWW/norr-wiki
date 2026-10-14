@@ -1,71 +1,68 @@
 ---
 title: Norroth Wiki
-description: Norroth Online 非官方中文 Wiki：机制、职业、生活技能、地图、物品、任务与攻略。
+description: Norroth Online 非官方中文 Wiki：新手路线、机制百科、职业技能、装备与制作图鉴、任务及版本资料。
 template: splash
 hero:
-  tagline: Norroth Online 非官方中文 Wiki —— 收录游戏机制、职业与技能、生活技能、地图、物品、任务与玩家攻略。
+  tagline: 从第一次出城到长期养成，按目标找攻略，按主题查规则。
   image:
     html: '<img src="/norr-wiki/img/logo_small.png" alt="Norroth" class="hero-logo" />'
   actions:
-    - text: 新手指南
-      link: getting-started/intro/
+    - text: 从这里开始
+      link: getting-started/
       icon: right-arrow
       variant: primary
-    - text: 1.0 发布与开服
-      link: release/v1-overview/
-      icon: rocket
+    - text: 浏览攻略
+      link: guides/
+      icon: open-book
 ---
 
-import { LinkCard } from '@astrojs/starlight/components';
+import { LinkCard, CardGrid } from '@astrojs/starlight/components';
+import WikiDirectory from '../../components/WikiDirectory.astro';
 
 export const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
-export const cats = [
-  ['<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l2.6 6.3 6.8.5-5.2 4.4 1.6 6.6L12 16.9 6.2 19.8l1.6-6.6L2.6 8.8l6.8-.5z"/></svg>', '入门与版本', 'getting-started/intro/', '新手指南 · 1.0 发布 · 机制变更 · 版本历史'],
-  ['<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.3"/><path d="M4.8 20c1.3-3.7 4-5.6 7.2-5.6s5.9 1.9 7.2 5.6"/></svg>', '职业与角色', 'classes/', '6 大职业 · 技能树 · 角色与账号'],
-  ['<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4l7.5 7.5M20 4l-7.5 7.5M12 12l6.5 6.5M12 12l-6.5 6.5"/><path d="M4 4h3.4M4 4v3.4M20 4h-3.4M20 4v3.4"/></svg>', '战斗与成长', 'combat/mechanics/', '战斗 · 属性 · 经验 · 重生 · 洗点'],
-  ['<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v5c0 4.6-3 7.9-7 9-4-1.1-7-4.4-7-9V6z"/></svg>', '装备与物品', 'equipment/catalog/', '装备图鉴 · 鉴定 · 宝石镶嵌 · 精炼'],
-  ['<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 20.5l9-9"/><path d="M6 6.5c3.2-2.6 9.3-2.6 12.5 0"/><path d="M6 6.5l3 3M18.5 6.5l-3 3"/></svg>', '生活技能', 'professions/overview/', '采集 · 制作 · 大师制作 · 配方图鉴'],
-  ['<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4L4 6v14l5-2 6 2 5-2V4l-5 2-6-2z"/><path d="M9 4v14M15 6v14"/></svg>', '世界与探索', 'world/maps/', '地图 · 怪物 · NPC 设施 · 航海'],
-  ['<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4h10a2 2 0 012 2v12a2 2 0 002 2H8a2 2 0 01-2-2V6a2 2 0 010-2z"/><path d="M8 8h7M8 12h7M8 16h4"/></svg>', '任务与挑战', 'quests/dungeons/', '主线 · 日常 · 副本 · Boss · PvP'],
-  ['<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg>', '养成与社交', 'systems/pets/', '宠物 · 住房 · 公会 · 社交 · 成就'],
-  ['<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="7" rx="7" ry="3"/><path d="M5 7v5c0 1.7 3.1 3 7 3s7-1.3 7-3V7"/><path d="M5 12v5c0 1.7 3.1 3 7 3s7-1.3 7-3v-5"/></svg>', '经济与交易', 'systems/economy/', '货币 · 商人价格 · 代币商店 · 订阅'],
-  ['<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 17l5-5 4 4 7-8"/><path d="M16 8h4v4"/></svg>', '攻略、工具与参考', 'guides/crafting-matrix/', '攻略 · 天赋模拟器 · 帮助索引'],
-];
+<div class="nr-home-notice">
+  <strong>资料版本</strong> · 数值与图鉴主要来自 EA（Legacy）；1.0 内容按公告收录，适用性请看每页标记。
+  <a href={`${base}/reference/sources/`}>了解资料口径 →</a>
+</div>
 
-> **站点定位**：Norroth Online 非官方中文 Wiki —— 收录机制、职业、生活技能、地图、物品、任务与攻略。
-> 数值资料以 **EA 版**（`legacy.norroth.com`）为主，**1.0（Steam）**内容按官方公告持续核验；
-> 每页标题下方标注资料状态（**EA 版已验证 / 1.0 官方已公布 / 1.0 上线后待验证**），EA 数值不代表已在 1.0 生效。
-> 证据等级与来源说明见 [资料来源与证据等级](/norr-wiki/reference/sources/)。
+## 你想做什么？
 
-## 1.0 版本动态
+<CardGrid>
+  <LinkCard title="刚开始玩" href={`${base}/guides/leveling/`} description="选职业、出新手村、拾取经验，再选择下一张地图。" />
+  <LinkCard title="安排今天的日常" href={`${base}/guides/daily-routine/`} description="先看任务池，再按前置条件、耗时与成本选择。" />
+  <LinkCard title="改善装备与战斗" href={`${base}/guides/equipment-progression/`} description="鉴定、排查短板、比较更换和强化的价值。" />
+  <LinkCard title="制作与职业分工" href={`${base}/guides/crafting-matrix/`} description="查自己能做什么，以及需要哪些职业互补。" />
+</CardGrid>
+
+## 按主题浏览
+
+<WikiDirectory />
+
+## 图鉴与工具
+
+[资料数据库：物品、材料、怪物、地图、Boss、专业与任务](/norr-wiki/reference/database/) · [官方采集地点](/norr-wiki/professions/gathering-locations/)
+
+<CardGrid>
+  <LinkCard title="装备图鉴" href={`${base}/equipment/catalog/`} description="查已收录装备的类型、等级、属性与制作材料。" />
+  <LinkCard title="制作配方图鉴" href={`${base}/professions/crafting-catalog/`} description="按专业、类型、Tier 与等级筛选，反查材料用途。" />
+  <LinkCard title="地图与设施查询" href={`${base}/world/`} description="地图、怪物和 NPC 设施入口集中查找。" />
+  <LinkCard title="技能天赋模拟器（EA）" href={`${base}/tools/talent/`} description="预览六职业天赋分配；使用 EA 数据，1.0 待核验。" />
+</CardGrid>
+
+## 版本与资料维护
 
 <div class="nr-release-banner">
-  <div class="nr-rb-tag">待上线</div>
+  <div class="nr-rb-tag">1.0 公告</div>
   <div class="nr-rb-body">
-    <div class="nr-rb-title">正式版计划于 2026-10-16 上线（北京时间 19:00）</div>
-    <div class="nr-rb-desc">全新引擎独立开新服，旧服保留为 Legacy；查看版本差异、服务器与账号迁移、Legacy 奖励码与已公布的新机制。</div>
+    <div class="nr-rb-title">正式版发布、服务器与 Legacy 奖励</div>
+    <div class="nr-rb-desc">计划时间与公告口径集中在发布页；玩法差异通过索引进入对应机制页。</div>
   </div>
-  <a class="nr-rb-link" href={`${base}/release/v1-overview/`}>查看 →</a>
+  <a class="nr-rb-link" href={`${base}/release/v1-overview/`}>查看公告 →</a>
 </div>
 
-## 分类浏览
-
-<div class="cat-grid">
-  {cats.map(([e, t, u, d]) => (
-    <a class="cat" href={`${base}/${u}`}>
-      <div class="t"><span class="cat-ico" set:html={e} />{t}</div>
-      <div class="d">{d}</div>
-    </a>
-  ))}
-</div>
-
-## 常用工具
-
-<LinkCard title="技能天赋模拟器（旧版）" href={`${base}/tools/talent/`} description="基于 EA 版天赋数据：6 职业天赋树，左键 +1 / 右键 -1 / Shift ±5，光明·黑暗阵营互斥。" />
-<LinkCard title="制作配方图鉴" href={`${base}/professions/crafting-catalog/`} description="按专业 / 类型 / Tier / 等级筛选 13 个制作专业的全部配方，支持材料反查。" />
-
+[全站目录与内容覆盖](/norr-wiki/reference/coverage/) · [常见问题](/norr-wiki/getting-started/faq/) · [参与编辑](/norr-wiki/reference/content-spec/)
 
 ---
 
-本站内容整理自游戏内帮助文档、EA 版实测与社区资料，仅供学习交流；游戏名称与内容版权归其开发者所有。
+Norroth Online 非官方中文资料站。游戏名称与内容版权归其开发者所有。

@@ -17,6 +17,10 @@ sources:
 
 ## 1. 面板与刷新
 
+![EA 日常面板，展示重置倒计时、任务目标与每条奖励](/norr-wiki/img/research/2026-10-14/dailies.png)
+
+*2026-10-14 实际界面截图；任务池、进度和倒计时是当时的示例，不能视为固定每日清单。*
+
 - 面板顶部有**服务器重置倒计时**；重置时间就是服务器时间 23:59:59，**应以面板显示的服务器时间为准，而非本地时间**。
 - 面板分两部分：
   1. **奖励档位**（Daily Tasks Points 30 / 60 / 90 / 120）。
@@ -33,8 +37,8 @@ sources:
 | **90 点** | 20x Laurels · 250x Coins · 250x Spirit Essence · 1x 随机 Token/Dice/Chest/Key |
 | **120 点** | 40x Laurels · 500x Coins · 1000x Spirit Essence · 2x 随机 · 2x Battle Arena Token · 2x Ducats |
 
-→ **一天做满 120 点 ≈ 65 Laurels + 850 币 + 1350 精魂 + 2 战令 + 2 杜卡特**，
-是**较稳定的日常收益**（也是 Spirit Essence 的主要来源）。
+→ **四档奖励合计 = 70 Laurels + 950 币 + 1450 精魂 + 2 战令 + 2 杜卡特**，另有表中的随机奖励。
+这是档位奖励合计；当天总收入还需加上单条任务奖励，净收益需扣除任务支出。Spirit Essence 是常用的日常资源。
 
 ## 3. 任务对照 + 单条奖励
 

@@ -1,0 +1,29 @@
+---
+import { getCollection } from 'astro:content';
+import { sections, flattenItems } from '../navigation.mjs';
+import equipment from '../data/equipment.json';
+import crafting from '../data/crafting.json';
+import { entities } from '../lib/database.mjs';
+const docs = await getCollection('docs');
+const ids = new Set(docs.map((doc) => doc.id));
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+<div class="nr-stats" aria-label="已收录资料规模">
+  <span><strong>{docs.length}</strong> 个页面（含目录与参考）</span>
+  <span><strong>{entities.length}</strong> 个独立资料条目</span>
+  <span><strong>{equipment.items.length}</strong> 条装备记录</span>
+  <span><strong>{crafting.recipes.length}</strong> 条制作配方</span>
+</div>
+<div class="cat-grid">
+  {sections.map((section, i) => {
+    const count = new Set([section.landing, ...flattenItems(section.items).map((item) => item.slug)]
+      .filter((id) => ids.has(id))).size;
+    return <a class="cat" href={`${base}/${section.landing}/`}>
+      <div class="nr-category-meta"><span>{String(i + 1).padStart(2, '0')}</span><span>{count} 页入口</span></div>
+      <div class="t">{section.label}</div>
+      <div class="d">{section.description}</div>
+      <span class="nr-category-action">浏览栏目 →</span>
+    </a>;
+  })}
+</div>
+<p class="nr-directory-note">主题目录按页面的主要归属组织；资料数据库为全站条目检索入口，来源与编辑说明归入「资料与维护」。记录规模不表示游戏全量覆盖或已在 1.0 验证。</p>

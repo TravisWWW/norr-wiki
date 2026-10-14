@@ -1,0 +1,26 @@
+---
+title: 专业任务详情
+description: 当日当前角色可查看的六项专业任务，记录条件、所需物品、交付地点和显示奖励。
+gameVersion: EA
+verifiedDate: 2026-10-14
+versionStatus: ea-verified
+reviewStatus: 详情界面已核对 · 未完成交付
+sources:
+  - type: observed
+    reference: 游戏内 Quest Details，2026-10-14
+---
+
+import { live, entityPath } from '../../../lib/database.mjs';
+export const base = import.meta.env.BASE_URL.replace(/\/$/, '') + '/';
+
+下列是 2026-10-14 当前角色在任务日志中能够查看的专业任务。它们是**角色可见子集**，不是完整的六职业专业任务链；前置、首次接取与奖励实际到账均未重新验证。
+
+<table><thead><tr><th>任务</th><th>界面门槛</th><th>交付地点</th></tr></thead><tbody>{live.quests.map((q) => <tr><td><a href={`${base}${entityPath('quest', q.id)}`}>{q.name}</a></td><td>{q.requirement}</td><td>{q.location}</td></tr>)}</tbody></table>
+
+## 详情界面的读法
+
+![Supply for the Smith 的专业门槛、物品目标、交付地点与奖励](/norr-wiki/img/research/2026-10-14/profession-quest.png)
+
+*2026-10-14 游戏内截图。Finish Location 是交付位置；“Show Me”用于导航，不代表任务已经完成。*
+
+已完成的早期主线详情在当前角色上返回不可用，因此[主线任务链](/norr-wiki/quests/main-story/)继续保留历史资料，不标为本次重新核验。

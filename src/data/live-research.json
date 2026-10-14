@@ -1,0 +1,7174 @@
+{
+  "enemies": [
+    {
+      "id": 1,
+      "name": "Rat",
+      "alignment": "Neutral",
+      "foundIn": "Sewers",
+      "specials": "-",
+      "health": "Low",
+      "defense": "High",
+      "resistance": "Low",
+      "damageTypes": [
+        "melee",
+        "Poison"
+      ],
+      "source": "/modal/inspect_enemy?id=1"
+    },
+    {
+      "id": 10,
+      "name": "Salamanderoid",
+      "alignment": "Neutral",
+      "foundIn": "Coastal,Grassland",
+      "specials": "-",
+      "health": "Medium",
+      "defense": "High",
+      "resistance": "Low",
+      "damageTypes": [
+        "melee"
+      ],
+      "source": "/modal/inspect_enemy?id=10"
+    },
+    {
+      "id": 100,
+      "name": "Spitter",
+      "alignment": "Neutral",
+      "foundIn": "Spider Den",
+      "specials": "-",
+      "health": "Low",
+      "defense": "Medium",
+      "resistance": "High",
+      "damageTypes": [
+        "melee",
+        "Poison"
+      ],
+      "source": "/modal/inspect_enemy?id=100"
+    },
+    {
+      "id": 101,
+      "name": "Mana Webber",
+      "alignment": "Neutral",
+      "foundIn": "Spider Den",
+      "specials": "-",
+      "health": "Low",
+      "defense": "High",
+      "resistance": "Low",
+      "damageTypes": [
+        "Cold"
+      ],
+      "source": "/modal/inspect_enemy?id=101"
+    },
+    {
+      "id": 103,
+      "name": "Raider",
+      "alignment": "Neutral",
+      "foundIn": "Dry Desert,Sunken Ruins",
+      "specials": "-",
+      "health": "Medium",
+      "defense": "High",
+      "resistance": "Low",
+      "damageTypes": [
+        "melee"
+      ],
+      "source": "/modal/inspect_enemy?id=103"
+    },
+    {
+      "id": 104,
+      "name": "Cassowary",
+      "alignment": "Neutral",
+      "foundIn": "Dry Desert",
+      "specials": "-",
+      "health": "Low",
+      "defense": "High",
+      "resistance": "Low",
+      "damageTypes": [
+        "melee"
+      ],
+      "source": "/modal/inspect_enemy?id=104"
+    },
+    {
+      "id": 105,
+      "name": "Dune Glider",
+      "alignment": "Neutral",
+      "foundIn": "Dry Desert,Sunken Ruins",
+      "specials": "-",
+      "health": "Low",
+      "defense": "High",
+      "resistance": "Low",
+      "damageTypes": [
+        "melee",
+        "Bleed"
+      ],
+      "source": "/modal/inspect_enemy?id=105"
+    },
+    {
+      "id": 106,
+      "name": "Owlbear",
+      "alignment": "Neutral",
+      "foundIn": "Deep Forest",
+      "specials": "-",
+      "health": "High",
+      "defense": "High",
+      "resistance": "Medium",
+      "damageTypes": [
+        "melee"
+      ],
+      "source": "/modal/inspect_enemy?id=106"
+    },
+    {
+      "id": 107,
+      "name": "Wendigo",
+      "alignment": "Neutral",
+      "foundIn": "Dark Forest",
+      "specials": "-",
+      "health": "Medium",
+      "defense": "Medium",
+      "resistance": "Medium",
+      "damageTypes": [
+        "melee"
+      ],
+      "source": "/modal/inspect_enemy?id=107"
+    },
+    {
+      "id": 108,
+      "name": "Stone Hulk",
+      "alignment": "Neutral",
+      "foundIn": "Underground",
+      "specials": "-",
+      "health": "High",
+      "defense": "High",
+      "resistance": "Low",
+      "damageTypes": [
+        "melee"
+      ],
+      "source": "/modal/inspect_enemy?id=108"
+    },
+    {
+      "id": 109,
+      "name": "Cockatrice",
+      "alignment": "Dark",
+      "foundIn": "Dark Forest",
+      "specials": "-",
+      "health": "Low",
+      "defense": "High",
+      "resistance": "Low",
+      "damageTypes": [
+        "melee"
+      ],
+      "source": "/modal/inspect_enemy?id=109"
+    },
+    {
+      "id": 11,
+      "name": "Beaver",
+      "alignment": "Neutral",
+      "foundIn": "Temperate Forest,Coastal",
+      "specials": "-",
+      "health": "Low",
+      "defense": "High",
+      "resistance": "Low",
+      "damageTypes": [
+        "melee"
+      ],
+      "source": "/modal/inspect_enemy?id=11"
+    },
+    {
+      "id": 110,
+      "name": "Ankheg",
+      "alignment": "Neutral",
+      "foundIn": "Dark Forest",
+      "specials": "-",
+      "health": "High",
+      "defense": "High",
+      "resistance": "Medium",
+      "damageTypes": [
+        "melee",
+        "Poison",
+        "Bleed"
+      ],
+      "source": "/modal/inspect_enemy?id=110"
+    },
+    {
+      "id": 111,
+      "name": "Drow",
+      "alignment": "Dark",
+      "foundIn": "Dark Forest,Sinister Isle,Underground",
+      "specials": "-",
+      "health": "Medium",
+      "defense": "High",
+      "resistance": "Low",
+      "damageTypes": [
+        "melee",
+        "Dark",
+        "Arcane"
+      ],
+      "source": "/modal/inspect_enemy?id=111"
+    },
+    {
+      "id": 112,
+      "name": "Forest Guardian",
+      "alignment": "Light",
+      "foundIn": "Dark Forest,Guardian Queen Hive,Roots Isle",
+      "specials": "-",
+      "health": "High",
+      "defense": "High",
+      "resistance": "Medium",
+      "damageTypes": [
+        "melee",
+        "Bleed"
+      ],
+      "source": "/modal/inspect_enemy?id=112"
+    },
+    {
+      "id": 113,
+      "name": "Dryad",
+      "alignment": "Neutral",
+      "foundIn": "Dying Forest",
+      "specials": "-",
+      "health": "Medium",
+      "defense": "Medium",
+      "resistance": "Medium",
+      "damageTypes": [
+        "Thorn"
+      ],
+      "source": "/modal/inspect_enemy?id=113"
+    },
+    {
+      "id": 114,
+      "name": "Mothman",
+      "alignment": "Neutral",
+      "foundIn": "Dying Forest",
+      "specials": "Flying",
+      "health": "Medium",
+      "defense": "High",
+      "resistance": "Low",
+      "damageTypes": [
+        "melee",
+        "Bleed"
+      ],
+      "source": "/modal/inspect_enemy?id=114"
+    },
+    {
+      "id": 115,
+      "name": "Myconid",
+      "alignment": "Neutral",
+      "foundIn": "Dying Forest",
+      "specials": "-",
+      "health": "Medium",
+      "defense": "High",
+      "resistance": "High",
+      "damageTypes": [
+        "Poison",
+        "Bleed"
+      ],
+      "source": "/modal/inspect_enemy?id=115"
+    },
+    {
+      "id": 116,
+      "name": "Decaying Worm",
+      "alignment": "Neutral",
+      "foundIn": "Dying Forest",
+      "specials": "-",
+      "health": "Medium",
+      "defense": "High",
+      "resistance": "Low",
+      "damageTypes": [
+        "melee"
+      ],
+      "source": "/modal/inspect_enemy?id=116"
+    },
+    {
+      "id": 117,
+      "name": "Troll Boar",
+      "alignment": "Neutral",
+      "foundIn": "Dying Forest",
+      "specials": "-",
+      "health": "Low",
+      "defense": "High",
+      "resistance": "Low",
+      "damageTypes": [
+        "melee"
+      ],
+      "source": "/modal/inspect_enemy?id=117"
+    },
+    {
+      "id": 118,
+      "name": "Bog Worm",
+      "alignment": "Neutral",
+      "foundIn": "Marsh",
+      "specials": "-",
+      "health": "High",
+      "defense": "High",
+      "resistance": "Low",
+      "damageTypes": [
+        "Thorn",
+        "melee"
+      ],
+      "source": "/modal/inspect_enemy?id=118"
+    },
+    {
+      "id": 119,
+      "name": "Boggard",
+      "alignment": "Neutral",
+      "foundIn": "Marsh,Oasis",
+      "specials": "-",
+      "health": "Medium",
+      "defense": "High",
+      "resistance": "Low",
+      "damageTypes": [
+        "Thorn",
+        "melee",
+        "Bleed"
+      ],
+      "source": "/modal/inspect_enemy?id=119"
+    },
+    {
+      "id": 120,
+      "name": "Bogleech",
+      "alignment": "Neutral",
+      "foundIn": "Marsh",
+      "specials": "-",
+      "health": "Medium",
+      "defense": "High",
+      "resistance": "Low",
+      "damageTypes": [
+        "melee"
+      ],
+      "source": "/modal/inspect_enemy?id=120"
+    },
+    {
+      "id": 121,
+      "name": "Blood Queen",
+      "alignment": "Neutral",
+      "foundIn": "Marsh",
+      "specials": "-",
+      "health": "Medium",
+      "defense": "High",
+      "resistance": "Low",
+      "damageTypes": [
+        "melee"
+      ],
+      "source": "/modal/inspect_enemy?id=121"
+    },
+    {
+      "id": 122,
+      "name": "Tarn Linnorm",
+      "alignment": "Neutral",
+      "foundIn": "Marsh",
+      "specials": "-",
+      "health": "High",
+      "defense": "High",
+      "resistance": "Low",
+      "damageTypes": [
+        "melee"
+      ],
+      "source": "/modal/inspect_enemy?id=122"
+    },
+    {
+      "id": 128,
+      "name": "Arynx",
+      "alignment": "Neutral",
+      "foundIn": "Savanna",
+      "specials": "-",
+      "health": "High",
+      "defense": "High",
+      "resistance": "Low",
+      "damageTypes": [
+        "melee"
+      ],
+      "source": "/modal/inspect_enemy?id=128"
+    },
+    {
+      "id": 129,
+      "name": "Gnoll Warrior",
+      "alignment": "Neutral",
+      "foundIn": "Savanna",
+      "specials": "-",
+      "health": "Medium",
+      "defense": "High",
+      "resistance": "Low",
+      "damageTypes": [
+        "melee",
+        "Bleed"
+      ],
+      "source": "/modal/inspect_enemy?id=129"
+    },
+    {
+      "id": 13,
+      "name": "Peasant",
+      "alignment": "Light",
+      "foundIn": "Temperate Forest,Urban",
+      "specials": "-",
+      "health": "Medium",
+      "defense": "High",
+      "resistance": "Low",
+      "damageTypes": [
+        "melee"
+      ],
+      "source": "/modal/inspect_enemy?id=13"
+    },
+    {
+      "id": 130,
+      "name": "Catoblepas",
+      "alignment": "Neutral",
+      "foundIn": "Shrubland",
+      "specials": "-",
+      "health": "High",
+      "defense": "High",
+      "resistance": "Medium",
+      "damageTypes": [
+        "melee"
+      ],
+      "source": "/modal/inspect_enemy?id=130"
+    },
+    {
+      "id": 131,
+      "name": "Terastodon",
+      "alignment": "Neutral",
+      "foundIn": "Savanna,Shrubland",
+      "specials": "-",
+      "health": "High",
+      "defense": "High",
+      "resistance": "Medium",
+      "damageTypes": [
+        "melee"
+      ],
+      "source": "/modal/inspect_enemy?id=131"
+    },
+    {
+      "id": 132,
+      "name": "Carrion Harpy",
+      "alignment": "Neutral",
+      "foundIn": "Savanna,Shrubland",
+      "specials": "Flying",
+      "health": "Medium",
+      "defense": "High",
+      "resistance": "Low",
+      "damageTypes": [
+        "melee",
+        "Bleed"
+      ],
+      "source": "/modal/inspect_enemy?id=132"
+    },
+    {
+      "id": 135,
+      "name": "Vampire Bat",
+      "alignment": "Neutral",
+      "foundIn": "Bear Den,Den Of Devourer",
+      "specials": "-",
+      "health": "Low",
+      "defense": "High",
+      "resistance": "Low",
+      "damageTypes": [
+        "melee"
+      ],
+      "source": "/modal/inspect_enemy?id=135"
+    },
+    {
+      "id": 138,
+      "name": "Wyvern",
+      "alignment": "Neutral",
+      "foundIn": "Wyvern Forest,Vulcanic Isle",
+      "specials": "-",
+      "health": "High",
+      "defense": "Medium",
+      "resistance": "Medium",
+      "damageTypes": [
+        "melee",
+        "Fire"
+      ],
+      "source": "/modal/inspect_enemy?id=138"
+    },
+    {
+      "id": 14,
+      "name": "Troglodyte",
+      "alignment": "Dark",
+      "foundIn": "Underground,Urban",
+      "specials": "-",
+      "health": "Medium",
+      "defense": "High",
+      "resistance": "Low",
+      "damageTypes": [
+        "melee"
+      ],
+      "source": "/modal/inspect_enemy?id=14"
+    },
+    {
+      "id": 141,
+      "name": "Ghost Pirate",
+      "alignment": "Light",
+      "foundIn": "Shipwreck,Hollow Forest,Pirate Ship",
+      "specials": "Ghost",
+      "health": "Medium",
+      "defense": "High",
+      "resistance": "Low",
+      "damageTypes": [
+        "melee",
+        "Dark"
+      ],
+      "source": "/modal/inspect_enemy?id=141"
+    },
+    {
+      "id": 143,
+      "name": "Purple Worm",
+      "alignment": "Neutral",
+      "foundIn": "Underground",
+      "specials": "Blind",
+      "health": "High",
+      "defense": "High",
+      "resistance": "Low",
+      "damageTypes": [
+        "Thorn",
+        "melee"
+      ],
+      "source": "/modal/inspect_enemy?id=143"
+    },
+    {
+      "id": 146,
+      "name": "Zombie",
+      "alignment": "Neutral",
+      "foundIn": "Pumpkin Skerry",
+      "specials": "-",
+      "health": "Medium",
+      "defense": "High",
+      "resistance": "Low",
+      "damageTypes": [
+        "melee"
+      ],
+      "source": "/modal/inspect_enemy?id=146"
+    },
+    {
+      "id": 147,
+      "name": "Skeleton",
+      "alignment": "Neutral",
+      "foundIn": "Hollow Forest",
+      "specials": "-",
+      "health": "Medium",
+      "defense": "Medium",
+      "resistance": "Low",
+      "damageTypes": [
+        "melee"
+      ],
+      "source": "/modal/inspect_enemy?id=147"
+    },
+    {
+      "id": 148,
+      "name": "Skeleton Archer",
+      "alignment": "Dark",
+      "foundIn": "Haunted Forest,Underground",
+      "specials": "-",
+      "health": "Medium",
+      "defense": "High",
+      "resistance": "Low",
+      "damageTypes": [
+        "melee"
+      ],
+      "source": "/modal/inspect_enemy?id=148"
+    },
+    {
+      "id": 149,
+      "name": "Skeleton Mage",
+      "alignment": "Dark",
+      "foundIn": "Haunted Forest,Underground,Pumpkin Skerry",
+      "specials": "-",
+      "health": "Medium",
+      "defense": "Medium",
+      "resistance": "High",
+      "damageTypes": [
+        "Fire",
+        "Lightning",
+        "Arcane"
+      ],
+      "source": "/modal/inspect_enemy?id=149"
+    },
+    {
+      "id": 15,
+      "name": "Woodland Snake",
+      "alignment": "Neutral",
+      "foundIn": "Temperate Forest",
+      "specials": "-",
+      "health": "Low",
+      "defense": "High",
+      "resistance": "Low",
+      "damageTypes": [
+        "melee",
+        "Poison"
+      ],
+      "source": "/modal/inspect_enemy?id=15"
+    },
+    {
+      "id": 150,
+      "name": "Skeleton Warrior",
+      "alignment": "Dark",
+      "foundIn": "Haunted Forest,Underground",
+      "specials": "-",
+      "health": "Medium",
+      "defense": "High",
+      "resistance": "Low",
+      "damageTypes": [
+        "melee"
+      ],
+      "source": "/modal/inspect_enemy?id=150"
+    },
+    {
+      "id": 151,
+      "name": "Swamp Dragon",
+      "alignment": "Neutral",
+      "foundIn": "Swamp",
+      "specials": "-",
+      "health": "High",
+      "defense": "High",
+      "resistance": "Low",
+      "damageTypes": [
+        "melee",
+        "Fire"
+      ],
+      "source": "/modal/inspect_enemy?id=151"
+    },
+    {
+      "id": 152,
+      "name": "Mutated Lizardman",
+      "alignment": "Light",
+      "foundIn": "Swamp",
+      "specials": "-",
+      "health": "Medium",
+      "defense": "High",
+      "resistance": "Low",
+      "damageTypes": [
+        "melee"
+      ],
+      "source": "/modal/inspect_enemy?id=152"
+    },
+    {
+      "id": 153,
+      "name": "Gnoll Warlock",
+      "alignment": "Neutral",
+      "foundIn": "Savanna,Static Isle",
+      "specials": "-",
+      "health": "Medium",
+      "defense": "Medium",
+      "resistance": "High",
+      "damageTypes": [
+        "Fire",
+        "Lightning"
+      ],
+      "source": "/modal/inspect_enemy?id=153"
+    },
+    {
+      "id": 158,
+      "name": "Orc Warrior",
+      "alignment": "Neutral",
+      "foundIn": "Shrubland,Red Desert",
+      "specials": "-",
+      "health": "Medium",
+      "defense": "High",
+      "resistance": "Medium",
+      "damageTypes": [
+        "melee"
+      ],
+      "source": "/modal/inspect_enemy?id=158"
+    },
+    {
+      "id": 159,
+      "name": "Orc Hunter",
+      "alignment": "Neutral",
+      "foundIn": "Shrubland,Red Desert",
+      "specials": "-",
+      "health": "Medium",
+      "defense": "High",
+      "resistance": "Low",
+      "damageTypes": [
+        "melee"
+      ],
+      "source": "/modal/inspect_enemy?id=159"
+    },
+    {
+      "id": 16,
+      "name": "Monstrous Worm",
+      "alignment": "Neutral",
+      "foundIn": "Underground,Crypt,Catacombs",
+      "specials": "-",
+      "health": "Low",
+      "defense": "High",
+      "resistance": "Medium",
+      "damageTypes": [
+        "melee"
+      ],
+      "source": "/modal/inspect_enemy?id=16"
+    },
+    {
+      "id": 160,
+      "name": "Orc Warlock",
+      "alignment": "Neutral",
+      "foundIn": "Shrubland,Red Desert",
+      "specials": "-",
+      "health": "Medium",
+      "defense": "Medium",
+      "resistance": "High",
+      "damageTypes": [
+        "melee",
+        "Fire",
+        "Dark"
+      ],
+      "source": "/modal/inspect_enemy?id=160"
+    },
+    {
+      "id": 161,
+      "name": "Warg",
+      "alignment": "Neutral",
+      "foundIn": "Shrubland,Red Desert",
+      "specials": "-",
+      "health": "High",
+      "defense": "High",
+      "resistance": "Low",
+      "damageTypes": [
+        "melee"
+      ],
+      "source": "/modal/inspect_enemy?id=161"
+    },
+    {
+      "id": 165,
+      "name": "Basilisk",
+      "alignment": "Neutral",
+      "foundIn": "Red Desert",
+      "specials": "-",
+      "health": "Medium",
+      "defense": "High",
+      "resistance": "Low",
+      "damageTypes": [
+        "melee"
+      ],
+      "source": "/modal/inspect_enemy?id=165"
+    },
+    {
+      "id": 166,
+      "name": "Stone Centipede",
+      "alignment": "Neutral",
+      "foundIn": "Red Desert",
+      "specials": "Blind",
+      "health": "Low",
+      "defense": "High",
+      "resistance": "Low",
+      "damageTypes": [
+        "melee"
+      ],
+      "source": "/modal/inspect_enemy?id=166"
+    },
+    {
+      "id": 167,
+      "name": "Polar Bear",
+      "alignment": "Neutral",
+      "foundIn": "Taiga,Arctic Isle,Frost Cave,Frozen Float",
+      "specials": "Cryophile",
+      "health": "High",
+      "defense": "High",
+      "resistance": "Medium",
+      "damageTypes": [
+        "melee",
+        "Cold"
+      ],
+      "source": "/modal/inspect_enemy?id=167"
+    },
+    {
+      "id": 168,
+      "name": "Wasp",
+      "alignment": "Neutral",
+      "foundIn": "Grassland",
+      "specials": "Flying",
+      "health": "Low",
+      "defense": "Medium",
+      "resistance": "Low",
+      "damageTypes": [
+        "melee",
+        "Poison"
+      ],
+      "source": "/modal/inspect_enemy?id=168"
+    },
+    {
+      "id": 170,
+      "name": "Red Stirge",
+      "alignment": "Neutral",
+      "foundIn": "Stirge Lair",
+      "specials": "Flying",
+      "health": "Low",
+      "defense": "Medium",
+      "resistance": "Medium",
+      "damageTypes": [
+        "melee"
+      ],
+      "source": "/modal/inspect_enemy?id=170"
+    },
+    {
+      "id": 171,
+      "name": "Blue Stirge",
+      "alignment": "Neutral",
+      "foundIn": "Stirge Lair",
+      "specials": "Flying",
+      "health": "Low",
+      "defense": "High",
+      "resistance": "Low",
+      "damageTypes": [
+        "melee"
+      ],
+      "source": "/modal/inspect_enemy?id=171"
+    },
+    {
+      "id": 172,
+      "name": "Phoenix",
+      "alignment": "Light",
+      "foundIn": "Dry Desert,Vulcanic Isle",
+      "specials": "Flying",
+      "health": "High",
+      "defense": "Medium",
+      "resistance": "High",
+      "damageTypes": [
+        "melee",
+        "Fire"
+      ],
+      "source": "/modal/inspect_enemy?id=172"
+    },
+    {
+      "id": 173,
+      "name": "Hydra",
+      "alignment": "Neutral",
+      "foundIn": "Swamp",
+      "specials": "-",
+      "health": "High",
+      "defense": "High",
+      "resistance": "Medium",
+      "damageTypes": [
+        "melee",
+        "Poison"
+      ],
+      "source": "/modal/inspect_enemy?id=173"
+    },
+    {
+      "id": 174,
+      "name": "Wisp Phantom",
+      "alignment": "Neutral",
+      "foundIn": "Swamp",
+      "specials": "Flying,Ghost",
+      "health": "Low",
+      "defense": "Medium",
+      "resistance": "High",
+      "damageTypes": [
+        "Lightning"
+      ],
+      "source": "/modal/inspect_enemy?id=174"
+    },
+    {
+      "id": 175,
+      "name": "Nomadic Cleric",
+      "alignment": "Light",
+      "foundIn": "Dry Desert,Spring Fields",
+      "specials": "-",
+      "health": "Medium",
+      "defense": "Medium",
+      "resistance": "High",
+      "damageTypes": [
+        "Light"
+      ],
+      "source": "/modal/inspect_enemy?id=175"
+    },
+    {
+      "id": 176,
+      "name": "Succubus",
+      "alignment": "Neutral",
+      "foundIn": "Loveland,Love Island",
+      "specials": "Flying",
+      "health": "Medium",
+      "defense": "Medium",
+      "resistance": "High",
+      "damageTypes": [
+        "melee"
+      ],
+      "source": "/modal/inspect_enemy?id=176"
+    },
+    {
+      "id": 177,
+      "name": "Zombie Horse",
+      "alignment": "Neutral",
+      "foundIn": "Haunted Forest,Hollow Forest",
+      "specials": "-",
+      "health": "High",
+      "defense": "High",
+      "resistance": "Low",
+      "damageTypes": [
+        "melee"
+      ],
+      "source": "/modal/inspect_enemy?id=177"
+    },
+    {
+      "id": 178,
+      "name": "Frost Elemental",
+      "alignment": "Neutral",
+      "foundIn": "Magic Plains,Arctic Isle",
+      "specials": "-",
+      "health": "Medium",
+      "defense": "Medium",
+      "resistance": "High",
+      "damageTypes": [
+        "Thorn",
+        "Cold"
+      ],
+      "source": "/modal/inspect_enemy?id=178"
+    },
+    {
+      "id": 179,
+      "name": "Lightning Elemental",
+      "alignment": "Neutral",
+      "foundIn": "Magic Plains,Static Isle",
+      "specials": "-",
+      "health": "Medium",
+      "defense": "Medium",
+      "resistance": "Medium",
+      "damageTypes": [
+        "Lightning"
+      ],
+      "source": "/modal/inspect_enemy?id=179"
+    },
+    {
+      "id": 181,
+      "name": "Wizard",
+      "alignment": "Neutral",
+      "foundIn": "Magic Plains,Arcane Isle",
+      "specials": "-",
+      "health": "Medium",
+      "defense": "Medium",
+      "resistance": "High",
+      "damageTypes": [
+        "Cold",
+        "Lightning",
+        "Dark"
+      ],
+      "source": "/modal/inspect_enemy?id=181"
+    },
+    {
+      "id": 182,
+      "name": "Arcane Imp",
+      "alignment": "Neutral",
+      "foundIn": "Magic Plains,Arcane Isle",
+      "specials": "Flying",
+      "health": "Low",
+      "defense": "Medium",
+      "resistance": "High",
+      "damageTypes": [
+        "melee",
+        "Dark",
+        "Arcane"
+      ],
+      "source": "/modal/inspect_enemy?id=182"
+    },
+    {
+      "id": 183,
+      "name": "Ogre Mage",
+      "alignment": "Neutral",
+      "foundIn": "Magic Plains,Arcane Isle",
+      "specials": "Flying",
+      "health": "High",
+      "defense": "Medium",
+      "resistance": "High",
+      "damageTypes": [
+        "Lightning",
+        "Arcane"
+      ],
+      "source": "/modal/inspect_enemy?id=183"
+    },
+    {
+      "id": 184,
+      "name": "Sphinx",
+      "alignment": "Light",
+      "foundIn": "Temple,Elysian Isle",
+      "specials": "-",
+      "health": "High",
+      "defense": "High",
+      "resistance": "Medium",
+      "damageTypes": [
+        "melee",
+        "Light"
+      ],
+      "source": "/modal/inspect_enemy?id=184"
+    },
+    {
+      "id": 185,
+      "name": "Giant Vulture",
+      "alignment": "Neutral",
+      "foundIn": "Red Desert",
+      "specials": "-",
+      "health": "Medium",
+      "defense": "High",
+      "resistance": "Low",
+      "damageTypes": [
+        "melee",
+        "Fire"
+      ],
+      "source": "/modal/inspect_enemy?id=185"
+    },
+    {
+      "id": 186,
+      "name": "Berserker",
+      "alignment": "Neutral",
+      "foundIn": "Taiga,Arctic Isle",
+      "specials": "Cryophile",
+      "health": "Medium",
+      "defense": "High",
+      "resistance": "Low",
+      "damageTypes": [
+        "melee",
+        "Cold"
+      ],
+      "source": "/modal/inspect_enemy?id=186"
+    },
+    {
+      "id": 187,
+      "name": "Valkyrie",
+      "alignment": "Light",
+      "foundIn": "Taiga,Love Island",
+      "specials": "Flying,Cryophile",
+      "health": "Medium",
+      "defense": "High",
+      "resistance": "Low",
+      "damageTypes": [
+        "melee",
+        "Lightning"
+      ],
+      "source": "/modal/inspect_enemy?id=187"
+    },
+    {
+      "id": 188,
+      "name": "Yak",
+      "alignment": "Neutral",
+      "foundIn": "Taiga,Frost Cave",
+      "specials": "Cryophile",
+      "health": "High",
+      "defense": "High",
+      "resistance": "Medium",
+      "damageTypes": [
+        "melee"
+      ],
+      "source": "/modal/inspect_enemy?id=188"
+    },
+    {
+      "id": 19,
+      "name": "Bear",
+      "alignment": "Neutral",
+      "foundIn": "Temperate Forest,Bear Den,Den Of Devourer",
+      "specials": "-",
+      "health": "High",
+      "defense": "High",
+      "resistance": "Medium",
+      "damageTypes": [
+        "melee",
+        "Bleed"
+      ],
+      "source": "/modal/inspect_enemy?id=19"
+    },
+    {
+      "id": 193,
+      "name": "Ooze",
+      "alignment": "Neutral",
+      "foundIn": "Venom Isle",
+      "specials": "Blind",
+      "health": "Low",
+      "defense": "High",
+      "resistance": "Low",
+      "damageTypes": [
+        "melee",
+        "Poison"
+      ],
+      "source": "/modal/inspect_enemy?id=193"
+    },
+    {
+      "id": 195,
+      "name": "Venomous Viper",
+      "alignment": "Neutral",
+      "foundIn": "Venom Isle,Spring Fields",
+      "specials": "-",
+      "health": "Low",
+      "defense": "High",
+      "resistance": "Low",
+      "damageTypes": [
+        "melee",
+        "Poison"
+      ],
+      "source": "/modal/inspect_enemy?id=195"
+    },
+    {
+      "id": 198,
+      "name": "Angry Egg",
+      "alignment": "Neutral",
+      "foundIn": "Bunny Remote",
+      "specials": "-",
+      "health": "Medium",
+      "defense": "High",
+      "resistance": "Medium",
+      "damageTypes": [
+        "melee",
+        "Light"
+      ],
+      "source": "/modal/inspect_enemy?id=198"
+    },
+    {
+      "id": 199,
+      "name": "Faery",
+      "alignment": "Neutral",
+      "foundIn": "Coastal,Frozen Float",
+      "specials": "Flying",
+      "health": "Medium",
+      "defense": "Medium",
+      "resistance": "High",
+      "damageTypes": [
+        "Cold",
+        "Lightning",
+        "Dark"
+      ],
+      "source": "/modal/inspect_enemy?id=199"
+    },
+    {
+      "id": 2,
+      "name": "Snake",
+      "alignment": "Neutral",
+      "foundIn": "Underground,Grassland",
+      "specials": "-",
+      "health": "Low",
+      "defense": "High",
+      "resistance": "Low",
+      "damageTypes": [
+        "melee",
+        "Poison"
+      ],
+      "source": "/modal/inspect_enemy?id=2"
+    },
+    {
+      "id": 20,
+      "name": "Wild Hog",
+      "alignment": "Neutral",
+      "foundIn": "Grassland,Temperate Forest",
+      "specials": "-",
+      "health": "Low",
+      "defense": "Medium",
+      "resistance": "Low",
+      "damageTypes": [
+        "melee"
+      ],
+      "source": "/modal/inspect_enemy?id=20"
+    },
+    {
+      "id": 200,
+      "name": "Wraith",
+      "alignment": "Dark",
+      "foundIn": "Sinister Isle",
+      "specials": "Flying",
+      "health": "Medium",
+      "defense": "Medium",
+      "resistance": "High",
+      "damageTypes": [
+        "Dark"
+      ],
+      "source": "/modal/inspect_enemy?id=200"
+    },
+    {
+      "id": 201,
+      "name": "Vine Sniper",
+      "alignment": "Neutral",
+      "foundIn": "Rainforest,Ape Temple",
+      "specials": "-",
+      "health": "Low",
+      "defense": "High",
+      "resistance": "Low",
+      "damageTypes": [
+        "melee",
+        "Poison"
+      ],
+      "source": "/modal/inspect_enemy?id=201"
+    },
+    {
+      "id": 202,
+      "name": "Luminous Plant",
+      "alignment": "Neutral",
+      "foundIn": "Rainforest,Roots Isle",
+      "specials": "-",
+      "health": "Low",
+      "defense": "Medium",
+      "resistance": "Low",
+      "damageTypes": [
+        "melee"
+      ],
+      "source": "/modal/inspect_enemy?id=202"
+    },
+    {
+      "id": 203,
+      "name": "Ape Brute",
+      "alignment": "Neutral",
+      "foundIn": "Rainforest,Ape Temple",
+      "specials": "-",
+      "health": "High",
+      "defense": "High",
+      "resistance": "Low",
+      "damageTypes": [
+        "melee"
+      ],
+      "source": "/modal/inspect_enemy?id=203"
+    },
+    {
+      "id": 204,
+      "name": "Light Elemental",
+      "alignment": "Light",
+      "foundIn": "Elysian Isle",
+      "specials": "-",
+      "health": "Medium",
+      "defense": "Medium",
+      "resistance": "Medium",
+      "damageTypes": [
+        "Lightning"
+      ],
+      "source": "/modal/inspect_enemy?id=204"
+    },
+    {
+      "id": 205,
+      "name": "Fire Elemental",
+      "alignment": "Neutral",
+      "foundIn": "Vulcanic Isle",
+      "specials": "-",
+      "health": "Low",
+      "defense": "Medium",
+      "resistance": "High",
+      "damageTypes": [
+        "Fire"
+      ],
+      "source": "/modal/inspect_enemy?id=205"
+    },
+    {
+      "id": 21,
+      "name": "Toxic Toad",
+      "alignment": "Neutral",
+      "foundIn": "Coastal,Venom Isle",
+      "specials": "-",
+      "health": "Low",
+      "defense": "High",
+      "resistance": "Low",
+      "damageTypes": [
+        "melee",
+        "Poison"
+      ],
+      "source": "/modal/inspect_enemy?id=21"
+    },
+    {
+      "id": 213,
+      "name": "Rust Monster",
+      "alignment": "Neutral",
+      "foundIn": "Underground",
+      "specials": "-",
+      "health": "High",
+      "defense": "High",
+      "resistance": "Medium",
+      "damageTypes": [
+        "melee"
+      ],
+      "source": "/modal/inspect_enemy?id=213"
+    },
+    {
+      "id": 214,
+      "name": "Phantom Miner",
+      "alignment": "Light",
+      "foundIn": "Underground",
+      "specials": "Ghost",
+      "health": "Medium",
+      "defense": "High",
+      "resistance": "Low",
+      "damageTypes": [
+        "melee"
+      ],
+      "source": "/modal/inspect_enemy?id=214"
+    },
+    {
+      "id": 215,
+      "name": "Xorn",
+      "alignment": "Neutral",
+      "foundIn": "Underground",
+      "specials": "-",
+      "health": "Medium",
+      "defense": "High",
+      "resistance": "Medium",
+      "damageTypes": [
+        "melee"
+      ],
+      "source": "/modal/inspect_enemy?id=215"
+    },
+    {
+      "id": 216,
+      "name": "Werebat",
+      "alignment": "Neutral",
+      "foundIn": "Underground",
+      "specials": "-",
+      "health": "Low",
+      "defense": "High",
+      "resistance": "Low",
+      "damageTypes": [
+        "melee"
+      ],
+      "source": "/modal/inspect_enemy?id=216"
+    },
+    {
+      "id": 217,
+      "name": "Goblin Engineer",
+      "alignment": "Dark",
+      "foundIn": "Underground",
+      "specials": "-",
+      "health": "Low",
+      "defense": "Medium",
+      "resistance": "High",
+      "damageTypes": [
+        "Fire",
+        "Light"
+      ],
+      "source": "/modal/inspect_enemy?id=217"
+    },
+    {
+      "id": 22,
+      "name": "Crocodile",
+      "alignment": "Neutral",
+      "foundIn": "Coastal,Sewers,Oasis",
+      "specials": "-",
+      "health": "Medium",
+      "defense": "High",
+      "resistance": "Medium",
+      "damageTypes": [
+        "melee"
+      ],
+      "source": "/modal/inspect_enemy?id=22"
+    },
+    {
+      "id": 221,
+      "name": "Armored Ram",
+      "alignment": "Neutral",
+      "foundIn": "Dark Boreal",
+      "specials": "-",
+      "health": "Medium",
+      "defense": "High",
+      "resistance": "Low",
+      "damageTypes": [
+        "melee"
+      ],
+      "source": "/modal/inspect_enemy?id=221"
+    },
+    {
+      "id": 222,
+      "name": "Dwarven Guard",
+      "alignment": "Neutral",
+      "foundIn": "Dark Boreal",
+      "specials": "Fortified",
+      "health": "Low",
+      "defense": "High",
+      "resistance": "Low",
+      "damageTypes": [
+        "Thorn",
+        "melee",
+        "Dark"
+      ],
+      "source": "/modal/inspect_enemy?id=222"
+    },
+    {
+      "id": 223,
+      "name": "Dwarven Hunter",
+      "alignment": "Neutral",
+      "foundIn": "Dark Boreal",
+      "specials": "-",
+      "health": "Low",
+      "defense": "High",
+      "resistance": "Medium",
+      "damageTypes": [
+        "melee",
+        "Dark",
+        "Bleed"
+      ],
+      "source": "/modal/inspect_enemy?id=223"
+    },
+    {
+      "id": 224,
+      "name": "Dwarven Caster",
+      "alignment": "Neutral",
+      "foundIn": "Dark Boreal",
+      "specials": "-",
+      "health": "Low",
+      "defense": "Medium",
+      "resistance": "High",
+      "damageTypes": [
+        "Fire",
+        "Dark"
+      ],
+      "source": "/modal/inspect_enemy?id=224"
+    },
+    {
+      "id": 225,
+      "name": "Komodo Basilisk",
+      "alignment": "Neutral",
+      "foundIn": "Dark Boreal",
+      "specials": "-",
+      "health": "Medium",
+      "defense": "High",
+      "resistance": "Medium",
+      "damageTypes": [
+        "melee",
+        "Poison"
+      ],
+      "source": "/modal/inspect_enemy?id=225"
+    },
+    {
+      "id": 23,
+      "name": "Snapping Turtle",
+      "alignment": "Neutral",
+      "foundIn": "Coastal",
+      "specials": "Fortified",
+      "health": "Low",
+      "defense": "High",
+      "resistance": "Low",
+      "damageTypes": [
+        "Thorn",
+        "melee"
+      ],
+      "source": "/modal/inspect_enemy?id=23"
+    },
+    {
+      "id": 230,
+      "name": "Loot Goblin",
+      "alignment": "Neutral",
+      "foundIn": "Loot Bay",
+      "specials": "-",
+      "health": "Low",
+      "defense": "Medium",
+      "resistance": "High",
+      "damageTypes": [],
+      "source": "/modal/inspect_enemy?id=230"
+    },
+    {
+      "id": 237,
+      "name": "Snow Rabbit",
+      "alignment": "Neutral",
+      "foundIn": "Frozen Float",
+      "specials": "-",
+      "health": "Low",
+      "defense": "High",
+      "resistance": "Medium",
+      "damageTypes": [
+        "melee"
+      ],
+      "source": "/modal/inspect_enemy?id=237"
+    },
+    {
+      "id": 24,
+      "name": "Foliage Shaman",
+      "alignment": "Neutral",
+      "foundIn": "Rainforest,Ape Temple",
+      "specials": "-",
+      "health": "Medium",
+      "defense": "Medium",
+      "resistance": "High",
+      "damageTypes": [
+        "Lightning"
+      ],
+      "source": "/modal/inspect_enemy?id=24"
+    },
+    {
+      "id": 25,
+      "name": "Tiger",
+      "alignment": "Neutral",
+      "foundIn": "Rainforest",
+      "specials": "-",
+      "health": "Low",
+      "defense": "High",
+      "resistance": "Low",
+      "damageTypes": [
+        "melee"
+      ],
+      "source": "/modal/inspect_enemy?id=25"
+    },
+    {
+      "id": 27,
+      "name": "Scorpion",
+      "alignment": "Neutral",
+      "foundIn": "Dry Desert,Savanna",
+      "specials": "-",
+      "health": "Low",
+      "defense": "High",
+      "resistance": "Low",
+      "damageTypes": [
+        "melee",
+        "Poison"
+      ],
+      "source": "/modal/inspect_enemy?id=27"
+    },
+    {
+      "id": 28,
+      "name": "Hypnotic Bat",
+      "alignment": "Neutral",
+      "foundIn": "Underground,Hollow Forest,Pumpkin Skerry",
+      "specials": "-",
+      "health": "Low",
+      "defense": "Medium",
+      "resistance": "High",
+      "damageTypes": [
+        "melee",
+        "Arcane"
+      ],
+      "source": "/modal/inspect_enemy?id=28"
+    },
+    {
+      "id": 29,
+      "name": "Monstrous Bat",
+      "alignment": "Neutral",
+      "foundIn": "Underground,Temple,Sinister Isle",
+      "specials": "Flying",
+      "health": "High",
+      "defense": "High",
+      "resistance": "Low",
+      "damageTypes": [
+        "melee",
+        "Dark"
+      ],
+      "source": "/modal/inspect_enemy?id=29"
+    },
+    {
+      "id": 3,
+      "name": "Deer",
+      "alignment": "Neutral",
+      "foundIn": "Grassland,Temperate Forest",
+      "specials": "-",
+      "health": "Medium",
+      "defense": "High",
+      "resistance": "Low",
+      "damageTypes": [
+        "melee"
+      ],
+      "source": "/modal/inspect_enemy?id=3"
+    },
+    {
+      "id": 30,
+      "name": "Cougar",
+      "alignment": "Neutral",
+      "foundIn": "Taiga,Frost Cave",
+      "specials": "Cryophile",
+      "health": "Low",
+      "defense": "High",
+      "resistance": "Low",
+      "damageTypes": [
+        "melee"
+      ],
+      "source": "/modal/inspect_enemy?id=30"
+    },
+    {
+      "id": 32,
+      "name": "Wolf",
+      "alignment": "Neutral",
+      "foundIn": "Temperate Forest,Mountain",
+      "specials": "-",
+      "health": "Low",
+      "defense": "High",
+      "resistance": "Low",
+      "damageTypes": [
+        "melee"
+      ],
+      "source": "/modal/inspect_enemy?id=32"
+    },
+    {
+      "id": 33,
+      "name": "Woodland Spider",
+      "alignment": "Neutral",
+      "foundIn": "Temperate Forest",
+      "specials": "-",
+      "health": "Low",
+      "defense": "High",
+      "resistance": "Low",
+      "damageTypes": [
+        "melee"
+      ],
+      "source": "/modal/inspect_enemy?id=33"
+    },
+    {
+      "id": 37,
+      "name": "Bison",
+      "alignment": "Neutral",
+      "foundIn": "Grassland,Mountain",
+      "specials": "-",
+      "health": "High",
+      "defense": "High",
+      "resistance": "Medium",
+      "damageTypes": [
+        "melee"
+      ],
+      "source": "/modal/inspect_enemy?id=37"
+    },
+    {
+      "id": 4,
+      "name": "Toad",
+      "alignment": "Neutral",
+      "foundIn": "Coastal",
+      "specials": "-",
+      "health": "Low",
+      "defense": "Medium",
+      "resistance": "Low",
+      "damageTypes": [
+        "melee"
+      ],
+      "source": "/modal/inspect_enemy?id=4"
+    },
+    {
+      "id": 40,
+      "name": "Purifier",
+      "alignment": "Light",
+      "foundIn": "Temple,Elysian Isle",
+      "specials": "-",
+      "health": "Medium",
+      "defense": "Medium",
+      "resistance": "High",
+      "damageTypes": [
+        "spell",
+        "Light"
+      ],
+      "source": "/modal/inspect_enemy?id=40"
+    },
+    {
+      "id": 43,
+      "name": "Frostbinder",
+      "alignment": "Neutral",
+      "foundIn": "Taiga,Frost Cave",
+      "specials": "-",
+      "health": "Medium",
+      "defense": "Medium",
+      "resistance": "High",
+      "damageTypes": [
+        "spell",
+        "melee",
+        "Cold"
+      ],
+      "source": "/modal/inspect_enemy?id=43"
+    },
+    {
+      "id": 45,
+      "name": "Leech",
+      "alignment": "Neutral",
+      "foundIn": "Sewers",
+      "specials": "Blind",
+      "health": "Low",
+      "defense": "High",
+      "resistance": "Low",
+      "damageTypes": [
+        "melee"
+      ],
+      "source": "/modal/inspect_enemy?id=45"
+    },
+    {
+      "id": 47,
+      "name": "Cockroach",
+      "alignment": "Neutral",
+      "foundIn": "Sewers",
+      "specials": "-",
+      "health": "Low",
+      "defense": "High",
+      "resistance": "Medium",
+      "damageTypes": [
+        "melee",
+        "Poison"
+      ],
+      "source": "/modal/inspect_enemy?id=47"
+    },
+    {
+      "id": 49,
+      "name": "Killer Centipede",
+      "alignment": "Neutral",
+      "foundIn": "Marsh,Bear Den,Den Of Devourer",
+      "specials": "Blind",
+      "health": "Low",
+      "defense": "High",
+      "resistance": "Low",
+      "damageTypes": [
+        "melee"
+      ],
+      "source": "/modal/inspect_enemy?id=49"
+    },
+    {
+      "id": 5,
+      "name": "Hare",
+      "alignment": "Neutral",
+      "foundIn": "Grassland,Love Island,Spring Fields,Bunny Remote",
+      "specials": "-",
+      "health": "Low",
+      "defense": "Medium",
+      "resistance": "Low",
+      "damageTypes": [
+        "melee"
+      ],
+      "source": "/modal/inspect_enemy?id=5"
+    },
+    {
+      "id": 51,
+      "name": "Bone Scarab",
+      "alignment": "Neutral",
+      "foundIn": "Dry Desert,Sunken Ruins",
+      "specials": "-",
+      "health": "Low",
+      "defense": "High",
+      "resistance": "Medium",
+      "damageTypes": [
+        "melee"
+      ],
+      "source": "/modal/inspect_enemy?id=51"
+    },
+    {
+      "id": 52,
+      "name": "Eel",
+      "alignment": "Neutral",
+      "foundIn": "Sewers,Static Isle",
+      "specials": "-",
+      "health": "Low",
+      "defense": "High",
+      "resistance": "Low",
+      "damageTypes": [
+        "melee"
+      ],
+      "source": "/modal/inspect_enemy?id=52"
+    },
+    {
+      "id": 54,
+      "name": "Goblin Pyro",
+      "alignment": "Dark",
+      "foundIn": "Mountain,Underground,Deep Forest,Goblin Camp,Urban",
+      "specials": "-",
+      "health": "Low",
+      "defense": "Medium",
+      "resistance": "High",
+      "damageTypes": [
+        "Fire"
+      ],
+      "source": "/modal/inspect_enemy?id=54"
+    },
+    {
+      "id": 55,
+      "name": "Goblin Soldier",
+      "alignment": "Dark",
+      "foundIn": "Mountain,Deep Forest,Goblin Camp",
+      "specials": "-",
+      "health": "Low",
+      "defense": "High",
+      "resistance": "Low",
+      "damageTypes": [
+        "melee",
+        "Bleed"
+      ],
+      "source": "/modal/inspect_enemy?id=55"
+    },
+    {
+      "id": 56,
+      "name": "River Troll",
+      "alignment": "Neutral",
+      "foundIn": "Coastal,Oasis",
+      "specials": "-",
+      "health": "Medium",
+      "defense": "High",
+      "resistance": "Low",
+      "damageTypes": [
+        "melee"
+      ],
+      "source": "/modal/inspect_enemy?id=56"
+    },
+    {
+      "id": 57,
+      "name": "Pirate",
+      "alignment": "Neutral",
+      "foundIn": "Shipwreck,Pirate Ship",
+      "specials": "-",
+      "health": "Medium",
+      "defense": "High",
+      "resistance": "Low",
+      "damageTypes": [
+        "melee"
+      ],
+      "source": "/modal/inspect_enemy?id=57"
+    },
+    {
+      "id": 6,
+      "name": "Wild Dog",
+      "alignment": "Neutral",
+      "foundIn": "Grassland",
+      "specials": "-",
+      "health": "Low",
+      "defense": "High",
+      "resistance": "Low",
+      "damageTypes": [
+        "melee"
+      ],
+      "source": "/modal/inspect_enemy?id=6"
+    },
+    {
+      "id": 62,
+      "name": "Thorny Vines",
+      "alignment": "Neutral",
+      "foundIn": "Underground,Roots Isle",
+      "specials": "Blind",
+      "health": "Low",
+      "defense": "Medium",
+      "resistance": "Low",
+      "damageTypes": [
+        "Thorn",
+        "melee"
+      ],
+      "source": "/modal/inspect_enemy?id=62"
+    },
+    {
+      "id": 64,
+      "name": "Miner",
+      "alignment": "Light",
+      "foundIn": "Underground",
+      "specials": "-",
+      "health": "Medium",
+      "defense": "High",
+      "resistance": "Low",
+      "damageTypes": [
+        "melee"
+      ],
+      "source": "/modal/inspect_enemy?id=64"
+    },
+    {
+      "id": 65,
+      "name": "Sasquatch",
+      "alignment": "Neutral",
+      "foundIn": "Underground",
+      "specials": "-",
+      "health": "Low",
+      "defense": "Low",
+      "resistance": "Low",
+      "damageTypes": [
+        "melee"
+      ],
+      "source": "/modal/inspect_enemy?id=65"
+    },
+    {
+      "id": 67,
+      "name": "Knight",
+      "alignment": "Light",
+      "foundIn": "Magic Plains",
+      "specials": "-",
+      "health": "Medium",
+      "defense": "High",
+      "resistance": "High",
+      "damageTypes": [
+        "spell",
+        "melee",
+        "Light",
+        "Arcane"
+      ],
+      "source": "/modal/inspect_enemy?id=67"
+    },
+    {
+      "id": 70,
+      "name": "Wererat Soldier",
+      "alignment": "Neutral",
+      "foundIn": "Ratdom",
+      "specials": "-",
+      "health": "Low",
+      "defense": "High",
+      "resistance": "Low",
+      "damageTypes": [
+        "melee"
+      ],
+      "source": "/modal/inspect_enemy?id=70"
+    },
+    {
+      "id": 71,
+      "name": "Wererat Slinger",
+      "alignment": "Neutral",
+      "foundIn": "Ratdom",
+      "specials": "-",
+      "health": "Low",
+      "defense": "Medium",
+      "resistance": "Low",
+      "damageTypes": [
+        "melee"
+      ],
+      "source": "/modal/inspect_enemy?id=71"
+    },
+    {
+      "id": 72,
+      "name": "Wererat Wizard",
+      "alignment": "Neutral",
+      "foundIn": "Ratdom",
+      "specials": "-",
+      "health": "Low",
+      "defense": "Medium",
+      "resistance": "High",
+      "damageTypes": [
+        "Lightning"
+      ],
+      "source": "/modal/inspect_enemy?id=72"
+    },
+    {
+      "id": 8,
+      "name": "Badger",
+      "alignment": "Neutral",
+      "foundIn": "Temperate Forest",
+      "specials": "-",
+      "health": "Low",
+      "defense": "High",
+      "resistance": "Low",
+      "damageTypes": [
+        "melee"
+      ],
+      "source": "/modal/inspect_enemy?id=8"
+    },
+    {
+      "id": 86,
+      "name": "Mountain Troll",
+      "alignment": "Neutral",
+      "foundIn": "Mountain,Coastal",
+      "specials": "-",
+      "health": "Medium",
+      "defense": "High",
+      "resistance": "Low",
+      "damageTypes": [
+        "melee"
+      ],
+      "source": "/modal/inspect_enemy?id=86"
+    },
+    {
+      "id": 87,
+      "name": "Lizardman",
+      "alignment": "Light",
+      "foundIn": "Coastal,Oasis",
+      "specials": "-",
+      "health": "Medium",
+      "defense": "High",
+      "resistance": "Low",
+      "damageTypes": [
+        "melee"
+      ],
+      "source": "/modal/inspect_enemy?id=87"
+    },
+    {
+      "id": 88,
+      "name": "Merfolk",
+      "alignment": "Neutral",
+      "foundIn": "Coastal,Marine,Oasis",
+      "specials": "-",
+      "health": "Medium",
+      "defense": "Medium",
+      "resistance": "High",
+      "damageTypes": [
+        "Arcane"
+      ],
+      "source": "/modal/inspect_enemy?id=88"
+    },
+    {
+      "id": 89,
+      "name": "Zombie Pirate",
+      "alignment": "Dark",
+      "foundIn": "Shipwreck,Pirate Ship",
+      "specials": "-",
+      "health": "Medium",
+      "defense": "High",
+      "resistance": "Low",
+      "damageTypes": [
+        "melee"
+      ],
+      "source": "/modal/inspect_enemy?id=89"
+    },
+    {
+      "id": 95,
+      "name": "Werewolf",
+      "alignment": "Neutral",
+      "foundIn": "Deep Forest",
+      "specials": "-",
+      "health": "Medium",
+      "defense": "High",
+      "resistance": "Low",
+      "damageTypes": [
+        "melee",
+        "Bleed"
+      ],
+      "source": "/modal/inspect_enemy?id=95"
+    },
+    {
+      "id": 96,
+      "name": "Centaur",
+      "alignment": "Neutral",
+      "foundIn": "Deep Forest",
+      "specials": "-",
+      "health": "Medium",
+      "defense": "High",
+      "resistance": "Low",
+      "damageTypes": [
+        "melee",
+        "Bleed"
+      ],
+      "source": "/modal/inspect_enemy?id=96"
+    },
+    {
+      "id": 97,
+      "name": "Druid",
+      "alignment": "Neutral",
+      "foundIn": "Deep Forest,Bunny Remote",
+      "specials": "-",
+      "health": "Medium",
+      "defense": "Medium",
+      "resistance": "Medium",
+      "damageTypes": [
+        "Thorn",
+        "Fire",
+        "Lightning"
+      ],
+      "source": "/modal/inspect_enemy?id=97"
+    },
+    {
+      "id": 98,
+      "name": "Wandering Ent",
+      "alignment": "Neutral",
+      "foundIn": "Deep Forest,Roots Isle",
+      "specials": "-",
+      "health": "High",
+      "defense": "High",
+      "resistance": "Medium",
+      "damageTypes": [
+        "melee",
+        "Poison"
+      ],
+      "source": "/modal/inspect_enemy?id=98"
+    },
+    {
+      "id": 99,
+      "name": "Brute Spider",
+      "alignment": "Neutral",
+      "foundIn": "Spider Den,Pumpkin Skerry",
+      "specials": "-",
+      "health": "Low",
+      "defense": "High",
+      "resistance": "Low",
+      "damageTypes": [
+        "melee"
+      ],
+      "source": "/modal/inspect_enemy?id=99"
+    }
+  ],
+  "maps": [
+    {
+      "id": 1,
+      "name": "Fountain of Rebirth",
+      "level": "1",
+      "biome": "Enchanted Forest",
+      "coordinates": "887/1797",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=1"
+    },
+    {
+      "id": 10,
+      "name": "Mount Akelay",
+      "level": "4-6",
+      "biome": "Mountain",
+      "coordinates": "767/1413",
+      "gathering": [
+        "quarrying"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=10"
+    },
+    {
+      "id": 100,
+      "name": "Dust Outskirts",
+      "level": "14-15",
+      "biome": "Dry Desert",
+      "coordinates": "1549/1221",
+      "gathering": [
+        "foraging",
+        "farming"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=100"
+    },
+    {
+      "id": 1000,
+      "name": "Fountain of Rebirth",
+      "level": "1",
+      "biome": "Enchanted Forest",
+      "coordinates": "887/1797",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=1000"
+    },
+    {
+      "id": 1001,
+      "name": "Winter Wonderland Lobby",
+      "level": "100",
+      "biome": "Taiga",
+      "coordinates": "541/1868",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=1001"
+    },
+    {
+      "id": 1002,
+      "name": "Winter Wonderland",
+      "level": "1-9",
+      "biome": "Taiga",
+      "coordinates": "541/1868",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=1002"
+    },
+    {
+      "id": 1003,
+      "name": "Winter Wonderland",
+      "level": "10-19",
+      "biome": "Taiga",
+      "coordinates": "541/1868",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=1003"
+    },
+    {
+      "id": 1004,
+      "name": "Winter Wonderland",
+      "level": "20-29",
+      "biome": "Taiga",
+      "coordinates": "541/1868",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=1004"
+    },
+    {
+      "id": 1005,
+      "name": "Winter Wonderland",
+      "level": "30-39",
+      "biome": "Taiga",
+      "coordinates": "541/1868",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=1005"
+    },
+    {
+      "id": 1006,
+      "name": "Winter Wonderland",
+      "level": "40-50",
+      "biome": "Taiga",
+      "coordinates": "541/1868",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=1006"
+    },
+    {
+      "id": 1027,
+      "name": "Loveland Lobby",
+      "level": "100",
+      "biome": "Loveland",
+      "coordinates": "541/1868",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=1027"
+    },
+    {
+      "id": 1028,
+      "name": "Loveland",
+      "level": "1-9",
+      "biome": "Loveland",
+      "coordinates": "541/1868",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=1028"
+    },
+    {
+      "id": 1029,
+      "name": "Loveland",
+      "level": "10-19",
+      "biome": "Loveland",
+      "coordinates": "541/1868",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=1029"
+    },
+    {
+      "id": 1030,
+      "name": "Loveland",
+      "level": "20-29",
+      "biome": "Loveland",
+      "coordinates": "541/1868",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=1030"
+    },
+    {
+      "id": 1031,
+      "name": "Loveland",
+      "level": "30-39",
+      "biome": "Loveland",
+      "coordinates": "541/1868",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=1031"
+    },
+    {
+      "id": 1032,
+      "name": "Loveland",
+      "level": "40-50",
+      "biome": "Loveland",
+      "coordinates": "541/1868",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=1032"
+    },
+    {
+      "id": 1040,
+      "name": "Patrick’s Land Lobby",
+      "level": "100",
+      "biome": "Grassland",
+      "coordinates": "541/1868",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=1040"
+    },
+    {
+      "id": 1041,
+      "name": "Patrick’s Land",
+      "level": "1-9",
+      "biome": "Grassland",
+      "coordinates": "541/1868",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=1041"
+    },
+    {
+      "id": 106,
+      "name": "Savanna",
+      "level": "16-17",
+      "biome": "Savanna",
+      "coordinates": "1726/1102",
+      "gathering": [
+        "caravan"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=106"
+    },
+    {
+      "id": 1066,
+      "name": "Bunnyland Lobby",
+      "level": "100",
+      "biome": "Spring Fields",
+      "coordinates": "541/1868",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=1066"
+    },
+    {
+      "id": 1067,
+      "name": "Bunnyland",
+      "level": "1-9",
+      "biome": "Spring Fields",
+      "coordinates": "541/1868",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=1067"
+    },
+    {
+      "id": 1068,
+      "name": "Bunnyland",
+      "level": "10-19",
+      "biome": "Spring Fields",
+      "coordinates": "541/1868",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=1068"
+    },
+    {
+      "id": 1069,
+      "name": "Bunnyland",
+      "level": "20-29",
+      "biome": "Spring Fields",
+      "coordinates": "541/1868",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=1069"
+    },
+    {
+      "id": 107,
+      "name": "Savanna",
+      "level": "15-16",
+      "biome": "Savanna",
+      "coordinates": "1656/1096",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=107"
+    },
+    {
+      "id": 1070,
+      "name": "Bunnyland",
+      "level": "30-39",
+      "biome": "Spring Fields",
+      "coordinates": "541/1868",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=1070"
+    },
+    {
+      "id": 1071,
+      "name": "Bunnyland",
+      "level": "40-50",
+      "biome": "Spring Fields",
+      "coordinates": "541/1868",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=1071"
+    },
+    {
+      "id": 11,
+      "name": "Elena’s Crossroad",
+      "level": "1-3",
+      "biome": "Grassland",
+      "coordinates": "869/1435",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=11"
+    },
+    {
+      "id": 111,
+      "name": "Spider Den",
+      "level": "15",
+      "biome": "Spider Den",
+      "coordinates": "1387/1728",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=111"
+    },
+    {
+      "id": 112,
+      "name": "Vileton Entrance",
+      "level": "14-15",
+      "biome": "Mountain",
+      "coordinates": "1181/1838",
+      "gathering": [
+        "dock"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=112"
+    },
+    {
+      "id": 113,
+      "name": "Vileton",
+      "level": "15",
+      "biome": "Mountain",
+      "coordinates": "1263/1835",
+      "gathering": [],
+      "waygate": true,
+      "source": "/modal/map_info?id=113"
+    },
+    {
+      "id": 114,
+      "name": "Marsh",
+      "level": "15-16",
+      "biome": "Marsh",
+      "coordinates": "1467/1785",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=114"
+    },
+    {
+      "id": 1144,
+      "name": "Das Festhalle Lobby",
+      "level": "100",
+      "biome": "Mountain",
+      "coordinates": "541/1868",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=1144"
+    },
+    {
+      "id": 1145,
+      "name": "Das Festhalle",
+      "level": "1-9",
+      "biome": "Mountain",
+      "coordinates": "541/1868",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=1145"
+    },
+    {
+      "id": 115,
+      "name": "Marsh",
+      "level": "17-18",
+      "biome": "Marsh",
+      "coordinates": "1513/1756",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=115"
+    },
+    {
+      "id": 1157,
+      "name": "Sleepy Hollow Lobby",
+      "level": "100",
+      "biome": "Hollow Forest",
+      "coordinates": "541/1868",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=1157"
+    },
+    {
+      "id": 1158,
+      "name": "Sleepy Hollow",
+      "level": "1-9",
+      "biome": "Hollow Forest",
+      "coordinates": "541/1868",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=1158"
+    },
+    {
+      "id": 1159,
+      "name": "Sleepy Hollow",
+      "level": "10-19",
+      "biome": "Hollow Forest",
+      "coordinates": "541/1868",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=1159"
+    },
+    {
+      "id": 116,
+      "name": "Marsh",
+      "level": "19-20",
+      "biome": "Marsh",
+      "coordinates": "1552/1718",
+      "gathering": [
+        "fishing",
+        "chopping",
+        "farming"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=116"
+    },
+    {
+      "id": 1160,
+      "name": "Sleepy Hollow",
+      "level": "20-29",
+      "biome": "Hollow Forest",
+      "coordinates": "541/1868",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=1160"
+    },
+    {
+      "id": 1161,
+      "name": "Sleepy Hollow",
+      "level": "30-39",
+      "biome": "Hollow Forest",
+      "coordinates": "541/1868",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=1161"
+    },
+    {
+      "id": 1162,
+      "name": "Sleepy Hollow",
+      "level": "40-49",
+      "biome": "Hollow Forest",
+      "coordinates": "541/1868",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=1162"
+    },
+    {
+      "id": 117,
+      "name": "Swamp",
+      "level": "24-25",
+      "biome": "Swamp",
+      "coordinates": "1469/1825",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=117"
+    },
+    {
+      "id": 118,
+      "name": "Swamp",
+      "level": "26-28",
+      "biome": "Swamp",
+      "coordinates": "1458/1862",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=118"
+    },
+    {
+      "id": 1183,
+      "name": "The Sacred Wilds Lobby",
+      "level": "100",
+      "biome": "Wyvern Forest",
+      "coordinates": "541/1868",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=1183"
+    },
+    {
+      "id": 1184,
+      "name": "The Sacred Wilds",
+      "level": "1-9",
+      "biome": "Wyvern Forest",
+      "coordinates": "541/1868",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=1184"
+    },
+    {
+      "id": 1185,
+      "name": "The Sacred Wilds",
+      "level": "10-19",
+      "biome": "Wyvern Forest",
+      "coordinates": "541/1868",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=1185"
+    },
+    {
+      "id": 1186,
+      "name": "The Sacred Wilds",
+      "level": "20-29",
+      "biome": "Wyvern Forest",
+      "coordinates": "541/1868",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=1186"
+    },
+    {
+      "id": 1187,
+      "name": "The Sacred Wilds",
+      "level": "30-39",
+      "biome": "Wyvern Forest",
+      "coordinates": "541/1868",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=1187"
+    },
+    {
+      "id": 1188,
+      "name": "The Sacred Wilds",
+      "level": "40-49",
+      "biome": "Wyvern Forest",
+      "coordinates": "541/1868",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=1188"
+    },
+    {
+      "id": 119,
+      "name": "Swamp",
+      "level": "24-25",
+      "biome": "Swamp",
+      "coordinates": "1409/1843",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=119"
+    },
+    {
+      "id": 12,
+      "name": "Forested Canyon",
+      "level": "4-5",
+      "biome": "Temperate Forest",
+      "coordinates": "878/1328",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=12"
+    },
+    {
+      "id": 120,
+      "name": "Swamp",
+      "level": "21-23",
+      "biome": "Swamp",
+      "coordinates": "1361/1858",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=120"
+    },
+    {
+      "id": 121,
+      "name": "Marsh",
+      "level": "19-20",
+      "biome": "Marsh",
+      "coordinates": "1506/1894",
+      "gathering": [],
+      "waygate": true,
+      "source": "/modal/map_info?id=121"
+    },
+    {
+      "id": 122,
+      "name": "Marsh",
+      "level": "19-20",
+      "biome": "Marsh",
+      "coordinates": "1530/1854",
+      "gathering": [
+        "fishing",
+        "foraging",
+        "dungeon"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=122"
+    },
+    {
+      "id": 123,
+      "name": "Swamp",
+      "level": "29-30",
+      "biome": "Swamp",
+      "coordinates": "1447/1907",
+      "gathering": [
+        "fishing",
+        "chopping",
+        "foraging"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=123"
+    },
+    {
+      "id": 124,
+      "name": "Swamp",
+      "level": "26-28",
+      "biome": "Swamp",
+      "coordinates": "1430/1949",
+      "gathering": [
+        "foraging"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=124"
+    },
+    {
+      "id": 125,
+      "name": "Swamp",
+      "level": "24-25",
+      "biome": "Swamp",
+      "coordinates": "1429/1995",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=125"
+    },
+    {
+      "id": 126,
+      "name": "Marsh",
+      "level": "19-20",
+      "biome": "Marsh",
+      "coordinates": "1479/2073",
+      "gathering": [
+        "fishing"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=126"
+    },
+    {
+      "id": 127,
+      "name": "Marsh",
+      "level": "19-20",
+      "biome": "Marsh",
+      "coordinates": "1523/1955",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=127"
+    },
+    {
+      "id": 128,
+      "name": "Marsh",
+      "level": "19-20",
+      "biome": "Marsh",
+      "coordinates": "1491/2005",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=128"
+    },
+    {
+      "id": 129,
+      "name": "Marsh",
+      "level": "21-23",
+      "biome": "Marsh",
+      "coordinates": "1441/2040",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=129"
+    },
+    {
+      "id": 13,
+      "name": "Tree of Life",
+      "level": "5-6",
+      "biome": "Temperate Forest",
+      "coordinates": "804/1231",
+      "gathering": [
+        "fishing"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=13"
+    },
+    {
+      "id": 130,
+      "name": "Secret Cave Tunnel",
+      "level": "7-10",
+      "biome": "Underground",
+      "coordinates": "1006/1683",
+      "gathering": [
+        "dungeon"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=130"
+    },
+    {
+      "id": 131,
+      "name": "The Squid Lair",
+      "level": "20",
+      "biome": "Underground",
+      "coordinates": "1043/1665",
+      "gathering": [
+        "dungeon"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=131"
+    },
+    {
+      "id": 133,
+      "name": "Magic Plains",
+      "level": "19-20",
+      "biome": "Magic Plains",
+      "coordinates": "1511/2119",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=133"
+    },
+    {
+      "id": 134,
+      "name": "Sanjuo",
+      "level": "19",
+      "biome": "Magic Plains",
+      "coordinates": "1533/2204",
+      "gathering": [],
+      "waygate": true,
+      "source": "/modal/map_info?id=134"
+    },
+    {
+      "id": 135,
+      "name": "Chamber of Oracles",
+      "level": "10",
+      "biome": "Underground",
+      "coordinates": "848/1328",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=135"
+    },
+    {
+      "id": 136,
+      "name": "The Bilge",
+      "level": "19",
+      "biome": "Marine",
+      "coordinates": "1107/1883",
+      "gathering": [
+        "dungeon"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=136"
+    },
+    {
+      "id": 137,
+      "name": "Marsh",
+      "level": "17-18",
+      "biome": "Marsh",
+      "coordinates": "1547/1804",
+      "gathering": [
+        "foraging",
+        "fishing"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=137"
+    },
+    {
+      "id": 138,
+      "name": "Abandoned Mine",
+      "level": "43-44",
+      "biome": "Underground",
+      "coordinates": "581/900",
+      "gathering": [
+        "dungeon"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=138"
+    },
+    {
+      "id": 139,
+      "name": "Ghrorak’s Prison",
+      "level": "49",
+      "biome": "Underground",
+      "coordinates": "581/852",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=139"
+    },
+    {
+      "id": 14,
+      "name": "Arodas Lakeshore",
+      "level": "4-6",
+      "biome": "Coastal",
+      "coordinates": "625/1464",
+      "gathering": [
+        "fishing",
+        "farming",
+        "foraging"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=14"
+    },
+    {
+      "id": 141,
+      "name": "Abandoned Mine",
+      "level": "41-42",
+      "biome": "Underground",
+      "coordinates": "500/945",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=141"
+    },
+    {
+      "id": 142,
+      "name": "Abandoned Mine",
+      "level": "41-42",
+      "biome": "Underground",
+      "coordinates": "444/938",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=142"
+    },
+    {
+      "id": 143,
+      "name": "Nythrendal",
+      "level": "40",
+      "biome": "Mountain",
+      "coordinates": "353/926",
+      "gathering": [
+        "dock"
+      ],
+      "waygate": true,
+      "source": "/modal/map_info?id=143"
+    },
+    {
+      "id": 15,
+      "name": "Arodas Beach",
+      "level": "7-10",
+      "biome": "Coastal",
+      "coordinates": "583/1367",
+      "gathering": [
+        "fishing"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=15"
+    },
+    {
+      "id": 16,
+      "name": "Elundi",
+      "level": "10",
+      "biome": "Temperate Forest",
+      "coordinates": "585/1250",
+      "gathering": [
+        "dock",
+        "fishing",
+        "farming"
+      ],
+      "waygate": true,
+      "source": "/modal/map_info?id=16"
+    },
+    {
+      "id": 169,
+      "name": "Bungavik",
+      "level": "20",
+      "biome": "Tundra",
+      "coordinates": "1433/705",
+      "gathering": [
+        "dock"
+      ],
+      "waygate": true,
+      "source": "/modal/map_info?id=169"
+    },
+    {
+      "id": 17,
+      "name": "Southern Foothill",
+      "level": "1-3",
+      "biome": "Temperate Forest",
+      "coordinates": "925/1672",
+      "gathering": [
+        "chopping",
+        "farming",
+        "mining"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=17"
+    },
+    {
+      "id": 170,
+      "name": "Dying Forest",
+      "level": "Biome: Dying Forest",
+      "biome": "Dying Forest",
+      "coordinates": "1445/1678",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=170"
+    },
+    {
+      "id": 171,
+      "name": "Dying Forest",
+      "level": "Biome: Dying Forest",
+      "biome": "Dying Forest",
+      "coordinates": "1483/1642",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=171"
+    },
+    {
+      "id": 172,
+      "name": "Dying Forest",
+      "level": "Biome: Dying Forest",
+      "biome": "Dying Forest",
+      "coordinates": "1539/1633",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=172"
+    },
+    {
+      "id": 173,
+      "name": "Dying Forest",
+      "level": "Biome: Dying Forest",
+      "biome": "Dying Forest",
+      "coordinates": "1587/1623",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=173"
+    },
+    {
+      "id": 174,
+      "name": "Dying Forest",
+      "level": "Biome: Dying Forest",
+      "biome": "Dying Forest",
+      "coordinates": "1635/1633",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=174"
+    },
+    {
+      "id": 175,
+      "name": "Dying Forest",
+      "level": "Biome: Dying Forest",
+      "biome": "Dying Forest",
+      "coordinates": "1627/1666",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=175"
+    },
+    {
+      "id": 176,
+      "name": "Dying Forest",
+      "level": "Biome: Dying Forest",
+      "biome": "Dying Forest",
+      "coordinates": "1601/1703",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=176"
+    },
+    {
+      "id": 179,
+      "name": "Deep Forest",
+      "level": "14-15",
+      "biome": "Deep Forest",
+      "coordinates": "835/1041",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=179"
+    },
+    {
+      "id": 18,
+      "name": "Bay’s Alley",
+      "level": "4-6",
+      "biome": "Coastal",
+      "coordinates": "974/1729",
+      "gathering": [
+        "chopping",
+        "fishing"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=18"
+    },
+    {
+      "id": 180,
+      "name": "Caeltys’ Causeway",
+      "level": "31-33",
+      "biome": "Dark Forest",
+      "coordinates": "875/1011",
+      "gathering": [
+        "farming",
+        "foraging",
+        "chopping"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=180"
+    },
+    {
+      "id": 181,
+      "name": "Caeltys’ Causeway",
+      "level": "31-33",
+      "biome": "Dark Forest",
+      "coordinates": "913/972",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=181"
+    },
+    {
+      "id": 182,
+      "name": "Caeltys’ Causeway",
+      "level": "31-33",
+      "biome": "Dark Forest",
+      "coordinates": "982/957",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=182"
+    },
+    {
+      "id": 183,
+      "name": "Caeltys",
+      "level": "30",
+      "biome": "Enchanted Forest",
+      "coordinates": "1059/929",
+      "gathering": [],
+      "waygate": true,
+      "source": "/modal/map_info?id=183"
+    },
+    {
+      "id": 184,
+      "name": "Caeltys’ Yarden",
+      "level": "31-33",
+      "biome": "Dark Forest",
+      "coordinates": "1131/943",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=184"
+    },
+    {
+      "id": 185,
+      "name": "Caeltys’ Yarden",
+      "level": "34-37",
+      "biome": "Dark Forest",
+      "coordinates": "1173/923",
+      "gathering": [
+        "mining"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=185"
+    },
+    {
+      "id": 186,
+      "name": "Caeltys’ Yarden",
+      "level": "38-39",
+      "biome": "Dark Forest",
+      "coordinates": "1165/883",
+      "gathering": [
+        "chopping",
+        "fishing"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=186"
+    },
+    {
+      "id": 187,
+      "name": "Caeltys’ Yarden",
+      "level": "38-39",
+      "biome": "Dark Forest",
+      "coordinates": "1169/843",
+      "gathering": [
+        "dungeon"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=187"
+    },
+    {
+      "id": 188,
+      "name": "Caeltys’ Yarden",
+      "level": "34-37",
+      "biome": "Dark Forest",
+      "coordinates": "1131/845",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=188"
+    },
+    {
+      "id": 189,
+      "name": "Caeltys’ Yarden",
+      "level": "31-33",
+      "biome": "Dark Forest",
+      "coordinates": "1099/866",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=189"
+    },
+    {
+      "id": 19,
+      "name": "Bay’s Alley",
+      "level": "7-10",
+      "biome": "Coastal",
+      "coordinates": "1047/1754",
+      "gathering": [
+        "fishing"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=19"
+    },
+    {
+      "id": 190,
+      "name": "Savanna",
+      "level": "16-17",
+      "biome": "Savanna",
+      "coordinates": "1576/1039",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=190"
+    },
+    {
+      "id": 191,
+      "name": "Savanna",
+      "level": "16-17",
+      "biome": "Savanna",
+      "coordinates": "1583/993",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=191"
+    },
+    {
+      "id": 192,
+      "name": "Savanna",
+      "level": "17-18",
+      "biome": "Savanna",
+      "coordinates": "1534/968",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=192"
+    },
+    {
+      "id": 193,
+      "name": "Savanna",
+      "level": "17-18",
+      "biome": "Savanna",
+      "coordinates": "1487/933",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=193"
+    },
+    {
+      "id": 194,
+      "name": "Savanna",
+      "level": "18-19",
+      "biome": "Savanna",
+      "coordinates": "1460/887",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=194"
+    },
+    {
+      "id": 195,
+      "name": "Savanna",
+      "level": "19-20",
+      "biome": "Savanna",
+      "coordinates": "1463/836",
+      "gathering": [
+        "mining",
+        "quarrying"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=195"
+    },
+    {
+      "id": 196,
+      "name": "Savanna",
+      "level": "19-20",
+      "biome": "Savanna",
+      "coordinates": "1443/774",
+      "gathering": [
+        "caravan"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=196"
+    },
+    {
+      "id": 197,
+      "name": "Desert",
+      "level": "16-17",
+      "biome": "Savanna",
+      "coordinates": "1778/1067",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=197"
+    },
+    {
+      "id": 198,
+      "name": "Desert",
+      "level": "17-18",
+      "biome": "Savanna",
+      "coordinates": "1809/1025",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=198"
+    },
+    {
+      "id": 199,
+      "name": "Desert",
+      "level": "19-20",
+      "biome": "Savanna",
+      "coordinates": "1820/981",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=199"
+    },
+    {
+      "id": 2,
+      "name": "Lower Fountain’s Descent",
+      "level": "1",
+      "biome": "Temperate Forest",
+      "coordinates": "721/1783",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=2"
+    },
+    {
+      "id": 20,
+      "name": "Windy Fields",
+      "level": "1-3",
+      "biome": "Grassland",
+      "coordinates": "1026/1539",
+      "gathering": [
+        "farming",
+        "fishing",
+        "chopping"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=20"
+    },
+    {
+      "id": 200,
+      "name": "Haunted Forest",
+      "level": "21-22",
+      "biome": "Haunted Forest",
+      "coordinates": "1860/951",
+      "gathering": [
+        "fishing"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=200"
+    },
+    {
+      "id": 2001,
+      "name": "Overgrown Land",
+      "level": "1",
+      "biome": "Temperate Forest",
+      "coordinates": "503/1787",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=2001"
+    },
+    {
+      "id": 2002,
+      "name": "Encampment",
+      "level": "10",
+      "biome": "Temperate Forest",
+      "coordinates": "503/1787",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=2002"
+    },
+    {
+      "id": 2003,
+      "name": "Fenced Encampment",
+      "level": "20",
+      "biome": "Temperate Forest",
+      "coordinates": "503/1787",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=2003"
+    },
+    {
+      "id": 2004,
+      "name": "Village",
+      "level": "30",
+      "biome": "Temperate Forest",
+      "coordinates": "503/1787",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=2004"
+    },
+    {
+      "id": 2005,
+      "name": "Tudor Village",
+      "level": "40",
+      "biome": "Temperate Forest",
+      "coordinates": "503/1787",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=2005"
+    },
+    {
+      "id": 2006,
+      "name": "Motte-and-Bailey",
+      "level": "50",
+      "biome": "Temperate Forest",
+      "coordinates": "503/1787",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=2006"
+    },
+    {
+      "id": 2007,
+      "name": "Stone Keep",
+      "level": "60",
+      "biome": "Temperate Forest",
+      "coordinates": "503/1787",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=2007"
+    },
+    {
+      "id": 2008,
+      "name": "Castle",
+      "level": "70",
+      "biome": "Temperate Forest",
+      "coordinates": "503/1787",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=2008"
+    },
+    {
+      "id": 2009,
+      "name": "Stronghold",
+      "level": "80",
+      "biome": "Temperate Forest",
+      "coordinates": "503/1787",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=2009"
+    },
+    {
+      "id": 201,
+      "name": "Saurville",
+      "level": "20",
+      "biome": "Haunted Forest",
+      "coordinates": "1873/866",
+      "gathering": [],
+      "waygate": true,
+      "source": "/modal/map_info?id=201"
+    },
+    {
+      "id": 202,
+      "name": "Haunted Forest",
+      "level": "21-22",
+      "biome": "Haunted Forest",
+      "coordinates": "1886/994",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=202"
+    },
+    {
+      "id": 203,
+      "name": "Desert of Whispers",
+      "level": "22-23",
+      "biome": "Dry Desert",
+      "coordinates": "1940/1042",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=203"
+    },
+    {
+      "id": 204,
+      "name": "Pumpkin King`s Lodge",
+      "level": "29",
+      "biome": "Pumpkin Lodge",
+      "coordinates": "1552/1718",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=204"
+    },
+    {
+      "id": 205,
+      "name": "Savanna",
+      "level": "19-20",
+      "biome": "Savanna",
+      "coordinates": "1506/794",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=205"
+    },
+    {
+      "id": 206,
+      "name": "Savanna",
+      "level": "19-20",
+      "biome": "Savanna",
+      "coordinates": "1547/836",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=206"
+    },
+    {
+      "id": 207,
+      "name": "Savanna",
+      "level": "19-20",
+      "biome": "Savanna",
+      "coordinates": "1604/859",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=207"
+    },
+    {
+      "id": 208,
+      "name": "Savanna",
+      "level": "19-20",
+      "biome": "Savanna",
+      "coordinates": "1657/860",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=208"
+    },
+    {
+      "id": 209,
+      "name": "Savanna",
+      "level": "19-20",
+      "biome": "Savanna",
+      "coordinates": "1724/852",
+      "gathering": [
+        "caravan"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=209"
+    },
+    {
+      "id": 21,
+      "name": "Forest Of Owranbu",
+      "level": "4-6",
+      "biome": "Temperate Forest",
+      "coordinates": "1093/1584",
+      "gathering": [
+        "chopping"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=21"
+    },
+    {
+      "id": 210,
+      "name": "Crimson Dust",
+      "level": "21-22",
+      "biome": "Dry Desert",
+      "coordinates": "1781/857",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=210"
+    },
+    {
+      "id": 2100,
+      "name": "Ashspire Battlegrounds",
+      "level": "1-100",
+      "biome": "Temperate Forest",
+      "coordinates": "503/1787",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=2100"
+    },
+    {
+      "id": 211,
+      "name": "Taiga",
+      "level": "40-41",
+      "biome": "Taiga",
+      "coordinates": "1165/1343",
+      "gathering": [
+        "caravan"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=211"
+    },
+    {
+      "id": 212,
+      "name": "Taiga",
+      "level": "41-42",
+      "biome": "Taiga",
+      "coordinates": "1141/1306",
+      "gathering": [
+        "mining",
+        "worldboss"
+      ],
+      "waygate": true,
+      "source": "/modal/map_info?id=212"
+    },
+    {
+      "id": 213,
+      "name": "Taiga",
+      "level": "43-44",
+      "biome": "Taiga",
+      "coordinates": "1144/1257",
+      "gathering": [
+        "farming"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=213"
+    },
+    {
+      "id": 214,
+      "name": "Taiga",
+      "level": "45-46",
+      "biome": "Taiga",
+      "coordinates": "1157/1217",
+      "gathering": [
+        "chopping"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=214"
+    },
+    {
+      "id": 215,
+      "name": "Taiga",
+      "level": "47-48",
+      "biome": "Taiga",
+      "coordinates": "1187/1188",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=215"
+    },
+    {
+      "id": 216,
+      "name": "Taiga",
+      "level": "48-49",
+      "biome": "Taiga",
+      "coordinates": "1195/1145",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=216"
+    },
+    {
+      "id": 217,
+      "name": "Taiga",
+      "level": "48-49",
+      "biome": "Taiga",
+      "coordinates": "1107/1177",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=217"
+    },
+    {
+      "id": 218,
+      "name": "Desert of Lost Hope",
+      "level": "14-15",
+      "biome": "Dry Desert",
+      "coordinates": "1746/1452",
+      "gathering": [
+        "mining"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=218"
+    },
+    {
+      "id": 219,
+      "name": "Sandstorm Ridge",
+      "level": "14-15",
+      "biome": "Dry Desert",
+      "coordinates": "1787/1477",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=219"
+    },
+    {
+      "id": 22,
+      "name": "Owranbu River",
+      "level": "7-10",
+      "biome": "Temperate Forest",
+      "coordinates": "1182/1558",
+      "gathering": [
+        "chopping",
+        "farming",
+        "fishing",
+        "foraging",
+        "mining"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=22"
+    },
+    {
+      "id": 220,
+      "name": "Burning Moon Sands",
+      "level": "16-17",
+      "biome": "Dry Desert",
+      "coordinates": "1840/1504",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=220"
+    },
+    {
+      "id": 221,
+      "name": "Deserted Cavern",
+      "level": "16-17",
+      "biome": "Underground",
+      "coordinates": "1882/1533",
+      "gathering": [
+        "caravan"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=221"
+    },
+    {
+      "id": 222,
+      "name": "The Living Desert",
+      "level": "16-17",
+      "biome": "Dry Desert",
+      "coordinates": "1931/1490",
+      "gathering": [
+        "quarrying"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=222"
+    },
+    {
+      "id": 224,
+      "name": "Desert of Illusions",
+      "level": "18-19",
+      "biome": "Dry Desert",
+      "coordinates": "1987/1466",
+      "gathering": [],
+      "waygate": true,
+      "source": "/modal/map_info?id=224"
+    },
+    {
+      "id": 225,
+      "name": "Devil’s Gulch",
+      "level": "18-19",
+      "biome": "Dry Desert",
+      "coordinates": "2057/1426",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=225"
+    },
+    {
+      "id": 226,
+      "name": "Temple Entrance",
+      "level": "18-19",
+      "biome": "Dry Desert",
+      "coordinates": "1969/1360",
+      "gathering": [
+        "caravan"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=226"
+    },
+    {
+      "id": 227,
+      "name": "Shrubland",
+      "level": "21-22",
+      "biome": "Shrubland",
+      "coordinates": "2248/1304",
+      "gathering": [
+        "chopping"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=227"
+    },
+    {
+      "id": 228,
+      "name": "Shrubland",
+      "level": "21-22",
+      "biome": "Shrubland",
+      "coordinates": "2301/1245",
+      "gathering": [
+        "farming",
+        "foraging",
+        "fishing"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=228"
+    },
+    {
+      "id": 229,
+      "name": "Ururg",
+      "level": "20",
+      "biome": "Shrubland",
+      "coordinates": "2410/1256",
+      "gathering": [
+        "caravan"
+      ],
+      "waygate": true,
+      "source": "/modal/map_info?id=229"
+    },
+    {
+      "id": 23,
+      "name": "Owranbu",
+      "level": "10",
+      "biome": "Temperate Forest",
+      "coordinates": "1285/1561",
+      "gathering": [],
+      "waygate": true,
+      "source": "/modal/map_info?id=23"
+    },
+    {
+      "id": 231,
+      "name": "Old Graveyard",
+      "level": "22-23",
+      "biome": "Haunted Forest",
+      "coordinates": "1948/957",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=231"
+    },
+    {
+      "id": 232,
+      "name": "Mausoleum Stairway",
+      "level": "23-25",
+      "biome": "Underground",
+      "coordinates": "1980/915",
+      "gathering": [
+        "worldboss"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=232"
+    },
+    {
+      "id": 233,
+      "name": "Mausoleum Chamber",
+      "level": "23-25",
+      "biome": "Underground",
+      "coordinates": "1980/915",
+      "gathering": [
+        "worldboss"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=233"
+    },
+    {
+      "id": 234,
+      "name": "Medusa’s Hallway",
+      "level": "18-19",
+      "biome": "Underground",
+      "coordinates": "1303/1096",
+      "gathering": [
+        "dungeon"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=234"
+    },
+    {
+      "id": 235,
+      "name": "Medusa’s Chamber",
+      "level": "25",
+      "biome": "Underground",
+      "coordinates": "1303/1096",
+      "gathering": [
+        "dungeon"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=235"
+    },
+    {
+      "id": 239,
+      "name": "Orc Domain Entrance",
+      "level": "19-20",
+      "biome": "Dry Desert",
+      "coordinates": "2161/1348",
+      "gathering": [
+        "caravan"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=239"
+    },
+    {
+      "id": 24,
+      "name": "Manor’s Courtyard",
+      "level": "4-6",
+      "biome": "Mountain",
+      "coordinates": "1054/1452",
+      "gathering": [
+        "dungeon"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=24"
+    },
+    {
+      "id": 240,
+      "name": "Shrubland",
+      "level": "19-20",
+      "biome": "Shrubland",
+      "coordinates": "2217/1336",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=240"
+    },
+    {
+      "id": 241,
+      "name": "Desert of the Damned",
+      "level": "19-20",
+      "biome": "Dry Desert",
+      "coordinates": "2115/1381",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=241"
+    },
+    {
+      "id": 243,
+      "name": "Sands of Echoes",
+      "level": "18-19",
+      "biome": "Dry Desert",
+      "coordinates": "2010/1532",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=243"
+    },
+    {
+      "id": 244,
+      "name": "Red Desert",
+      "level": "18-19",
+      "biome": "Red Desert",
+      "coordinates": "2039/1587",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=244"
+    },
+    {
+      "id": 245,
+      "name": "Red Desert",
+      "level": "18-19",
+      "biome": "Red Desert",
+      "coordinates": "2115/1613",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=245"
+    },
+    {
+      "id": 246,
+      "name": "Red Desert",
+      "level": "19-20",
+      "biome": "Red Desert",
+      "coordinates": "2114/1680",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=246"
+    },
+    {
+      "id": 247,
+      "name": "Underground",
+      "level": "19-20",
+      "biome": "Underground",
+      "coordinates": "2121/1736",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=247"
+    },
+    {
+      "id": 248,
+      "name": "Red Desert",
+      "level": "20-21",
+      "biome": "Red Desert",
+      "coordinates": "2114/1790",
+      "gathering": [
+        "mining",
+        "quarrying"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=248"
+    },
+    {
+      "id": 249,
+      "name": "Red Desert",
+      "level": "21-22",
+      "biome": "Red Desert",
+      "coordinates": "2140/1845",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=249"
+    },
+    {
+      "id": 25,
+      "name": "Laverne Foothill",
+      "level": "4-6",
+      "biome": "Grassland",
+      "coordinates": "990/1397",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=25"
+    },
+    {
+      "id": 250,
+      "name": "Cactus Canyon",
+      "level": "22-23",
+      "biome": "Dry Desert",
+      "coordinates": "2132/1894",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=250"
+    },
+    {
+      "id": 251,
+      "name": "Unison Obelisk",
+      "level": "23-24",
+      "biome": "Dry Desert",
+      "coordinates": "2090/1925",
+      "gathering": [],
+      "waygate": true,
+      "source": "/modal/map_info?id=251"
+    },
+    {
+      "id": 252,
+      "name": "Haunted Forest",
+      "level": "21-22",
+      "biome": "Haunted Forest",
+      "coordinates": "1931/797",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=252"
+    },
+    {
+      "id": 253,
+      "name": "Haunted Forest",
+      "level": "23-24",
+      "biome": "Haunted Forest",
+      "coordinates": "1998/801",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=253"
+    },
+    {
+      "id": 254,
+      "name": "Haunted Forest",
+      "level": "25-26",
+      "biome": "Haunted Forest",
+      "coordinates": "2061/801",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=254"
+    },
+    {
+      "id": 255,
+      "name": "Toxic River",
+      "level": "27-28",
+      "biome": "Haunted Forest",
+      "coordinates": "2044/855",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=255"
+    },
+    {
+      "id": 256,
+      "name": "Haunted Forest",
+      "level": "27-28",
+      "biome": "Haunted Forest",
+      "coordinates": "2081/890",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=256"
+    },
+    {
+      "id": 257,
+      "name": "Necropolis",
+      "level": "29-30",
+      "biome": "Underground",
+      "coordinates": "2138/844",
+      "gathering": [
+        "mining",
+        "quarrying"
+      ],
+      "waygate": true,
+      "source": "/modal/map_info?id=257"
+    },
+    {
+      "id": 26,
+      "name": "Grasping Maze",
+      "level": "6-7",
+      "biome": "Underground",
+      "coordinates": "799/1208",
+      "gathering": [
+        "dungeon"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=26"
+    },
+    {
+      "id": 260,
+      "name": "Stirge Lair",
+      "level": "29",
+      "biome": "Stirge Lair",
+      "coordinates": "1530/1854",
+      "gathering": [
+        "dungeon"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=260"
+    },
+    {
+      "id": 262,
+      "name": "Sands of the Forgotten",
+      "level": "21-22",
+      "biome": "Dry Desert",
+      "coordinates": "1712/799",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=262"
+    },
+    {
+      "id": 263,
+      "name": "Mirage’s Eye",
+      "level": "23-24",
+      "biome": "Dry Desert",
+      "coordinates": "1682/758",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=263"
+    },
+    {
+      "id": 264,
+      "name": "Sandstorm Plains",
+      "level": "25-26",
+      "biome": "Dry Desert",
+      "coordinates": "1668/706",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=264"
+    },
+    {
+      "id": 265,
+      "name": "Taiga",
+      "level": "25-26",
+      "biome": "Taiga",
+      "coordinates": "1663/653",
+      "gathering": [],
+      "waygate": true,
+      "source": "/modal/map_info?id=265"
+    },
+    {
+      "id": 266,
+      "name": "Taiga",
+      "level": "27-28",
+      "biome": "Taiga",
+      "coordinates": "1680/600",
+      "gathering": [
+        "mining"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=266"
+    },
+    {
+      "id": 267,
+      "name": "Taiga",
+      "level": "27-28",
+      "biome": "Taiga",
+      "coordinates": "1715/554",
+      "gathering": [
+        "fishing"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=267"
+    },
+    {
+      "id": 268,
+      "name": "Taiga",
+      "level": "29-30",
+      "biome": "Taiga",
+      "coordinates": "1736/496",
+      "gathering": [
+        "chopping"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=268"
+    },
+    {
+      "id": 269,
+      "name": "Shrubland",
+      "level": "Biome: Shrubland",
+      "biome": "Shrubland",
+      "coordinates": "2297/1360",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=269"
+    },
+    {
+      "id": 27,
+      "name": "Heart of the Tree",
+      "level": "7",
+      "biome": "Underground",
+      "coordinates": "799/1208",
+      "gathering": [
+        "dungeon"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=27"
+    },
+    {
+      "id": 270,
+      "name": "Shrubland",
+      "level": "Biome: Shrubland",
+      "biome": "Shrubland",
+      "coordinates": "2351/1391",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=270"
+    },
+    {
+      "id": 271,
+      "name": "Shrubland",
+      "level": "Biome: Shrubland",
+      "biome": "Shrubland",
+      "coordinates": "2403/1429",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=271"
+    },
+    {
+      "id": 272,
+      "name": "Shrubland",
+      "level": "Biome: Shrubland",
+      "biome": "Shrubland",
+      "coordinates": "2454/1403",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=272"
+    },
+    {
+      "id": 273,
+      "name": "Shrubland",
+      "level": "Biome: Shrubland",
+      "biome": "Shrubland",
+      "coordinates": "2439/1351",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=273"
+    },
+    {
+      "id": 274,
+      "name": "Shrubland",
+      "level": "Biome: Shrubland",
+      "biome": "Shrubland",
+      "coordinates": "2450/1459",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=274"
+    },
+    {
+      "id": 275,
+      "name": "Shrubland",
+      "level": "21-23",
+      "biome": "Shrubland",
+      "coordinates": "2461/1185",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=275"
+    },
+    {
+      "id": 276,
+      "name": "Shrubland",
+      "level": "24-26",
+      "biome": "Shrubland",
+      "coordinates": "2487/1127",
+      "gathering": [
+        "dungeon"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=276"
+    },
+    {
+      "id": 277,
+      "name": "Shrubland",
+      "level": "31-33",
+      "biome": "Shrubland",
+      "coordinates": "2506/1072",
+      "gathering": [
+        "farming",
+        "foraging",
+        "fishing",
+        "chopping"
+      ],
+      "waygate": true,
+      "source": "/modal/map_info?id=277"
+    },
+    {
+      "id": 278,
+      "name": "Shrubland",
+      "level": "34-35",
+      "biome": "Shrubland",
+      "coordinates": "2562/1028",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=278"
+    },
+    {
+      "id": 279,
+      "name": "Ancient Worm Tunnel",
+      "level": "34-35",
+      "biome": "Underground",
+      "coordinates": "2625/995",
+      "gathering": [
+        "mining"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=279"
+    },
+    {
+      "id": 28,
+      "name": "Dying Forest",
+      "level": "11-12",
+      "biome": "Dying Forest",
+      "coordinates": "1345/1650",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=28"
+    },
+    {
+      "id": 280,
+      "name": "Shrubland",
+      "level": "36-37",
+      "biome": "Shrubland",
+      "coordinates": "2685/963",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=280"
+    },
+    {
+      "id": 281,
+      "name": "Trescan",
+      "level": "30",
+      "biome": "Shrubland",
+      "coordinates": "2752/890",
+      "gathering": [
+        "farming",
+        "foraging"
+      ],
+      "waygate": true,
+      "source": "/modal/map_info?id=281"
+    },
+    {
+      "id": 282,
+      "name": "Taiga",
+      "level": "31-32",
+      "biome": "Taiga",
+      "coordinates": "1711/462",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=282"
+    },
+    {
+      "id": 283,
+      "name": "Taiga",
+      "level": "31-32",
+      "biome": "Taiga",
+      "coordinates": "1676/420",
+      "gathering": [
+        "quarrying"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=283"
+    },
+    {
+      "id": 284,
+      "name": "Stogow",
+      "level": "30",
+      "biome": "Taiga",
+      "coordinates": "1656/342",
+      "gathering": [],
+      "waygate": true,
+      "source": "/modal/map_info?id=284"
+    },
+    {
+      "id": 285,
+      "name": "Taiga",
+      "level": "33-34",
+      "biome": "Taiga",
+      "coordinates": "1722/306",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=285"
+    },
+    {
+      "id": 286,
+      "name": "Taiga",
+      "level": "34-35",
+      "biome": "Taiga",
+      "coordinates": "1752/266",
+      "gathering": [
+        "dungeon"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=286"
+    },
+    {
+      "id": 287,
+      "name": "Yeti’s Cave",
+      "level": "35",
+      "biome": "Frost Cave",
+      "coordinates": "1789/230",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=287"
+    },
+    {
+      "id": 288,
+      "name": "Itham’s Lakeshore",
+      "level": "31-33",
+      "biome": "Coastal",
+      "coordinates": "1927/1715",
+      "gathering": [
+        "caravan"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=288"
+    },
+    {
+      "id": 289,
+      "name": "Itham’s Crator",
+      "level": "34-35",
+      "biome": "Coastal",
+      "coordinates": "1977/1767",
+      "gathering": [
+        "fishing"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=289"
+    },
+    {
+      "id": 29,
+      "name": "Dead Leaves Tiara",
+      "level": "12-13",
+      "biome": "Dying Forest",
+      "coordinates": "1323/1681",
+      "gathering": [
+        "fishing",
+        "chopping"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=29"
+    },
+    {
+      "id": 290,
+      "name": "Itham’s Old Bay",
+      "level": "34-35",
+      "biome": "Coastal",
+      "coordinates": "2009/1829",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=290"
+    },
+    {
+      "id": 291,
+      "name": "Itham’s Anchorage",
+      "level": "36-37",
+      "biome": "Coastal",
+      "coordinates": "1975/1895",
+      "gathering": [
+        "fishing",
+        "mining",
+        "worldboss"
+      ],
+      "waygate": true,
+      "source": "/modal/map_info?id=291"
+    },
+    {
+      "id": 292,
+      "name": "Itham’s Heart",
+      "level": "38-40",
+      "biome": "Itham’s Heart",
+      "coordinates": "1774/1931",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=292"
+    },
+    {
+      "id": 293,
+      "name": "Rainforest",
+      "level": "31-32",
+      "biome": "Rainforest",
+      "coordinates": "3122/1529",
+      "gathering": [
+        "caravan"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=293"
+    },
+    {
+      "id": 294,
+      "name": "Rainforest",
+      "level": "31-32",
+      "biome": "Rainforest",
+      "coordinates": "3163/1554",
+      "gathering": [
+        "fishing",
+        "chopping"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=294"
+    },
+    {
+      "id": 295,
+      "name": "Rainforest",
+      "level": "33-34",
+      "biome": "Rainforest",
+      "coordinates": "3210/1580",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=295"
+    },
+    {
+      "id": 296,
+      "name": "Rainforest",
+      "level": "33-34",
+      "biome": "Rainforest",
+      "coordinates": "3217/1643",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=296"
+    },
+    {
+      "id": 297,
+      "name": "Rainforest",
+      "level": "35-36",
+      "biome": "Rainforest",
+      "coordinates": "3169/1644",
+      "gathering": [
+        "chopping"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=297"
+    },
+    {
+      "id": 298,
+      "name": "Rainforest",
+      "level": "35-36",
+      "biome": "Rainforest",
+      "coordinates": "3109/1651",
+      "gathering": [],
+      "waygate": true,
+      "source": "/modal/map_info?id=298"
+    },
+    {
+      "id": 3,
+      "name": "Sasquatch Grotto",
+      "level": "1",
+      "biome": "Underground",
+      "coordinates": "731/1721",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=3"
+    },
+    {
+      "id": 30,
+      "name": "Venom Arch Forest",
+      "level": "14-15",
+      "biome": "Dying Forest",
+      "coordinates": "1387/1728",
+      "gathering": [
+        "dungeon"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=30"
+    },
+    {
+      "id": 301,
+      "name": "Rainforest",
+      "level": "31-33",
+      "biome": "Rainforest",
+      "coordinates": "3262/1687",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=301"
+    },
+    {
+      "id": 302,
+      "name": "Coveted Blossom",
+      "level": "31-33",
+      "biome": "Rainforest",
+      "coordinates": "3316/1712",
+      "gathering": [
+        "dungeon"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=302"
+    },
+    {
+      "id": 304,
+      "name": "Rainforest",
+      "level": "37-38",
+      "biome": "Rainforest",
+      "coordinates": "3161/1700",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=304"
+    },
+    {
+      "id": 306,
+      "name": "Rainforest",
+      "level": "39-40",
+      "biome": "Rainforest",
+      "coordinates": "3173/1767",
+      "gathering": [
+        "fishing"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=306"
+    },
+    {
+      "id": 307,
+      "name": "Rainforest",
+      "level": "41-42",
+      "biome": "Rainforest",
+      "coordinates": "3130/1820",
+      "gathering": [
+        "chopping"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=307"
+    },
+    {
+      "id": 31,
+      "name": "Pirate Wreck Foothill",
+      "level": "11-13",
+      "biome": "Coastal",
+      "coordinates": "1106/1775",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=31"
+    },
+    {
+      "id": 316,
+      "name": "Rainforest",
+      "level": "43-45",
+      "biome": "Rainforest",
+      "coordinates": "3123/1877",
+      "gathering": [
+        "farming",
+        "foraging"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=316"
+    },
+    {
+      "id": 317,
+      "name": "Galkathos",
+      "level": "45",
+      "biome": "Rainforest",
+      "coordinates": "3180/1890",
+      "gathering": [],
+      "waygate": true,
+      "source": "/modal/map_info?id=317"
+    },
+    {
+      "id": 318,
+      "name": "Temple Hall",
+      "level": "18-19",
+      "biome": "Temple",
+      "coordinates": "2009/1333",
+      "gathering": [
+        "worldboss"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=318"
+    },
+    {
+      "id": 319,
+      "name": "Valdor’s Throneroom",
+      "level": "23-25",
+      "biome": "Temple",
+      "coordinates": "2009/1333",
+      "gathering": [
+        "worldboss"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=319"
+    },
+    {
+      "id": 32,
+      "name": "Pirate Wreck Beach",
+      "level": "14-15",
+      "biome": "Coastal",
+      "coordinates": "1135/1837",
+      "gathering": [
+        "fishing",
+        "dungeon"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=32"
+    },
+    {
+      "id": 320,
+      "name": "Glacierbane’s Hollow",
+      "level": "49",
+      "biome": "Frost Cave",
+      "coordinates": "1141/1306",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=320"
+    },
+    {
+      "id": 321,
+      "name": "Goliathor’s Temple",
+      "level": "40",
+      "biome": "Rainforest",
+      "coordinates": "3316/1712",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=321"
+    },
+    {
+      "id": 322,
+      "name": "Goliathor’s Throne Room",
+      "level": "40",
+      "biome": "Ape Temple",
+      "coordinates": "3316/1712",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=322"
+    },
+    {
+      "id": 323,
+      "name": "Trescan’s Dock",
+      "level": "34-35",
+      "biome": "Coastal",
+      "coordinates": "2605/900",
+      "gathering": [
+        "fishing",
+        "dock"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=323"
+    },
+    {
+      "id": 324,
+      "name": "Dark Boreal",
+      "level": "40-41",
+      "biome": "Dark Boreal",
+      "coordinates": "2703/799",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=324"
+    },
+    {
+      "id": 325,
+      "name": "Dark Boreal",
+      "level": "41-42",
+      "biome": "Dark Boreal",
+      "coordinates": "2720/723",
+      "gathering": [
+        "mining"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=325"
+    },
+    {
+      "id": 326,
+      "name": "Dark Boreal",
+      "level": "43-44",
+      "biome": "Dark Boreal",
+      "coordinates": "2735/654",
+      "gathering": [
+        "dungeon",
+        "fishing"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=326"
+    },
+    {
+      "id": 327,
+      "name": "Dark Boreal",
+      "level": "45-46",
+      "biome": "Dark Boreal",
+      "coordinates": "2727/594",
+      "gathering": [
+        "chopping",
+        "worldboss"
+      ],
+      "waygate": true,
+      "source": "/modal/map_info?id=327"
+    },
+    {
+      "id": 328,
+      "name": "The Ghost Shore",
+      "level": "47-49",
+      "biome": "Ghost Shore",
+      "coordinates": "2641/564",
+      "gathering": [
+        "worldboss"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=328"
+    },
+    {
+      "id": 33,
+      "name": "The Pirate Wreck",
+      "level": "15-16",
+      "biome": "Shipwreck",
+      "coordinates": "1107/1883",
+      "gathering": [
+        "dungeon"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=33"
+    },
+    {
+      "id": 332,
+      "name": "Grimble’s Camp",
+      "level": "45",
+      "biome": "Dark Boreal",
+      "coordinates": "2688/658",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=332"
+    },
+    {
+      "id": 333,
+      "name": "Magic Plains",
+      "level": "40-42",
+      "biome": "Magic Plains",
+      "coordinates": "1666/2279",
+      "gathering": [
+        "fishing",
+        "mining"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=333"
+    },
+    {
+      "id": 334,
+      "name": "Magic Plains",
+      "level": "42-44",
+      "biome": "Magic Plains",
+      "coordinates": "1753/2280",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=334"
+    },
+    {
+      "id": 335,
+      "name": "Magic Plains",
+      "level": "44-46",
+      "biome": "Magic Plains",
+      "coordinates": "1838/2261",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=335"
+    },
+    {
+      "id": 34,
+      "name": "Sewers",
+      "level": "1-3",
+      "biome": "Sewers",
+      "coordinates": "826/1537",
+      "gathering": [
+        "dungeon"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=34"
+    },
+    {
+      "id": 340,
+      "name": "The Ember Forge",
+      "level": "49",
+      "biome": "Underground",
+      "coordinates": "2189/1499",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=340"
+    },
+    {
+      "id": 35,
+      "name": "Deep Sewers",
+      "level": "4-6",
+      "biome": "Sewers",
+      "coordinates": "826/1537",
+      "gathering": [
+        "dungeon"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=35"
+    },
+    {
+      "id": 36,
+      "name": "Ratdom",
+      "level": "5",
+      "biome": "Ratdom",
+      "coordinates": "826/1537",
+      "gathering": [
+        "dungeon"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=36"
+    },
+    {
+      "id": 37,
+      "name": "Manor Main Floor",
+      "level": "4-6",
+      "biome": "Urban",
+      "coordinates": "1074/1426",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=37"
+    },
+    {
+      "id": 38,
+      "name": "Manor 1st Floor",
+      "level": "4-6",
+      "biome": "Urban",
+      "coordinates": "1074/1426",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=38"
+    },
+    {
+      "id": 39,
+      "name": "Manor Attic",
+      "level": "4-6",
+      "biome": "Urban",
+      "coordinates": "1074/1426",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=39"
+    },
+    {
+      "id": 4,
+      "name": "Upper Fountain’s Descent",
+      "level": "1",
+      "biome": "Grassland",
+      "coordinates": "814/1683",
+      "gathering": [
+        "foraging"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=4"
+    },
+    {
+      "id": 40,
+      "name": "Manor Cellar",
+      "level": "4-6",
+      "biome": "Underground",
+      "coordinates": "1074/1426",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=40"
+    },
+    {
+      "id": 41,
+      "name": "Owranbu Drylands",
+      "level": "10-11",
+      "biome": "Dry Desert",
+      "coordinates": "1315/1504",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=41"
+    },
+    {
+      "id": 42,
+      "name": "The Cult Tunnel",
+      "level": "7-9",
+      "biome": "Underground",
+      "coordinates": "751/1424",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=42"
+    },
+    {
+      "id": 43,
+      "name": "The Cult Hideout",
+      "level": "7-9",
+      "biome": "Underground",
+      "coordinates": "751/1424",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=43"
+    },
+    {
+      "id": 44,
+      "name": "Farmer’s House",
+      "level": "4",
+      "biome": "Urban",
+      "coordinates": "925/1672",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=44"
+    },
+    {
+      "id": 45,
+      "name": "Baron’s Lair",
+      "level": "9",
+      "biome": "Underground",
+      "coordinates": "1074/1426",
+      "gathering": [
+        "dungeon"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=45"
+    },
+    {
+      "id": 46,
+      "name": "Bear Den",
+      "level": "10",
+      "biome": "Bear Den",
+      "coordinates": "638/1161",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=46"
+    },
+    {
+      "id": 47,
+      "name": "Den Of Devourer",
+      "level": "10",
+      "biome": "Den Of Devourer",
+      "coordinates": "638/1161",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=47"
+    },
+    {
+      "id": 48,
+      "name": "Elundi Garden",
+      "level": "10-11",
+      "biome": "Deep Forest",
+      "coordinates": "580/1175",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=48"
+    },
+    {
+      "id": 49,
+      "name": "Elundi Garden",
+      "level": "11-12",
+      "biome": "Deep Forest",
+      "coordinates": "624/1130",
+      "gathering": [
+        "dungeon",
+        "chopping"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=49"
+    },
+    {
+      "id": 5,
+      "name": "El Caspar",
+      "level": "1",
+      "biome": "Grassland",
+      "coordinates": "871/1551",
+      "gathering": [
+        "fishing",
+        "foraging"
+      ],
+      "waygate": true,
+      "source": "/modal/map_info?id=5"
+    },
+    {
+      "id": 50,
+      "name": "Deep Forest",
+      "level": "12-13",
+      "biome": "Deep Forest",
+      "coordinates": "675/1109",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=50"
+    },
+    {
+      "id": 51,
+      "name": "Deep Forest",
+      "level": "13-14",
+      "biome": "Deep Forest",
+      "coordinates": "717/1076",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=51"
+    },
+    {
+      "id": 52,
+      "name": "Deep Forest",
+      "level": "14-15",
+      "biome": "Deep Forest",
+      "coordinates": "754/1065",
+      "gathering": [
+        "fishing"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=52"
+    },
+    {
+      "id": 53,
+      "name": "Deep Forest",
+      "level": "14-15",
+      "biome": "Deep Forest",
+      "coordinates": "790/1052",
+      "gathering": [],
+      "waygate": true,
+      "source": "/modal/map_info?id=53"
+    },
+    {
+      "id": 54,
+      "name": "Elm’s Rest",
+      "level": "15",
+      "biome": "Deep Forest",
+      "coordinates": "617/1070",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=54"
+    },
+    {
+      "id": 55,
+      "name": "Way to Morwen",
+      "level": "14-15",
+      "biome": "Deep Forest",
+      "coordinates": "778/998",
+      "gathering": [
+        "quarrying"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=55"
+    },
+    {
+      "id": 56,
+      "name": "Abandoned Mine",
+      "level": "41-42",
+      "biome": "Underground",
+      "coordinates": "724/960",
+      "gathering": [
+        "quarrying"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=56"
+    },
+    {
+      "id": 57,
+      "name": "Abandoned Mine",
+      "level": "41-42",
+      "biome": "Underground",
+      "coordinates": "667/937",
+      "gathering": [
+        "quarrying"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=57"
+    },
+    {
+      "id": 58,
+      "name": "Abandoned Mine",
+      "level": "41-42",
+      "biome": "Underground",
+      "coordinates": "618/935",
+      "gathering": [
+        "fishing",
+        "quarrying"
+      ],
+      "waygate": true,
+      "source": "/modal/map_info?id=58"
+    },
+    {
+      "id": 59,
+      "name": "Abandoned Mine",
+      "level": "41-42",
+      "biome": "Underground",
+      "coordinates": "565/949",
+      "gathering": [
+        "quarrying"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=59"
+    },
+    {
+      "id": 6,
+      "name": "Brisban Pond",
+      "level": "1-3",
+      "biome": "Grassland",
+      "coordinates": "721/1499",
+      "gathering": [
+        "fishing",
+        "quarrying"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=6"
+    },
+    {
+      "id": 61,
+      "name": "Sandstorm Pass",
+      "level": "11-12",
+      "biome": "Dry Desert",
+      "coordinates": "1343/1440",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=61"
+    },
+    {
+      "id": 62,
+      "name": "Sun-Scorched Plateau",
+      "level": "11-12",
+      "biome": "Dry Desert",
+      "coordinates": "1322/1396",
+      "gathering": [
+        "caravan"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=62"
+    },
+    {
+      "id": 63,
+      "name": "Sandspire Summit",
+      "level": "13-14",
+      "biome": "Dry Desert",
+      "coordinates": "1375/1364",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=63"
+    },
+    {
+      "id": 64,
+      "name": "Droughtlands",
+      "level": "13-14",
+      "biome": "Dry Desert",
+      "coordinates": "1397/1312",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=64"
+    },
+    {
+      "id": 65,
+      "name": "Mesa Mine Area",
+      "level": "11-12",
+      "biome": "Dry Desert",
+      "coordinates": "1396/1445",
+      "gathering": [
+        "mining",
+        "quarrying"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=65"
+    },
+    {
+      "id": 66,
+      "name": "Rock Valley",
+      "level": "11-12",
+      "biome": "Dry Desert",
+      "coordinates": "1446/1462",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=66"
+    },
+    {
+      "id": 67,
+      "name": "Mirage Mountains",
+      "level": "13-14",
+      "biome": "Dry Desert",
+      "coordinates": "1499/1485",
+      "gathering": [],
+      "waygate": true,
+      "source": "/modal/map_info?id=67"
+    },
+    {
+      "id": 68,
+      "name": "Yurk’s Yard",
+      "level": "30",
+      "biome": "Shrubland",
+      "coordinates": "2527/1147",
+      "gathering": [
+        "dungeon",
+        "chopping",
+        "fishing"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=68"
+    },
+    {
+      "id": 69,
+      "name": "Yurk’s Lodge",
+      "level": "30",
+      "biome": "Underground",
+      "coordinates": "2527/1147",
+      "gathering": [
+        "dungeon"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=69"
+    },
+    {
+      "id": 7,
+      "name": "Akelay Foothills",
+      "level": "4-6",
+      "biome": "Grassland",
+      "coordinates": "771/1445",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=7"
+    },
+    {
+      "id": 72,
+      "name": "Shifting Sands",
+      "level": "13-14",
+      "biome": "Dry Desert",
+      "coordinates": "1559/1488",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=72"
+    },
+    {
+      "id": 73,
+      "name": "Radiant Heat Flats",
+      "level": "13-14",
+      "biome": "Dry Desert",
+      "coordinates": "1602/1455",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=73"
+    },
+    {
+      "id": 74,
+      "name": "Sunken Sands",
+      "level": "14-15",
+      "biome": "Dry Desert",
+      "coordinates": "1655/1454",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=74"
+    },
+    {
+      "id": 75,
+      "name": "The Shifting Tides",
+      "level": "14-15",
+      "biome": "Dry Desert",
+      "coordinates": "1698/1421",
+      "gathering": [
+        "caravan"
+      ],
+      "waygate": true,
+      "source": "/modal/map_info?id=75"
+    },
+    {
+      "id": 76,
+      "name": "Sirocco Springs",
+      "level": "14-15",
+      "biome": "Dry Desert",
+      "coordinates": "1683/1366",
+      "gathering": [
+        "caravan"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=76"
+    },
+    {
+      "id": 77,
+      "name": "Guardian Queen Hive",
+      "level": "39",
+      "biome": "Guardian Queen Hive",
+      "coordinates": "1169/843",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=77"
+    },
+    {
+      "id": 78,
+      "name": "Guardian Queen Hive",
+      "level": "39",
+      "biome": "Guardian Queen Hive",
+      "coordinates": "1169/843",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=78"
+    },
+    {
+      "id": 8,
+      "name": "Akelay Cave Level 1",
+      "level": "4-6",
+      "biome": "Underground",
+      "coordinates": "738/1440",
+      "gathering": [
+        "mining"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=8"
+    },
+    {
+      "id": 83,
+      "name": "Khamsin Cliffs",
+      "level": "14-15",
+      "biome": "Dry Desert",
+      "coordinates": "1716/1329",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=83"
+    },
+    {
+      "id": 84,
+      "name": "Golden Sandscape",
+      "level": "16-17",
+      "biome": "Dry Desert",
+      "coordinates": "1717/1275",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=84"
+    },
+    {
+      "id": 85,
+      "name": "Oasis",
+      "level": "16-17",
+      "biome": "Oasis",
+      "coordinates": "1753/1234",
+      "gathering": [
+        "fishing",
+        "chopping",
+        "caravan"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=85"
+    },
+    {
+      "id": 9,
+      "name": "Akelay Cave Level 2",
+      "level": "6-9",
+      "biome": "Underground",
+      "coordinates": "738/1440",
+      "gathering": [
+        "quarrying"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=9"
+    },
+    {
+      "id": 90,
+      "name": "Whispering Sands",
+      "level": "14-15",
+      "biome": "Dry Desert",
+      "coordinates": "1607/1185",
+      "gathering": [
+        "caravan"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=90"
+    },
+    {
+      "id": 900,
+      "name": "Abyssal Tower Entrance",
+      "level": "1",
+      "biome": "Urban",
+      "coordinates": "651/1998",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=900"
+    },
+    {
+      "id": 901,
+      "name": "Abyssal Tower",
+      "level": "1",
+      "biome": "Grassland",
+      "coordinates": "651/1998",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=901"
+    },
+    {
+      "id": 902,
+      "name": "Abyssal Tower",
+      "level": "10",
+      "biome": "Magic Plains",
+      "coordinates": "651/1998",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=902"
+    },
+    {
+      "id": 903,
+      "name": "Abyssal Tower",
+      "level": "20",
+      "biome": "Dry Desert",
+      "coordinates": "651/1998",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=903"
+    },
+    {
+      "id": 904,
+      "name": "Abyssal Tower",
+      "level": "30",
+      "biome": "Deep Forest",
+      "coordinates": "651/1998",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=904"
+    },
+    {
+      "id": 905,
+      "name": "Abyssal Tower",
+      "level": "40",
+      "biome": "Haunted Forest",
+      "coordinates": "651/1998",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=905"
+    },
+    {
+      "id": 906,
+      "name": "Abyssal Tower",
+      "level": "50",
+      "biome": "Taiga",
+      "coordinates": "651/1998",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=906"
+    },
+    {
+      "id": 907,
+      "name": "Abyssal Tower",
+      "level": "60",
+      "biome": "Urban",
+      "coordinates": "651/1998",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=907"
+    },
+    {
+      "id": 908,
+      "name": "Abyssal Tower",
+      "level": "70",
+      "biome": "Urban",
+      "coordinates": "651/1998",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=908"
+    },
+    {
+      "id": 909,
+      "name": "Abyssal Tower",
+      "level": "80",
+      "biome": "Urban",
+      "coordinates": "651/1998",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=909"
+    },
+    {
+      "id": 91,
+      "name": "Drouver",
+      "level": "15",
+      "biome": "Savanna",
+      "coordinates": "1577/1124",
+      "gathering": [],
+      "waygate": true,
+      "source": "/modal/map_info?id=91"
+    },
+    {
+      "id": 910,
+      "name": "Abyssal Tower",
+      "level": "90",
+      "biome": "Urban",
+      "coordinates": "651/1998",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=910"
+    },
+    {
+      "id": 911,
+      "name": "Abyssal Tower",
+      "level": "100",
+      "biome": "Urban",
+      "coordinates": "651/1998",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=911"
+    },
+    {
+      "id": 92,
+      "name": "Savanna",
+      "level": "14-15",
+      "biome": "Savanna",
+      "coordinates": "1516/1111",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=92"
+    },
+    {
+      "id": 93,
+      "name": "Savanna",
+      "level": "14-15",
+      "biome": "Savanna",
+      "coordinates": "1453/1107",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=93"
+    },
+    {
+      "id": 94,
+      "name": "Scorpion`s Nest",
+      "level": "14-15",
+      "biome": "Dry Desert",
+      "coordinates": "1385/1133",
+      "gathering": [
+        "mining"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=94"
+    },
+    {
+      "id": 95,
+      "name": "Dry Mirage",
+      "level": "16-17",
+      "biome": "Dry Desert",
+      "coordinates": "1335/1108",
+      "gathering": [
+        "mining"
+      ],
+      "waygate": false,
+      "source": "/modal/map_info?id=95"
+    },
+    {
+      "id": 96,
+      "name": "Dune Sea",
+      "level": "13-14",
+      "biome": "Dry Desert",
+      "coordinates": "1349/1181",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=96"
+    },
+    {
+      "id": 97,
+      "name": "Ancient Ruins",
+      "level": "13-14",
+      "biome": "Dry Desert",
+      "coordinates": "1353/1252",
+      "gathering": [],
+      "waygate": true,
+      "source": "/modal/map_info?id=97"
+    },
+    {
+      "id": 98,
+      "name": "Burning Sands",
+      "level": "13-14",
+      "biome": "Dry Desert",
+      "coordinates": "1433/1258",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=98"
+    },
+    {
+      "id": 99,
+      "name": "Burnt Sienna Wastes",
+      "level": "14-15",
+      "biome": "Dry Desert",
+      "coordinates": "1493/1265",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=99"
+    },
+    {
+      "id": 998,
+      "name": "Fall of Rebirth",
+      "level": "60",
+      "biome": "Enchanted Forest",
+      "coordinates": "887/1797",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=998"
+    },
+    {
+      "id": 999,
+      "name": "Fountain of Rebirth",
+      "level": "1",
+      "biome": "Enchanted Forest",
+      "coordinates": "887/1797",
+      "gathering": [],
+      "waygate": false,
+      "source": "/modal/map_info?id=999"
+    }
+  ],
+  "quests": [
+    {
+      "id": 392,
+      "name": "Supply for the Smith",
+      "type": "Professions",
+      "location": "Elundi 38 / 40",
+      "requirement": "armorsmithing Level 10",
+      "items": [
+        {
+          "name": "Iron Ore",
+          "quantity": "20"
+        }
+      ],
+      "rewards": [
+        {
+          "name": "Bronze Sestertii",
+          "quantity": "100"
+        },
+        {
+          "name": "Bronze Sestertii",
+          "quantity": "500"
+        },
+        {
+          "name": "Armorsmithing Experience",
+          "quantity": "1000"
+        }
+      ],
+      "guide": [
+        22,
+        55,
+        14
+      ],
+      "source": "/modal/quest?id=392&details=1"
+    },
+    {
+      "id": 394,
+      "name": "Renovation Plans",
+      "type": "Professions",
+      "location": "Elundi 38 / 29",
+      "requirement": "cartography Level 10",
+      "items": [
+        {
+          "name": "Scrap Blueprint",
+          "quantity": "8"
+        }
+      ],
+      "rewards": [
+        {
+          "name": "Bronze Sestertii",
+          "quantity": "500"
+        },
+        {
+          "name": "Cartography Experience",
+          "quantity": "1000"
+        }
+      ],
+      "guide": [],
+      "source": "/modal/quest?id=394&details=1"
+    },
+    {
+      "id": 395,
+      "name": "A Sweet Helping Hand",
+      "type": "Professions",
+      "location": "Elundi 17 / 48",
+      "requirement": "cooking Level 10",
+      "items": [
+        {
+          "name": "Scrap Fruit Jam",
+          "quantity": "5"
+        }
+      ],
+      "rewards": [
+        {
+          "name": "Scrap Vegetable Pie",
+          "quantity": "1"
+        },
+        {
+          "name": "Bronze Sestertii",
+          "quantity": "500"
+        },
+        {
+          "name": "Cooking Experience",
+          "quantity": "1000"
+        }
+      ],
+      "guide": [],
+      "source": "/modal/quest?id=395&details=1"
+    },
+    {
+      "id": 396,
+      "name": "Shrimp Delivery",
+      "type": "Professions",
+      "location": "Elundi 14 / 18",
+      "requirement": "fishing Level 10",
+      "items": [
+        {
+          "name": "Shrimp",
+          "quantity": "20"
+        }
+      ],
+      "rewards": [
+        {
+          "name": "",
+          "quantity": ""
+        },
+        {
+          "name": "Bronze Sestertii",
+          "quantity": "500"
+        },
+        {
+          "name": "Fishing Experience",
+          "quantity": "1000"
+        }
+      ],
+      "guide": [
+        16,
+        9,
+        21
+      ],
+      "source": "/modal/quest?id=396&details=1"
+    },
+    {
+      "id": 397,
+      "name": "Beach Cleanup",
+      "type": "Professions",
+      "location": "Elundi 44 / 49",
+      "requirement": "hunting Level 10",
+      "items": [],
+      "rewards": [
+        {
+          "name": "Bronze Sestertii",
+          "quantity": "500"
+        },
+        {
+          "name": "Hunting Experience",
+          "quantity": "1000"
+        }
+      ],
+      "guide": [],
+      "source": "/modal/quest?id=397&details=1"
+    },
+    {
+      "id": 398,
+      "name": "A Sparkling Surprise",
+      "type": "Professions",
+      "location": "Elundi 25 / 43",
+      "requirement": "jeweling Level 10",
+      "items": [
+        {
+          "name": "Round Sapphire",
+          "quantity": "3"
+        },
+        {
+          "name": "Round Quartz",
+          "quantity": "3"
+        }
+      ],
+      "rewards": [
+        {
+          "name": "",
+          "quantity": ""
+        },
+        {
+          "name": "Bronze Sestertii",
+          "quantity": "500"
+        },
+        {
+          "name": "Jeweling Experience",
+          "quantity": "1000"
+        }
+      ],
+      "guide": [],
+      "source": "/modal/quest?id=398&details=1"
+    }
+  ],
+  "gatheringLocations": [
+    {
+      "skill": "Chopping",
+      "map": "Southern Foothill",
+      "tier": "Tier 1",
+      "level": "1-3",
+      "coordinates": "925/1672",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Chopping",
+      "map": "Bay’s Alley",
+      "tier": "Tier 1",
+      "level": "4-6",
+      "coordinates": "974/1729",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Chopping",
+      "map": "Windy Fields",
+      "tier": "Tier 1",
+      "level": "1-3",
+      "coordinates": "1026/1539",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Chopping",
+      "map": "Forest Of Owranbu",
+      "tier": "Tier 1",
+      "level": "4-6",
+      "coordinates": "1093/1584",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Chopping",
+      "map": "Owranbu River",
+      "tier": "Tier 2",
+      "level": "7-10",
+      "coordinates": "1182/1558",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Chopping",
+      "map": "Dead Leaves Tiara",
+      "tier": "Tier 2",
+      "level": "12-13",
+      "coordinates": "1323/1681",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Chopping",
+      "map": "Elundi Garden",
+      "tier": "Tier 2",
+      "level": "11-12",
+      "coordinates": "624/1130",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Chopping",
+      "map": "Oasis",
+      "tier": "Tier 2",
+      "level": "16-17",
+      "coordinates": "1753/1234",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Chopping",
+      "map": "Marsh",
+      "tier": "Tier 3",
+      "level": "19-20",
+      "coordinates": "1552/1718",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Chopping",
+      "map": "Shrubland",
+      "tier": "Tier 3",
+      "level": "21-22",
+      "coordinates": "2248/1304",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Chopping",
+      "map": "Yurk’s Yard",
+      "tier": "Tier 4",
+      "level": "30",
+      "coordinates": "2527/1147",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Chopping",
+      "map": "Swamp",
+      "tier": "Tier 4",
+      "level": "29-30",
+      "coordinates": "1447/1907",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Chopping",
+      "map": "Caeltys’ Causeway",
+      "tier": "Tier 4",
+      "level": "31-33",
+      "coordinates": "875/1011",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Chopping",
+      "map": "Caeltys’ Yarden",
+      "tier": "Tier 4",
+      "level": "38-39",
+      "coordinates": "1165/883",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Chopping",
+      "map": "Taiga",
+      "tier": "Tier 4",
+      "level": "29-30",
+      "coordinates": "1736/496",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Chopping",
+      "map": "Shrubland",
+      "tier": "Tier 4",
+      "level": "31-33",
+      "coordinates": "2506/1072",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Chopping",
+      "map": "Rainforest",
+      "tier": "Tier 4",
+      "level": "31-32",
+      "coordinates": "3163/1554",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Chopping",
+      "map": "Rainforest",
+      "tier": "Tier 4",
+      "level": "35-36",
+      "coordinates": "3169/1644",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Chopping",
+      "map": "Taiga",
+      "tier": "Tier 5",
+      "level": "45-46",
+      "coordinates": "1157/1217",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Chopping",
+      "map": "Rainforest",
+      "tier": "Tier 5",
+      "level": "41-42",
+      "coordinates": "3130/1820",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Chopping",
+      "map": "Dark Boreal",
+      "tier": "Tier 5",
+      "level": "45-46",
+      "coordinates": "2727/594",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Farming",
+      "map": "Arodas Lakeshore",
+      "tier": "Tier 1",
+      "level": "4-6",
+      "coordinates": "625/1464",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Farming",
+      "map": "Southern Foothill",
+      "tier": "Tier 1",
+      "level": "1-3",
+      "coordinates": "925/1672",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Farming",
+      "map": "Windy Fields",
+      "tier": "Tier 1",
+      "level": "1-3",
+      "coordinates": "1026/1539",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Farming",
+      "map": "Elundi",
+      "tier": "Tier 2",
+      "level": "10",
+      "coordinates": "585/1250",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Farming",
+      "map": "Owranbu River",
+      "tier": "Tier 2",
+      "level": "7-10",
+      "coordinates": "1182/1558",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Farming",
+      "map": "Dust Outskirts",
+      "tier": "Tier 2",
+      "level": "14-15",
+      "coordinates": "1549/1221",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Farming",
+      "map": "Marsh",
+      "tier": "Tier 3",
+      "level": "19-20",
+      "coordinates": "1552/1718",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Farming",
+      "map": "Shrubland",
+      "tier": "Tier 3",
+      "level": "21-22",
+      "coordinates": "2301/1245",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Farming",
+      "map": "Caeltys’ Causeway",
+      "tier": "Tier 4",
+      "level": "31-33",
+      "coordinates": "875/1011",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Farming",
+      "map": "Shrubland",
+      "tier": "Tier 4",
+      "level": "31-33",
+      "coordinates": "2506/1072",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Farming",
+      "map": "Trescan",
+      "tier": "Tier 4",
+      "level": "30",
+      "coordinates": "2752/890",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Farming",
+      "map": "Taiga",
+      "tier": "Tier 5",
+      "level": "43-44",
+      "coordinates": "1144/1257",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Farming",
+      "map": "Rainforest",
+      "tier": "Tier 5",
+      "level": "43-45",
+      "coordinates": "3123/1877",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Fishing",
+      "map": "El Caspar",
+      "tier": "Tier 1",
+      "level": "1",
+      "coordinates": "871/1551",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Fishing",
+      "map": "Brisban Pond",
+      "tier": "Tier 1",
+      "level": "1-3",
+      "coordinates": "721/1499",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Fishing",
+      "map": "Tree of Life",
+      "tier": "Tier 1",
+      "level": "5-6",
+      "coordinates": "804/1231",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Fishing",
+      "map": "Arodas Lakeshore",
+      "tier": "Tier 1",
+      "level": "4-6",
+      "coordinates": "625/1464",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Fishing",
+      "map": "Bay’s Alley",
+      "tier": "Tier 1",
+      "level": "4-6",
+      "coordinates": "974/1729",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Fishing",
+      "map": "Windy Fields",
+      "tier": "Tier 1",
+      "level": "1-3",
+      "coordinates": "1026/1539",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Fishing",
+      "map": "Arodas Beach",
+      "tier": "Tier 2",
+      "level": "7-10",
+      "coordinates": "583/1367",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Fishing",
+      "map": "Elundi",
+      "tier": "Tier 2",
+      "level": "10",
+      "coordinates": "585/1250",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Fishing",
+      "map": "Bay’s Alley",
+      "tier": "Tier 2",
+      "level": "7-10",
+      "coordinates": "1047/1754",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Fishing",
+      "map": "Owranbu River",
+      "tier": "Tier 2",
+      "level": "7-10",
+      "coordinates": "1182/1558",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Fishing",
+      "map": "Dead Leaves Tiara",
+      "tier": "Tier 2",
+      "level": "12-13",
+      "coordinates": "1323/1681",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Fishing",
+      "map": "Pirate Wreck Beach",
+      "tier": "Tier 2",
+      "level": "14-15",
+      "coordinates": "1135/1837",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Fishing",
+      "map": "Deep Forest",
+      "tier": "Tier 2",
+      "level": "14-15",
+      "coordinates": "754/1065",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Fishing",
+      "map": "Oasis",
+      "tier": "Tier 2",
+      "level": "16-17",
+      "coordinates": "1753/1234",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Fishing",
+      "map": "Marsh",
+      "tier": "Tier 2",
+      "level": "17-18",
+      "coordinates": "1547/1804",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Fishing",
+      "map": "Marsh",
+      "tier": "Tier 3",
+      "level": "19-20",
+      "coordinates": "1552/1718",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Fishing",
+      "map": "Marsh",
+      "tier": "Tier 3",
+      "level": "19-20",
+      "coordinates": "1530/1854",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Fishing",
+      "map": "Marsh",
+      "tier": "Tier 3",
+      "level": "19-20",
+      "coordinates": "1479/2073",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Fishing",
+      "map": "Haunted Forest",
+      "tier": "Tier 3",
+      "level": "21-22",
+      "coordinates": "1860/951",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Fishing",
+      "map": "Shrubland",
+      "tier": "Tier 3",
+      "level": "21-22",
+      "coordinates": "2301/1245",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Fishing",
+      "map": "Taiga",
+      "tier": "Tier 3",
+      "level": "27-28",
+      "coordinates": "1715/554",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Fishing",
+      "map": "Yurk’s Yard",
+      "tier": "Tier 4",
+      "level": "30",
+      "coordinates": "2527/1147",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Fishing",
+      "map": "Swamp",
+      "tier": "Tier 4",
+      "level": "29-30",
+      "coordinates": "1447/1907",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Fishing",
+      "map": "Caeltys’ Yarden",
+      "tier": "Tier 4",
+      "level": "38-39",
+      "coordinates": "1165/883",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Fishing",
+      "map": "Shrubland",
+      "tier": "Tier 4",
+      "level": "31-33",
+      "coordinates": "2506/1072",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Fishing",
+      "map": "Itham’s Crator",
+      "tier": "Tier 4",
+      "level": "34-35",
+      "coordinates": "1977/1767",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Fishing",
+      "map": "Itham’s Anchorage",
+      "tier": "Tier 4",
+      "level": "36-37",
+      "coordinates": "1975/1895",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Fishing",
+      "map": "Rainforest",
+      "tier": "Tier 4",
+      "level": "31-32",
+      "coordinates": "3163/1554",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Fishing",
+      "map": "Trescan’s Dock",
+      "tier": "Tier 4",
+      "level": "34-35",
+      "coordinates": "2605/900",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Fishing",
+      "map": "Abandoned Mine",
+      "tier": "Tier 5",
+      "level": "41-42",
+      "coordinates": "618/935",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Fishing",
+      "map": "Rainforest",
+      "tier": "Tier 5",
+      "level": "39-40",
+      "coordinates": "3173/1767",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Fishing",
+      "map": "Dark Boreal",
+      "tier": "Tier 5",
+      "level": "43-44",
+      "coordinates": "2735/654",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Fishing",
+      "map": "Magic Plains",
+      "tier": "Tier 5",
+      "level": "40-42",
+      "coordinates": "1666/2279",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Foraging",
+      "map": "Upper Fountain’s Descent",
+      "tier": "Tier 1",
+      "level": "1",
+      "coordinates": "814/1683",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Foraging",
+      "map": "El Caspar",
+      "tier": "Tier 1",
+      "level": "1",
+      "coordinates": "871/1551",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Foraging",
+      "map": "Arodas Lakeshore",
+      "tier": "Tier 1",
+      "level": "4-6",
+      "coordinates": "625/1464",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Foraging",
+      "map": "Owranbu River",
+      "tier": "Tier 2",
+      "level": "7-10",
+      "coordinates": "1182/1558",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Foraging",
+      "map": "Dust Outskirts",
+      "tier": "Tier 2",
+      "level": "14-15",
+      "coordinates": "1549/1221",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Foraging",
+      "map": "Marsh",
+      "tier": "Tier 2",
+      "level": "17-18",
+      "coordinates": "1547/1804",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Foraging",
+      "map": "Marsh",
+      "tier": "Tier 3",
+      "level": "19-20",
+      "coordinates": "1530/1854",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Foraging",
+      "map": "Swamp",
+      "tier": "Tier 3",
+      "level": "26-28",
+      "coordinates": "1430/1949",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Foraging",
+      "map": "Shrubland",
+      "tier": "Tier 3",
+      "level": "21-22",
+      "coordinates": "2301/1245",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Foraging",
+      "map": "Swamp",
+      "tier": "Tier 4",
+      "level": "29-30",
+      "coordinates": "1447/1907",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Foraging",
+      "map": "Caeltys’ Causeway",
+      "tier": "Tier 4",
+      "level": "31-33",
+      "coordinates": "875/1011",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Foraging",
+      "map": "Shrubland",
+      "tier": "Tier 4",
+      "level": "31-33",
+      "coordinates": "2506/1072",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Foraging",
+      "map": "Trescan",
+      "tier": "Tier 4",
+      "level": "30",
+      "coordinates": "2752/890",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Foraging",
+      "map": "Rainforest",
+      "tier": "Tier 5",
+      "level": "43-45",
+      "coordinates": "3123/1877",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Mining",
+      "map": "Akelay Cave Level 1",
+      "tier": "Tier 1",
+      "level": "4-6",
+      "coordinates": "738/1440",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Mining",
+      "map": "Southern Foothill",
+      "tier": "Tier 1",
+      "level": "1-3",
+      "coordinates": "925/1672",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Mining",
+      "map": "Owranbu River",
+      "tier": "Tier 2",
+      "level": "7-10",
+      "coordinates": "1182/1558",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Mining",
+      "map": "Mesa Mine Area",
+      "tier": "Tier 2",
+      "level": "11-12",
+      "coordinates": "1396/1445",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Mining",
+      "map": "Scorpion`s Nest",
+      "tier": "Tier 2",
+      "level": "14-15",
+      "coordinates": "1385/1133",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Mining",
+      "map": "Dry Mirage",
+      "tier": "Tier 2",
+      "level": "16-17",
+      "coordinates": "1335/1108",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Mining",
+      "map": "Desert of Lost Hope",
+      "tier": "Tier 2",
+      "level": "14-15",
+      "coordinates": "1746/1452",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Mining",
+      "map": "Savanna",
+      "tier": "Tier 3",
+      "level": "19-20",
+      "coordinates": "1463/836",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Mining",
+      "map": "Red Desert",
+      "tier": "Tier 3",
+      "level": "20-21",
+      "coordinates": "2114/1790",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Mining",
+      "map": "Taiga",
+      "tier": "Tier 3",
+      "level": "27-28",
+      "coordinates": "1680/600",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Mining",
+      "map": "Caeltys’ Yarden",
+      "tier": "Tier 4",
+      "level": "34-37",
+      "coordinates": "1173/923",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Mining",
+      "map": "Necropolis",
+      "tier": "Tier 4",
+      "level": "29-30",
+      "coordinates": "2138/844",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Mining",
+      "map": "Ancient Worm Tunnel",
+      "tier": "Tier 4",
+      "level": "34-35",
+      "coordinates": "2625/995",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Mining",
+      "map": "Itham’s Anchorage",
+      "tier": "Tier 4",
+      "level": "36-37",
+      "coordinates": "1975/1895",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Mining",
+      "map": "Taiga",
+      "tier": "Tier 5",
+      "level": "41-42",
+      "coordinates": "1141/1306",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Mining",
+      "map": "Dark Boreal",
+      "tier": "Tier 5",
+      "level": "41-42",
+      "coordinates": "2720/723",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Mining",
+      "map": "Magic Plains",
+      "tier": "Tier 5",
+      "level": "40-42",
+      "coordinates": "1666/2279",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Quarrying",
+      "map": "Brisban Pond",
+      "tier": "Tier 1",
+      "level": "1-3",
+      "coordinates": "721/1499",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Quarrying",
+      "map": "Akelay Cave Level 2",
+      "tier": "Tier 1",
+      "level": "6-9",
+      "coordinates": "738/1440",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Quarrying",
+      "map": "Mount Akelay",
+      "tier": "Tier 1",
+      "level": "4-6",
+      "coordinates": "767/1413",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Quarrying",
+      "map": "Way to Morwen",
+      "tier": "Tier 2",
+      "level": "14-15",
+      "coordinates": "778/998",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Quarrying",
+      "map": "Mesa Mine Area",
+      "tier": "Tier 2",
+      "level": "11-12",
+      "coordinates": "1396/1445",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Quarrying",
+      "map": "The Living Desert",
+      "tier": "Tier 2",
+      "level": "16-17",
+      "coordinates": "1931/1490",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Quarrying",
+      "map": "Savanna",
+      "tier": "Tier 3",
+      "level": "19-20",
+      "coordinates": "1463/836",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Quarrying",
+      "map": "Red Desert",
+      "tier": "Tier 3",
+      "level": "20-21",
+      "coordinates": "2114/1790",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Quarrying",
+      "map": "Necropolis",
+      "tier": "Tier 4",
+      "level": "29-30",
+      "coordinates": "2138/844",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Quarrying",
+      "map": "Taiga",
+      "tier": "Tier 4",
+      "level": "31-32",
+      "coordinates": "1676/420",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Quarrying",
+      "map": "Abandoned Mine",
+      "tier": "Tier 5",
+      "level": "41-42",
+      "coordinates": "724/960",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Quarrying",
+      "map": "Abandoned Mine",
+      "tier": "Tier 5",
+      "level": "41-42",
+      "coordinates": "667/937",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Quarrying",
+      "map": "Abandoned Mine",
+      "tier": "Tier 5",
+      "level": "41-42",
+      "coordinates": "618/935",
+      "source": "/modal/help_detail?id=49"
+    },
+    {
+      "skill": "Quarrying",
+      "map": "Abandoned Mine",
+      "tier": "Tier 5",
+      "level": "41-42",
+      "coordinates": "565/949",
+      "source": "/modal/help_detail?id=49"
+    }
+  ],
+  "help": [
+    {
+      "id": 6,
+      "title": "Attributes & Stats",
+      "sha256": "e0342bccec40bbf5404463ccaf90456e57bbe84b82f5dfc2783aec45da9e13d3",
+      "bytes": 14620
+    },
+    {
+      "id": 135,
+      "title": "Norroth - How it Began",
+      "sha256": "5b3169f83c9da201de98038cbd38cd5567420983225d1c344239ed65b1631d05",
+      "bytes": 4932
+    },
+    {
+      "id": 107,
+      "title": "Staff Roles & Colors",
+      "sha256": "c441c4fde3c1653a0b76c0316ed2aa528e6278c0710a8fcf404a684c0846426f",
+      "bytes": 2058
+    },
+    {
+      "id": 45,
+      "title": "Inventory and Stash",
+      "sha256": "8a09245356c3c514cb4923b47fa2d90427fe253819d4bbf882d9188a79d8d05e",
+      "bytes": 2605
+    },
+    {
+      "id": 130,
+      "title": "Reporting Bugs",
+      "sha256": "ae3d68994baa38fdd071a019d16499bc1445cf370b16f540cb002136d81d7164",
+      "bytes": 1533
+    },
+    {
+      "id": 105,
+      "title": "Patreon",
+      "sha256": "a15ebd7607e5c7e1dc1d308651d7d6fc2460c146b4b418137e17e6ed2e1ed61c",
+      "bytes": 1301
+    },
+    {
+      "id": 109,
+      "title": "Beginners Guide",
+      "sha256": "83a223b18051ce6c456c59756862a6d62fe3a6f13d78e00ce9a0beedac0302d3",
+      "bytes": 500
+    },
+    {
+      "id": 134,
+      "title": "Alignment",
+      "sha256": "646bfc21688a0c268ac619150b8f91d19eeffdcbd2f67e6dcd351b1e5d938dcf",
+      "bytes": 1615
+    },
+    {
+      "id": 144,
+      "title": "Enemy Colors and Stars",
+      "sha256": "12fb73770b96e4608e551c056c872dd79556718959330ddfd63c72cf25bc7488",
+      "bytes": 2371
+    },
+    {
+      "id": 129,
+      "title": "The Abyssal Tower",
+      "sha256": "a27bf8d28bf9d2058cec77a80c9567ed03d849b26e1b47f6b279c19c684795a2",
+      "bytes": 1876
+    },
+    {
+      "id": 56,
+      "title": "Dungeons & Bosses",
+      "sha256": "682b7073866c5b30785a55bfb9ee902b06fb749bf22ff4d41c93cd5ac8895895",
+      "bytes": 8650
+    },
+    {
+      "id": 53,
+      "title": "Enemies",
+      "sha256": "919fb9e67367a4d1e2c5b58d7c94df7ffaca4471e4257728253b17c79690a2bd",
+      "bytes": 113582
+    },
+    {
+      "id": 60,
+      "title": "Loot Bag",
+      "sha256": "cc2a3bee44aa3d3ab6499c995f61aaafd48573354b94c822454a45c0ad145a3f",
+      "bytes": 639
+    },
+    {
+      "id": 128,
+      "title": "Void Rifts",
+      "sha256": "d1fd15ead09ee4bd59915604a2568c4765d23e72e0faae14b8df56e8e0afa387",
+      "bytes": 971
+    },
+    {
+      "id": 127,
+      "title": "Battle Arena",
+      "sha256": "ffa441d1290a1dd927014ea0e917052303bf2f4612a2569b86d10b409b481e60",
+      "bytes": 3884
+    },
+    {
+      "id": 111,
+      "title": "Overlords",
+      "sha256": "1c0427a4a155e40cb2dc108c6ee7b4f6083e1e9adf308c92626c7dd20292eb9c",
+      "bytes": 2237
+    },
+    {
+      "id": 104,
+      "title": "Tiers & Materials",
+      "sha256": "8a41af53db32da79c843858218625e0f1ae667a7642fc4d70a70b2ee78b3cf1a",
+      "bytes": 2532
+    },
+    {
+      "id": 49,
+      "title": "Gathering Spots",
+      "sha256": "dcbec9477dd79266354d25e149d30bb8924e9c6279cfffea8664365ac44e2718",
+      "bytes": 42541
+    },
+    {
+      "id": 44,
+      "title": "Tool Durability",
+      "sha256": "985815458a39da728ab1c663232614251e15dfff3c8d732cf7bd3c19ff39035e",
+      "bytes": 1565
+    },
+    {
+      "id": 141,
+      "title": "Zealot",
+      "sha256": "683d5ab04528b6a80c22c4bf129d3f7c532344ac2416a7f3ce60cd5d0b1361cf",
+      "bytes": 22005
+    },
+    {
+      "id": 140,
+      "title": "Rogue",
+      "sha256": "774b61d73898a63f3527b4aa201c99265c0b149dfbd7ed222ee4f12476ffa1bc",
+      "bytes": 22355
+    },
+    {
+      "id": 136,
+      "title": "Archmage",
+      "sha256": "4fa0411ded4faf0fa64b3c8840e76b25cd214f6e45a5d2cd9b4e3cef350fbfd0",
+      "bytes": 19375
+    },
+    {
+      "id": 137,
+      "title": "Berserker",
+      "sha256": "65064892ccfab639b5b12aaceb7e7e336bfc3b0dc4811c23abbb59d74cc64ecc",
+      "bytes": 23689
+    },
+    {
+      "id": 139,
+      "title": "Ranger",
+      "sha256": "646157584dbf704a1fb382be7595b2488d5c628d73a97f03dc91a18fa80c3e31",
+      "bytes": 21681
+    },
+    {
+      "id": 138,
+      "title": "Druid",
+      "sha256": "fd9b3ec0b2a5c4793a1efe0140a9635bf7520e5655aa7c66abccbcccea9657ab",
+      "bytes": 20463
+    },
+    {
+      "id": 81,
+      "title": "Quest Journal",
+      "sha256": "e12c52920290ae92d31988ed272dd5bf2e8d782026a186377c68385adffab385",
+      "bytes": 929
+    },
+    {
+      "id": 80,
+      "title": "Dailies",
+      "sha256": "2dec53a604edc814af1de61e102a63f494dbba8139c0a451277433f502a694dc",
+      "bytes": 926
+    },
+    {
+      "id": 78,
+      "title": "Celestial Tier Spender",
+      "sha256": "318f3b0f09dc0410be0e22a01d5ad078c5f42e3c4136071d97b2a852c0dae3c4",
+      "bytes": 2586
+    },
+    {
+      "id": 122,
+      "title": "Expeditions",
+      "sha256": "f3b4c055a9b104d797796bd3786fce09bccc6db77e36ded22562c81e65f57f4a",
+      "bytes": 3652
+    },
+    {
+      "id": 40,
+      "title": "Basic Movement",
+      "sha256": "8b37f3dd8f1f494f54258bb028fd06f89d76be2828de2aba45a4fd1058accc01",
+      "bytes": 720
+    },
+    {
+      "id": 55,
+      "title": "Teleport and Fast Travel",
+      "sha256": "d291b5b39dce0d99ca06f48c125b9b55c8f6f75a1836b6332665b25fd2e438c0",
+      "bytes": 1886
+    },
+    {
+      "id": 35,
+      "title": "Worldmap",
+      "sha256": "5aad361118a7026f05f545eba8c3f5ab2df23cd1d25ed6f661e4911208959d07",
+      "bytes": 1447
+    },
+    {
+      "id": 54,
+      "title": "Achievements",
+      "sha256": "2fe6662757f62ae8191f5aa9971dccf6f838d91100be31dd4f9f6aa66e51e6f8",
+      "bytes": 146347
+    },
+    {
+      "id": 36,
+      "title": "Lore Bubbles",
+      "sha256": "5fd8e679ce8cf0271793ed4030bd4ca3769dd19be83fa135d7eb03813ecd8032",
+      "bytes": 586
+    },
+    {
+      "id": 51,
+      "title": "Event Gate",
+      "sha256": "5f9e802c98a554a7401f8d4b8e3606dc2cbd23acfe26f8ab5aa64f733f19a472",
+      "bytes": 3719
+    },
+    {
+      "id": 131,
+      "title": "Quest Board",
+      "sha256": "87db512c13e542cef9ef467f24a7330523abdd0d790ef3890082c776769138a0",
+      "bytes": 2564
+    },
+    {
+      "id": 38,
+      "title": "Towns & Cities",
+      "sha256": "cd134b71fc1fe65f0bcc2c9b1fd6069897f88ae952f50a93d77fb69db7e3186b",
+      "bytes": 6397
+    },
+    {
+      "id": 106,
+      "title": "Keys",
+      "sha256": "e9def49db3d9c2a75a2faf0f7d8bf79479064b4ecdc8743ed5a2924f8391cb44",
+      "bytes": 3545
+    },
+    {
+      "id": 37,
+      "title": "Professions Overview",
+      "sha256": "05909b5acf8715f991070d4a7aaa0baa2d7c631b844f1cd99a34b638a7ff2c83",
+      "bytes": 9077
+    },
+    {
+      "id": 61,
+      "title": "Market - Post Order",
+      "sha256": "916c0062da7371cea94a24107c337ad1153fa0411b4564ec8d403a7d9744de2c",
+      "bytes": 758
+    },
+    {
+      "id": 84,
+      "title": "Celestial Market",
+      "sha256": "a47e6d24e1072959eb802059d3ca65cc72f5a9de0c457213dfb600d976331352",
+      "bytes": 944
+    },
+    {
+      "id": 83,
+      "title": "Event Merchant",
+      "sha256": "d419ed6ac86640a76444581df8224bae966f30d1842f05e37485d0f3cf71066f",
+      "bytes": 768
+    },
+    {
+      "id": 82,
+      "title": "Achievement Market",
+      "sha256": "bbf29a0d935197700809ed444cc8b674501246d1df1d6b26fd137529e524d8cd",
+      "bytes": 869
+    },
+    {
+      "id": 58,
+      "title": "Laurel Market",
+      "sha256": "941ecc546943b57c32988674348fd12c788ec381ca58a2b84997fa8cdd67016b",
+      "bytes": 1067
+    },
+    {
+      "id": 63,
+      "title": "Trading Post",
+      "sha256": "76cf67bd0bc445d10e5b513c03267fb6fd402d766d3a5e7279e1918487ef660c",
+      "bytes": 3342
+    },
+    {
+      "id": 112,
+      "title": "Currencies",
+      "sha256": "6862e898bb6fbba86cdc219f86028a9732a4d99dac6b3e74a50311524d7bf5e4",
+      "bytes": 490
+    },
+    {
+      "id": 110,
+      "title": "Weekly Raffle",
+      "sha256": "a83295703ce368a4a676825d592eb473ed3e725cdc26fb4de8e4b247a8f1439a",
+      "bytes": 1018
+    },
+    {
+      "id": 97,
+      "title": "Social Media",
+      "sha256": "a193af1c15c752293bdc08958d73b1e9fab38e1a78f99f3c24c7693a57552ecc",
+      "bytes": 910
+    },
+    {
+      "id": 79,
+      "title": "Post Office",
+      "sha256": "f90285137f635652f908b60f05be2ebf219d82fcdb8c154aafa5e94d11c4ee51",
+      "bytes": 2288
+    },
+    {
+      "id": 99,
+      "title": "Friends",
+      "sha256": "2f14e546c229fc82962c0bad2ca28f8a4076ccbf471f76b457d5c2fd25b0b8d5",
+      "bytes": 667
+    },
+    {
+      "id": 98,
+      "title": "Leaderboards",
+      "sha256": "f72f7735a9ffd6429e3fadfcda675db3e999a0bf87b6bcdb526d880f07272010",
+      "bytes": 3842
+    },
+    {
+      "id": 50,
+      "title": "Item Specialist",
+      "sha256": "83eb5418250a35db97091299a236977dfc7d22e13650ce10b1a5d8ff2f7f962b",
+      "bytes": 3653
+    },
+    {
+      "id": 75,
+      "title": "Item Stats",
+      "sha256": "a45efa3daa45f05558a1cce55287c2515f3533e1fb8bc48881f4cbdbdc859694",
+      "bytes": 20704
+    },
+    {
+      "id": 48,
+      "title": "Max Sockets",
+      "sha256": "b39ae9cdfccb7435a9657e0401dff92b4391e9244f87a6d4f580e4ee48fe6c7a",
+      "bytes": 1618
+    },
+    {
+      "id": 74,
+      "title": "Jewel Stats",
+      "sha256": "c8e6579b61b83d02c14cf33e537180b3f1d83121c1b2aa9e8381f2554a09e57e",
+      "bytes": 1396
+    },
+    {
+      "id": 47,
+      "title": "Refining Items",
+      "sha256": "5b086bc4d86d0c7959d0b7805fae95338389f93ef6bf4f503d57392573fd1237",
+      "bytes": 2231
+    },
+    {
+      "id": 120,
+      "title": "Cartography",
+      "sha256": "fac12dde8719e5fa03c4a6071bc0a0b9ac2112fc1b04cb3a727e039d3ff99d67",
+      "bytes": 71496
+    },
+    {
+      "id": 118,
+      "title": "Jeweling",
+      "sha256": "3aa99aaa3128b865f0dfbad41921c8f0d15e1c43da135e23875d464e4f04ab02",
+      "bytes": 79124
+    },
+    {
+      "id": 117,
+      "title": "Cooking",
+      "sha256": "6c74e3d803b07ad55589abbcd840cbe0f9e7d010b0bc7bcf8a1b7a9dfc2d6092",
+      "bytes": 54492
+    },
+    {
+      "id": 116,
+      "title": "Armorsmithing",
+      "sha256": "1b0c44ee95a76789dd0f80526e4143f0c4fb06fdc5af13105f148230fd84334e",
+      "bytes": 187472
+    },
+    {
+      "id": 124,
+      "title": "Toolsmithing",
+      "sha256": "61fe70f71db80ebe49f3d34b3dd27ea406cd5966c930d5e72beb451d579ac50b",
+      "bytes": 89198
+    },
+    {
+      "id": 125,
+      "title": "Leatherworking",
+      "sha256": "70b09bb26be23db15401072df9264b0edd6b814043485b4c9cf55a25533c3d67",
+      "bytes": 328786
+    },
+    {
+      "id": 119,
+      "title": "Carpentry",
+      "sha256": "7a001933ec3cd18a53a7da1bac3cd95c1adb6289adc9e599eefbbb13ceca82a3",
+      "bytes": 40810
+    },
+    {
+      "id": 133,
+      "title": "What is a Pet",
+      "sha256": "725ea14661208c9fe193388acd34c486cd63384e0f996d71dbb57b2b584d558e",
+      "bytes": 548
+    },
+    {
+      "id": 132,
+      "title": "Petbreeding",
+      "sha256": "331f2a9d095dd96adccd6897680f19383b7acbf5ece1df00315de75f635b52c4",
+      "bytes": 43708
+    },
+    {
+      "id": 126,
+      "title": "Hunter",
+      "sha256": "486460fc5ff6a17f05cab441c5b340fa391aaa1daf88cdd6f9a8b2cccc012c70",
+      "bytes": 202422
+    },
+    {
+      "id": 115,
+      "title": "Weaponsmithing",
+      "sha256": "e0a00c52f441a9df64deb60d5996bd40a0f2223ed5d5cdcba3afea7d86792329",
+      "bytes": 171275
+    },
+    {
+      "id": 114,
+      "title": "Alchemy",
+      "sha256": "383b92ac673a9e4fc1ee8e533ee9f3171c7f425fcb5547c8481dae472942ce1a",
+      "bytes": 97012
+    },
+    {
+      "id": 113,
+      "title": "Tailoring",
+      "sha256": "9a8a38cf44df19c717ec4487c3fba9bbd9ca80cc7748f94cb86a8970712b4703",
+      "bytes": 222652
+    },
+    {
+      "id": 121,
+      "title": "Stonemasonry",
+      "sha256": "0755649e700642412780744c3a5199c614d27b99a11118121a204d18ad229e05",
+      "bytes": 13946
+    },
+    {
+      "id": 89,
+      "title": "Guild Library",
+      "sha256": "c57b499e5e52d2a614709eac327a604d654e8fb705af429b962c688c3906a19d",
+      "bytes": 623
+    },
+    {
+      "id": 77,
+      "title": "Start and Join Guild",
+      "sha256": "aeeb788b52e239cc5fe67463f8a0a4e3ec59c1642cf899778000f072d34a4330",
+      "bytes": 1424
+    },
+    {
+      "id": 92,
+      "title": "Guild Temple",
+      "sha256": "84cb10055b8130921beced7eec51082308be093405324391585d5433cf97735a",
+      "bytes": 493
+    },
+    {
+      "id": 91,
+      "title": "Guild Armory",
+      "sha256": "1ca40b1a646270ff90923c908087db573e8d85f697e870365fa494f5ab21baa0",
+      "bytes": 681
+    },
+    {
+      "id": 90,
+      "title": "Guild Panel",
+      "sha256": "54f2be24c60fd186ce523323f5900a3706a41a8bfd897c45bd1fbe25cc68136d",
+      "bytes": 491
+    },
+    {
+      "id": 88,
+      "title": "Guild Headquarters",
+      "sha256": "943ca06563157651ad7e958b27ed2ad3b8ce80d92a6bb6c948967ff673dce2aa",
+      "bytes": 615
+    },
+    {
+      "id": 87,
+      "title": "Guild Portal",
+      "sha256": "f56ea2575832625d0485ad47bd3513d1c5bf9d425013145c9e8e06992fd31c8d",
+      "bytes": 627
+    },
+    {
+      "id": 86,
+      "title": "Guild Bed Chambers",
+      "sha256": "e491ffd36044a38dacf78fdac392a2c4dec6bf31c33332faddeff777ea70f29f",
+      "bytes": 622
+    },
+    {
+      "id": 85,
+      "title": "Guild Bank",
+      "sha256": "86fa8165ed8dfdb5acc0896c948d6cac530fee786b22da30638c31927aabb06d",
+      "bytes": 625
+    },
+    {
+      "id": 94,
+      "title": "Skillbook",
+      "sha256": "fc871999acefa1123ce591eb8d2ed933226cb94f7561ab89557447f0f600045a",
+      "bytes": 1875
+    },
+    {
+      "id": 95,
+      "title": "Account Progress",
+      "sha256": "39b2ff175a5ca818eb14e76c28fc8e41e6721eea77768557a409a1a86ea8031c",
+      "bytes": 501
+    },
+    {
+      "id": 93,
+      "title": "Equipment",
+      "sha256": "40413ce30c5eb1f9293fadd2b3cb4fb853b9e23765b42a2a784776907c83c1b9",
+      "bytes": 1176
+    },
+    {
+      "id": 96,
+      "title": "Overview Character",
+      "sha256": "0eb109220d24c9904dad9bd74c23df1110304fb61cc7ec13b7601bf9d3094592",
+      "bytes": 505
+    },
+    {
+      "id": 62,
+      "title": "Cookie Policy",
+      "sha256": "6ec76c3621a7ba78a746196e0da6ba4c22e9eee4eef96b36b578b1feff1e67e2",
+      "bytes": 4659
+    },
+    {
+      "id": 42,
+      "title": "Terms of Service",
+      "sha256": "add48e78bcd74020b2e129a2482d82d398ad7a7d10cd5c6931a7b174ca5513f2",
+      "bytes": 22319
+    },
+    {
+      "id": 19,
+      "title": "General Rules",
+      "sha256": "67e49d5f95abbbafbb67458d8d2139f0efb6eba5807de0a48c82ecead7356c1b",
+      "bytes": 5388
+    },
+    {
+      "id": 18,
+      "title": "Chat Guidelines",
+      "sha256": "1a36bc44a35f705dbab9165a76b463ab9070e6a4c0d97d2b56ea6e1b92a27a75",
+      "bytes": 3955
+    },
+    {
+      "id": 76,
+      "title": "Privacy Policy",
+      "sha256": "4ef65bcd53ad8f7c2d5ec32734c0d14ae451ffb563d6c15c171ad7447f9b648f",
+      "bytes": 6193
+    }
+  ],
+  "meta": {
+    "captured": "2026-10-14",
+    "version": "EA（Legacy）",
+    "source": "登录后的游戏内帮助文档、Inspect、地图信息与任务详情；只读采集",
+    "limitations": [
+      "地图等级、群系和资源图标来自当日官方面板；设施和实地怪物分布沿用原地图记录。",
+      "Inspect 的 Low/Medium/High 为定性等级，不是数值或胜率。",
+      "任务详情受当前角色进度限制，已完成主线返回不可用；未接受或完成新任务。",
+      "未进行战斗、消费、交易、装备变更或全职业 Build 实测。"
+    ]
+  }
+}
