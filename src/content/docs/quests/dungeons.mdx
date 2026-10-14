@@ -10,6 +10,8 @@ sources:
   - type: observed
     reference: 游戏内实测
 ---
+import DungeonTable from '../../../components/DungeonTable.astro';
+
 
 > 本页讲**副本（Dungeons）**。其它高阶玩法见：**深渊塔**、**世界 Boss 与虚空裂隙**、**竞技场**、**活动与探险**。
 
@@ -47,23 +49,7 @@ Laurel Market、Celestial Market。
 > 官方原文：副本遍布 Norroth，**每个副本都需要一把钥匙**；角色等级越高，需要的钥匙 Tier 越高。
 > 高等级角色每个 Tier 有多个副本可选，但**只要你有对应钥匙，任何副本都能进**。
 
-| Boss | Level | 钥匙 | 世界坐标 |
-|---|---|---|---|
-| Marious, Lord of Ratdom | 5 | Copper | 826/1537 |
-| Tree of Life | 7 | Copper | 799/1208 |
-| The Baron | 9 | Copper | 1074/1426 |
-| The Devourer | 10 | Iron | 624/1130 |
-| Spider Queen | 15 | Iron | 1387/1728 |
-| Arcelia | 19 | Iron | 1135/1837 |
-| Kraken Mother | 20 | Bronze | 1006/1683 |
-| Medusa | 25 | Bronze | 1303/1096 |
-| The Leech Demon | 29 | Bronze | 1530/1854 |
-| Yurk, the Ogre | 30 | Steel | 2487/1127 |
-| Amosh, the Yeti | 35 | Steel | 1752/266 |
-| Queen Acasia | 39 | Steel | 1169/843 |
-| Ape King Goliathor | 40 | Mithril | 3316/1712 |
-| Grimble | 45 | Mithril | 2735/654 |
-| Ghrorak | 49 | Mithril | 581/900 |
+<DungeonTable />
 
 ### 副本机制【社区，官方未公开名录细节】
 

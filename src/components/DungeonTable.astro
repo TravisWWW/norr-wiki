@@ -1,0 +1,90 @@
+---
+import dungeons from '../data/dungeons.json';
+import mapdb from '../data/maps.json';
+const base = import.meta.env.BASE_URL.replace(/\/$/, '') + '/';
+const maps = Object.values(mapdb.maps).filter((m) => m && m.wx);
+function keyTier(lv) {
+  if (lv == null) return '';
+  if (lv <= 9) return 'Copper';
+  if (lv <= 19) return 'Iron';
+  if (lv <= 29) return 'Bronze';
+  if (lv <= 39) return 'Steel';
+  return 'Mithril';
+}
+const rows = dungeons.map((d) => {
+  const [x, y] = String(d.coords || '').split('/').map(Number);
+  let map = '';
+  if (!isNaN(x) && !isNaN(y)) {
+    let best = null, bd = Infinity;
+    for (const m of maps) {
+      const dist = (m.wx - x) ** 2 + (m.wy - y) ** 2;
+      if (dist < bd) { bd = dist; best = m; }
+    }
+    if (best && bd === 0) map = best.name;
+  }
+  return { boss: d.boss, level: d.level, key: keyTier(d.level), coords: d.coords || '', map };
+}).sort((a, b) => (a.level || 0) - (b.level || 0));
+const keyOrder = ['Copper','Iron','Bronze','Steel','Mithril'];
+const keys = keyOrder.filter((k) => rows.some((r) => r.key === k));
+const levels = [
+  { v: '1-9', label: 'Lv1–9' }, { v: '10-19', label: 'Lv10–19' }, { v: '20-29', label: 'Lv20–29' },
+  { v: '30-39', label: 'Lv30–39' }, { v: '40-49', label: 'Lv40–49' }, { v: '50-99', label: 'Lv50+' },
+];
+---
+<div class="nr-toolbar">
+  <input id="dg-q" type="search" placeholder="搜索：Boss / 地图…" autocomplete="off" />
+  <select id="dg-key"><option value="">全部钥匙</option>{keys.map((k) => <option value={k}>{k} Key</option>)}</select>
+  <select id="dg-lvl"><option value="">全部等级</option>{levels.map((l) => <option value={l.v}>{l.label}</option>)}</select>
+  <label class="nr-check">我的等级 <input id="dg-mylv" type="number" min="1" max="60" placeholder="如 20" /></label>
+  <span class="nr-count" id="dg-count"></span>
+</div>
+<table id="dg-table">
+  <thead><tr><th>Boss</th><th>等级</th><th>钥匙</th><th>所在地图</th><th>世界坐标</th></tr></thead>
+  <tbody>
+    {rows.map((r) => (
+      <tr data-name={(r.boss || '').toLowerCase()} data-map={(r.map || '').toLowerCase()} data-key={r.key} data-lvl={r.level == null ? '' : r.level}>
+        <td><b>{r.boss}</b></td>
+        <td>{r.level == null ? '—' : 'Lv' + r.level}</td>
+        <td>{r.key ? r.key + ' Key' : '—'}</td>
+        <td>{r.map ? <a href={`${base}world/maps/?q=${encodeURIComponent(r.map)}`}>{r.map}</a> : '—'}</td>
+        <td>{r.coords || '—'}</td>
+      </tr>
+    ))}
+  </tbody>
+</table>
+<p class="nr-note">共 <b>{rows.length}</b> 个副本 Boss。「我的等级」填当前等级后，只显示**等级 ≤ 该值**的副本（可挑战范围）；钥匙档位按 Boss 等级推导（1-9 Copper / 10-19 Iron / 20-29 Bronze / 30-39 Steel / 40-49 Mithril）。地图名由世界坐标精确匹配得到，可点进地图清单。</p>
+
+<script>
+  const q = document.getElementById('dg-q');
+  const key = document.getElementById('dg-key');
+  const lvl = document.getElementById('dg-lvl');
+  const mylv = document.getElementById('dg-mylv');
+  const tbody = document.querySelector('#dg-table tbody');
+  const rows = [...tbody.querySelectorAll('tr')];
+  const count = document.getElementById('dg-count');
+  function inLvl(v, range) { if (!range) return true; if (v === '') return false; const n = +v; const [a, b] = range.split('-').map(Number); return n >= a && n <= b; }
+  function apply() {
+    const s = (q.value || '').toLowerCase().trim();
+    const k = key.value, l = lvl.value;
+    const my = mylv.value === '' ? null : +mylv.value;
+    let n = 0;
+    for (const r of rows) {
+      const ok = (!s || r.dataset.name.includes(s) || r.dataset.map.includes(s))
+        && (!k || r.dataset.key === k) && inLvl(r.dataset.lvl, l)
+        && (my == null || (r.dataset.lvl !== '' && +r.dataset.lvl <= my));
+      r.style.display = ok ? '' : 'none';
+      if (ok) n++;
+    }
+    count.textContent = n + ' 个';
+  }
+  q.addEventListener('input', apply);
+  key.addEventListener('change', apply);
+  lvl.addEventListener('change', apply);
+  mylv.addEventListener('input', apply);
+  apply();
+</script>
+
+<style>
+  .nr-note { color: var(--nr-dim); font-size: .8rem; margin-top: .5rem; }
+  #dg-table td a { color: var(--nr-gold); }
+</style>
