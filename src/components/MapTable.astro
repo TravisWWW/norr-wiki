@@ -1,6 +1,8 @@
 ---
 import mapdb from '../data/maps.json';
+import bestiary from '../data/bestiary.json';
 const maps = Object.values(mapdb.maps).filter((m) => m && m.name);
+const bestiaryNames = new Set(bestiary.filter((b) => b && b.name).map((b) => b.name));
 const biomes = [...new Set(maps.map((m) => m.biome).filter(Boolean))].sort();
 const types = [...new Set(maps.map((m) => m.type).filter(Boolean))].sort();
 const levels = [
@@ -15,10 +17,15 @@ const rows = maps.map((m) => ({
   level: m.level == null || m.level === '' ? '' : String(m.level),
   biome: m.biome || '', type: m.type || '',
   town: m.town ? 1 : 0, g: (m.g && m.g.length) ? 1 : 0, mo: (m.m && m.m.length) ? 1 : 0,
+  monsters: (m.m || []),
+  gather: (m.g || []),
+  npc: (m.npc || []),
+  gates: (m.gates || []),
+  el: m.el || {}, rk: m.rk || {},
 }));
 ---
 <div class="nr-toolbar">
-  <input id="map-q" type="search" placeholder="搜索：地图名 / 生物群系 / 编号…" />
+  <input id="map-q" type="search" placeholder="搜索：地图名 / 生物群系 / 怪物 / 编号…" />
   <select id="map-biome"><option value="">全部生物群系</option>{biomes.map((b) => <option value={b}>{b}</option>)}</select>
   <select id="map-type"><option value="">全部类型</option>{types.map((t) => <option value={t}>{t}</option>)}</select>
   <select id="map-lvl"><option value="">全部等级</option>{levels.map((l) => <option value={l.v}>{l.label}</option>)}</select>
@@ -32,25 +39,39 @@ const rows = maps.map((m) => ({
     <tr>
       <th>名称</th><th>ID</th>
       <th class="map-sort" id="map-sortlvl" role="button" tabindex="0">等级 ⇅</th>
-      <th>生物群系</th><th>类型</th><th>采集</th><th>怪物</th><th>城镇</th>
+      <th>生物群系</th><th>类型</th><th>采集</th><th>怪物（该图实际出现）</th><th>城镇</th>
     </tr>
   </thead>
   <tbody>
     {rows.map((m) => (
-      <tr data-name={(m.name || '').toLowerCase()} data-biome={m.biome} data-type={m.type} data-level={m.level} data-town={m.town} data-g={m.g} data-m={m.mo}>
-        <td>{m.name}</td>
-        <td>{m.id}</td>
-        <td>{m.level || '—'}</td>
-        <td>{m.biome || '—'}</td>
-        <td>{m.type || '—'}</td>
-        <td>{m.g ? '✔' : ''}</td>
-        <td>{m.mo ? <a href={`${base}world/bestiary/?biome=${encodeURIComponent(m.biome)}`} title="查看该生物群系怪物">✔</a> : ''}</td>
-        <td>{m.town ? '✔' : ''}</td>
-      </tr>
+      <>
+        <tr class="map-row" data-name={(m.name || '').toLowerCase()} data-biome={m.biome} data-type={m.type} data-level={m.level} data-town={m.town} data-g={m.g} data-m={m.mo}>
+          <td><button type="button" class="map-name" aria-expanded="false">{m.name}</button></td>
+          <td>{m.id}</td>
+          <td>{m.level || '—'}</td>
+          <td>{m.biome || '—'}</td>
+          <td>{m.type || '—'}</td>
+          <td>{m.g ? '✔' : ''}</td>
+          <td class="map-mons">{m.monsters.length
+            ? m.monsters.map((n) => (bestiaryNames.has(n) ? <a href={`${base}world/bestiary/?mon=${encodeURIComponent(n)}`} title={`在怪物图鉴中查看 ${n}`}>{n}</a> : <span class="map-plain" title="怪物图鉴暂无该条目">{n}</span>))
+            : '—'}</td>
+          <td>{m.town ? '✔' : ''}</td>
+        </tr>
+        <tr class="map-detail" hidden>
+          <td colspan="8">
+            <div class="map-dgrid">
+              <div><b>采集点（{m.gather.length}）</b>：{m.gather.length ? m.gather.map((x) => <span class="map-chip">{x}</span>) : '—'}</div>
+              <div><b>设施 / NPC（{m.npc.length}）</b>：{m.npc.length ? m.npc.map((x) => <span class="map-chip">{x[1]}{x[2] ? ' · ' + x[2] : ''}</span>) : '—'}</div>
+              <div><b>出口 / 传送门（{m.gates.length}）</b>：{m.gates.length ? m.gates.map((x) => <span class="map-chip">{x[1]}{x[2] ? ' · ' + x[2] : ''}</span>) : '—'}</div>
+              <div><b>怪物等级</b>：{m.monsters.length ? m.monsters.map((n) => <span class="map-chip">{n}{m.el[n] ? ' Lv' + m.el[n] : ''}{m.rk[n] && m.rk[n] !== 'Normal' ? ' · ' + m.rk[n] : ''}</span>) : '—'}</div>
+            </div>
+          </td>
+        </tr>
+      </>
     ))}
   </tbody>
 </table>
-<p class="nr-note">共 {maps.length} 张；其中 <b>{noLevel}</b> 张缺等级、<b>{noCont}</b> 张缺大陆字段（缺失显示为「—」，暂不展示大陆列）。点「怪物」列的 ✔ 可跳到该图怪物。</p>
+<p class="nr-note">共 {maps.length} 张；其中 <b>{noLevel}</b> 张缺等级、<b>{noCont}</b> 张缺大陆字段（缺失显示为「—」，暂不展示大陆列）。<b>怪物列 = 该地图数据里实际出现的怪物</b>，点怪物名跳到图鉴对应条目；点地图名展开详情（采集点 / 设施 / 出口 / 怪物等级）。</p>
 
 <script>
   const q = document.getElementById('map-q');
@@ -61,7 +82,7 @@ const rows = maps.map((m) => ({
   const g = document.getElementById('map-g');
   const mo = document.getElementById('map-m');
   const tbody = document.querySelector('#map-table tbody');
-  const rows = [...tbody.querySelectorAll('tr')];
+  const rows = [...tbody.querySelectorAll('.map-row')];
   const count = document.getElementById('map-count');
   const sortBtn = document.getElementById('map-sortlvl');
   let sortDir = 0;
@@ -76,6 +97,8 @@ const rows = maps.map((m) => ({
         && (!town.checked || r.dataset.town === '1') && (!g.checked || r.dataset.g === '1')
         && (!mo.checked || r.dataset.m === '1') && inLvl(r.dataset.level, l);
       r.style.display = ok ? '' : 'none';
+      const d = r.nextElementSibling;
+      if (d && d.classList.contains('map-detail') && !ok) d.hidden = true;
       if (ok) n++;
     }
     count.textContent = n + ' 张';
@@ -88,8 +111,17 @@ const rows = maps.map((m) => ({
       const bv = b.dataset.level === '' ? 9999 : +b.dataset.level;
       return (av - bv) * sortDir;
     });
-    for (const r of sorted) tbody.appendChild(r);
+    for (const r of sorted) { tbody.appendChild(r); const d = r.nextElementSibling; if (d && d.classList.contains('map-detail')) tbody.appendChild(d); }
   }
+  tbody.addEventListener('click', (e) => {
+    const btn = e.target.closest('.map-name');
+    if (!btn) return;
+    const row = btn.closest('.map-row');
+    const d = row.nextElementSibling;
+    if (!d || !d.classList.contains('map-detail')) return;
+    d.hidden = !d.hidden;
+    btn.setAttribute('aria-expanded', d.hidden ? 'false' : 'true');
+  });
   q.addEventListener('input', apply);
   biome.addEventListener('change', apply);
   type.addEventListener('change', apply);
@@ -109,3 +141,15 @@ const rows = maps.map((m) => ({
   if (params.get('m') === '1') mo.checked = true;
   apply();
 </script>
+
+<style>
+  .map-sort { cursor: pointer; user-select: none; }
+  .nr-note { color: var(--nr-dim); font-size: .8rem; margin-top: .5rem; }
+  .map-name { background: none; border: 0; color: var(--nr-text); font: inherit; font-weight: 600; cursor: pointer; padding: 0; text-align: left; }
+  .map-name:hover { color: var(--nr-gold); }
+  .map-mons a { margin-right: .35rem; }
+  .map-plain { color: var(--nr-dim); margin-right: .35rem; }
+  .map-detail td { background: var(--nr-bg); }
+  .map-dgrid { display: grid; gap: .3rem; font-size: .86rem; }
+  .map-chip { border: 1px solid var(--nr-hair); background: var(--nr-panel-2); color: var(--nr-text-soft); border-radius: 4px; padding: .05rem .4rem; font-size: .78rem; margin: 0 .25rem .25rem 0; display: inline-block; }
+</style>

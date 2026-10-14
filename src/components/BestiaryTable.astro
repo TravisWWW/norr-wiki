@@ -2,7 +2,15 @@
 import bestiary from '../data/bestiary.json';
 import mapdb from '../data/maps.json';
 const monsters = bestiary.filter((m) => m && m.name);
-const mapBiomes = new Set(Object.values(mapdb.maps).map((m) => m.biome).filter(Boolean));
+const mapsArr = Object.values(mapdb.maps).filter((m) => m && m.name);
+const mapBiomes = new Set(mapsArr.map((m) => m.biome).filter(Boolean));
+// 怪物名 -> 实际出现的地图（来自 maps.json 的 m 字段，而非 biome 反推）
+const monsterMaps = {};
+for (const mp of mapsArr) {
+  for (const n of (mp.m || [])) {
+    (monsterMaps[n] = monsterMaps[n] || []).push({ name: mp.name, level: mp.level || '' });
+  }
+}
 const types = [...new Set(monsters.map((m) => m.type).filter(Boolean))].sort();
 const biomes = [...new Set(monsters.flatMap((m) => m.biomes || []).filter(Boolean))].sort();
 const levels = [
@@ -18,38 +26,44 @@ const rows = monsters.map((m) => {
     lo: lo == null ? '' : lo, hi: hi == null ? '' : hi,
     wide: (lo != null && hi != null && hi - lo >= 50) ? 1 : 0,
     biomes: (m.biomes || []), scavenging: (m.scavenging || []),
+    maps: monsterMaps[m.name] || [],
   };
 });
 const wideCount = rows.filter((r) => r.wide).length;
+const withMap = rows.filter((r) => r.maps.length).length;
 ---
 <div class="nr-toolbar">
-  <input id="be-q" type="search" placeholder="搜索：怪物名 / 区域 / 掉落…" />
+  <input id="be-q" type="search" placeholder="搜索：怪物名 / 生物群系 / 出现地图 / 掉落…" />
   <select id="be-type"><option value="">全部类型</option>{types.map((t) => <option value={t}>{t}</option>)}</select>
-  <select id="be-biome"><option value="">全部区域</option>{biomes.map((b) => <option value={b}>{b}</option>)}</select>
+  <select id="be-biome"><option value="">全部生物群系</option>{biomes.map((b) => <option value={b}>{b}</option>)}</select>
   <select id="be-lvl"><option value="">全部等级</option>{levels.map((l) => <option value={l.v}>{l.label}</option>)}</select>
   <label class="nr-check"><input type="checkbox" id="be-wide" /> 只看特殊（宽等级）</label>
   <span class="nr-count" id="be-count"></span>
 </div>
 <table id="be-table">
   <thead>
-    <tr><th>名称</th><th>类型</th><th>等级</th><th>分布区域（可点进地图）</th><th>拾荒掉落</th></tr>
+    <tr><th>名称</th><th>类型</th><th>等级</th><th>生物群系</th><th>出现地图</th><th>拾荒掉落</th></tr>
   </thead>
   <tbody>
     {rows.map((m) => (
       <>
-        <tr class="be-row" data-name={(m.name || '').toLowerCase()} data-type={m.type} data-biome={m.biomes.join('、')} data-lo={m.lo} data-hi={m.hi} data-wide={m.wide}>
+        <tr class="be-row" data-name={(m.name || '').toLowerCase()} data-type={m.type} data-biome={m.biomes.join('、')} data-lo={m.lo} data-hi={m.hi} data-wide={m.wide} data-maps={m.maps.map((x) => x.name).join('、')}>
           <td><button type="button" class="be-name" aria-expanded="false">{m.name}</button>{m.wide ? <span class="be-tag">特殊</span> : null}</td>
           <td>{m.type || '—'}</td>
           <td>{m.levelRange || '—'}</td>
-          <td>{m.biomes.length ? m.biomes.map((b) => (mapBiomes.has(b) ? <a href={`${base}world/maps/?biome=${encodeURIComponent(b)}`}>{b}</a> : <span class="be-plain" title="该区域暂无对应地图">{b}</span>)) : '—'}</td>
+          <td>{m.biomes.length ? m.biomes.map((b) => (mapBiomes.has(b) ? <a href={`${base}world/maps/?biome=${encodeURIComponent(b)}`}>{b}</a> : <span class="be-plain" title="该生物群系暂无对应地图记录">{b}</span>)) : '—'}</td>
+          <td>{m.maps.length === 0 ? <span class="be-plain">—</span> : (m.maps.length <= 3
+            ? m.maps.map((x) => <a href={`${base}world/maps/?q=${encodeURIComponent(x.name)}`}>{x.name}</a>)
+            : <><a href={`${base}world/maps/?q=${encodeURIComponent(m.maps[0].name)}`}>{m.maps[0].name}</a><span class="be-plain"> 等 {m.maps.length} 张</span></>)}</td>
           <td>{m.scavenging.length ? m.scavenging.join('、') : '—'}</td>
         </tr>
         <tr class="be-detail" hidden>
-          <td colspan="5">
+          <td colspan="6">
             <div class="be-dgrid">
               <div><b>类型</b>：{m.type || '—'}</div>
               <div><b>等级范围</b>：{m.levelRange || '—'}{m.wide ? <span class="be-tag">范围很宽，可能是跨区 / 特殊敌人</span> : null}</div>
-              <div><b>分布区域</b>：{m.biomes.length ? m.biomes.map((b) => (mapBiomes.has(b) ? <a href={`${base}world/maps/?biome=${encodeURIComponent(b)}`}>{b}</a> : <span class="be-plain">{b}</span>)) : '—'}</div>
+              <div><b>生物群系</b>：{m.biomes.length ? m.biomes.map((b) => (mapBiomes.has(b) ? <a href={`${base}world/maps/?biome=${encodeURIComponent(b)}`}>{b}</a> : <span class="be-plain">{b}</span>)) : '—'}</div>
+              <div><b>出现地图（{m.maps.length}）</b>：{m.maps.length ? m.maps.map((x) => <a href={`${base}world/maps/?q=${encodeURIComponent(x.name)}`}>{x.name}</a>) : <span class="be-plain">暂无地图记录（仅按生物群系收录）</span>}</div>
               <div><b>拾荒掉落</b>：{m.scavenging.length ? m.scavenging.map((s) => <span class="be-chip">{s}</span>) : '—'}</div>
             </div>
           </td>
@@ -58,7 +72,7 @@ const wideCount = rows.filter((r) => r.wide).length;
     ))}
   </tbody>
 </table>
-<p class="nr-note">共 {monsters.length} 种；其中 <b>{wideCount}</b> 种等级范围较宽（≥50，标记为「特殊」）。点怪物名展开详情；点「分布区域」里的地图名可跳到该地图。缺失字段显示为「—」。</p>
+<p class="nr-note">共 {monsters.length} 种；其中 <b>{wideCount}</b> 种等级范围较宽（≥50，标记为「特殊」），<b>{withMap}</b> 种有具体出现地图记录。<b>生物群系</b>是怪物所属的区域类型，<b>出现地图</b>才是它实际刷新的地图（来自地图数据，非按群系反推）。点怪物名展开详情；点地图名跳到该地图。</p>
 
 <script>
   const q = document.getElementById('be-q');
@@ -103,11 +117,18 @@ const wideCount = rows.filter((r) => r.wide).length;
   wide.addEventListener('change', apply);
   const params = new URLSearchParams(location.search);
   if (params.get('q')) q.value = params.get('q');
+  if (params.get('mon')) q.value = params.get('mon');
   if (params.get('type')) type.value = params.get('type');
   if (params.get('biome')) biome.value = params.get('biome');
   if (params.get('lvl')) lvl.value = params.get('lvl');
   if (params.get('wide') === '1') wide.checked = true;
   apply();
+  // 深链到具体怪物时自动展开该怪详情
+  if (params.get('mon')) {
+    const target = params.get('mon').toLowerCase();
+    const hit = rows.find((r) => r.dataset.name === target);
+    if (hit) { const d = hit.nextElementSibling; if (d && d.classList.contains('be-detail')) { d.hidden = false; const b2 = hit.querySelector('.be-name'); if (b2) b2.setAttribute('aria-expanded', 'true'); } }
+  }
 </script>
 
 <style>
