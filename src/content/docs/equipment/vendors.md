@@ -29,7 +29,9 @@ sources:
 
 游戏会按「低于 X% 血量」**自动喝血药**，所以常备几百瓶 Tiny Health Potion 是较经济的防死手段。
 
-## El Caspar 全 NPC 商人 Buy 页价格表（参考）
+## El Caspar 全 NPC 商人 **买入价**（玩家购买，参考）
+
+> 下列为**玩家向 NPC 购买**的价格，采集于 EA 版某次实测；商店库存动态、价格相对稳定。
 
 | NPC | 主要商品（实测价） |
 |---|---|
@@ -52,6 +54,18 @@ sources:
 | **Wishing Well** | 投 **3 币** → Possible Loot（抽奖） |
 
 **比价要点**：鉴定卷轴在 **Weaponsmith = 22**，在 **Cartographer = 88**（同一物品，差价 4 倍）——**买前先比价**。
+
+## 卖出价（NPC 收购，参考）
+
+| 物品 | 单价（coin） |
+|---|---|
+| Identification Scroll | **22** |
+| Tiny Rejuvenation Potion | 8 |
+| Tiny Health / Mana Potion | 5 |
+| Mucky Soil Lump | 4 |
+| Minnow / Mucky Meat / Slate / 各类 Mucky 材料 | **1** |
+
+> 同一物品的**买入价与卖出价不同**（例如鉴定卷轴买入 88、卖出 22），比较时勿混用。
 
 ## 商店库存是动态的
 

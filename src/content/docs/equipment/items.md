@@ -1,6 +1,6 @@
 ---
 title: 物品与容器
-description: 开容器、宝箱档次、修理、批量分解、背包扩容与药水。
+description: 开容器、宝箱档次、修理、批量分解与背包扩容。
 gameVersion: "EA"
 verifiedDate: 2026-10-13
 versionStatus: ea-verified
@@ -65,15 +65,7 @@ sources:
 - 到城市铁匠处可**一键修理全部装备**，费用从金币里扣。
 - 修理同时完成日常「Repair Item(s)」。
 
-## 卖店价目（参考）
-
-| 物品 | 单价（coin） |
-|---|---|
-| Identification Scroll | **22** |
-| Tiny Rejuvenation Potion | 8 |
-| Tiny Health / Mana Potion | 5 |
-| Mucky Soil Lump | 4 |
-| Minnow / Mucky Meat / Slate / 各类 Mucky 材料 | **1** |
+> **卖出价格**（NPC 收购价）见[商人与药水](/norr-wiki/equipment/vendors/)。
 
 ## 批量分解（Mass Salvage）
 
@@ -100,17 +92,7 @@ sources:
 - **资源堆叠上限默认 100/格**；用 Infusion Stone 可提升（账号共享）。
 - **背包快满时采集会失败**（材料进不去），长挂前要先清空间。
 
-## 药水
-
-| 药水 | 效果 | 参考价 |
-|---|---|---|
-| Small Rejuvenation Potion | **+400 HP / +200 MP** | 96 币 |
-| Small Health Potion | +400 HP | 84 币 |
-| Small Mana Potion | +200 MP | 84 币 |
-| Tiny Health / Mana / Rejuv | 小量（Tiny 级） | 20 / 32 币 |
-
-- **战斗中不能喝药**，只能在战斗结束后喝。
-- 游戏内「低于 X% 自动喝药」是客户端行为。
+> **药水**（效果、价格、自动喝药）见[商人与药水](/norr-wiki/equipment/vendors/)。
 
 ## 相关
 

@@ -1,6 +1,6 @@
 ---
 title: 采集
-description: 采集机制与经验、采集点分布、杂物点、工具耐久、Idle Mode 与材料来源。
+description: 采集机制与经验、采集点分布、杂物点、工具耐久、离线采集与拾荒。
 gameVersion: "EA"
 verifiedDate: 2026-10-13
 versionStatus: ea-verified
@@ -89,7 +89,7 @@ turns 结算材料。
 - **换算：1 turn = 30 秒**。离线采集比在线慢（30s/次 vs 18s/次），但**不用登录**。
 - 想挂更久：提高工具耐久（turns）、背包格子、堆叠上限。
 
-## 材料来源：制皮材料（Leatherworking materials）
+## 拾荒（Scavenging）与尸块材料
 
 **制皮材料 = 尸块（Hide / Bone / Chitin / Scale / Wing / Goblin Hide 等），主要靠「拾尸 Scavenging」从尸体上搜刮**，
 不是普通掉落。打怪本身只掉金币 / 药水 / 装备；尸块要在**尸体还挂着**的时候额外搜一次。
@@ -102,14 +102,7 @@ turns 结算材料。
 其它来源：**批量分解皮甲**、**商人购买**（Cartographer 卖 Mucky Hide；Leatherworker 卖 T2 制皮材料）、
 **Trading Post**。想快速攒量去商人扫货，想免费攒 Hide 就边打怪边拾尸。
 
-## 食物 buff：成品与原料的差异
-
-- **成品菜按配方给不同 buff**（Mix / Mana / Life 三类），**原料大多没有 buff 或只有最基础的**。
-- buff 持续约 **20 分钟**（官方帮助文档写 5 分钟，实测不符，**1.0 待验证**）。
-- 结论：**原料价值较低，成品菜还可提供 buff**，因此「采集 / 购买原料 → 制作成菜 → 食用」优于直接食用原料。
-
-配方分层（每个子类 3 档，材料 1x / 2x / 3x）：Vegetables、Fish、Fruits、Meat、Mixed（需 Sweet Potato），
-另有节日配方。
+> **食物 buff**（成品菜 vs 原料）见[制作](/norr-wiki/professions/crafting/)。
 
 ## 相关
 

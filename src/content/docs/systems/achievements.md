@@ -43,26 +43,11 @@ sources:
 
 > **安全提示**：兑换码属于个人凭据，请勿公开或分享；本站不展示任何真实兑换码。
 
-## 城市发现与旅行
+## 相关内容
 
-- 世界地图只列出**已发现**的地图，点标记不能传送。
-- **Waygate（传送门）**：城市里踩 waygate 格子打开，列出 Cities / wilderness；
-  **已发现的**显示价格，**未发现的显示 `???` 且不可选** → 传送门不能用来「首次发现」。
-- 所以**新城市只能走过去**。
-- **Dock（码头）** 是 Expedition 组队系统，不是城际交通。
-- **副本（Dungeons）**：地图上有 `dungeon` 图标，进副本要烧**对应 Tier 的钥匙**。
-
-## 宝箱（Strongbox）收益
-
-- 开宝箱需要对应钥匙，开完领取掉落。
-- Copper Strongbox 保底：**100 Spirit Essence** + 若干 Rarity Token / Reroll Dice + 随机装备；
-  额外可能给战斗经验、阵营值、药水等。
-
-## 仓库 / 背包扩容
-
-- **Stash Slot Expander 每张 +1 格**（在 Achievement Market 用成就代币购买）。
-- **Inventory Slot Expander 每张 +1 格**。
-- 注意：**Achievement Tokens 是货币**，与 AP 不同。
+- **城市发现与传送**：新城市只能走过去，传送门只到已发现的地图 —— 见[地图、移动与传送](/norr-wiki/world/movement/)。
+- **宝箱（Strongbox）收益**：见[物品与容器](/norr-wiki/equipment/items/)。
+- **背包 / 仓库扩容**：见[物品与容器](/norr-wiki/equipment/items/)与[代币商店](/norr-wiki/systems/token-shops/)。
 
 ## 相关
 
