@@ -103,7 +103,7 @@ Elena's Crossroad → Forested Canyon(4-5) → Tree of Life(5-6) → Grasping Ma
 
 - [地图清单](/norr-wiki/world/maps/)
 - [怪物图鉴](/norr-wiki/world/bestiary/)
-- [副本、爬塔与世界 Boss](/norr-wiki/quests/dungeons/)
+- [副本与 Boss](/norr-wiki/quests/dungeons/)
 
 ## 资料来源
 

@@ -1,35 +1,29 @@
 ---
-title: 副本、爬塔与世界 Boss
-description: 钥匙、副本与 Boss、深渊塔、Overlords、Void Rifts、竞技场、Event Gate、Expeditions。
+title: 副本与 Boss
+description: 钥匙、副本入口坐标、难度与掉落机制。
 gameVersion: "EA"
-verifiedDate: 2026-10-13
+verifiedDate: 2026-10-14
 versionStatus: ea-verified
 sources:
   - type: official
-    reference: 游戏内帮助文档（Keys / Dungeons & Bosses / Abyssal Tower / Overlords / Void Rifts / Battle Arena / Event Gate / Expeditions）
+    reference: 游戏内帮助文档（Keys / Dungeons & Bosses）
   - type: observed
     reference: 游戏内实测
 ---
 
-## 结论速览
+> 本页讲**副本（Dungeons）**。其它高阶玩法见：**深渊塔**、**世界 Boss 与虚空裂隙**、**竞技场**、**活动与探险**。
 
-- 副本需要**钥匙**（Keys）进入。
-- 主要玩法：副本与 Boss、**深渊塔**、世界 Boss（Overlords）、Void Rifts、竞技场、Event Gate、Expeditions。
-- 各副本入口坐标与推荐等级见下表。
+## 各玩法速览
 
-## 各玩法速览（按解锁 / 入场）
-
-| 玩法 | 解锁 / 入场 | 消耗 | 说明 |
+| 玩法 | 解锁 / 入场 | 消耗 | 页面 |
 |---|---|---|---|
-| Dungeons 副本 | 走到副本门 + 对应钥匙 | 1 把钥匙 | 见下方钥匙与副本表 |
-| Abyssal Tower 深渊塔 | Activities 面板（Normal 免钥匙） | 无 / 钥匙（上层） | 逐层挑战 |
-| Overlords 世界 Boss | 定时刷新（01:00 / 10:00 / 19:00） | 无 | 全服事件 |
-| Void Rifts 虚空裂隙 | 地图上的裂隙 | 无 | 波次战斗 |
-| Battle Arena 竞技场 | 需 **Lv15** | Battle Token | PvP，失败扣战斗经验 |
-| Event Gate 活动门 | 上交 Fragment 开启 | Fragment | 限时事件 |
-| Expeditions 探险 | 建造船只后出海 | 地图物品 | 见[船只与航海](/norr-wiki/systems/sailing/) |
-
-> 本页作为**高阶玩法总览**；副本、世界 Boss、竞技场与事件各自规则见对应小节。
+| **Dungeons 副本** | 走到副本门 + 对应钥匙 | 1 把钥匙 | 本页 |
+| Abyssal Tower 深渊塔 | Activities 面板（Normal 免钥匙） | 无 / 钥匙（上层） | [深渊塔](/norr-wiki/quests/abyssal-tower/) |
+| Overlords 世界 Boss | 定时刷新（01:00 / 10:00 / 19:00） | 无 | [世界 Boss](/norr-wiki/quests/world-boss/) |
+| Void Rifts 虚空裂隙 | 地图上的裂隙 | 无 | [世界 Boss](/norr-wiki/quests/world-boss/) |
+| Battle Arena 竞技场 | 需 **Lv15** | Battle Token | [竞技场](/norr-wiki/quests/arena/) |
+| Event Gate 活动门 | 上交 Fragment 开启 | Fragment | [活动与探险](/norr-wiki/quests/events/) |
+| Expeditions 探险 | 建造船只后出海 | 地图物品 | [活动与探险](/norr-wiki/quests/events/) |
 
 ## 1. 钥匙（Keys）【官方】
 
@@ -46,7 +40,7 @@ Laurel Market、Celestial Market。
 | Steel Key | 4 | 30-39 |
 | Mithril Key | 5 | 40-49 |
 
-**注意：钥匙只在 Over World 野外图掉落，副本/事件里不掉。**
+**注意：钥匙只在 Over World 野外图掉落，副本 / 事件里不掉。**
 
 ## 2. 副本与 Boss【官方】
 
@@ -88,83 +82,23 @@ Laurel Market、Celestial Market。
   额外可能给 Socket Hammer / Reroll Dice / Infusion Stone / Lucky Charm / Safety Charm / Jewel Extractor。
 - **Anomaly Event 概率约 20%**：Loot Goblin Invasion / Elite Ambush / Void Rift / Secret Armory / Scrap Storm。
 
-## 3. 深渊塔（The Abyssal Tower）【官方】
-
-> 官方原文：目前有 **5 个 Tier**，每个 Tier 的**层数 = 等级数**。每个 Tier 有自己的独特挑战（任务或 Boss）和地图设计。
-> 首次进入从 **Normal** 模式开始。**每完成一个 Tier 得 Chaos Crests**，可在 Abyssal Merchant 兑换物品。
-> 难度：**Nightmare / Chaos**，**当前难度打到第 20 层解锁下一难度**。
-
-**成就奖励（官方）**：Normal 20 层 = 50 币、Normal 40 层 = 100、Normal 60 层 = 150、
-Normal 80 层 = 200、Normal 100 层 = 250；Nightmare / Chaos 各层更高。
-
-**社区**：爬塔给紫橙装备、约 10 层一地形、要铁钥匙；塔**不能反复刷打过的楼层**。
-
-## 4. 世界 Boss：Overlords【官方】
-
-> 官方原文：Overlords 散落在 Norroth，**刷新时间 01:00 / 10:00 / 19:00 服务器时间**。
-> 在 **Activities** 里能看到下一个刷新的是谁、什么时候刷。和全服玩家一起打。
-
-| Overlord | 元素 | 类型 | 值班日 |
-|---|---|---|---|
-| Thornweaver Itham | Arcane | Plant | 周一 |
-| Vulkaron, the Scorchbound | Fire | Humanoid | 周二 |
-| Glacierbane | Cold | Magical Creature | 周三 |
-| Zehrak, Herald of Storms | Lightning | Humanoid | 周四 |
-| The Abomination | Poison | Humanoid | 周五 |
-| Thalassor, the Krakenlord | Dark | Magical Creature | 周六 |
-| Valdor, Lord of Dawn | Light | Humanoid | 周日 |
-
-**掉落机制【社区】**：倒下后地上出 **Lootbox**，**只有造成过命中的玩家**能开，开箱即被传送出场；
-奖励按**命中量相对 MVP 缩放**，装备品质跟**角色等级**走。
-
-## 5. Void Rifts【官方】
-
-> 官方原文：当 **Event Gate 被腐化**时，Void Rifts 开始在 Norroth 蔓延。通过**攻击并击败敌人**来发现裂隙，
-> 但注意——**打灰名怪不会触发 Rift**。Rift 出现时屏幕会提示；要恢复和平需击败一定数量的 Rift，
-> **剩余数量显示在屏幕左侧**。
-
-## 6. Battle Arena（PvP）【官方】
-
-- 每场需要 **1 个 Battle Token**；可在**同 Tier 范围**内选 3 个对手。
-- Arena 战斗按**普通战斗**算：有掉落、有战斗经验、能拾取对手尸体；**失败会扣战斗经验**。
-- **计分**：按胜场周结算；达到 **100%** 后本周不再增减分；失败扣分；**逃跑算失败并额外扣分**。
-- **分区**：每周一 00:01 结算——100% 晋级、25% 保级、< 25% 降级。
-- **周奖励**：每周一 00:01 通过邮局发，按新分区发放；还有反映当前分区的**皮肤**。
-- Battle Token 来源：日常、Event Merchant / Dock Merchant / Celestial Store。
-
-## 7. Event Gate（Sacred Wilds）【官方】
-
-- **激活**：玩家累计捐赠 **100 Fragments** 后开门，进入 Sacred Wilds Lobby。
-- **时长 20 分钟**：可在大厅采集，或按等级进对应的门打怪（主要是 **Wyverns** 或 **Event Boss**）。
-- **积分**：战斗和采集都给个人积分；**全服 20 分钟内至少 500 分**才有战利品。
-- **奖励**：活动结束后通过**游戏内邮件**发放；积分决定奖励品质。Event Tickets 按 Event Points 发。
-
-## 8. Expeditions（探险）【官方】
-
-- 在 **Elundi / Bungavik / Vileton Entrance / Nythrendal** 的码头花 **25 金**买船。
-- 在码头升级船；**优先升 Hull** 才能做更高 Tier 的图。升级需要资源 + **Ducats**。
-- 每 Tier 的 Magic 图可在 Cartographer 做；Hull 3 → 最高 Tier 3。
-- 探险有几率出**高一档稀有度**的图，终极目标是 **Relic Map**。
-- 地图稀有度越高，岛上怪附加属性越多；地图 Quality 越高 Loot Multiplier 越高，但怪也获得额外 Life Regeneration。
-- 回程可能遇海盗。可以加入别人的探险（私邀或聊天公告）。
-- 更多见[船只与航海](/norr-wiki/systems/sailing/)。
-
-## 9. 什么时候该打这些
+## 3. 什么时候该打副本
 
 | 阶段 | 建议 |
 |---|---|
-| Lv1-15 | 只做主线/支线 + 日常 + 打同级怪；**钥匙留存**，暂不开箱 |
-| Lv15-20 | 开始打 Copper/Iron 副本（Marious、Tree of Life、The Baron、The Devourer） |
-| Lv20+ | 开公会（Lv20 + 100 金）、打 Bronze 副本、跟 Overlord |
-| 任意 | Overlord 按值班日蹲点（01:00/10:00/19:00），Event Gate 开门就去 |
+| Lv1-15 | 只做主线 / 支线 + 日常 + 打同级怪；**钥匙留存**，暂不开箱 |
+| Lv15-20 | 开始打 Copper / Iron 副本（Marious、Tree of Life、The Baron、The Devourer） |
+| Lv20+ | 开公会（Lv20 + 100 金）、打 Bronze 副本 |
 
 ## 相关
 
-- [地图、移动与传送](/norr-wiki/world/movement/)
-- [船只与航海](/norr-wiki/systems/sailing/)
-- [成就](/norr-wiki/systems/achievements/)
+- [深渊塔](/norr-wiki/quests/abyssal-tower/)
+- [世界 Boss 与虚空裂隙](/norr-wiki/quests/world-boss/)
+- [竞技场（PvP）](/norr-wiki/quests/arena/)
+- [活动与探险](/norr-wiki/quests/events/)
+- [物品与容器](/norr-wiki/equipment/items/)（宝箱）
 
 ## 资料来源
 
-- 官方帮助文档：Keys、Dungeons & Bosses、Abyssal Tower、Overlords、Void Rifts、Battle Arena、Event Gate、Expeditions。
-- 游戏内实测（EA 版）：副本入口、难度、深渊塔、Overlord 掉落。
+- 官方帮助文档：Keys、Dungeons & Bosses。
+- 游戏内实测（EA 版）：副本入口、难度、Anomaly。

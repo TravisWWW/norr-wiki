@@ -73,7 +73,7 @@ sources:
 
 - [日常任务 Dailies](/norr-wiki/quests/dailies/)
 - [主线任务链](/norr-wiki/quests/main-story/)
-- [副本、爬塔与世界 Boss](/norr-wiki/quests/dungeons/)
+- [副本与 Boss](/norr-wiki/quests/dungeons/)
 
 ## 资料来源
 

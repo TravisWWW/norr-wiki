@@ -86,7 +86,11 @@ export default defineConfig({
 						{ label: '任务板与日志', slug: 'quests/boards' },
 						{ label: '主线任务链', slug: 'quests/main-story' },
 						{ label: '日常任务 Dailies', slug: 'quests/dailies' },
-						{ label: '副本、爬塔与世界 Boss', slug: 'quests/dungeons' },
+						{ label: '副本与 Boss', slug: 'quests/dungeons' },
+						{ label: '深渊塔', slug: 'quests/abyssal-tower' },
+						{ label: '世界 Boss 与虚空裂隙', slug: 'quests/world-boss' },
+						{ label: '竞技场（PvP）', slug: 'quests/arena' },
+						{ label: '活动与探险', slug: 'quests/events' },
 					],
 				},
 				{

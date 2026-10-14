@@ -41,7 +41,7 @@ EA 版已有 **Expeditions（探险）** 系统，也与船和航海相关。但
 
 ## 相关
 
-- [副本、爬塔与世界 Boss](/norr-wiki/quests/dungeons/)
+- [副本与 Boss](/norr-wiki/quests/dungeons/)
 - [地图、移动与传送](/norr-wiki/world/movement/)
 
 ## 资料来源

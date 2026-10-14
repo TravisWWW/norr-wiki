@@ -68,7 +68,7 @@ sources:
 ## 相关
 
 - [任务板与日志](/norr-wiki/quests/boards/)
-- [副本、爬塔与世界 Boss](/norr-wiki/quests/dungeons/)
+- [副本与 Boss](/norr-wiki/quests/dungeons/)
 
 ## 资料来源
 
