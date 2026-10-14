@@ -104,6 +104,16 @@ turns 结算材料。
 
 > **食物 buff**（成品菜 vs 原料）见[制作](/norr-wiki/professions/crafting/)。
 
+## 1.0 变化：Gather Queue【官方已公布】
+
+> 以下为 1.0 官方公告口径，**未实测**；本页上方为 **EA 版**离线采集机制。
+
+- 旧「10 个 AFK 槽」被否决，改为 **Gather Queue（采集队列，3 槽）**，类似 Craft Queue。
+- **恢复采集计时器**（"Zzz" 按钮 + 弹窗显示耗时）。
+- **Noble 玩家额外第 3 槽**（官方称保持非 P2W）。
+- 与 Craft Queue 一样，队列**离线 / 换角色仍继续**（EA v0.8.2 只能 1 角色挂机）。
+- **采集点可直接搜索**（无需翻帮助），属于 1.0 的 UI 改进。
+
 ## 相关
 
 - [生活技能总览](/norr-wiki/professions/overview/)

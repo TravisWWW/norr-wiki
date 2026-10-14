@@ -1,6 +1,6 @@
 ---
 title: 角色与账号
-description: 角色槽与上限、Ironman 模式、遗忘职业、账号与设备限制、社交交互。
+description: 角色槽与上限、Ironman 模式、遗忘职业、账号与设备限制。
 gameVersion: "mixed"
 verifiedDate: 2026-10-14
 versionStatus: mixed
@@ -12,7 +12,7 @@ sources:
 ---
 
 > **资料状态**：以下为**开发者官方口径**，多数为 **1.0** 信息，**尚未在 1.0 正式服实测**。
-> 账号 / 服务器 / 平台迁移见[1.0 发布与开服](/norr-wiki/release/v1-overview/) §3。
+> 账号 / 服务器 / 平台迁移见[1.0 发布与开服](/norr-wiki/release/v1-overview/) §3；聊天与队伍见[社交机制](/norr-wiki/systems/social/)。
 
 ## 角色槽
 
@@ -31,19 +31,13 @@ sources:
 - **同一账号同一时间只能在一台设备在线**（在别处登录会把当前会话挤掉）。
 - **跨平台同一账号**：浏览器、手机、平板、Steam、Steam Deck、桌面端共用同一游戏账号，进度不丢。
 - 1.0 另提供 **Steam 登录**与 **Google 登录**；可先用邮箱注册再绑定。
-
-## 社交与交互
-
-- **v1.0 可右键角色**进行**组队 / 交易 / 私聊**等操作。
-- **Local 聊天**：与同图玩家聊天，副本 / 远征内也可用；发言会在角色头顶弹出**文字气泡**。
-- **表情**：可使用任意 emoji，另有文字码（如 `(C)`=🍪、`(L)`=❤️），`/emojis` 打开帮助页。
-- **移除会与真人混淆的 NPC 冒险者**（1.0）。
+- **用户名保护**：新服开放时不必抢注旧名——Legacy 奖励码即身份凭证（见[1.0 发布与开服](/norr-wiki/release/v1-overview/)）。
 
 ## 相关
 
-- [1.0 发布与开服](/norr-wiki/release/v1-overview/)
 - [职业总览](/norr-wiki/classes/)
-- [邮件](/norr-wiki/systems/mail/)
+- [社交机制](/norr-wiki/systems/social/)
+- [1.0 发布与开服](/norr-wiki/release/v1-overview/)
 
 ## 资料来源
 

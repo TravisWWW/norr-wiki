@@ -1,16 +1,19 @@
 ---
 title: 1.0 职业平衡
-description: Norroth 1.0 测试期职业平衡日志：伤害与异常重做、通用数值改动、各职业调整与时间线。
+description: 1.0 通用战斗规则改动、各职业调整、敌人调整与历史迭代时间线。
 gameVersion: "1.0"
 verifiedDate: 2026-10-14
 versionStatus: 1.0-announced
 sources:
   - type: official
     reference: 官方 Discord #dev-blog（2026-05 ~ 2026-07）
+    nature: 开发日志
+    appliesTo: 1.0 测试服
+    status: 已公布
 ---
 
 > **资料状态**：以下为**测试期口径**，1.0 上线版本可能再调；本项目**未在 1.0 实测**。
-> 系统机制见[1.0 机制变更](/norr-wiki/release/v1-changes/)；各职业技能树见[职业与技能](/norr-wiki/classes/)。
+> 系统机制见 [1.0 机制变更](/norr-wiki/release/v1-changes/)；各职业技能树见[职业与技能](/norr-wiki/classes/)。
 
 ## 1. 官方平衡方法论【2026-06-17】
 
@@ -18,7 +21,9 @@ sources:
 
 > 官方说明：因测试反馈不足，**部分职业在 1.0 上线后可能仍有较大 buff / nerf**。
 
-## 2. 伤害与异常状态（Ailments）重做【2026-06-17】
+## 2. 通用战斗规则
+
+### 2.1 伤害与异常状态（Ailments）重做【2026-06-17】
 
 伤害重新分配为 **即时伤害（instant）** 与 **异常 / DoT 伤害** 两部分：命中时先结算一部分，其余通过 Burn / Poison / Bleed 等异常触发。
 
@@ -33,7 +38,7 @@ sources:
 - Character 面板悬停伤害属性可查看：即时伤害 / DoT 伤害 / 异常几率与持续。
 - 背景：Bleed Berserker 偏弱（Bleed 只在 Wounded 触发时生效）；Ranger 因物理 + Poison 过强。
 
-## 3. 通用数值改动
+### 2.2 通用数值改动
 
 | 项 | 改动 |
 |---|---|
@@ -44,14 +49,14 @@ sources:
 | **Counter Strike** | **属性移除**，相关职业被动改写 |
 | **Life Steal 公式** | `(LS ÷ 4) ÷ (LS ÷ 4 + 400 + 85×level)` → **`(LS ÷ 5) ÷ (LS ÷ 5 + 400 + 85×level)`** |
 | **Blind** | **Boss 免疫** |
-| **Flee（逃跑）** | 由固定约 80% 改为**按敌人等级与稀有度**计算；高等级 / Elite / Boss 更难逃；新增悬停显示 % |
+| **Flee（逃跑）** | 由固定约 80% 改为**按敌人等级与稀有度**计算；高等级 / Elite / Boss 更难逃 |
 | **Bonus Strike 惩罚伤害** | 由第 1 回合后开始下降 → **第 2 回合后** |
 | **Key 掉率** | **+300%**（0.50% → 2.00%） |
 | **Ducats 价格** | Rush Merchant 5 → **10** |
 | **Shadow Coins 堆叠** | 999 → **9999** |
 | **Cassowary / Scorpion** | 类型改为 **Animal**（原 creature） |
 
-## 4. 各职业改动
+## 3. 各职业改动
 
 ### Ranger 游侠
 - **Hawk / Crow Attack**：Blind / Fear 由 100% 改为 **15% + 每级 +5%**；冷却 8 → **7**。
@@ -89,12 +94,17 @@ sources:
 - **Magic Orb**：改为以 **Weapon Damage + Magic Damage** 为基数。
 - 元素技能显示（元素 / 魔法伤害拆分）修复。
 
-### Drahzul
+## 4. 敌人 / Boss 调整
+
+### Drahzul（敌人）
 - **Ember Chain**：`100% Fire Damage` → **`90%`**。
 - **Smoldering Hammer**：`20% Silence` → **`10%`**。
 - **Anvil of Ruin**：`65% Base Damage` → **`50%`**。
 
-## 5. 逐条时间线
+## 5. 历史迭代时间线
+
+<details>
+<summary>展开逐条时间线（2026-05 ~ 2026-07）</summary>
 
 | 日期 | 改动 |
 |---|---|
@@ -113,6 +123,10 @@ sources:
 | 2026-07-28 | **敌人暴击 -33%**；珠宝分组重做 |
 | 2026-07-29 | **Life Steal**（Blood Rage +4%；公式 ÷5） |
 | 2026-07-30 | Bonus Strike 惩罚伤害改到第 2 回合后 |
+
+> **注意**：Attack Speed 的额外打击上限曾**先调为 4 再回退为 3**，上表按**最新有效结论**（上限 3）表述。
+
+</details>
 
 ## 存疑
 

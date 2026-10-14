@@ -78,6 +78,20 @@ sources:
   **Safety Charm**（保装备不碎）、**Reroll Dice**（重 roll 词条，需同 Tier）、
   **Relic Upgrade Token**（Legendary → Relic，100% 成功）。
 
+## 1.0 变化【官方已公布】
+
+> 以下为 1.0 官方公告口径，**未实测**；本页上方为 **EA 版**规则。
+
+- **Item Power**：新增指标，综合**品质 / 伤害 / 属性 / 孔位**等评估装备好坏。
+- **新 item tooltip**：重设计，**稀有度名称写入 tooltip**（色盲友好）。
+- **属性 Account-wide**：大量属性改为**账号共享**，并加入 Overview 页。
+- **锁定**：可锁定**装备**，也可锁定**材料**。
+- **掉落透明化**：每个 mob 的掉落表**显示掉率 %**。
+- **Pathfinder's Crate**：改为**每类各 1 件**（防重复）。
+- **等级 55 / 59 配方**、Tier 6 物品图标补齐。
+
+详见 [1.0 机制变更](/norr-wiki/release/v1-changes/)。
+
 ## 相关
 
 - [物品与容器](/norr-wiki/equipment/items/)

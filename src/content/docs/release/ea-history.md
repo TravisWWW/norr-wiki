@@ -1,18 +1,23 @@
 ---
-title: EA 版本演进（2020–2024）
-description: Norroth 抢先体验期（Legacy v0.8.x）主要版本里程碑时间线，供理解 1.0 之前的内容积累。
-gameVersion: "EA"
+title: 版本与更新历史
+description: EA（2020–2024）版本里程碑与 1.0 开发测试时间线。
+gameVersion: "mixed"
 verifiedDate: 2026-10-14
-versionStatus: ea-verified
+versionStatus: mixed
 sources:
   - type: official
-    reference: 官方 Discord #game-updates / #announcements（2020 ~ 2024）
+    reference: 官方 Discord #game-updates / #announcements（2020 ~ 2026）
 ---
 
-> 本页是 **EA（Legacy）时期**的**里程碑摘要**。完整原始档案（`game-updates` 2020–2024 共约 **1388 条**补丁说明 + `announcements` 2022–2025 共约 **117 条**公告）体量过大，不在此逐条转载。
-> 1.0 信息见[1.0 发布与开服](/norr-wiki/release/v1-overview/)。
+> 本页是**版本与更新档案**：上半为 **EA（Legacy）2020–2024** 里程碑，下半为 **1.0 开发测试时间线**。
+> 具体规则差异见 [1.0 机制变更](/norr-wiki/release/v1-changes/)。
 
-## 按年概览
+## 一、EA 版本演进（2020–2024）
+
+> 完整原始档案（`game-updates` 2020–2024 共约 **1388 条**补丁说明 + `announcements` 2022–2025 共约 **117 条**公告）体量过大，不在此逐条转载。
+> **本页目前只整理到 2024 年**（2025 年 EA 补丁未逐条收录）。
+
+### 按年概览
 
 | 年份 | 补丁条数 | 主题 |
 |---|---|---|
@@ -22,7 +27,7 @@ sources:
 | 2023 | 553 | 副本（L31 / L36）、Overlord、Dailies 扩充、公会 |
 | 2024 | 90 | News Board、Void Rifts、Battle Arena、副本 L45 / L49 |
 
-## 重要里程碑
+### 重要里程碑
 
 | 日期 | 事件 |
 |---|---|
@@ -43,16 +48,39 @@ sources:
 | 2024-03-22 | **Void Rifts（虚空裂隙）** |
 | 2024（年内） | **Battle Arena（PvP）**、副本 **Lv45 / Lv49**、新 Overlord **Thornweaver Itham**、公会强化、百分比伤害修复 |
 
-## 说明
+## 二、1.0 开发与测试时间线（2025-12 ~ 2026-10）
 
-- 上述为**官方补丁说明中的主要节点**，非全部改动。
-- EA 期数值与机制**不代表 1.0**；1.0 的系统改动见[1.0 机制变更](/norr-wiki/release/v1-changes/)。
+| 日期 | 事件 |
+|---|---|
+| 2025-12-17 | 发布 1.0 公告 + FAQ；确认开第二服务器 |
+| 2025-12-18 | 补偿口径改为按 Legacy AP 计算 |
+| 2026-02-19 | 首批玩家开始 **Closed Live Test** |
+| 2026-03-19 | 招募 **1.0 专职测试员** |
+| 2026-04-08 | 测试进展：大量 bug 已修，进入职业平衡讨论 |
+| 2026-05-01 | 公布 v1.0 预告片 |
+| 2026-05-27 | **v1.0 服务器开放公开测试**（test.norroth.com） |
+| 2026-07-10 | 进入**职业平衡阶段** |
+| 2026-08-08 | 公布 **1.0 剩余任务清单** |
+| 2026-08-26 | Steam 成就受限 100 个说明；招募 Steam Beta 测试员 |
+| 2026-08-31 | **Valve 批准 Norroth**，发售日定为 **2026-10-16**；1.0 奖励界面开放查看 |
+| 2026-09-18 | 官网改版 / 新服准备；宣布 10-16 开放新服注册 |
+| 2026-10-11 | **所有 Legacy 奖励码生成完毕**，成就奖励进度关闭 |
+| **2026-10-16** | **1.0 正式发售（13:00 CEST = 11:00 UTC = 北京时间 19:00）** |
+
+### 上线前「剩余任务清单」【2026-08-08】
+
+- 3 张 Shrubland 图、分层 Dominion Spire 城市图、3 张 Dark Boreal 图、Moldrir Depths 首图 + 新怪
+- 1.0 上线奖励系统（奖励 + 个人码）
+- 重生奖励商人商店、NC 商城打磨 + 上线促销
+- 官方 Steam 页 + Steam 应用（登录 / 支付 / 头像 / 成就 100/547）
+- Steam 客户端 Beta 测试密钥、聊天翻译选项、上线预告片
 
 ## 相关
 
 - [1.0 发布与开服](/norr-wiki/release/v1-overview/)
 - [1.0 内容清单](/norr-wiki/release/v1-content/)
+- [1.0 机制变更](/norr-wiki/release/v1-changes/)
 
 ## 资料来源
 
-- 官方 Discord：`#🔔game-updates`（补丁说明，2020 ~ 2024）、`#📣announcements`（公告 / 活动，2022 ~ 2025）。
+- 官方 Discord：`#🔔game-updates`（2020 ~ 2024）、`#📣announcements`（2022 ~ 2026）。

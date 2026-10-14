@@ -104,6 +104,13 @@ El Caspar(1) → Southern Foothill(1-3) → Bay's Alley(4-6) → Bay's Alley(7-1
 Elena's Crossroad → Forested Canyon(4-5) → Tree of Life(5-6) → Grasping Maze(6-7)
 ```
 
+## 1.0 变化：分线（Layer）系统【官方已公布】
+
+- 因开服人数超预期（Steam 愿望单数周破 2000），为缓解同图拥挤引入 **layer 分层**。
+- 每类地图（**Fight Map / City Map / Overlord Map**）各有**每层玩家上限**；城市层上限更高，普通图更低。
+- **世界地图**：新增 **战争迷雾（Fog of War）**、tooltip 改进、显示某活动的全部地点、地图不再越界滚动。
+- **缩放上限**由 140% 提升到 **200%**。
+
 ## 相关
 
 - [地图清单](/norr-wiki/world/maps/)

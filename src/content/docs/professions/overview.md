@@ -78,6 +78,15 @@ Leatherworking、Petbreeding、Stonemasonry、Tailoring、Toolsmithing、Weapons
 材料灰显并显示 `Lv.N` 时，说明该采集技能的等级不足。例：T2 石头（Fieldstone）需要 **Quarrying Lv10**。
 EA 版地图及材料按 Tier 划分，角色等级与地图等级存在推荐范围；各采集技能的具体解锁门槛待逐项核对。
 
+## 1.0 变化【官方已公布】
+
+- **Paragon 等级**：**所有生活技能**（采集 + 制作）在原有等级之上新增 **Paragon 等级**。
+- **大师制作（Masterworking）**：每个制作职业 1 个专属配方 + 1 种专属材料，解锁需完成任务线（见[大师制作](/norr-wiki/professions/masterworking/)）。
+- **Gather Queue**：离线采集改为 3 槽队列（见[采集](/norr-wiki/professions/gathering/)）。
+- **从银行直接制作**：制作 / 强化 / 精炼 / 升级窗口可直接取用银行材料。
+
+> 详见 [1.0 机制变更](/norr-wiki/release/v1-changes/)。以上为官方公告口径，**未实测**。
+
 ## 相关
 
 - [采集](/norr-wiki/professions/gathering/)

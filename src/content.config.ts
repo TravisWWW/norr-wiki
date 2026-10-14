@@ -15,7 +15,20 @@ export const collections = {
 					.enum(['ea-verified', '1.0-announced', '1.0-pending', 'mixed'])
 					.optional(),
 				sources: z
-					.array(z.object({ type: z.string(), reference: z.string() }))
+					.array(
+						z.object({
+							type: z.string(),
+							reference: z.string(),
+							// 来源元数据（可选）：便于追溯与判断证据等级
+							url: z.string().optional(),
+							date: z.string().optional(),
+							channel: z.string().optional(),
+							author: z.string().optional(),
+							nature: z.string().optional(),
+							appliesTo: z.string().optional(),
+							status: z.string().optional(),
+						}),
+					)
 					.optional(),
 			}),
 		}),

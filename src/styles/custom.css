@@ -268,3 +268,19 @@ starlight-theme-select, .theme-select { display: none !important; }
 .nr-class-name{font-size:1.5rem;color:var(--nr-text);font-weight:700}
 .nr-class-sub{color:var(--nr-dim);font-size:.82rem;margin-top:.2rem}
 .nr-skill-group h3{color:var(--nr-gold);margin-top:1.4rem}
+/* 首页 1.0 版本动态横幅 */
+.nr-release-banner {
+    display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
+    border: 1px solid var(--nr-gold-dim); border-radius: 10px;
+    background: linear-gradient(90deg, rgba(201, 162, 74, 0.12), rgba(201, 162, 74, 0.02));
+    padding: 0.9rem 1.1rem; margin: 0.5rem 0 0.5rem;
+  }
+  .nr-rb-tag {
+    flex: 0 0 auto; font-size: 0.72rem; font-weight: 700; color: #14151a;
+    background: var(--nr-gold); border-radius: 999px; padding: 0.15rem 0.6rem;
+  }
+  .nr-rb-body { flex: 1 1 20rem; min-width: 0; }
+  .nr-rb-title { font-weight: 700; color: var(--nr-text); }
+  .nr-rb-desc { color: var(--nr-dim); font-size: 0.85rem; margin-top: 0.15rem; }
+  .nr-rb-link { flex: 0 0 auto; color: var(--nr-gold); font-weight: 600; text-decoration: none; }
+  .nr-rb-link:hover { text-decoration: underline; }
