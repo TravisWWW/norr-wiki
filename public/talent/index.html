@@ -75,6 +75,9 @@ footer code{color:#b9c4dd}
 .pm-b{width:18px;height:18px;line-height:1;padding:0;font-size:13px;border:1px solid #4a5570;background:#1b2130;color:#cfd8ea;border-radius:4px;cursor:pointer}
 .pm-b:hover{border-color:var(--accent);color:#fff}
 @media (hover:none){.pm{opacity:1}}
+
+.buildbox{display:inline-flex;gap:6px;align-items:center}
+.buildbox select{background:#1b2130;color:#cfd8ea;border:1px solid #4a5570;border-radius:6px;padding:4px 6px;font-size:13px}
 </style>
 </head>
 <body>
@@ -95,6 +98,11 @@ footer code{color:#b9c4dd}
     <button class="btn" id="resetCur">重置本职业</button>
     <button class="btn" id="resetAll">全部重置</button>
     <button class="btn" id="shareBtn">复制分享链接</button>
+    <span class="buildbox">
+      <select id="buildSel" title="已保存的方案"><option value="">已存方案…</option></select>
+      <button class="btn" id="buildSave">保存方案</button>
+      <button class="btn" id="buildDel">删除方案</button>
+    </span>
   </div>
 </header>
 <main id="tree"></main>
@@ -245,6 +253,24 @@ document.getElementById("resetAll").addEventListener("click",()=>{ CLASSES.forEa
 document.getElementById("shareBtn").addEventListener("click",async ()=>{ const url=encodeBuild(); history.replaceState(null,"",url); try{ await navigator.clipboard.writeText(url); flash("已复制分享链接 ✓"); }catch(e){ prompt("复制分享链接：",url); } });
 loadFromURL(); document.getElementById("charLevel").value=charLevel; document.getElementById("budget").value=budget;
 renderAll();
+</script>
+
+<script>
+(function(){
+  var KEY="nsim_builds_v1";
+  var sel=document.getElementById("buildSel");
+  if(!sel) return;
+  function all(){ try{ return JSON.parse(localStorage.getItem(KEY)||"{}"); }catch(e){ return {}; } }
+  function put(o){ try{ localStorage.setItem(KEY, JSON.stringify(o)); }catch(e){} }
+  function esc(s){ return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c];}); }
+  function refresh(keep){ var o=all(),names=Object.keys(o); sel.innerHTML='<option value="">已存方案…</option>'+names.map(function(n){return '<option value="'+esc(n)+'">'+esc(n)+'</option>';}).join(''); if(keep&&names.indexOf(keep)>=0) sel.value=keep; }
+  function snapshot(){ return {c:cur,l:charLevel,b:budget,a:align,s:alloc}; }
+  function applyState(d){ if(!d) return; if(d.s){ for(var c in d.s){ if(alloc[c]){ alloc[c]={}; for(var k in d.s[c]) alloc[c][k]=d.s[c][k]; } } } if(d.c&&DATA[d.c]) cur=d.c; if(d.l) charLevel=Math.max(1,Math.min(LEVEL_CAP,d.l)); if(typeof d.b==="number") budget=d.b; if(d.a) align=d.a; save(); renderAll(); }
+  document.getElementById("buildSave").addEventListener("click",function(){ var name=prompt("方案名称：", sel.value || (cur+" 方案")); if(!name) return; var o=all(); o[name]=snapshot(); put(o); refresh(name); });
+  document.getElementById("buildDel").addEventListener("click",function(){ var name=sel.value; if(!name) return; var o=all(); delete o[name]; put(o); refresh(); });
+  sel.addEventListener("change",function(){ var name=sel.value; if(!name) return; var o=all(); if(o[name]) applyState(o[name]); });
+  refresh();
+})();
 </script>
 </body>
 </html>
