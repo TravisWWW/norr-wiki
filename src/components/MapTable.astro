@@ -4,24 +4,17 @@ const maps = Object.values(mapdb.maps).filter((m) => m && m.name);
 const biomes = [...new Set(maps.map((m) => m.biome).filter(Boolean))].sort();
 const types = [...new Set(maps.map((m) => m.type).filter(Boolean))].sort();
 const levels = [
-  { v: '1-9', label: 'Lv1–9' },
-  { v: '10-19', label: 'Lv10–19' },
-  { v: '20-29', label: 'Lv20–29' },
-  { v: '30-39', label: 'Lv30–39' },
-  { v: '40-49', label: 'Lv40–49' },
-  { v: '50-99', label: 'Lv50+' },
+  { v: '1-9', label: 'Lv1–9' }, { v: '10-19', label: 'Lv10–19' }, { v: '20-29', label: 'Lv20–29' },
+  { v: '30-39', label: 'Lv30–39' }, { v: '40-49', label: 'Lv40–49' }, { v: '50-99', label: 'Lv50+' },
 ];
 const noLevel = maps.filter((m) => !m.level).length;
 const noCont = maps.filter((m) => !m.continent).length;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '') + '/';
 const rows = maps.map((m) => ({
-  id: m.id,
-  name: m.name,
+  id: m.id, name: m.name,
   level: m.level == null || m.level === '' ? '' : String(m.level),
-  biome: m.biome || '',
-  type: m.type || '',
-  town: m.town ? 1 : 0,
-  g: (m.g && m.g.length) ? 1 : 0,
-  mo: (m.m && m.m.length) ? 1 : 0,
+  biome: m.biome || '', type: m.type || '',
+  town: m.town ? 1 : 0, g: (m.g && m.g.length) ? 1 : 0, mo: (m.m && m.m.length) ? 1 : 0,
 }));
 ---
 <div class="nr-toolbar">
@@ -51,13 +44,13 @@ const rows = maps.map((m) => ({
         <td>{m.biome || '—'}</td>
         <td>{m.type || '—'}</td>
         <td>{m.g ? '✔' : ''}</td>
-        <td>{m.mo ? '✔' : ''}</td>
+        <td>{m.mo ? <a href={`${base}world/bestiary/?biome=${encodeURIComponent(m.biome)}`} title="查看该生物群系怪物">✔</a> : ''}</td>
         <td>{m.town ? '✔' : ''}</td>
       </tr>
     ))}
   </tbody>
 </table>
-<p class="nr-note">共 {maps.length} 张；其中 <b>{noLevel}</b> 张缺等级、<b>{noCont}</b> 张缺大陆字段（缺失显示为「—」，暂不展示大陆列）。</p>
+<p class="nr-note">共 {maps.length} 张；其中 <b>{noLevel}</b> 张缺等级、<b>{noCont}</b> 张缺大陆字段（缺失显示为「—」，暂不展示大陆列）。点「怪物」列的 ✔ 可跳到该图怪物。</p>
 
 <script>
   const q = document.getElementById('map-q');
@@ -71,25 +64,17 @@ const rows = maps.map((m) => ({
   const rows = [...tbody.querySelectorAll('tr')];
   const count = document.getElementById('map-count');
   const sortBtn = document.getElementById('map-sortlvl');
-  let sortDir = 0; // 0 none, 1 asc, -1 desc
-  function inLvl(v, range) {
-    if (!range) return true;
-    if (v === '') return false;
-    const n = +v; const [a, b] = range.split('-').map(Number);
-    return n >= a && n <= b;
-  }
+  let sortDir = 0;
+  function inLvl(v, range) { if (!range) return true; if (v === '') return false; const n = +v; const [a, b] = range.split('-').map(Number); return n >= a && n <= b; }
   function apply() {
     const s = (q.value || '').toLowerCase().trim();
     const b = biome.value, t = type.value, l = lvl.value;
     let n = 0;
     for (const r of rows) {
       const ok = (!s || r.dataset.name.includes(s) || r.textContent.toLowerCase().includes(s))
-        && (!b || r.dataset.biome === b)
-        && (!t || r.dataset.type === t)
-        && (!town.checked || r.dataset.town === '1')
-        && (!g.checked || r.dataset.g === '1')
-        && (!mo.checked || r.dataset.m === '1')
-        && inLvl(r.dataset.level, l);
+        && (!b || r.dataset.biome === b) && (!t || r.dataset.type === t)
+        && (!town.checked || r.dataset.town === '1') && (!g.checked || r.dataset.g === '1')
+        && (!mo.checked || r.dataset.m === '1') && inLvl(r.dataset.level, l);
       r.style.display = ok ? '' : 'none';
       if (ok) n++;
     }
@@ -113,5 +98,14 @@ const rows = maps.map((m) => ({
   g.addEventListener('change', apply);
   mo.addEventListener('change', apply);
   sortBtn.addEventListener('click', doSort);
+  // deep-link
+  const params = new URLSearchParams(location.search);
+  if (params.get('q')) q.value = params.get('q');
+  if (params.get('biome')) biome.value = params.get('biome');
+  if (params.get('type')) type.value = params.get('type');
+  if (params.get('lvl')) lvl.value = params.get('lvl');
+  if (params.get('town') === '1') town.checked = true;
+  if (params.get('g') === '1') g.checked = true;
+  if (params.get('m') === '1') mo.checked = true;
   apply();
 </script>
