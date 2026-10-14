@@ -1,0 +1,68 @@
+---
+import data from '../data/crafting.json';
+const { professions, recipes } = data;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '') + '/';
+
+// 谁（哪些专业）能生产某个成品/半成品名
+const producers = {};
+for (const r of recipes) (producers[r.name] ||= new Set()).add(r.prof);
+
+const profZh = Object.fromEntries(professions.map((p) => [p.id, p.zh]));
+const profEn = Object.fromEntries(professions.map((p) => [p.id, p.en]));
+
+const rows = professions.map((p) => {
+  const inputs = new Map(); // 材料名 -> 出现次数
+  for (const r of recipes) {
+    if (r.prof !== p.id) continue;
+    for (const m of r.materials || []) inputs.set(m, (inputs.get(m) || 0) + 1);
+  }
+  const self = [];
+  const raw = [];
+  const cross = {}; // 其它专业 -> [材料名]
+  for (const m of inputs.keys()) {
+    const owners = producers[m];
+    if (!owners) raw.push(m);
+    else if (owners.has(p.id)) self.push(m);
+    else for (const o of owners) (cross[o] ||= []).push(m);
+  }
+  const crossList = Object.entries(cross).sort((a, b) => b[1].length - a[1].length);
+  return {
+    id: p.id, zh: p.zh, en: p.en, classes: p.classes,
+    selfCount: self.length, rawCount: raw.length,
+    cross: crossList.map(([pid, mats]) => ({ pid, zh: profZh[pid] || pid, mats: mats.sort() })),
+    selfSufficient: crossList.length === 0,
+    recipeCount: recipes.filter((r) => r.prof === p.id).length,
+  };
+});
+const selfCount = rows.filter((r) => r.selfSufficient).length;
+---
+<table class="cm-table">
+  <thead>
+    <tr><th>制作专业</th><th>可用职业</th><th>配方数</th><th>自产材料</th><th>采集 / 原料</th><th>跨专业依赖（缺口）</th></tr>
+  </thead>
+  <tbody>
+    {rows.map((r) => (
+      <tr>
+        <td><a href={`${base}professions/crafting-catalog/?prof=${r.id}`}>{r.zh} {r.en}</a></td>
+        <td>{r.classes}</td>
+        <td>{r.recipeCount}</td>
+        <td>{r.selfCount}</td>
+        <td>{r.rawCount}</td>
+        <td>{r.selfSufficient
+          ? <span class="cm-ok">无 → 配方输入全部自产 / 采集</span>
+          : r.cross.map((c) => <span class="cm-dep"><b>{c.zh}</b>：{c.mats.slice(0, 6).join('、')}{c.mats.length > 6 ? ` 等 ${c.mats.length} 项` : ''}</span>)}</td>
+      </tr>
+    ))}
+  </tbody>
+</table>
+<p class="cm-note">上表由 <b>制作配方数据自动生成</b>：<b>自产</b> = 该专业自己也能做出来的材料；<b>采集 / 原料</b> = 没有任何制作专业产出的材料（靠采集 / 商店 / 掉落）；<b>跨专业依赖</b> = 必须由其它制作专业提供、本专业无法自制的材料。共 <b>{rows.length}</b> 个制作专业，其中 <b>{selfCount}</b> 个的配方输入可完全自给。</p>
+
+<style>
+  .cm-table { width: 100%; border-collapse: collapse; font-size: .86rem; }
+  .cm-table th, .cm-table td { border: 1px solid var(--nr-hair); padding: .35rem .5rem; text-align: left; vertical-align: top; }
+  .cm-table th { background: var(--nr-panel-2); color: var(--nr-text-soft); font-weight: 600; }
+  .cm-ok { color: var(--nr-gold); }
+  .cm-dep { display: block; margin-bottom: .15rem; }
+  .cm-dep b { color: var(--nr-text); }
+  .cm-note { color: var(--nr-dim); font-size: .8rem; margin-top: .5rem; }
+</style>
