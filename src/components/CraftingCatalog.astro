@@ -1,0 +1,221 @@
+---
+import data from '../data/crafting.json';
+const { professions, categories, recipes, meta } = data;
+
+const rows = recipes.map((r) => ({
+  id: r.id,
+  name: r.name,
+  prof: r.prof,
+  cat: r.cat,
+  tier: r.tier || '',
+  tnum: r.tierNum == null ? '' : r.tierNum,
+  lvl: r.level == null ? '' : r.level,
+  kind: r.kind,
+  mats: (r.materials || []).join('|'),
+  meta: [r.profZh, r.catZh, r.tier ? (r.tier + (r.tierZh ? ' ' + r.tierZh : '')) : '', r.level != null ? 'Lv' + r.level : ''].filter(Boolean).join(' · '),
+  main: (r.variants[0] && r.variants[0].mats ? r.variants[0].mats : []).map((m) => (m.q == null ? '?' : m.q) + '× ' + m.n).join(' + '),
+  vcount: r.variants.length,
+}));
+
+const tierMap = new Map();
+for (const r of recipes) if (r.tier && !tierMap.has(r.tier)) tierMap.set(r.tier, r.tierNum == null ? 99 : r.tierNum);
+const tiers = [...tierMap.entries()].sort((a, b) => a[1] - b[1]).map(([en, num]) => ({ en, num }));
+
+const levels = [
+  { v: '1-9', label: 'Lv1–9' },
+  { v: '10-19', label: 'Lv10–19' },
+  { v: '20-29', label: 'Lv20–29' },
+  { v: '30-39', label: 'Lv30–39' },
+  { v: '40-49', label: 'Lv40–49' },
+  { v: '50-99', label: 'Lv50+' },
+];
+const base = import.meta.env.BASE_URL;
+---
+<div class="cc" data-base={base}>
+  <div class="nr-toolbar cc-toolbar">
+    <input id="cc-q" type="search" placeholder="搜索：成品 / 材料名称（输入材料名可反查）…" autocomplete="off" />
+    <select id="cc-prof">
+      <option value="">全部专业</option>
+      {professions.map((p) => <option value={p.id}>{p.zh} {p.en}</option>)}
+    </select>
+    <select id="cc-cat">
+      <option value="">全部类型</option>
+      {categories.map((c) => <option value={c.en}>{c.zh} {c.en}</option>)}
+    </select>
+    <select id="cc-tier">
+      <option value="">全部 Tier</option>
+      {tiers.map((t) => <option value={t.en}>{'T' + t.num + ' ' + t.en}</option>)}
+    </select>
+    <select id="cc-lvl">
+      <option value="">全部等级</option>
+      {levels.map((l) => <option value={l.v}>{l.label}</option>)}
+    </select>
+    <select id="cc-kind">
+      <option value="">全部（成品+半成品）</option>
+      <option value="item">仅成品</option>
+      <option value="material">仅半成品 / 材料</option>
+    </select>
+    <span class="nr-count" id="cc-count"></span>
+  </div>
+  <p class="cc-hint" id="cc-hint">共 {recipes.length} 条配方 · 数据来源：{meta.source}（{meta.tierCoverage}）</p>
+  <ul id="cc-list" class="cc-list">
+    {rows.map((r) => (
+      <li class="cc-row" data-id={r.id} data-name={r.name} data-prof={r.prof} data-cat={r.cat} data-tier={r.tier} data-tnum={r.tnum} data-lvl={r.lvl} data-kind={r.kind} data-mats={r.mats}>
+        <button type="button" class="cc-head" aria-expanded="false">
+          <span class="cc-title">
+            <span class="cc-name">{r.name}</span>
+            <span class="cc-meta">{r.meta}</span>
+          </span>
+          <span class="cc-mats">{r.main}{r.vcount > 1 ? '　等 ' + r.vcount + ' 种配方' : ''}</span>
+        </button>
+        <div class="cc-detail" hidden></div>
+      </li>
+    ))}
+  </ul>
+</div>
+
+<script>
+  const root = document.querySelector('.cc');
+  if (root) {
+    const base = ((root.getAttribute('data-base') || '/').replace(/\/+$/, '')) + '/';
+    const q = document.getElementById('cc-q');
+    const fProf = document.getElementById('cc-prof');
+    const fCat = document.getElementById('cc-cat');
+    const fTier = document.getElementById('cc-tier');
+    const fLvl = document.getElementById('cc-lvl');
+    const fKind = document.getElementById('cc-kind');
+    const count = document.getElementById('cc-count');
+    const hint = document.getElementById('cc-hint');
+    const rows = [...document.querySelectorAll('#cc-list .cc-row')];
+    let db = null;
+
+    const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+    const matChip = (m) => '<button type="button" class="cc-chip" data-mat="' + esc(m.n) + '">' + (m.q == null ? '?' : m.q) + '× ' + esc(m.n) + '</button>';
+
+    function inLvl(lv, range) {
+      if (!range) return true;
+      if (lv === '') return false;
+      const n = +lv;
+      const [a, b] = range.split('-').map(Number);
+      return n >= a && n <= b;
+    }
+
+    function apply() {
+      const s = (q.value || '').toLowerCase().trim();
+      const p = fProf.value, c = fCat.value, t = fTier.value, l = fLvl.value, k = fKind.value;
+      let n = 0;
+      for (const r of rows) {
+        const ok = (!s || r.dataset.name.toLowerCase().includes(s) || (r.dataset.mats || '').toLowerCase().includes(s))
+          && (!p || r.dataset.prof === p)
+          && (!c || r.dataset.cat === c)
+          && (!t || r.dataset.tier === t)
+          && (!k || r.dataset.kind === k)
+          && inLvl(r.dataset.lvl, l);
+        r.style.display = ok ? '' : 'none';
+        if (ok) n++;
+      }
+      count.textContent = n + ' 条';
+      if (s) hint.textContent = '搜索「' + q.value.trim() + '」：' + n + ' 条结果（匹配成品名或材料名）';
+      else hint.textContent = '共 ' + rows.length + ' 条配方';
+    }
+
+    async function ensureDb() {
+      if (db) return db;
+      const res = await fetch(base + 'data/crafting.json');
+      const j = await res.json();
+      db = new Map(j.recipes.map((r) => [r.id, r]));
+      return db;
+    }
+
+    async function openDetail(li) {
+      const box = li.querySelector('.cc-detail');
+      const btn = li.querySelector('.cc-head');
+      if (!box.hidden) { box.hidden = true; btn.setAttribute('aria-expanded', 'false'); return; }
+      await ensureDb();
+      const r = db.get(li.dataset.id);
+      if (!r) return;
+      const stats = (r.stats && r.stats.length) ? r.stats.map((x) => '<li>+' + esc(x) + '</li>').join('') : '<li class="cc-none">资料未提供</li>';
+      const variants = r.variants.map((v, i) => '<div class="cc-variant"><span class="cc-vlabel">配方 ' + (i + 1) + '</span>' + (v.mats.length ? v.mats.map(matChip).join('') : '<span class="cc-none">资料未提供</span>') + '</div>').join('');
+      const cls = r.equipClass ? esc(r.equipClass) + (r.twoHanded ? ' · 双手' : '') : (r.twoHanded ? '双手' : '—');
+      box.innerHTML =
+        '<div class="cc-dhead">' + esc(r.name) + '</div>' +
+        '<div class="cc-dmeta">' + esc([r.profZh, r.catZh, r.tier ? (r.tier + (r.tierZh ? ' ' + r.tierZh : '')) : '', r.level != null ? '物品等级 Lv' + r.level : ''].filter(Boolean).join(' · ')) + '</div>' +
+        '<div class="cc-sec"><b>装备限制</b>：' + cls + '</div>' +
+        '<div class="cc-sec"><b>基础属性</b><ul class="cc-stats">' + stats + '</ul></div>' +
+        '<div class="cc-sec"><b>配方（' + r.variants.length + ' 种）</b>' + variants + '</div>' +
+        '<div class="cc-lookup" hidden></div>';
+      box.hidden = false;
+      btn.setAttribute('aria-expanded', 'true');
+    }
+
+    async function lookup(mat, box) {
+      await ensureDb();
+      const prod = [], use = [];
+      for (const r of db.values()) {
+        if (r.name === mat) prod.push(r);
+        if ((r.materials || []).includes(mat)) use.push(r);
+      }
+      const link = (r) => '<button type="button" class="cc-jump" data-jump="' + esc(r.id) + '">' + esc(r.name) + ' <small>' + esc(r.profZh + ' · ' + r.catZh) + '</small></button>';
+      box.innerHTML =
+        '<div class="cc-sec"><b>材料反查：' + esc(mat) + '</b></div>' +
+        '<div class="cc-sec"><b>由谁制作</b>' + (prod.length ? prod.map(link).join('') : '<span class="cc-none">无（采集 / 掉落 / 商店获得）</span>') + '</div>' +
+        '<div class="cc-sec"><b>用于哪些配方（' + use.length + '）</b>' + (use.length ? use.map(link).join('') : '<span class="cc-none">无</span>') + '</div>';
+      box.hidden = false;
+    }
+
+    document.getElementById('cc-list').addEventListener('click', async (e) => {
+      const chip = e.target.closest('.cc-chip');
+      if (chip) {
+        const box = chip.closest('.cc-detail').querySelector('.cc-lookup');
+        await lookup(chip.getAttribute('data-mat'), box);
+        return;
+      }
+      const jump = e.target.closest('.cc-jump');
+      if (jump) {
+        const id = jump.getAttribute('data-jump');
+        const target = document.querySelector('#cc-list .cc-row[data-id="' + CSS.escape(id) + '"]');
+        if (target) {
+          fProf.value = ''; fCat.value = ''; fTier.value = ''; fLvl.value = ''; fKind.value = ''; q.value = '';
+          apply();
+          target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          const box = target.querySelector('.cc-detail');
+          if (box.hidden) await openDetail(target);
+        }
+        return;
+      }
+      const head = e.target.closest('.cc-head');
+      if (head) openDetail(head.closest('.cc-row'));
+    });
+
+    for (const el of [q, fProf, fCat, fTier, fLvl, fKind]) el.addEventListener('input', apply);
+    apply();
+  }
+</script>
+
+<style>
+  .cc-toolbar { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; margin-block: .5rem 1rem; }
+  .cc-toolbar input[type='search'] { flex: 1 1 16rem; min-width: 12rem; }
+  .cc-toolbar select { flex: 0 1 auto; }
+  .cc-hint { color: var(--nr-dim); font-size: .85rem; margin: 0 0 .75rem; }
+  .cc-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: .35rem; }
+  .cc-row { border: 1px solid var(--nr-hair); border-radius: 6px; background: var(--nr-panel); overflow: hidden; }
+  .cc-head { display: flex; width: 100%; gap: 1rem; justify-content: space-between; align-items: baseline; text-align: left; background: none; border: 0; color: inherit; padding: .5rem .7rem; cursor: pointer; font: inherit; }
+  .cc-head:hover { background: var(--nr-panel-2); }
+  .cc-title { display: flex; flex-direction: column; gap: .1rem; min-width: 0; }
+  .cc-name { color: var(--nr-text); font-weight: 600; }
+  .cc-meta { color: var(--nr-dim); font-size: .78rem; }
+  .cc-mats { color: var(--nr-text-soft); font-size: .82rem; text-align: right; flex: 0 0 auto; max-width: 46%; }
+  .cc-detail { padding: .6rem .8rem .8rem; border-top: 1px solid var(--nr-hair); background: var(--nr-bg); font-size: .88rem; }
+  .cc-dhead { color: var(--nr-gold); font-weight: 700; font-size: 1rem; }
+  .cc-dmeta { color: var(--nr-dim); font-size: .8rem; margin-bottom: .5rem; }
+  .cc-sec { margin-top: .5rem; }
+  .cc-stats { margin: .25rem 0 0; padding-left: 1.1rem; }
+  .cc-variant { margin: .3rem 0; display: flex; flex-wrap: wrap; gap: .35rem; align-items: center; }
+  .cc-vlabel { color: var(--nr-dim); font-size: .78rem; margin-right: .2rem; }
+  .cc-chip, .cc-jump { border: 1px solid var(--nr-hair); background: var(--nr-panel-2); color: var(--nr-text-soft); border-radius: 4px; padding: .1rem .45rem; font-size: .8rem; cursor: pointer; font: inherit; }
+  .cc-chip:hover, .cc-jump:hover { border-color: var(--nr-gold-dim); color: var(--nr-text); }
+  .cc-jump { display: block; text-align: left; margin: .2rem 0; width: 100%; }
+  .cc-jump small { color: var(--nr-dim); }
+  .cc-none { color: var(--nr-dim); font-style: italic; }
+  .cc-lookup { margin-top: .5rem; padding-top: .5rem; border-top: 1px dashed var(--nr-hair); }
+</style>

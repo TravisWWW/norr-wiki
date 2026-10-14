@@ -1,0 +1,61 @@
+---
+title: 制作配方图鉴
+description: 按专业 / 物品类型 / Tier / 等级筛选并检索 13 个制作专业的全部配方；支持材料反查与配方展开。
+gameVersion: "EA"
+verifiedDate: 2026-10-14
+versionStatus: ea-verified
+sources:
+  - type: official
+    reference: 游戏内帮助文档（各制作职业配方页，id=113~132）
+---
+
+import CraftingCatalog from '../../../components/CraftingCatalog.astro';
+
+Norroth 的 **13 个制作专业**共有 1,200+ 条配方。用下面的筛选器按 **专业 / 物品类型 / Tier / 物品等级** 过滤，或在搜索框输入 **成品名或材料名**（输入材料名即可反查它由谁制作、又用在哪里）。点击任意一行展开完整材料、配方变体与基础属性。
+
+<CraftingCatalog />
+
+## 字段说明
+
+- **物品等级（Lv）**：该成品自身的需求等级（装备 / 使用门槛）。它与**制作解锁等级**不同——每个子类的配方按 **Lv1 / Lv5 / Lv9** 三档解锁（官方口径），解锁等级不随物品等级线性变化。
+- **Tier**：成品所属的材料阶级（T1–T5）。药水按种子阶级（Tiny → Greater ≈ T1 → T5）归类。
+- **配方变体**：同一成品的多种等价配方（例如不同宝石的同一件首饰、可互相替代的药水材料）已合并为一条，展开后列出全部。
+- **资料未提供**：官方帮助未标注该成品的属性或材料时显示为「资料未提供」，不代表该成品没有属性。
+- **覆盖范围**：当前收录 **T1–T5**；T6（Valentaal / Ash / Bamboo / Travertine / Northern Pike 等）的详细配方官方尚未提供，待补充。
+
+## 专业速查（哪个专业做什么）
+
+| 专业 | 归属职业 | 能做的成品类型 |
+|---|---|---|
+| **Weaponsmithing 铸武** | Berserker | 斧 Axes、剑 Swords、权杖 Scepters、**匕首 Daggers**、锤 Maces、矛 Spears |
+| **Armorsmithing 铸甲** | Zealot | 金属重甲：腰带 Belts / 靴 Boots / 手 Gloves / 头 Helmets / 腿 Leggings / **盾 Shields** / 胸 Chests |
+| **Leatherworking 制皮** | Berserker/Druid/Ranger/Rogue | 皮甲：腰带 / **盾** / 胸 / 手 / 头 / 腿 / 靴（按骨/鳞/翅/哥布林/甲壳分词条） |
+| **Tailoring 裁缝** | Archmage/Druid | 布甲：腰带 / 靴 / 手 / 头 / 腿 / 胸 + **法书 Encased Tome** |
+| **Jeweling 珠宝** | Archmage/Zealot | 宝石切割（Cabochon→Round→Princess→Emerald→Radiant）+ 戒指 Rings / 耳环 Earrings / 项链 Necklace |
+| **Hunting 狩猎** | Berserker/Druid/Ranger/Zealot/Rogue | **弓 Bow**、拳套 Cestus、项链 / 耳环 / 戒指 |
+| **Carpentry 木工** | Ranger | 木料（杆 Rod / 棍 Club / 板 Planks / 柄 Handle / 卷轴 Scroll）+ **弩 Crossbow** |
+| **Alchemy 炼金** | Archmage | 药水（法力/生命/回春/增益）+ 法杖 Staff + 魔杖 Wand + 鱼油 / 宝珠 Orb |
+| **Cartography 制图** | Archmage/Ranger/Zealot/Rogue | 墨水 Ink / 卷轴 Scroll / 蓝图 Blueprint / 远征地图 Map / 回城卷轴 / 鉴定卷轴 |
+| **Stonemasonry 石工** | Berserker | 石料：精炼石 / 砖 Bricks / 地砖 Tiles / 柱 Pillars / 碎石 Gravel |
+| **Toolsmithing 工具** | Rogue | 工具（镐/锄/斧/钓竿）+ 投掷武器 Throwing + 盗贼武器（拳刃/三叉/双轮刃） |
+| **Cooking 烹饪** | 全职业 | 菜肴（蔬菜/鱼/水果/肉/混合/节日），给治疗 + buff |
+| **Petbreeding 养宠** | Druid | 宠物 Pets + 宠物粮 Pet Food |
+
+## 材料 Tier 对照（角色等级门槛）
+
+| Tier | 角色等级 | 金属 | 木材 | 纤维 | 石料 | 鱼 | 尸块/其它 |
+|---|---|---|---|---|---|---|---|
+| T1 | 1-9 | Copper 铜 | Aspen 白杨 | Cotton 棉 | Slate 板岩 | Minnow | Mucky 污秽 |
+| T2 | 10-19 | Iron 铁 | Elm 榆木 | Silkworm Cocoon 蚕茧 | Fieldstone 原石 | Shrimp | Scrap 废料 |
+| T3 | 20-29 | Tin 锡 | Spruce 云杉 | Jute 黄麻 | Soapstone 皂石 | White Bass | Low Quality 低品质 |
+| T4 | 30-39 | Coal 煤 | Maple 枫木 | Nettle 荨麻 | Sandstone 砂岩 | Smallmouth Bass | Medium Quality 中品质 |
+| T5 | 40-49 | Mithril 秘银 | Beech 山毛榉 | Ramie 苎麻 | Laterite 红土 | Largemouth Bass | Quality 高品质 |
+| T6 | 50-59 | Valentaal | Ash 白蜡木 | Bamboo 竹 | Travertine 石灰华 | Northern Pike | Graded |
+
+> 金属锭换算：铜 = 4 矿、铁 = 5 矿、**青铜 = 1 铜锭 + 4 锡矿**、钢 = 1 铁锭 + 5 煤、秘银 = 8 秘银矿。
+
+## 相关
+
+- [生活技能总览](/norr-wiki/professions/overview/)
+- [采集](/norr-wiki/professions/gathering/)
+- [职业自给自足矩阵](/norr-wiki/guides/crafting-matrix/)
