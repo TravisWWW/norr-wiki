@@ -60,7 +60,7 @@ sources:
 - 涨 Growth 会同时提高**最大 Energy 并直接回满**；Growth 本身提升宠物伤害与最大 Energy。
 - **Energy**：每块饲料回 **150 Energy × 饲料档位**；0 Energy 的宠物不再提供战斗加成；
   也可放自家 estate 的 **Pet Shelter** 回能。
-- 饲料档位按宠物等级自动选（Lv1-9=T1，10-19=T2…）；**Petbreeder 处可买，或用 Cooking 制作**；
+- 饲料档位按宠物等级自动选（Lv1-9=T1，10-19=T2…）；**Petbreeder 处可买，或由 Petbreeding（养宠）制作**；
   **公会宠物不能喂**。
 - 成功喂食算「Feed Your Pet」日常目标（每天一次）。
 

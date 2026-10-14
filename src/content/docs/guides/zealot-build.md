@@ -34,7 +34,7 @@ Zealot（狂热者）是**近战 + 法术混合**职业，**光明 / 黑暗双�
 - `Bright Strike` 是核心主动技（Attack、CD 2），每级都是纯伤害。
 - `Lighting Of Spirit` / `Blade Mastery` 是被动，无蓝耗无 CD，最适合无人值守挂机。
 - 长 CD 大招（`Overwhelming Light` CD9、`Phalanx` CD6）手动用，挂机收益低。
-- 技能点可**免费重洗**，技能实验成本较低。
+- 技能点可洗（Reset Skills）：**第一次免费**，之后按面板当前报价收费，技能实验成本较低。
 
 ## 技能栏与自动战斗
 
