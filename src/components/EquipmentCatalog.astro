@@ -1,0 +1,142 @@
+---
+import data from '../data/equipment.json';
+const { items, meta } = data;
+
+const catZh = {};
+const groups = ['武器','护甲','首饰','工具'];
+for (const it of items) catZh[it.cat] = it.catZh;
+
+const rows = items.map((it) => ({
+  id: it.id, name: it.name, group: it.group, cat: it.cat, tier: it.tier || '',
+  tnum: it.tierNum == null ? '' : it.tierNum, lvl: it.level == null ? '' : it.level,
+  cls: it.equipClass || '', prof: it.profZh,
+  meta: [it.group, it.catZh, it.tier ? (it.tier + (it.tierZh ? ' ' + it.tierZh : '')) : '', it.level != null ? 'Lv' + it.level : ''].filter(Boolean).join(' · '),
+  stat: (it.stats || []).slice(0, 3).map((s) => '+' + s).join('，'),
+  clsTxt: it.equipClass ? it.equipClass : '—',
+}));
+
+const catsByGroup = {};
+for (const it of items) (catsByGroup[it.group] ||= {})[it.cat] = (catsByGroup[it.group][it.cat] || 0) + 1;
+const classList = [...new Set(items.map((i) => i.equipClass).filter(Boolean))].sort();
+const allTiers = {};
+for (const it of items) if (it.tier) allTiers[it.tier] = it.tierNum == null ? 99 : it.tierNum;
+const levels = [
+  { v: '1-9', label: 'Lv1–9' }, { v: '10-19', label: 'Lv10–19' }, { v: '20-29', label: 'Lv20–29' },
+  { v: '30-39', label: 'Lv30–39' }, { v: '40-49', label: 'Lv40–49' }, { v: '50-99', label: 'Lv50+' },
+];
+const base = import.meta.env.BASE_URL;
+---
+<div class="ec" data-base={base}>
+  <div class="nr-toolbar ec-toolbar">
+    <input id="ec-q" type="search" placeholder="搜索：装备名 / 词条 / 材料…" autocomplete="off" />
+    <select id="ec-group"><option value="">全部大类</option>{groups.map((g) => <option value={g}>{g}</option>)}</select>
+    <select id="ec-cat"><option value="">全部类型</option></select>
+    <select id="ec-cls"><option value="">全部职业限制</option>{classList.map((c) => <option value={c}>{c}</option>)}</select>
+    <select id="ec-tier"><option value="">全部 Tier</option>{[...Object.entries(allTiers)].sort((a, b) => a[1] - b[1]).map(([en, num]) => <option value={en}>{'T' + num + ' ' + en}</option>)}</select>
+    <select id="ec-lvl"><option value="">全部等级</option>{levels.map((l) => <option value={l.v}>{l.label}</option>)}</select>
+    <span class="nr-count" id="ec-count"></span>
+  </div>
+  <p class="cc-hint" id="ec-hint">共 {items.length} 件可制作装备 · 来源：{meta.source}</p>
+  <ul id="ec-list" class="cc-list">
+    {rows.map((r) => (
+      <li class="cc-row" data-id={r.id} data-name={r.name} data-group={r.group} data-cat={r.cat} data-tier={r.tier} data-lvl={r.lvl} data-cls={r.cls} data-stats={r.stat}>
+        <button type="button" class="cc-head" aria-expanded="false">
+          <span class="cc-title">
+            <span class="cc-name">{r.name}</span>
+            <span class="cc-meta">{r.meta} · 限制 {r.clsTxt}</span>
+          </span>
+          <span class="cc-mats">{r.stat}</span>
+        </button>
+        <div class="cc-detail" hidden></div>
+      </li>
+    ))}
+  </ul>
+</div>
+
+<script type="application/json" id="ec-facet" set:html={JSON.stringify({ catZh, catsByGroup })}></script>
+
+<script>
+  const root = document.querySelector('.ec');
+  if (root) {
+    const base = ((root.getAttribute('data-base') || '/').replace(/\/+$/, '')) + '/';
+    const facet = JSON.parse(document.getElementById('ec-facet').textContent);
+    const q = document.getElementById('ec-q');
+    const fGroup = document.getElementById('ec-group');
+    const fCat = document.getElementById('ec-cat');
+    const fCls = document.getElementById('ec-cls');
+    const fTier = document.getElementById('ec-tier');
+    const fLvl = document.getElementById('ec-lvl');
+    const count = document.getElementById('ec-count');
+    const hint = document.getElementById('ec-hint');
+    const rows = [...document.querySelectorAll('#ec-list .cc-row')];
+    let db = null;
+    const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+    const catLabel = (en) => (facet.catZh[en] ? facet.catZh[en] + ' ' + en : en);
+    function inLvl(v, r) { if (!r) return true; if (v === '') return false; const n = +v; const [a, b] = r.split('-').map(Number); return n >= a && n <= b; }
+    function rebuildCats() {
+      const g = fGroup.value;
+      const cats = g ? Object.keys(facet.catsByGroup[g] || {}) : Object.keys(facet.catZh);
+      const cur = fCat.value;
+      fCat.innerHTML = '<option value="">全部类型</option>' + cats.map((c) => '<option value="' + esc(c) + '">' + esc(catLabel(c)) + '</option>').join('');
+      fCat.value = cats.includes(cur) ? cur : '';
+    }
+    function apply() {
+      const s = (q.value || '').toLowerCase().trim();
+      const g = fGroup.value, c = fCat.value, cl = fCls.value, t = fTier.value, l = fLvl.value;
+      let n = 0;
+      for (const r of rows) {
+        const ok = (!s || r.dataset.name.toLowerCase().includes(s) || (r.dataset.stats || '').toLowerCase().includes(s))
+          && (!g || r.dataset.group === g) && (!c || r.dataset.cat === c)
+          && (!cl || r.dataset.cls === cl) && (!t || r.dataset.tier === t) && inLvl(r.dataset.lvl, l);
+        r.style.display = ok ? '' : 'none';
+        if (ok) n++;
+      }
+      count.textContent = n + ' 件';
+      const parts = [];
+      if (g) parts.push(g); if (c) parts.push(catLabel(c)); if (cl) parts.push(cl); if (t) parts.push('Tier ' + t); if (s) parts.push('“' + q.value.trim() + '”');
+      hint.textContent = (parts.length ? '筛选：' + parts.join(' · ') + ' → ' : '共 ') + n + ' 件可制作装备';
+    }
+    async function ensureDb() { if (db) return db; const j = await (await fetch(base + 'data/equipment.json')).json(); db = new Map(j.items.map((r) => [r.id, r])); return db; }
+    async function openDetail(li) {
+      const box = li.querySelector('.cc-detail'); const btn = li.querySelector('.cc-head');
+      if (!box.hidden) { box.hidden = true; btn.setAttribute('aria-expanded', 'false'); return; }
+      await ensureDb();
+      const it = db.get(li.dataset.id); if (!it) return;
+      const stats = (it.stats && it.stats.length) ? it.stats.map((x) => '<li>+' + esc(x) + '</li>').join('') : '<li class="cc-none">资料未提供</li>';
+      const mats = (it.materials && it.materials.length) ? it.materials.map((m) => '<span class="cc-chip">' + esc(m) + '</span>').join('') : '<span class="cc-none">—</span>';
+      box.innerHTML =
+        '<div class="cc-dhead">' + esc(it.name) + '</div>' +
+        '<div class="cc-dmeta">' + esc([it.group, it.catZh, it.tier ? (it.tier + (it.tierZh ? ' ' + it.tierZh : '')) : '', it.level != null ? '物品等级 Lv' + it.level : ''].filter(Boolean).join(' · ')) + '</div>' +
+        '<div class="cc-sec"><b>职业限制</b>：' + (it.equipClass ? esc(it.equipClass) : '—') + (it.twoHanded ? ' · 双手' : '') + '</div>' +
+        '<div class="cc-sec"><b>基础属性</b><ul class="cc-stats">' + stats + '</ul></div>' +
+        '<div class="cc-sec"><b>如何获得</b>：由 <b>' + esc(it.profZh) + '</b> 制作；材料：' + mats + '</div>' +
+        '<div class="cc-sec"><a href="' + base + 'professions/crafting-catalog/?prof=' + esc(it.prof) + '">在制作配方图鉴中查看 →</a></div>';
+      box.hidden = false; btn.setAttribute('aria-expanded', 'true');
+    }
+    document.getElementById('ec-list').addEventListener('click', (e) => { const h = e.target.closest('.cc-head'); if (h) openDetail(h.closest('.cc-row')); });
+    fGroup.addEventListener('change', () => { rebuildCats(); apply(); });
+    for (const el of [q, fCat, fCls, fTier, fLvl]) el.addEventListener('input', apply);
+    rebuildCats(); apply();
+  }
+</script>
+
+<style>
+  .ec-toolbar { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; margin-block: .5rem 1rem; }
+  .ec-toolbar input[type='search'] { flex: 1 1 16rem; min-width: 12rem; }
+  .cc-hint { color: var(--nr-dim); font-size: .85rem; margin: 0 0 .75rem; }
+  .cc-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: .35rem; }
+  .cc-row { border: 1px solid var(--nr-hair); border-radius: 6px; background: var(--nr-panel); overflow: hidden; }
+  .cc-head { display: flex; width: 100%; gap: 1rem; justify-content: space-between; align-items: baseline; text-align: left; background: none; border: 0; color: inherit; padding: .5rem .7rem; cursor: pointer; font: inherit; }
+  .cc-head:hover { background: var(--nr-panel-2); }
+  .cc-title { display: flex; flex-direction: column; gap: .1rem; min-width: 0; }
+  .cc-name { color: var(--nr-text); font-weight: 600; }
+  .cc-meta { color: var(--nr-dim); font-size: .78rem; }
+  .cc-mats { color: var(--nr-text-soft); font-size: .8rem; text-align: right; flex: 0 0 auto; max-width: 48%; }
+  .cc-detail { padding: .6rem .8rem .8rem; border-top: 1px solid var(--nr-hair); background: var(--nr-bg); font-size: .88rem; }
+  .cc-dhead { color: var(--nr-gold); font-weight: 700; font-size: 1rem; }
+  .cc-dmeta { color: var(--nr-dim); font-size: .8rem; margin-bottom: .5rem; }
+  .cc-sec { margin-top: .5rem; }
+  .cc-stats { margin: .25rem 0 0; padding-left: 1.1rem; }
+  .cc-chip { border: 1px solid var(--nr-hair); background: var(--nr-panel-2); color: var(--nr-text-soft); border-radius: 4px; padding: .1rem .45rem; font-size: .8rem; margin: 0 .25rem .25rem 0; display: inline-block; }
+  .cc-none { color: var(--nr-dim); font-style: italic; }
+</style>

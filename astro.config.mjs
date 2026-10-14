@@ -58,6 +58,7 @@ export default defineConfig({
 					label: '装备与物品',
 					items: [
 						{ label: '鉴定与装备', slug: 'equipment/identify' },
+						{ label: '装备图鉴', slug: 'equipment/catalog' },
 						{ label: '物品与容器', slug: 'equipment/items' },
 						{ label: '商人与药水', slug: 'equipment/vendors' },
 						{ label: '物品专家：精炼/镶嵌/重铸', slug: 'equipment/item-specialist' },

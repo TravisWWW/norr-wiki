@@ -1,0 +1,31 @@
+---
+title: 装备图鉴
+description: 按职业限制 / 类型 / Tier / 等级查询可制作装备，查看属性与获得方式。
+gameVersion: "EA"
+verifiedDate: 2026-10-14
+versionStatus: ea-verified
+sources:
+  - type: official
+    reference: 游戏内帮助文档（各制作职业配方页，id=113~132）
+---
+
+import EquipmentCatalog from '../../../components/EquipmentCatalog.astro';
+
+按 **职业限制 / 装备大类 / 类型 / Tier / 物品等级** 筛选，或在搜索框输入**装备名或词条**。点击任意一行展开**完整属性与获得方式**（由哪个专业制作、需要哪些材料）。
+
+> 本页收录的是**可制作装备**（武器 / 护甲 / 首饰 / 工具）。掉落、任务与商店装备暂未收录。
+> 制作配方与材料反查见[制作配方图鉴](/norr-wiki/professions/crafting-catalog/)。
+
+<EquipmentCatalog />
+
+## 字段说明
+
+- **物品等级（Lv）**：装备自身的需求等级；**职业限制**列即该装备可被哪些职业穿戴（如 `Light` = 布甲轻甲）。
+- **基础属性**：该档位的基础词条；实际成品还会随品质（Quality）与稀有度浮动。
+- **如何获得**：目前仅收录**制作**来源；掉落 / 商店 / 任务来源待补充。
+
+## 相关
+
+- [制作配方图鉴](/norr-wiki/professions/crafting-catalog/)
+- [鉴定与装备](/norr-wiki/equipment/identify/)
+- [物品专家：精炼/镶嵌/重铸](/norr-wiki/equipment/item-specialist/)
