@@ -7,6 +7,8 @@ Norroth Online **非官方中文 Wiki**，基于 [Astro](https://astro.build) + 
 
 - 十个主题栏目：首页提供按目标阅读的攻略入口，每个栏目有总览或已有总览页；侧栏将新手与版本、攻略与工具和参考分别组织。
 - 新手路线、FAQ、日常安排、装备养成，以及按实际页面生成的「全站目录与内容覆盖」。
+- 资料数据库：1852 个独立条目（物品与材料 1354、地图 323、怪物 141、Boss 15、专业任务 6、制作专业 13），由结构化数据生成并关联材料、配方、地点与任务。
+- 2026-10-14 登录 EA 的资料采集：88 篇帮助、141 个 Inspect、323 张地图信息、112 条采集地点；七张游戏界面截图。采集范围与核验限制见站内对应说明。
 - 工具：技能天赋模拟器（`public/talent/index.html`，通过 `/tools/talent/` 内嵌）
 
 > 站点定位：收录游戏机制、职业技能、地图、物品、任务和玩家攻略。现有数值资料主要依据 **Early Access（EA）版本**
@@ -36,6 +38,8 @@ public/
 .github/workflows/deploy.yml   # push main → 构建 → 发布 Pages
 astro.config.mjs       # site / base / Starlight 配置
 src/navigation.mjs    # 首页、栏目总览与侧栏共用的栏目定义
+src/lib/database.mjs  # 数据条目与关系，动态路由在 src/pages/database/
+src/data/live-*.json  # 可公开的游戏事实与来源，不含凭据或个人界面
 docs/WIKI_AUDIT.md     # 结构与内容评估、调整依据和后续内容优先级
 ```
 

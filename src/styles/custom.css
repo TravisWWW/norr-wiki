@@ -303,6 +303,11 @@ starlight-theme-select, .theme-select { display: none !important; }
 .nr-table-scroll table { width: 100%; font-size: .85rem; }
 .nr-table-scroll th { white-space: nowrap; }
 .nr-coverage-section { margin-top: 2rem; }
+.nr-game-figure { margin-block: 1.5rem; }
+.nr-game-figure img { max-width: 100%; height: auto; border-radius: 8px; border: 1px solid var(--nr-hair); }
+.nr-game-figure figcaption, .nr-source-note { color: var(--nr-dim); font-size: .82rem; line-height: 1.7; }
+.nr-entry-trail { font-size: .85rem; color: var(--nr-dim); }
+.nr-recipe-block { border: 1px solid var(--nr-hair); background: var(--nr-panel); padding: 1rem; border-radius: 8px; margin-block: 1rem; }
 :is(.cat, .nr-topic-link):focus-visible { outline: 2px solid var(--nr-gold); outline-offset: 3px; }
 @media (max-width: 40rem) {
   .nr-topic-list { grid-template-columns: 1fr; }

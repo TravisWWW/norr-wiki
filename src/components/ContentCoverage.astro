@@ -13,6 +13,7 @@ const other = docs.filter((doc) => doc.id !== 'index' && !linkedIds.has(doc.id))
 const formatDate = (value: unknown) => value instanceof Date ? value.toISOString().slice(0, 10) : String(value ?? '—');
 ---
 <p>共收录 <strong>{docs.length}</strong> 个页面（含首页、栏目目录与参考页）。以下目录来自实际页面与导航，栏目之间可交叉引用。</p>
+<p>另有从结构化数据生成的独立条目，见<a href={`${base}/reference/database/`}>资料数据库</a>；这些条目不计入上述编辑页面数量。字段级的当日核验与历史记录分别标注。</p>
 {sections.map((section) => {
   const entries = [...new Set([section.landing, ...flattenItems(section.items).map((item) => item.slug)])]
     .map((id) => byId.get(id)).filter(Boolean);

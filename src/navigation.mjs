@@ -179,6 +179,10 @@ export const sections = [
         "slug": "professions/gathering"
       },
       {
+        "label": "官方采集地点",
+        "slug": "professions/gathering-locations"
+      },
+      {
         "label": "制作",
         "slug": "professions/crafting"
       },
@@ -250,6 +254,10 @@ export const sections = [
           {
             "label": "日常任务 Dailies",
             "slug": "quests/dailies"
+          },
+          {
+            "label": "专业任务详情",
+            "slug": "quests/profession-quests"
           }
         ]
       },
@@ -400,6 +408,10 @@ export const sections = [
         "collapsed": true,
         "items": [
           {
+            "label": "资料数据库",
+            "slug": "reference/database"
+          },
+          {
             "label": "技能天赋模拟器（旧版）",
             "slug": "tools/talent"
           },
@@ -432,6 +444,10 @@ export const sections = [
           {
             "label": "参与编辑",
             "slug": "reference/content-spec"
+          },
+          {
+            "label": "本次资料采集与截图",
+            "slug": "reference/research-2026-10-14"
           }
         ]
       }
@@ -447,4 +463,4 @@ export function flattenItems(items) {
   return items.flatMap((item) => item.items ? flattenItems(item.items) : [item]);
 }
 
-export const sidebar = sections.map(({ label, collapsed, items }) => ({ label, collapsed, items }));
+export const sidebar = [{label: "资料数据库", slug: "reference/database"}, ...sections.map(({ label, collapsed, items }) => ({ label, collapsed, items }))];

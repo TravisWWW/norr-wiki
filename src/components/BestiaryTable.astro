@@ -1,6 +1,7 @@
 ---
 import bestiary from '../data/bestiary.json';
 import mapdb from '../data/maps.json';
+import { entityPath } from '../lib/database.mjs';
 const monsters = bestiary.filter((m) => m && m.name);
 const mapsArr = Object.values(mapdb.maps).filter((m) => m && m.name);
 const mapBiomes = new Set(mapsArr.map((m) => m.biome).filter(Boolean));
@@ -59,6 +60,7 @@ const withMap = rows.filter((r) => r.maps.length).length;
         </tr>
         <tr class="be-detail" hidden>
           <td colspan="6">
+            <p><a href={`${base}${entityPath('monster', m.id)}`}>打开独立怪物条目：当日 Inspect、防护、伤害类型与地图 →</a></p>
             <div class="be-dgrid">
               <div><b>类型</b>：{m.type || '—'}</div>
               <div><b>等级范围</b>：{m.levelRange || '—'}{m.wide ? <span class="be-tag">范围很宽，可能是跨区 / 特殊敌人</span> : null}</div>

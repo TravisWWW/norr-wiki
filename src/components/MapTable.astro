@@ -1,6 +1,7 @@
 ---
 import mapdb from '../data/maps.json';
 import bestiary from '../data/bestiary.json';
+import { entityPath } from '../lib/database.mjs';
 const maps = Object.values(mapdb.maps).filter((m) => m && m.name);
 const bestiaryNames = new Set(bestiary.filter((b) => b && b.name).map((b) => b.name));
 const biomes = [...new Set(maps.map((m) => m.biome).filter(Boolean))].sort();
@@ -60,6 +61,7 @@ const rows = maps.map((m) => ({
         <tr class="map-detail" hidden>
           <td colspan="8">
             <div class="map-dgrid">
+              <div><a href={`${base}${entityPath('map', m.id)}`}>打开独立地图条目 →</a> · 当日官方信息与历史实地记录分开标注</div>
               <div><b>采集点（{m.gather.length}）</b>：{m.gather.length ? m.gather.map((x) => <span class="map-chip">{x}</span>) : '—'}</div>
               <div><b>设施 / NPC（{m.npc.length}）</b>：{m.npc.length ? m.npc.map((x) => <span class="map-chip">{x[1]}{x[2] ? ' · ' + x[2] : ''}</span>) : '—'}</div>
               <div><b>出口 / 传送门（{m.gates.length}）</b>：{m.gates.length ? m.gates.map((x) => <span class="map-chip">{x[1]}{x[2] ? ' · ' + x[2] : ''}</span>) : '—'}</div>

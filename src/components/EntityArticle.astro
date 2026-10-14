@@ -1,0 +1,97 @@
+---
+import { entityPath, labels, recipeLive, equipmentIds, baseMaps, byMonsterName, entityByName } from '../lib/database.mjs';
+const { entity: e } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '') + '/';
+const url = (kind: string, key: unknown) => base + entityPath(kind, String(key));
+const category = labels[e.kind];
+const translated: Record<string, string> = { Low: '低', Medium: '中', High: '高', Neutral: '中立', melee: '近战', Poison: '毒', Bleed: '流血', Fire: '火焰', Cold: '寒冰', Lightning: '闪电', Arcane: '奥术', Light: '光明', Dark: '黑暗' };
+const t = (value: string) => translated[value] ? `${translated[value]}（${value}）` : value || '未收录';
+const professionalQuests = e.kind === 'profession' ? (await import('../data/live-research.json')).default.quests.filter((q) => q.requirement.startsWith(e.id + ' ')) : [];
+const recipeTier = (level: number) => level <= 9 ? 'Copper' : level <= 19 ? 'Iron' : level <= 29 ? 'Bronze' : level <= 39 ? 'Steel' : 'Mithril';
+---
+<p class="nr-entry-trail"><a href={`${base}reference/database/`}>资料数据库</a> / {category}</p>
+
+{e.kind === 'item' && <>
+  <p>{e.name} {e.isMaterial ? '作为材料被制作配方使用。' : '为已收录的制作成品。'}以下将制作来源与使用它的配方放在一起；未收录的商人、掉落与任务来源不表示不存在。</p>
+  <h2 id="obtain">获取与制作</h2>
+  {e.recipes.length === 0 ? <p>本数据库尚未收录该材料自身的制作配方。采集、商人或掉落的具体来源仍需核验；可先查<a href={`${base}professions/gathering-locations/`}>官方采集地点</a>与<a href={`${base}equipment/vendors/`}>商人资料</a>。</p> : e.recipes.map((r) => {
+    const current = recipeLive.get(r.id);
+    return <section class="nr-recipe-block">
+      <h3>{r.profZh} · {r.catZh}{r.level != null ? ` · 物品等级 ${r.level}` : ''}</h3>
+      <p><a href={url('profession', r.prof)}>专业与制作条件</a> · Tier：{r.tier || '未收录'}{r.equipClass ? ` · 限制：${r.equipClass}` : ''}{r.twoHanded ? ' · 双手' : ''}</p>
+      {equipmentIds.has(r.id) && <p>装备类型：{r.catZh}。属性为已收录的固定附加属性，不代表随机词条、鉴定后的最终面板或强化结果。</p>}
+      {r.stats?.length > 0 && <ul>{r.stats.map((s) => <li>+{s}</li>)}</ul>}
+      <h4>材料配方{r.variants.length > 1 ? `（${r.variants.length} 种替代方案）` : ''}</h4>
+      {r.variants.map((v, i) => <p>{r.variants.length > 1 && <strong>方案 {i + 1}：</strong>}{v.mats.map((m, j) => <>{j > 0 && ' + '}{m.q ?? '?'} × {entityByName.has(m.n) ? <a href={url('item', m.n)}>{m.n}</a> : m.n}</>)}</p>)}
+      <p class="nr-source-note">{current ? `配方名称、物品等级、材料与数量于 2026-10-14 从官方帮助 ${current.helpId} 核对。` : '此配方沿用已有 EA 帮助资料，本次未由解析器完整对应。'}物品等级与专业解锁等级不同，实际可制作条件以游戏内为准。<a href={`${base}professions/crafting-catalog/?recipe=${encodeURIComponent(r.id)}`}>在配方图鉴中查看</a></p>
+    </section>;
+  })}
+  <h2 id="uses">用于哪些成品？</h2>
+  {e.usedBy.length ? <div class="nr-table-scroll" role="region" tabindex="0" aria-label="材料用途"><table><thead><tr><th>成品</th><th>专业</th><th>材料数量</th></tr></thead><tbody>{e.usedBy.map((r) => <tr><td><a href={url('item', r.name)}>{r.name}</a></td><td><a href={url('profession', r.prof)}>{r.profZh}</a></td><td>{[...new Set(r.variants.flatMap((v) => v.mats.filter((m) => m.n === e.name).map((m) => m.q ?? '?')))].join(' / ')}（按替代配方）</td></tr>)}</tbody></table></div> : <p>尚未收录以该物品为材料的后续配方。自用效果请结合对应专业、物品与装备规则阅读。</p>}
+  {e.quests.length > 0 && <><h2 id="quest-uses">相关专业任务</h2><ul>{e.quests.map((q) => <li><a href={url('quest', q.id)}>{q.name}</a> · {q.items.filter((i) => i.name === e.name).map((i) => i.quantity).join(' / ')} 件 · {q.requirement}</li>)}</ul><p>仅关联本次可查看的六项任务，不是全部任务用途。</p></>}
+  <h2 id="limits">其他来源与使用限制</h2><p>装备掉落概率、实时市场报价、具体商人库存、关联任务与成就尚未完整关联，不据此推荐收益排名。强化规则见<a href={`${base}equipment/item-specialist/`}>物品专家</a>；一般物品规则见<a href={`${base}equipment/items/`}>物品与容器</a>。</p>
+</>}
+
+{e.kind === 'monster' && <>
+  <p>以下阵营、防护与伤害类型于 <strong>2026-10-14</strong> 直接读取 EA 的 Inspect 界面。Low / Medium / High 是游戏给出的定性评级，不是伤害数值或击杀胜率。</p>
+  <div class="nr-table-scroll" role="region" tabindex="0" aria-label="怪物属性"><table><tbody>
+    <tr><th>类型</th><td>{e.recorded?.type || '未收录'}</td></tr><tr><th>阵营</th><td>{t(e.alignment)}</td></tr>
+    <tr><th>官方分布群系</th><td>{e.foundIn || '未收录'}</td></tr><tr><th>特殊能力</th><td>{e.specials === '-' ? 'Inspect 未列出特殊能力' : e.specials || '未收录'}</td></tr>
+    <tr><th>生命 / 防御 / 抗性</th><td>{t(e.health)} / {t(e.defense)} / {t(e.resistance)}</td></tr>
+    <tr><th>伤害类型</th><td>{e.damageTypes.map(t).join('、') || '未收录'}</td></tr>
+    <tr><th>历史等级范围</th><td>{e.recorded?.levelRange || '未收录'}（来自既有怪物清单，非本次单体实测）</td></tr>
+  </tbody></table></div>
+  {e.id === 110 && <figure class="nr-game-figure"><img src={`${base}img/research/2026-10-14/enemy-inspect.png`} alt="Ankheg 的游戏内 Inspect 界面，显示防护等级和近战、毒、流血伤害图标" loading="lazy" width="670" /><figcaption>EA Inspect 实际截图，2026-10-14；伤害图标文字来自相应 tooltip。</figcaption></figure>}
+  <h2 id="locations">具体地图记录</h2>
+  {e.locations.length ? <ul>{e.locations.map((m) => <li><a href={url('map', m.id)}>{m.name}</a>{m.el?.[e.name] ? ` · 历史记录 Lv${m.el[e.name]}` : ''}</li>)}</ul> : <p>既有地图记录没有关联该怪物的具体地图，不能仅按群系推断必定出现。请结合官方群系与游戏内地图查询。</p>}
+  <h2 id="loot">拾荒与掉落</h2><p>既有 EA 清单记录的拾荒材料类别：{e.recorded?.scavenging?.join('、') || '未收录'}。这不是普通战斗掉落表；材料阶级、数量和概率尚未核验。</p>
+  <h2 id="combat">战斗准备</h2><p>可依据上方伤害类型检查对应防护，先判断目标等级与实际命中。尚未进行该怪物的技能顺序或击杀效率实测，不能仅凭定性评级确定最佳打法。参见<a href={`${base}combat/mechanics/`}>战斗机制</a>与<a href={`${base}combat/attributes/`}>角色属性</a>。</p>
+  <p class="nr-source-note">来源：游戏内 Inspect → {e.name}；历史分布、等级与拾荒类别来自已有 EA 图鉴与地图记录。</p>
+</>}
+
+{e.kind === 'map' && <>
+  <p><strong>2026-10-14 官方地图信息</strong>：等级 {e.level || '未收录'} · {e.biome || '未收录'} · 世界坐标 {e.coordinates || '未收录'}。地图信息可远程查看，本次未逐图进入验证。</p>
+  <p>资源图标：{e.gathering.join('、') || '未显示采集图标'}；传送站图标：{e.waygate ? '显示 Waygate' : '未显示 Waygate'}。图标不等于具体资源点坐标或全部资源清单。</p>
+  <h2 id="gather">官方采集地点记录</h2>
+  {e.gatheringLocations.length ? <ul>{e.gatheringLocations.map((g) => <li>{g.skill} · {g.tier} · 地图等级 {g.level}</li>)}</ul> : <p>当日 Gathering Spots 帮助页没有关联到该地图的记录。完整列表见<a href={`${base}professions/gathering-locations/`}>官方采集地点</a>。</p>}
+  <h2 id="pois">设施与出口（历史实地记录）</h2>
+  <p>以下来自已有 EA 地图记录，本次没有重新站到设施或出口前核验。世界坐标、格子坐标和地图 ID 是不同标识；不要把本页当作已验证的完整寻路路线。</p>
+  <ul>{(e.recorded?.npc ?? []).map((n) => <li>{n[1]}{n[2] ? ` · 格子 ${n[2]}` : ''}</li>)}</ul>
+  {(e.recorded?.npc ?? []).length === 0 && <p>尚未收录具体 NPC / 设施坐标。</p>}
+  <ul>{(e.recorded?.gates ?? []).map((g) => <li>出口：{g[1]}{g[2] ? ` · 格子 ${g[2]}` : ''}</li>)}</ul>
+  <h2 id="enemies">怪物（历史实地记录）</h2>
+  {(e.recorded?.m ?? []).length ? <ul>{e.recorded.m.map((name) => <li>{byMonsterName.has(name) ? <a href={url('monster', byMonsterName.get(name).key)}>{name}</a> : name}</li>)}</ul> : <p>没有关联到具体怪物记录；不表示该图没有怪物。</p>}
+  {[5, 17].includes(e.id) && <figure class="nr-game-figure"><img src={`${base}img/research/2026-10-14/world-map.png`} alt="EA 世界地图中新手区域及地图、采集和任务标记图例" loading="lazy" width="1000" /><figcaption>EA 世界地图局部截图，2026-10-14；任务和已探索标记取决于角色进度。</figcaption></figure>}
+  <p><a href={`${base}world/movement/`}>移动与传送规则</a> · <a href={`${base}world/maps/?q=${encodeURIComponent(e.name)}`}>地图清单筛选</a></p>
+  <p class="nr-source-note">当日来源：游戏内 Map Info；采集地点来源：Help File → Gathering Spots（49）。历史设施与怪物来自既有地图记录。</p>
+</>}
+
+{e.kind === 'quest' && <>
+  <p>这是 <strong>2026-10-14</strong> 当前角色能够查看的专业任务详情。任务开放可能受专业等级、前置与角色进度影响；本次只查看详情，没有接取、交付或验证奖励到账。</p>
+  <table><tbody><tr><th>类型</th><td>{e.type}</td></tr><tr><th>界面显示门槛</th><td>{e.requirement || '未显示'}</td></tr><tr><th>交付地点</th><td>{e.location}</td></tr></tbody></table>
+  <h2 id="objective">所需物品</h2><ul>{e.items.map((i) => <li>{i.quantity} × {entityByName.has(i.name) ? <a href={url('item', i.name)}>{i.name}</a> : i.name}</li>)}</ul>
+  <p>数量以详情目标为准；需制作还是收集、物品是否会被消耗，应查看任务正文与交付面板。不要把“已有材料”当作任务已完成。</p>
+  <h2 id="rewards">界面显示奖励</h2><ul>{e.rewards.map((r) => <li>{r.quantity} × {r.name || '未解析奖励'}</li>)}</ul>
+  <p>同名奖励行按原界面分别保留，尚未验证实际结算方式；任务奖励可能受当前角色条件影响。</p>
+  {e.id === 392 && <figure class="nr-game-figure"><img src={`${base}img/research/2026-10-14/profession-quest.png`} alt="Supply for the Smith 任务详情，显示专业等级门槛、目标、Elundi 交付坐标与奖励" loading="lazy" width="670" /><figcaption>游戏内专业任务详情截图，2026-10-14。截图只用于说明字段和入口。</figcaption></figure>}
+  <h2 id="steps">阅读与完成顺序</h2><ol><li>在任务日志确认任务已开放，核对专业门槛与目标操作。</li><li>按上方物品条目查材料和制作配方；制作需要对应职业与设施。</li><li>按 Finish Location 前往交付地点，再检查任务完成条件。</li><li>完成后检查奖励窗与专业经验；领取规则见<a href={`${base}quests/boards/`}>任务日志与任务板</a>。</li></ol>
+  <p class="nr-source-note">来源：EA Quest Details，任务 {e.id}。完整前置任务链及首次解锁流程尚未核验。</p>
+</>}
+
+{e.kind === 'boss' && <>
+  <p>EA 官方帮助的副本名录已于 <strong>2026-10-14</strong> 重新采集。本条目给出入场资料；目前没有该 Boss 的实战录像、完整技能表或掉落统计。</p>
+  <table><tbody><tr><th>名录等级</th><td>{e.level}</td></tr><tr><th>世界坐标</th><td>{e.coords}</td></tr><tr><th>对应地图</th><td>{e.location ? <a href={url('map', e.location.id)}>{e.location.name}</a> : '未精确匹配地图记录'}</td></tr><tr><th>钥匙</th><td>{e.key || `${recipeTier(e.level)} Key（旧数据推导，待核对）`}</td></tr></tbody></table>
+  <h2 id="prepare">入场前检查</h2><ol><li>核对钥匙与副本入口，先备好装备耐久和恢复用品。</li><li>区分进入副本与开启最终奖励箱的消耗，具体规则见<a href={`${base}quests/dungeons/`}>副本与 Boss</a>。</li><li>如果选择额外难度，先核对重生门槛；名录等级不表示保证可单人通关。</li></ol>
+  <h2 id="unknown">尚缺的攻略资料</h2><ul><li>Boss 技能、阶段转换、伤害类型和特殊机制。</li><li>单人／组队配置、低成本装备与失败处理。</li><li>奖励箱内容、掉落数量与概率，样本条件和适用难度。</li></ul>
+  <p class="nr-source-note">来源：Help File → Dungeons &amp; Bosses（56）；坐标对应地图由世界坐标精确匹配。未进行入场和战斗操作。</p>
+</>}
+
+{e.kind === 'profession' && <>
+  <p>可使用职业：<strong>{e.classes}</strong>。收录 {e.recipes.length} 条制作配方；其中 {e.recipes.filter((r) => r.recipeVerifiedDate).length} 条已在本次官方帮助解析中对应。专业进度共享与当前角色制作权限是不同规则。</p>
+  <h2 id="start">从材料到成品</h2><ol><li>确认当前职业拥有本专业；参见<a href={`${base}professions/overview/`}>生活技能总览</a>。</li><li>从下面的成品查配方，沿材料链接逐层查上游生产链。</li><li>前往对应制作设施，核对实际专业解锁等级；物品等级不替代该门槛。</li><li>制作前检查材料数量、金币和冷却。本次未实际制作或进行升级效率测试。</li></ol>
+  {e.id === 'armorsmithing' && <figure class="nr-game-figure"><img src={`${base}img/research/2026-10-14/armorsmithing.png`} alt="Armorsmithing 帮助页中的铜矿、铜锭、铜线、铜扣和铜板配方" loading="lazy" width="670" /><figcaption>EA 官方铜材料制作链截图，2026-10-14。</figcaption></figure>}
+  {professionalQuests.length > 0 && <><h2 id="quests">可查看的专业任务</h2><ul>{professionalQuests.map((q) => <li><a href={url('quest', q.id)}>{q.name}</a> · {q.requirement}</li>)}</ul><p>列表来自当前角色可查看的详情，不是完整专业任务链。</p></>}
+  <h2 id="products">成品与材料配方</h2><div class="nr-table-scroll" role="region" tabindex="0" aria-label="专业配方"><table><thead><tr><th>成品</th><th>类型</th><th>物品等级</th></tr></thead><tbody>{e.recipes.map((r) => <tr><td><a href={url('item', r.name)}>{r.name}</a></td><td>{r.catZh}</td><td>{r.level ?? '未标注'}</td></tr>)}</tbody></table></div>
+  <p><a href={`${base}professions/crafting-catalog/?prof=${e.id}`}>在配方图鉴中筛选本专业</a> · <a href={`${base}guides/crafting-matrix/`}>职业互补矩阵</a></p>
+  <p class="nr-source-note">配方来自对应官方帮助页；职业归属沿用已收录 EA 规则。尚缺完整的专业解锁任务与各阶段成本／经验路线。</p>
+</>}

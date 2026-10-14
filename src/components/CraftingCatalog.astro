@@ -1,5 +1,6 @@
 ---
 import data from '../data/crafting.json';
+import { entityPath } from '../lib/database.mjs';
 const { professions, categories, recipes, meta } = data;
 
 const rows = recipes.map((r) => ({
@@ -74,7 +75,7 @@ const base = import.meta.env.BASE_URL;
   <p class="cc-hint" id="cc-hint">共 {recipes.length} 条配方 · 数据来源：{meta.source}（{meta.tierCoverage}）</p>
   <ul id="cc-list" class="cc-list">
     {rows.map((r) => (
-      <li class="cc-row" data-id={r.id} data-name={r.name} data-prof={r.prof} data-cat={r.cat} data-tier={r.tier} data-tnum={r.tnum} data-lvl={r.lvl} data-kind={r.kind} data-mats={r.mats}>
+      <li class="cc-row" data-id={r.id} data-name={r.name} data-prof={r.prof} data-cat={r.cat} data-tier={r.tier} data-tnum={r.tnum} data-lvl={r.lvl} data-kind={r.kind} data-mats={r.mats} data-article={entityPath('item', r.name)}>
         <button type="button" class="cc-head" aria-expanded="false">
           <span class="cc-title">
             <span class="cc-name">{r.name}</span>
@@ -191,6 +192,7 @@ const base = import.meta.env.BASE_URL;
       const variants = r.variants.map((v, i) => '<div class="cc-variant"><span class="cc-vlabel">配方 ' + (i + 1) + '</span>' + (v.mats.length ? v.mats.map(matChip).join('') : '<span class="cc-none">资料未提供</span>') + '</div>').join('');
       const cls = r.equipClass ? esc(r.equipClass) + (r.twoHanded ? ' · 双手' : '') : (r.twoHanded ? '双手' : '—');
       box.innerHTML =
+        '<p><a href="' + base + li.dataset.article + '">打开独立条目：材料生产链与用途 →</a></p>' +
         '<div class="cc-dhead">' + esc(r.name) + '</div>' +
         '<div class="cc-dmeta">' + esc([r.profZh, r.catZh, r.tier ? (r.tier + (r.tierZh ? ' ' + r.tierZh : '')) : '', r.level != null ? '物品等级 Lv' + r.level : ''].filter(Boolean).join(' · ')) + '</div>' +
         '<div class="cc-sec"><b>装备限制</b>：' + cls + '</div>' +
