@@ -45,7 +45,7 @@ sources:
 | 5 | **Rogue 盗贼** | **Toolsmithing**、Cartography、Cooking、Hunting、Leatherworking | 工具与打孔锤 |
 | 6 | **Druid 德鲁伊** | **Petbreeding**、Tailoring、Cooking、Hunting、Leatherworking | 宠物与布甲 |
 
-每人额外要求：**7 个采集专业全部练满**（账号共享，只练一次）。
+建议：每人把 **7 个采集专业**都练起来（进度账号共享，只需练一次）。采集**不是硬性门槛**——原材料也可以直接从 **Trading Post** 购买，只是自采更省金币。
 
 ## 2. 人不够时的优先级
 

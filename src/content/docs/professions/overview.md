@@ -37,6 +37,11 @@ Leatherworking、Petbreeding、Stonemasonry、Tailoring、Toolsmithing、Weapons
 
 > Cooking、Cartography、Hunting、Leatherworking 等制作技能由多个职业共享；使用某项制作技能需要账号内有对应职业。
 
+## 制作配方图鉴
+
+每个制作专业**具体能做什么**（可制作的物品类型与配方数量）见 **[制作配方图鉴](/norr-wiki/professions/crafting-catalog/)**：
+支持按**专业、物品类型、Tier、等级**筛选，并可**反查材料**的用途与来源。
+
 ## 经验来源
 
 | 来源 | 经验 | 冷却 | 前置 |
@@ -77,6 +82,7 @@ EA 版地图及材料按 Tier 划分，角色等级与地图等级存在推荐�
 
 - [采集](/norr-wiki/professions/gathering/)
 - [制作](/norr-wiki/professions/crafting/)
+- [制作配方图鉴](/norr-wiki/professions/crafting-catalog/)
 - [职业自给自足矩阵](/norr-wiki/guides/crafting-matrix/)
 
 ## 资料来源
