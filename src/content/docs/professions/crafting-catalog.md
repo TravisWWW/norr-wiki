@@ -18,16 +18,16 @@ sources:
 | 专业 | 归属职业 | 能做的成品类型 |
 |---|---|---|
 | **Weaponsmithing 铸武** | Berserker | 斧 Axes、剑 Swords、权杖 Scepters、**匕首 Daggers**、锤 Maces、矛 Spears |
-| **Armorsmithing 铸甲** | Zealot | 金属重甲：腰带/靴/手/头/腿/**盾**/胸 |
-| **Leatherworking 制皮** | Berserker/Druid/Ranger/Rogue | 皮甲：腰带/**盾**/胸/手/头/腿/靴（按骨/鳞/翅/哥布林/甲壳分词条） |
-| **Tailoring 裁缝** | Archmage/Druid | 布甲：腰带/靴/手/头/腿/胸 + **法书 Encased Tome** |
-| **Jeweling 珠宝** | Archmage/Zealot | 宝石切割（Cabochon→Round→Princess→Emerald→Radiant）+ 戒指/耳环/项链 |
-| **Hunting 狩猎** | Berserker/Druid/Ranger/Zealot/Rogue | **弓 Bow**、拳套 Cestus、项链/耳环/戒指 |
-| **Carpentry 木工** | Ranger | 木料（杆/棍/板/柄/卷轴）+ **弩 Crossbow** |
-| **Alchemy 炼金** | Archmage | 药水（法力/生命/回春/增益）+ 法杖 Staff + 魔杖 Wand + 鱼油/宝珠 |
-| **Cartography 制图** | Archmage/Ranger/Zealot/Rogue | 墨水/卷轴/蓝图/远征地图/回城卷轴/鉴定卷轴 |
-| **Stonemasonry 石工** | Berserker | 石料：精炼石/砖/地砖/柱/碎石 |
-| **Toolsmithing 工具** | Rogue | 工具（镐/锄/斧/钓竿）+ 投掷武器 + 盗贼武器（拳刃/三叉/双轮刃） |
+| **Armorsmithing 铸甲** | Zealot | 金属重甲：腰带 Belts / 靴 Boots / 手 Gloves / 头 Helmets / 腿 Leggings / **盾 Shields** / 胸 Chests |
+| **Leatherworking 制皮** | Berserker/Druid/Ranger/Rogue | 皮甲：腰带 / **盾** / 胸 / 手 / 头 / 腿 / 靴（按骨/鳞/翅/哥布林/甲壳分词条） |
+| **Tailoring 裁缝** | Archmage/Druid | 布甲：腰带 / 靴 / 手 / 头 / 腿 / 胸 + **法书 Encased Tome** |
+| **Jeweling 珠宝** | Archmage/Zealot | 宝石切割（Cabochon→Round→Princess→Emerald→Radiant）+ 戒指 Rings / 耳环 Earrings / 项链 Necklace |
+| **Hunting 狩猎** | Berserker/Druid/Ranger/Zealot/Rogue | **弓 Bow**、拳套 Cestus、项链 / 耳环 / 戒指 |
+| **Carpentry 木工** | Ranger | 木料（杆 Rod / 棍 Club / 板 Planks / 柄 Handle / 卷轴 Scroll）+ **弩 Crossbow** |
+| **Alchemy 炼金** | Archmage | 药水（法力/生命/回春/增益）+ 法杖 Staff + 魔杖 Wand + 鱼油 / 宝珠 Orb |
+| **Cartography 制图** | Archmage/Ranger/Zealot/Rogue | 墨水 Ink / 卷轴 Scroll / 蓝图 Blueprint / 远征地图 Map / 回城卷轴 / 鉴定卷轴 |
+| **Stonemasonry 石工** | Berserker | 石料：精炼石 / 砖 Bricks / 地砖 Tiles / 柱 Pillars / 碎石 Gravel |
+| **Toolsmithing 工具** | Rogue | 工具（镐/锄/斧/钓竿）+ 投掷武器 Throwing + 盗贼武器（拳刃/三叉/双轮刃） |
 | **Cooking 烹饪** | 全职业 | 菜肴（蔬菜/鱼/水果/肉/混合/节日），给治疗 + buff |
 | **Petbreeding 养宠** | Druid | 宠物 Pets + 宠物粮 Pet Food |
 
@@ -35,12 +35,12 @@ sources:
 
 | Tier | 角色等级 | 金属 | 木材 | 纤维 | 石料 | 鱼 | 尸块/其它 |
 |---|---|---|---|---|---|---|---|
-| T1 | 1-9 | Copper | Aspen | Cotton | Slate | Minnow | Mucky |
-| T2 | 10-19 | Iron | Elm | Silkworm Cocoon | Fieldstone | Shrimp | Scrap |
-| T3 | 20-29 | Tin | Spruce | Jute | Soapstone | White Bass | Low Quality |
-| T4 | 30-39 | Coal | Maple | Nettle | Sandstone | Smallmouth Bass | Medium Quality |
-| T5 | 40-49 | Mithril | Beech | Ramie | Laterite | Largemouth Bass | Quality |
-| T6 | 50-59 | Valentaal | Ash | Bamboo | Travertine | Northern Pike | Graded |
+| T1 | 1-9 | Copper 铜 | Aspen 白杨 | Cotton 棉 | Slate 板岩 | Minnow | Mucky 污秽 |
+| T2 | 10-19 | Iron 铁 | Elm 榆木 | Silkworm Cocoon 蚕茧 | Fieldstone 原石 | Shrimp | Scrap 废料 |
+| T3 | 20-29 | Tin 锡 | Spruce 云杉 | Jute 黄麻 | Soapstone 皂石 | White Bass | Low Quality 低品质 |
+| T4 | 30-39 | Coal 煤 | Maple 枫木 | Nettle 荨麻 | Sandstone 砂岩 | Smallmouth Bass | Medium Quality 中品质 |
+| T5 | 40-49 | Mithril 秘银 | Beech 山毛榉 | Ramie 苎麻 | Laterite 红土 | Largemouth Bass | Quality 高品质 |
+| T6 | 50-59 | Valentaal | Ash 白蜡木 | Bamboo 竹 | Travertine 石灰华 | Northern Pike | Graded |
 
 > 金属锭换算：铜=4 矿、铁=5 矿、**青铜=1 铜锭+4 锡矿**、钢=1 铁锭+5 煤、秘银=8 秘银矿。
 > 每个子类通常 3 档，解锁门槛 **Lv1 / Lv5 / Lv9**。
@@ -52,9 +52,9 @@ sources:
 
 > 官方 help id=113。制作台见对应 NPC。
 
-### Materials
+### Materials 材料 / 半成品
 
-**Cotton**
+**Cotton 棉**
 
 - `Mucky Scroll` ← 1× Cotton Boll
 - `Cotton Spool` ← 2× Cotton Boll
@@ -62,7 +62,7 @@ sources:
 - `Cotton Padding` ← 1× Cotton Fleece
 - `Cotton Cord` ← 2× Cotton Spool
 
-**Silk**
+**Silk 丝**
 
 - `Silk Spool` ← 2× Silkworm Cocoon
 - `Scrap Scroll` ← 2× Silkworm Cocoon
@@ -70,7 +70,7 @@ sources:
 - `Silk Padding` ← 1× Silk Fleece
 - `Silk Cord` ← 2× Silk Spool
 
-**Jute**
+**Jute 黄麻**
 
 - `Jute Spool` ← 2× Jute
 - `Low Quality Scroll` ← 3× Jute
@@ -78,7 +78,7 @@ sources:
 - `Jute Padding` ← 1× Jute Fleece
 - `Jute Cord` ← 2× Jute Spool
 
-**Nettle**
+**Nettle 荨麻**
 
 - `Nettle Spool` ← 2× Nettle
 - `Medium Quality Scroll` ← 4× Nettle
@@ -86,7 +86,7 @@ sources:
 - `Nettle Padding` ← 1× Nettle Fleece
 - `Nettle Cord` ← 2× Nettle Spool
 
-**Ramie**
+**Ramie 苎麻**
 
 - `Ramie Spool` ← 2× Ramie
 - `Quality Scroll` ← 5× Ramie
@@ -94,9 +94,9 @@ sources:
 - `Ramie Padding` ← 1× Ramie Fleece
 - `Ramie Cord` ← 2× Ramie Spool
 
-### Belts
+### Belts 腰带
 
-**Cotton**
+**Cotton 棉**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -104,7 +104,7 @@ sources:
 | Cotton Sash | 5 | 3× Cotton Fleece + 1× Cotton Cord | 8 Mana Regeneration, 8 Maximum Life, 8 Resilience |
 | Cotton War Cinch | 9 | 4× Cotton Fleece + 1× Cotton Cord + 1× Cotton Padding | 14 Mana Regeneration, 14 Maximum Life, 14 Resilience |
 
-**Silk**
+**Silk 丝**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -112,7 +112,7 @@ sources:
 | Silk Sash | 15 | 3× Silk Fleece + 1× Silk Cord | 23 Mana Regeneration, 23 Maximum Life, 23 Resilience |
 | Silk War Cinch | 19 | 4× Silk Fleece + 1× Silk Cord + 1× Silk Padding | 29 Mana Regeneration, 29 Maximum Life, 29 Resilience |
 
-**Jute**
+**Jute 黄麻**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -120,7 +120,7 @@ sources:
 | Jute Sash | 25 | 3× Jute Fleece + 1× Jute Cord | 38 Mana Regeneration, 38 Maximum Life, 38 Resilience |
 | Jute War Cinch | 29 | 4× Jute Fleece + 1× Jute Cord + 1× Jute Padding | 44 Mana Regeneration, 44 Maximum Life, 44 Resilience |
 
-**Nettle**
+**Nettle 荨麻**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -128,7 +128,7 @@ sources:
 | Nettle Sash | 35 | 3× Nettle Fleece + 1× Nettle Cord | 53 Mana Regeneration, 53 Maximum Life, 53 Resilience |
 | Nettle War Cinch | 39 | 4× Nettle Fleece + 1× Nettle Cord + 1× Nettle Padding | 59 Mana Regeneration, 59 Maximum Life, 59 Resilience |
 
-**Ramie**
+**Ramie 苎麻**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -136,9 +136,9 @@ sources:
 | Ramie Sash | 45 | 3× Ramie Fleece + 1× Ramie Cord | 68 Mana Regeneration, 68 Maximum Life, 68 Resilience |
 | Ramie War Cinch | 49 | 4× Ramie Fleece + 1× Ramie Cord + 1× Ramie Padding | 74 Mana Regeneration, 74 Maximum Life, 74 Resilience |
 
-### Boots
+### Boots 靴子
 
-**Cotton**
+**Cotton 棉**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -146,7 +146,7 @@ sources:
 | Cotton Boots | 5 | 3× Cotton Fleece + 1× Cotton Cord | 8 Mana Regeneration, 8 Maximum Life, 8 Resilience |
 | Cotton Brogans | 9 | 4× Cotton Fleece + 2× Cotton Cord | 14 Mana Regeneration, 14 Maximum Life, 14 Resilience |
 
-**Silk**
+**Silk 丝**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -154,7 +154,7 @@ sources:
 | Silk Boots | 15 | 3× Silk Fleece + 1× Silk Cord | 23 Mana Regeneration, 23 Maximum Life, 23 Resilience |
 | Silk Brogans | 19 | 4× Silk Fleece + 2× Silk Cord | 29 Mana Regeneration, 29 Maximum Life, 29 Resilience |
 
-**Jute**
+**Jute 黄麻**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -162,7 +162,7 @@ sources:
 | Jute Boots | 25 | 3× Jute Fleece + 1× Jute Cord | 38 Mana Regeneration, 38 Maximum Life, 38 Resilience |
 | Jute Brogans | 29 | 4× Jute Fleece + 2× Jute Cord | 44 Mana Regeneration, 44 Maximum Life, 44 Resilience |
 
-**Nettle**
+**Nettle 荨麻**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -170,7 +170,7 @@ sources:
 | Nettle Boots | 35 | 3× Nettle Fleece + 1× Nettle Cord | 53 Mana Regeneration, 53 Maximum Life, 53 Resilience |
 | Nettle Brogans | 39 | 4× Nettle Fleece + 2× Nettle Cord | 59 Mana Regeneration, 59 Maximum Life, 59 Resilience |
 
-**Ramie**
+**Ramie 苎麻**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -178,9 +178,9 @@ sources:
 | Ramie Boots | 45 | 3× Ramie Fleece + 1× Ramie Cord | 68 Mana Regeneration, 68 Maximum Life, 68 Resilience |
 | Ramie Brogans | 49 | 4× Ramie Fleece + 2× Ramie Cord | 74 Mana Regeneration, 74 Maximum Life, 74 Resilience |
 
-### Gloves
+### Gloves 手套
 
-**Cotton**
+**Cotton 棉**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -188,7 +188,7 @@ sources:
 | Cotton Gloves | 5 | 3× Cotton Fleece + 1× Cotton Padding | 8 Mana Regeneration, 8 Maximum Life, 8 Resilience |
 | Cotton Manifers | 9 | 4× Cotton Fleece + 2× Cotton Padding | 14 Mana Regeneration, 14 Maximum Life, 14 Resilience |
 
-**Silk**
+**Silk 丝**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -196,7 +196,7 @@ sources:
 | Silk Gloves | 15 | 3× Silk Fleece + 1× Silk Padding | 23 Mana Regeneration, 23 Maximum Life, 23 Resilience |
 | Silk Manifers | 19 | 4× Silk Fleece + 2× Silk Padding | 29 Mana Regeneration, 29 Maximum Life, 29 Resilience |
 
-**Jute**
+**Jute 黄麻**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -204,7 +204,7 @@ sources:
 | Jute Gloves | 25 | 3× Jute Fleece + 1× Jute Padding | 38 Mana Regeneration, 38 Maximum Life, 38 Resilience |
 | Jute Manifers | 29 | 4× Jute Fleece + 2× Jute Padding | 44 Mana Regeneration, 44 Maximum Life, 44 Resilience |
 
-**Nettle**
+**Nettle 荨麻**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -212,7 +212,7 @@ sources:
 | Nettle Gloves | 35 | 3× Nettle Fleece + 1× Nettle Padding | 53 Mana Regeneration, 53 Maximum Life, 53 Resilience |
 | Nettle Manifers | 39 | 4× Nettle Fleece + 2× Nettle Padding | 59 Mana Regeneration, 59 Maximum Life, 59 Resilience |
 
-**Ramie**
+**Ramie 苎麻**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -220,9 +220,9 @@ sources:
 | Ramie Gloves | 45 | 3× Ramie Fleece + 1× Ramie Padding | 68 Mana Regeneration, 68 Maximum Life, 68 Resilience |
 | Ramie Manifers | 49 | 4× Ramie Fleece + 2× Ramie Padding | 74 Mana Regeneration, 74 Maximum Life, 74 Resilience |
 
-### Helmets
+### Helmets 头盔
 
-**Cotton**
+**Cotton 棉**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -230,7 +230,7 @@ sources:
 | Cotton Cap | 5 | 3× Cotton Fleece + 2× Cotton Padding | 15 Mana Regeneration, 15 Maximum Life, 15 Resilience |
 | Cotton Hood | 9 | 4× Cotton Fleece + 3× Cotton Padding + 1× Cotton Cord | 27 Mana Regeneration, 27 Maximum Life, 27 Resilience |
 
-**Silk**
+**Silk 丝**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -238,7 +238,7 @@ sources:
 | Silk Cap | 15 | 3× Silk Fleece + 2× Silk Padding | 45 Mana Regeneration, 45 Maximum Life, 45 Resilience |
 | Silk Hood | 19 | 4× Silk Fleece + 3× Silk Padding + 1× Silk Cord | 57 Mana Regeneration, 57 Maximum Life, 57 Resilience |
 
-**Jute**
+**Jute 黄麻**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -246,7 +246,7 @@ sources:
 | Jute Cap | 25 | 3× Jute Fleece + 2× Jute Padding | 75 Mana Regeneration, 75 Maximum Life, 75 Resilience |
 | Jute Hood | 29 | 4× Jute Fleece + 3× Jute Padding + 1× Jute Cord | 87 Mana Regeneration, 87 Maximum Life, 87 Resilience |
 
-**Nettle**
+**Nettle 荨麻**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -254,7 +254,7 @@ sources:
 | Nettle Cap | 35 | 3× Nettle Fleece + 2× Nettle Padding | 105 Mana Regeneration, 105 Maximum Life, 105 Resilience |
 | Nettle Hood | 39 | 4× Nettle Fleece + 3× Nettle Padding + 1× Nettle Cord | 117 Mana Regeneration, 117 Maximum Life, 117 Resilience |
 
-**Ramie**
+**Ramie 苎麻**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -262,9 +262,9 @@ sources:
 | Ramie Cap | 45 | 3× Ramie Fleece + 2× Ramie Padding | 135 Mana Regeneration, 135 Maximum Life, 135 Resilience |
 | Ramie Hood | 49 | 4× Ramie Fleece + 3× Ramie Padding + 1× Ramie Cord | 147 Mana Regeneration, 147 Maximum Life, 147 Resilience |
 
-### Leggings
+### Leggings 护腿
 
-**Cotton**
+**Cotton 棉**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -272,7 +272,7 @@ sources:
 | Cotton Breeches | 5 | 3× Cotton Fleece + 2× Cotton Padding | 15 Mana Regeneration, 15 Maximum Life, 15 Resilience |
 | Cotton Leg Guards | 9 | 4× Cotton Fleece + 3× Cotton Padding + 1× Cotton Cord | 27 Mana Regeneration, 27 Maximum Life, 27 Resilience |
 
-**Silk**
+**Silk 丝**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -280,7 +280,7 @@ sources:
 | Silk Breeches | 15 | 3× Silk Fleece + 2× Silk Padding | 45 Mana Regeneration, 45 Maximum Life, 45 Resilience |
 | Silk Leg Guards | 19 | 4× Silk Fleece + 3× Silk Padding + 1× Silk Cord | 57 Mana Regeneration, 57 Maximum Life, 57 Resilience |
 
-**Jute**
+**Jute 黄麻**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -288,7 +288,7 @@ sources:
 | Jute Breeches | 25 | 3× Jute Fleece + 2× Jute Padding | 75 Mana Regeneration, 75 Maximum Life, 75 Resilience |
 | Jute Leg Guards | 29 | 4× Jute Fleece + 3× Jute Padding + 1× Jute Cord | 87 Mana Regeneration, 87 Maximum Life, 87 Resilience |
 
-**Nettle**
+**Nettle 荨麻**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -296,7 +296,7 @@ sources:
 | Nettle Breeches | 35 | 3× Nettle Fleece + 2× Nettle Padding | 105 Mana Regeneration, 105 Maximum Life, 105 Resilience |
 | Nettle Leg Guards | 39 | 4× Nettle Fleece + 3× Nettle Padding + 1× Nettle Cord | 117 Mana Regeneration, 117 Maximum Life, 117 Resilience |
 
-**Ramie**
+**Ramie 苎麻**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -304,9 +304,9 @@ sources:
 | Ramie Breeches | 45 | 3× Ramie Fleece + 2× Ramie Padding | 135 Mana Regeneration, 135 Maximum Life, 135 Resilience |
 | Ramie Leg Guards | 49 | 4× Ramie Fleece + 3× Ramie Padding + 1× Ramie Cord | 147 Mana Regeneration, 147 Maximum Life, 147 Resilience |
 
-### Chests
+### Chests 胸甲
 
-**Cotton**
+**Cotton 棉**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -314,7 +314,7 @@ sources:
 | Cotton Tunic | 5 | 5× Cotton Fleece + 2× Cotton Padding + 1× Cotton Cord | 30 Mana Regeneration, 30 Maximum Life, 30 Resilience |
 | Cotton Cloak | 9 | 8× Cotton Fleece + 4× Cotton Padding + 2× Cotton Cord | 54 Mana Regeneration, 54 Maximum Life, 54 Resilience |
 
-**Silk**
+**Silk 丝**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -322,7 +322,7 @@ sources:
 | Silk Tunic | 15 | 5× Silk Fleece + 2× Silk Padding + 1× Silk Cord | 90 Mana Regeneration, 90 Maximum Life, 90 Resilience |
 | Silk Cloak | 19 | 8× Silk Fleece + 4× Silk Padding + 2× Silk Cord | 114 Mana Regeneration, 114 Maximum Life, 114 Resilience |
 
-**Jute**
+**Jute 黄麻**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -330,7 +330,7 @@ sources:
 | Jute Tunic | 25 | 5× Jute Fleece + 2× Jute Padding + 1× Jute Cord | 150 Mana Regeneration, 150 Maximum Life, 150 Resilience |
 | Jute Cloak | 29 | 8× Jute Fleece + 4× Jute Padding + 2× Jute Cord | 174 Mana Regeneration, 174 Maximum Life, 174 Resilience |
 
-**Nettle**
+**Nettle 荨麻**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -338,7 +338,7 @@ sources:
 | Nettle Tunic | 35 | 5× Nettle Fleece + 2× Nettle Padding + 1× Nettle Cord | 210 Mana Regeneration, 210 Maximum Life, 210 Resilience |
 | Nettle Cloak | 39 | 8× Nettle Fleece + 4× Nettle Padding + 2× Nettle Cord | 234 Mana Regeneration, 234 Maximum Life, 234 Resilience |
 
-**Ramie**
+**Ramie 苎麻**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -346,9 +346,9 @@ sources:
 | Ramie Tunic | 45 | 5× Ramie Fleece + 2× Ramie Padding + 1× Ramie Cord | 270 Mana Regeneration, 270 Maximum Life, 270 Resilience |
 | Ramie Cloak | 49 | 8× Ramie Fleece + 4× Ramie Padding + 2× Ramie Cord | 294 Mana Regeneration, 294 Maximum Life, 294 Resilience |
 
-### Encased Tome
+### Encased Tome 法书（副手）
 
-**Cotton**
+**Cotton 棉**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -360,7 +360,7 @@ sources:
 | Cotton Sphene Tome | 5 | 4× Mucky Scroll + 2× Cotton Fleece + 2× Cabochon Sphene | 15 Evasion, 15 Hit Rating, 15 Spell Damage |
 | Cotton Spinel Tome | 5 | 4× Mucky Scroll + 2× Cotton Fleece + 2× Cabochon Spinel | 15 Evasion, 15 Hit Rating, 15 Spell Damage |
 
-**Silk**
+**Silk 丝**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -372,7 +372,7 @@ sources:
 | Silk Sphene Tome | 15 | 4× Scrap Scroll + 2× Silk Fleece + 2× Round Sphene | 45 Evasion, 45 Hit Rating, 45 Spell Damage |
 | Silk Spinel Tome | 15 | 4× Scrap Scroll + 2× Silk Fleece + 2× Round Spinel | 45 Evasion, 45 Hit Rating, 45 Spell Damage |
 
-**Jute**
+**Jute 黄麻**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -384,7 +384,7 @@ sources:
 | Jute Sphene Tome | 25 | 4× Low Quality Scroll + 2× Jute Fleece + 2× Princess Sphene | 75 Evasion, 75 Hit Rating, 75 Spell Damage |
 | Jute Spinel Tome | 25 | 4× Low Quality Scroll + 2× Jute Fleece + 2× Princess Spinel | 75 Evasion, 75 Hit Rating, 75 Spell Damage |
 
-**Nettle**
+**Nettle 荨麻**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -396,7 +396,7 @@ sources:
 | Nettle Sphene Tome | 35 | 4× Medium Quality Scroll + 2× Nettle Fleece + 2× Emerald Sphene | 105 Evasion, 105 Hit Rating, 105 Spell Damage |
 | Nettle Spinel Tome | 35 | 4× Medium Quality Scroll + 2× Nettle Fleece + 2× Emerald Spinel | 105 Evasion, 105 Hit Rating, 105 Spell Damage |
 
-**Ramie**
+**Ramie 苎麻**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -413,7 +413,7 @@ sources:
 
 > 官方 help id=114。制作台见对应 NPC。
 
-### Mana
+### Mana 法力药水
 
 - `Tiny Mana Potion` ← 2× Blue Poppy Seed + 3× Spirit Essence
 - `Small Mana Potion` ← 3× Blue Lily Seed + 6× Spirit Essence
@@ -425,7 +425,7 @@ sources:
 - `Greater Mana Potion` ← 3× Large Mana Potion
 - `Greater Mana Potion` ← 1× Quality Fish Oil + 6× Blue Penta Seed + 15× Spirit Essence
 
-### Buffs
+### Buffs 增益药水
 
 - `Tiny Spell Damage Potion` ← 1× Red Poppy Seed + 1× Blue Poppy Seed + 1× Mucky Fish Oil
 - `Tiny Attack Speed Potion` ← 1× Red Poppy Seed + 1× Blue Poppy Seed + 1× Mucky Fish Oil
@@ -448,7 +448,7 @@ sources:
 - `Greater Armor Penetration Potion` ← 1× Red Penta Seed + 1× Blue Penta Seed + 3× Quality Fish Oil
 - `Greater Critical Strike Potion` ← 1× Red Penta Seed + 1× Blue Penta Seed + 3× Quality Fish Oil
 
-### Rejuvenation
+### Rejuvenation 回春药水
 
 - `Tiny Rejuvenation Potion` ← 1× Red Poppy Seed + 1× Blue Poppy Seed + 6× Spirit Essence
 - `Small Rejuvenation Potion` ← 2× Red Lily Seed + 1× Blue Lily Seed + 9× Spirit Essence
@@ -460,7 +460,7 @@ sources:
 - `Greater Rejuvenation Potion` ← 3× Large Rejuvenation Potion
 - `Greater Rejuvenation Potion` ← 1× Quality Fish Oil + 3× Red Penta Seed + 3× Blue Penta Seed + 18× Spirit Essence
 
-### Health
+### Health 生命药水
 
 - `Tiny Health Potion` ← 2× Red Poppy Seed + 3× Spirit Essence
 - `Small Health Potion` ← 3× Red Lily Seed + 6× Spirit Essence
@@ -472,9 +472,9 @@ sources:
 - `Greater Health Potion` ← 3× Large Health Potion
 - `Greater Health Potion` ← 1× Quality Fish Oil + 6× Red Penta Seed + 15× Spirit Essence
 
-### Staff
+### Staff 法杖
 
-**Cabochon Orb**
+**Cabochon Orb 蛋面宝珠**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -482,7 +482,7 @@ sources:
 | Aspen Initiate Staff 〔双手〕 | 5 | 4× Cabochon Orb + 1× Aspen Rod | 18 Critical Strike, 18 Hit Rating, 18 Mana |
 | Aspen Grandmaster Staff 〔双手〕 | 9 | 8× Cabochon Orb + 1× Aspen Rod | 32 Critical Strike, 32 Hit Rating, 32 Mana |
 
-**Round Orb**
+**Round Orb 圆形宝珠**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -490,7 +490,7 @@ sources:
 | Elm Initiate Staff 〔双手〕 | 15 | 4× Round Orb + 1× Elm Rod | 53 Critical Strike, 53 Hit Rating, 53 Mana |
 | Elm Grandmaster Staff 〔双手〕 | 19 | 8× Round Orb + 1× Elm Rod | 67 Critical Strike, 67 Hit Rating, 67 Mana |
 
-**Princess Orb**
+**Princess Orb 公主方宝珠**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -498,7 +498,7 @@ sources:
 | Spruce Initiate Staff 〔双手〕 | 25 | 4× Princess Orb + 1× Spruce Rod | 88 Critical Strike, 88 Hit Rating, 88 Mana |
 | Spruce Grandmaster Staff 〔双手〕 | 29 | 8× Princess Orb + 1× Spruce Rod | 102 Critical Strike, 102 Hit Rating, 102 Mana |
 
-**Emerald Orb**
+**Emerald Orb 祖母绿宝珠**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -506,7 +506,7 @@ sources:
 | Maple Initiate Staff 〔双手〕 | 35 | 4× Emerald Orb + 1× Maple Rod | 123 Critical Strike, 123 Hit Rating, 123 Mana |
 | Maple Grandmaster Staff 〔双手〕 | 39 | 8× Emerald Orb + 1× Maple Rod | 137 Critical Strike, 137 Hit Rating, 137 Mana |
 
-**Radiant Orb**
+**Radiant Orb 雷迪恩宝珠**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -514,9 +514,9 @@ sources:
 | Beech Initiate Staff 〔双手〕 | 45 | 4× Radiant Orb + 1× Beech Rod | 158 Critical Strike, 158 Hit Rating, 158 Mana |
 | Beech Grandmaster Staff 〔双手〕 | 49 | 8× Radiant Orb + 1× Beech Rod | 172 Critical Strike, 172 Hit Rating, 172 Mana |
 
-### Wand
+### Wand 魔杖
 
-**Cabochon Orb**
+**Cabochon Orb 蛋面宝珠**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -524,7 +524,7 @@ sources:
 | Aspen Initiate Wand | 5 | 4× Cabochon Orb + 1× Aspen Handle | 18 Attack Speed, 18 Hit Rating, 18 Mana |
 | Aspen Grandmaster Wand | 9 | 8× Cabochon Orb + 1× Aspen Handle | 32 Attack Speed, 32 Hit Rating, 32 Mana |
 
-**Round Orb**
+**Round Orb 圆形宝珠**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -532,7 +532,7 @@ sources:
 | Elm Initiate Wand | 15 | 4× Round Orb + 1× Elm Handle | 53 Attack Speed, 53 Hit Rating, 53 Mana |
 | Elm Grandmaster Wand | 19 | 8× Round Orb + 1× Elm Handle | 67 Attack Speed, 67 Hit Rating, 67 Mana |
 
-**Princess Orb**
+**Princess Orb 公主方宝珠**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -540,7 +540,7 @@ sources:
 | Spruce Initiate Wand | 25 | 4× Princess Orb + 1× Spruce Handle | 88 Attack Speed, 88 Hit Rating, 88 Mana |
 | Spruce Grandmaster Wand | 29 | 8× Princess Orb + 1× Spruce Handle | 102 Attack Speed, 102 Hit Rating, 102 Mana |
 
-**Emerald Orb**
+**Emerald Orb 祖母绿宝珠**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -548,7 +548,7 @@ sources:
 | Maple Initiate Wand | 35 | 4× Emerald Orb + 1× Maple Handle | 123 Attack Speed, 123 Hit Rating, 123 Mana |
 | Maple Grandmaster Wand | 39 | 8× Emerald Orb + 1× Maple Handle | 137 Attack Speed, 137 Hit Rating, 137 Mana |
 
-**Radiant Orb**
+**Radiant Orb 雷迪恩宝珠**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -556,7 +556,7 @@ sources:
 | Beech Initiate Wand | 45 | 4× Radiant Orb + 1× Beech Handle | 158 Attack Speed, 158 Hit Rating, 158 Mana |
 | Beech Grandmaster Wand | 49 | 8× Radiant Orb + 1× Beech Handle | 172 Attack Speed, 172 Hit Rating, 172 Mana |
 
-### Oils
+### Oils 鱼油
 
 - `Mucky Fish Oil` ← 3× Mucky Oily Fish Carcass
 - `Scrap Fish Oil` ← 3× Scrap Oily Fish Carcass
@@ -564,7 +564,7 @@ sources:
 - `Medium Quality Fish Oil` ← 3× Medium Quality Oily Fish Carcass
 - `Quality Fish Oil` ← 3× Quality Oily Fish Carcass
 
-### Orb
+### Orb 宝珠
 
 - `Cabochon Orb` ← 1× Rough Sphene + 1× Rough Spinel + 1× Rough Sapphire + 1× Rough Peridot + 1× Rough Garnet + 1× Rough Quartz + 1× Rough Onyx
 - `Round Orb` ← 1× Cabochon Sphene + 1× Cabochon Spinel + 1× Cabochon Sapphire + 1× Cabochon Peridot + 1× Cabochon Garnet + 1× Cabochon Quartz + 1× Cabochon Onyx
@@ -577,9 +577,9 @@ sources:
 
 > 官方 help id=115。制作台见对应 NPC。
 
-### Materials
+### Materials 材料 / 半成品
 
-**Copper**
+**Copper 铜**
 
 - `Copper Ingot` ← 4× Copper Ore
 - `Copper Nails` ← 1× Copper Ingot
@@ -588,7 +588,7 @@ sources:
 - `Copper Point` ← 2× Copper Ingot
 - `Copper Axe Blade` ← 2× Copper Ingot
 
-**Iron**
+**Iron 铁**
 
 - `Iron Ingot` ← 5× Iron Ore
 - `Iron Nails` ← 1× Iron Ingot
@@ -597,7 +597,7 @@ sources:
 - `Iron Point` ← 2× Iron Ingot
 - `Iron Axe Blade` ← 2× Iron Ingot
 
-**Bronze**
+**Bronze 青铜**
 
 - `Bronze Nails` ← 1× Bronze Ingot
 - `Bronze Hilt` ← 2× Bronze Ingot
@@ -606,7 +606,7 @@ sources:
 - `Bronze Axe Blade` ← 2× Bronze Ingot
 - `Bronze Ingot` ← 1× Copper Ingot + 4× Tin Ore
 
-**Steel**
+**Steel 钢**
 
 - `Steel Ingot` ← 1× Iron Ingot + 5× Lump of Coal
 - `Steel Nails` ← 1× Steel Ingot
@@ -615,7 +615,7 @@ sources:
 - `Steel Point` ← 2× Steel Ingot
 - `Steel Axe Blade` ← 2× Steel Ingot
 
-**Mithril**
+**Mithril 秘银**
 
 - `Mithril Ingot` ← 8× Mithril Ore
 - `Mithril Nails` ← 1× Mithril Ingot
@@ -624,9 +624,9 @@ sources:
 - `Mithril Point` ← 2× Mithril Ingot
 - `Mithril Axe Blade` ← 2× Mithril Ingot
 
-### Axes
+### Axes 斧
 
-**Copper**
+**Copper 铜**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -634,7 +634,7 @@ sources:
 | Copper Battle Axe | 5 | 1× Copper Axe Blade + 6× Copper Ingot + 1× Aspen Handle | 18 Bleed Damage, 18 Hit Rating, 18 Life Steal |
 | Copper Twin-bladed Axe | 9 | 1× Copper Axe Blade + 12× Copper Ingot + 1× Aspen Handle | 32 Bleed Damage, 32 Hit Rating, 32 Life Steal |
 
-**Iron**
+**Iron 铁**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -642,7 +642,7 @@ sources:
 | Iron Battle Axe | 15 | 1× Iron Axe Blade + 6× Iron Ingot + 1× Elm Handle | 53 Bleed Damage, 53 Hit Rating, 53 Life Steal |
 | Iron Twin-bladed Axe | 19 | 1× Iron Axe Blade + 12× Iron Ingot + 1× Elm Handle | 67 Bleed Damage, 67 Hit Rating, 67 Life Steal |
 
-**Bronze**
+**Bronze 青铜**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -650,7 +650,7 @@ sources:
 | Bronze Battle Axe | 25 | 1× Bronze Axe Blade + 6× Bronze Ingot + 1× Spruce Handle | 88 Bleed Damage, 88 Hit Rating, 88 Life Steal |
 | Bronze Twin-bladed Axe | 29 | 1× Bronze Axe Blade + 12× Bronze Ingot + 1× Spruce Handle | 102 Bleed Damage, 102 Hit Rating, 102 Life Steal |
 
-**Steel**
+**Steel 钢**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -658,7 +658,7 @@ sources:
 | Steel Battle Axe | 35 | 1× Steel Axe Blade + 6× Steel Ingot + 1× Maple Handle | 123 Bleed Damage, 123 Hit Rating, 123 Life Steal |
 | Steel Twin-bladed Axe | 39 | 1× Steel Axe Blade + 12× Steel Ingot + 1× Maple Handle | 137 Bleed Damage, 137 Hit Rating, 137 Life Steal |
 
-**Mithril**
+**Mithril 秘银**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -666,9 +666,9 @@ sources:
 | Mithril Battle Axe | 45 | 1× Mithril Axe Blade + 6× Mithril Ingot + 1× Beech Handle | 158 Bleed Damage, 158 Hit Rating, 158 Life Steal |
 | Mithril Twin-bladed Axe | 49 | 1× Mithril Axe Blade + 12× Mithril Ingot + 1× Beech Handle | 172 Bleed Damage, 172 Hit Rating, 172 Life Steal |
 
-### Swords
+### Swords 剑
 
-**Copper**
+**Copper 铜**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -676,7 +676,7 @@ sources:
 | Copper Scimitar | 5 | 1× Copper Hilt + 1× Copper Blade + 6× Copper Ingot | 18 Armor Penetration, 18 Critical Strike, 18 Hit Rating |
 | Copper Warblade | 9 | 1× Copper Hilt + 1× Copper Blade + 12× Copper Ingot | 32 Armor Penetration, 32 Critical Strike, 32 Hit Rating |
 
-**Iron**
+**Iron 铁**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -684,7 +684,7 @@ sources:
 | Iron Scimitar | 15 | 1× Iron Hilt + 1× Iron Blade + 6× Iron Ingot | 53 Armor Penetration, 53 Critical Strike, 53 Hit Rating |
 | Iron Warblade | 19 | 1× Iron Hilt + 1× Iron Blade + 12× Iron Ingot | 67 Armor Penetration, 67 Critical Strike, 67 Hit Rating |
 
-**Bronze**
+**Bronze 青铜**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -692,7 +692,7 @@ sources:
 | Bronze Scimitar | 25 | 1× Bronze Hilt + 1× Bronze Blade + 6× Bronze Ingot | 88 Armor Penetration, 88 Critical Strike, 88 Hit Rating |
 | Bronze Warblade | 29 | 1× Bronze Hilt + 1× Bronze Blade + 12× Bronze Ingot | 102 Armor Penetration, 102 Critical Strike, 102 Hit Rating |
 
-**Steel**
+**Steel 钢**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -700,7 +700,7 @@ sources:
 | Steel Scimitar | 35 | 1× Steel Hilt + 1× Steel Blade + 6× Steel Ingot | 123 Armor Penetration, 123 Critical Strike, 123 Hit Rating |
 | Steel Warblade | 39 | 1× Steel Hilt + 1× Steel Blade + 12× Steel Ingot | 137 Armor Penetration, 137 Critical Strike, 137 Hit Rating |
 
-**Mithril**
+**Mithril 秘银**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -708,9 +708,9 @@ sources:
 | Mithril Scimitar | 45 | 1× Mithril Hilt + 1× Mithril Blade + 6× Mithril Ingot | 158 Armor Penetration, 158 Critical Strike, 158 Hit Rating |
 | Mithril Warblade | 49 | 1× Mithril Hilt + 1× Mithril Blade + 12× Mithril Ingot | 172 Armor Penetration, 172 Critical Strike, 172 Hit Rating |
 
-### Scepters
+### Scepters 权杖
 
-**Copper**
+**Copper 铜**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -718,7 +718,7 @@ sources:
 | Copper Scepter | 1 | 1× Copper Hilt + 2× Copper Ingot + 1× Cabochon Orb | 4 Critical Chance, 4 Hit Rating, 4 Mana Steal |
 | Copper Crozier | 5 | 1× Copper Hilt + 6× Copper Ingot + 1× Cabochon Orb | 18 Critical Chance, 18 Hit Rating, 18 Mana Steal |
 
-**Iron**
+**Iron 铁**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -726,7 +726,7 @@ sources:
 | Iron Scepter | 10 | 1× Iron Hilt + 2× Iron Ingot + 1× Round Orb | 35 Critical Chance, 35 Hit Rating, 35 Mana Steal |
 | Iron Crozier | 15 | 1× Iron Hilt + 6× Iron Ingot + 1× Round Orb | 53 Critical Chance, 53 Hit Rating, 53 Mana Steal |
 
-**Bronze**
+**Bronze 青铜**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -734,7 +734,7 @@ sources:
 | Bronze Scepter | 20 | 1× Bronze Hilt + 2× Bronze Ingot + 1× Princess Orb | 70 Critical Chance, 70 Hit Rating, 70 Mana Steal |
 | Bronze Crozier | 25 | 1× Bronze Hilt + 6× Bronze Ingot + 1× Princess Orb | 88 Critical Chance, 88 Hit Rating, 88 Mana Steal |
 
-**Steel**
+**Steel 钢**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -742,7 +742,7 @@ sources:
 | Steel Scepter | 30 | 1× Steel Hilt + 2× Steel Ingot + 1× Emerald Orb | 105 Critical Chance, 105 Hit Rating, 105 Mana Steal |
 | Steel Crozier | 35 | 1× Steel Hilt + 6× Steel Ingot + 1× Emerald Orb | 123 Critical Chance, 123 Hit Rating, 123 Mana Steal |
 
-**Mithril**
+**Mithril 秘银**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -750,9 +750,9 @@ sources:
 | Mithril Scepter | 40 | 1× Mithril Hilt + 2× Mithril Ingot + 1× Radiant Sphene | 140 Critical Chance, 140 Hit Rating, 140 Mana Steal |
 | Mithril Crozier | 45 | 1× Mithril Hilt + 6× Mithril Ingot + 1× Radiant Spinel | 158 Critical Chance, 158 Hit Rating, 158 Mana Steal |
 
-### Daggers
+### Daggers 匕首
 
-**Copper**
+**Copper 铜**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -760,7 +760,7 @@ sources:
 | Copper Dirk Dagger | 5 | 1× Copper Hilt + 6× Copper Ingot | 18 Armor Penetration, 18 Attack Speed, 18 Hit Rating |
 | Copper Kris Dagger | 9 | 1× Copper Hilt + 12× Copper Ingot | 32 Armor Penetration, 32 Attack Speed, 32 Hit Rating |
 
-**Iron**
+**Iron 铁**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -768,7 +768,7 @@ sources:
 | Iron Dirk Dagger | 15 | 1× Iron Hilt + 6× Iron Ingot | 53 Armor Penetration, 53 Attack Speed, 53 Hit Rating |
 | Iron Kris Dagger | 19 | 1× Iron Hilt + 12× Iron Ingot | 67 Armor Penetration, 67 Attack Speed, 67 Hit Rating |
 
-**Bronze**
+**Bronze 青铜**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -776,7 +776,7 @@ sources:
 | Bronze Dirk Dagger | 25 | 1× Bronze Hilt + 3× Bronze Ingot | 88 Armor Penetration, 88 Attack Speed, 88 Hit Rating |
 | Bronze Kris Dagger | 29 | 1× Bronze Hilt + 12× Bronze Ingot | 102 Armor Penetration, 102 Attack Speed, 102 Hit Rating |
 
-**Steel**
+**Steel 钢**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -784,7 +784,7 @@ sources:
 | Steel Dirk Dagger | 35 | 1× Steel Hilt + 6× Steel Ingot | 123 Armor Penetration, 123 Attack Speed, 123 Hit Rating |
 | Steel Kris Dagger | 39 | 1× Steel Hilt + 12× Steel Ingot | 137 Armor Penetration, 137 Attack Speed, 137 Hit Rating |
 
-**Mithril**
+**Mithril 秘银**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -792,9 +792,9 @@ sources:
 | Mithril Dirk Dagger | 45 | 1× Mithril Hilt + 6× Mithril Ingot | 158 Armor Penetration, 158 Attack Speed, 158 Hit Rating |
 | Mithril Kris Dagger | 49 | 1× Mithril Hilt + 12× Mithril Ingot | 172 Armor Penetration, 172 Attack Speed, 172 Hit Rating |
 
-### Maces
+### Maces 锤（钝器）
 
-**Copper**
+**Copper 铜**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -802,7 +802,7 @@ sources:
 | Copper Heavy Flail 〔双手〕 | 5 | 6× Copper Ingot + 1× Aspen Club | 18 Blunt Damage, 18 Critical Strike, 18 Hit Rating |
 | Copper Warhammer 〔双手〕 | 9 | 12× Copper Ingot + 1× Aspen Club | 32 Blunt Damage, 32 Critical Strike, 32 Hit Rating |
 
-**Iron**
+**Iron 铁**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -810,7 +810,7 @@ sources:
 | Iron Heavy Flail 〔双手〕 | 15 | 6× Iron Ingot + 1× Elm Club | 53 Blunt Damage, 53 Critical Strike, 53 Hit Rating |
 | Iron Warhammer 〔双手〕 | 19 | 12× Iron Ingot + 1× Elm Club | 67 Blunt Damage, 67 Critical Strike, 67 Hit Rating |
 
-**Bronze**
+**Bronze 青铜**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -818,7 +818,7 @@ sources:
 | Bronze Heavy Flail 〔双手〕 | 25 | 6× Bronze Ingot + 1× Spruce Club | 88 Blunt Damage, 88 Critical Strike, 88 Hit Rating |
 | Bronze Warhammer 〔双手〕 | 29 | 12× Bronze Ingot + 1× Spruce Club | 102 Blunt Damage, 102 Critical Strike, 102 Hit Rating |
 
-**Steel**
+**Steel 钢**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -826,7 +826,7 @@ sources:
 | Steel Heavy Flail 〔双手〕 | 35 | 6× Steel Ingot + 1× Maple Club | 123 Blunt Damage, 123 Critical Strike, 123 Hit Rating |
 | Steel Warhammer 〔双手〕 | 39 | 12× Steel Ingot + 1× Maple Club | 137 Blunt Damage, 137 Critical Strike, 137 Hit Rating |
 
-**Mithril**
+**Mithril 秘银**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -834,9 +834,9 @@ sources:
 | Mithril Heavy Flail 〔双手〕 | 45 | 6× Mithril Ingot + 1× Beech Club | 158 Blunt Damage, 158 Critical Strike, 158 Hit Rating |
 | Mithril Warhammer 〔双手〕 | 49 | 12× Mithril Ingot + 1× Beech Club | 172 Blunt Damage, 172 Critical Strike, 172 Hit Rating |
 
-### Spears
+### Spears 长矛
 
-**Copper**
+**Copper 铜**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -844,7 +844,7 @@ sources:
 | Copper Pike 〔双手〕 | 5 | 1× Copper Point + 6× Copper Ingot + 1× Aspen Rod | 18 Armor Penetration, 18 Hit Rating, 18 Physical Damage |
 | Copper Trident 〔双手〕 | 9 | 3× Copper Point + 8× Copper Ingot + 1× Aspen Rod | 32 Armor Penetration, 32 Hit Rating, 32 Physical Damage |
 
-**Iron**
+**Iron 铁**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -852,7 +852,7 @@ sources:
 | Iron Pike 〔双手〕 | 15 | 1× Iron Point + 6× Iron Ingot + 1× Elm Rod | 53 Armor Penetration, 53 Hit Rating, 53 Physical Damage |
 | Iron Trident 〔双手〕 | 19 | 3× Iron Point + 8× Iron Ingot + 1× Elm Rod | 67 Armor Penetration, 67 Hit Rating, 67 Physical Damage |
 
-**Bronze**
+**Bronze 青铜**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -860,7 +860,7 @@ sources:
 | Bronze Pike 〔双手〕 | 25 | 1× Bronze Point + 6× Bronze Ingot + 1× Spruce Rod | 88 Armor Penetration, 88 Hit Rating, 88 Physical Damage |
 | Bronze Trident 〔双手〕 | 29 | 3× Bronze Point + 8× Bronze Ingot + 1× Spruce Rod | 102 Armor Penetration, 102 Hit Rating, 102 Physical Damage |
 
-**Steel**
+**Steel 钢**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -868,7 +868,7 @@ sources:
 | Steel Pike 〔双手〕 | 35 | 1× Steel Point + 6× Steel Ingot + 1× Maple Rod | 123 Armor Penetration, 123 Hit Rating, 123 Physical Damage |
 | Steel Trident 〔双手〕 | 39 | 3× Steel Point + 8× Steel Ingot + 1× Maple Rod | 137 Armor Penetration, 137 Hit Rating, 137 Physical Damage |
 
-**Mithril**
+**Mithril 秘银**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -881,9 +881,9 @@ sources:
 
 > 官方 help id=116。制作台见对应 NPC。
 
-### Materials
+### Materials 材料 / 半成品
 
-**Copper**
+**Copper 铜**
 
 - `Copper Ingot` ← 4× Copper Ore
 - `Copper Wire` ← 1× Copper Ingot
@@ -891,7 +891,7 @@ sources:
 - `Copper Plating` ← 2× Copper Ingot
 - `Copper Chain` ← 2× Copper Ingot
 
-**Iron**
+**Iron 铁**
 
 - `Iron Ingot` ← 5× Iron Ore
 - `Iron Wire` ← 1× Iron Ingot
@@ -899,7 +899,7 @@ sources:
 - `Iron Plating` ← 2× Iron Ingot
 - `Iron Chain` ← 2× Iron Ingot
 
-**Bronze**
+**Bronze 青铜**
 
 - `Bronze Wire` ← 1× Bronze Ingot
 - `Bronze Buckle` ← 1× Bronze Ingot
@@ -907,7 +907,7 @@ sources:
 - `Bronze Chain` ← 2× Bronze Ingot
 - `Bronze Ingot` ← 1× Copper Ingot + 4× Tin Ore
 
-**Steel**
+**Steel 钢**
 
 - `Steel Ingot` ← 1× Iron Ingot + 5× Lump of Coal
 - `Steel Wire` ← 1× Steel Ingot
@@ -915,7 +915,7 @@ sources:
 - `Steel Plating` ← 2× Steel Ingot
 - `Steel Chain` ← 2× Steel Ingot
 
-**Mithril**
+**Mithril 秘银**
 
 - `Mithril Ingot` ← 8× Mithril Ore
 - `Mithril Wire` ← 1× Mithril Ingot
@@ -923,9 +923,9 @@ sources:
 - `Mithril Plating` ← 2× Mithril Ingot
 - `Mithril Chain` ← 2× Mithril Ingot
 
-### Belts
+### Belts 腰带
 
-**Copper**
+**Copper 铜**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -933,7 +933,7 @@ sources:
 | Copper Girdle | 5 | 6× Copper Ingot + 1× Copper Buckle | 8 Fortitude, 8 Life Regeneration, 8 Maximum Life |
 | Copper Plated Girdle | 9 | 8× Copper Ingot + 1× Copper Buckle + 1× Copper Plating | 14 Fortitude, 14 Life Regeneration, 14 Maximum Life |
 
-**Iron**
+**Iron 铁**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -941,7 +941,7 @@ sources:
 | Iron Girdle | 15 | 6× Iron Ingot + 1× Iron Buckle | 23 Fortitude, 23 Life Regeneration, 23 Maximum Life |
 | Iron Plated Girdle | 19 | 10× Iron Ingot + 2× Iron Buckle + 2× Iron Plating | 29 Fortitude, 29 Life Regeneration, 29 Maximum Life |
 
-**Bronze**
+**Bronze 青铜**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -949,7 +949,7 @@ sources:
 | Bronze Girdle | 25 | 6× Bronze Ingot + 1× Bronze Buckle | 38 Fortitude, 38 Life Regeneration, 38 Maximum Life |
 | Bronze Plated Girdle | 29 | 10× Bronze Ingot + 2× Bronze Buckle + 2× Bronze Plating | 44 Fortitude, 44 Life Regeneration, 44 Maximum Life |
 
-**Steel**
+**Steel 钢**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -957,7 +957,7 @@ sources:
 | Steel Girdle | 35 | 6× Steel Ingot + 1× Steel Buckle | 53 Fortitude, 53 Life Regeneration, 53 Maximum Life |
 | Steel Plated Girdle | 39 | 10× Steel Ingot + 2× Steel Buckle + 2× Steel Plating | 59 Fortitude, 59 Life Regeneration, 59 Maximum Life |
 
-**Mithril**
+**Mithril 秘银**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -965,9 +965,9 @@ sources:
 | Mithril Girdle | 45 | 6× Mithril Ingot + 1× Mithril Buckle | 68 Fortitude, 68 Life Regeneration, 68 Maximum Life |
 | Mithril Plated Girdle | 49 | 10× Mithril Ingot + 2× Mithril Buckle + 2× Mithril Plating | 74 Fortitude, 74 Life Regeneration, 74 Maximum Life |
 
-### Boots
+### Boots 靴子
 
-**Copper**
+**Copper 铜**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -975,7 +975,7 @@ sources:
 | Copper Greaves | 5 | 6× Copper Ingot + 1× Copper Buckle | 8 Fortitude, 8 Life Regeneration, 8 Maximum Life |
 | Copper Plated Greaves | 9 | 8× Copper Ingot + 2× Copper Buckle | 14 Fortitude, 14 Life Regeneration, 14 Maximum Life |
 
-**Iron**
+**Iron 铁**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -983,7 +983,7 @@ sources:
 | Iron Greaves | 15 | 6× Iron Ingot + 1× Iron Buckle | 23 Fortitude, 23 Life Regeneration, 23 Maximum Life |
 | Iron Plated Greaves | 19 | 8× Iron Ingot + 2× Iron Buckle | 29 Fortitude, 29 Life Regeneration, 29 Maximum Life |
 
-**Bronze**
+**Bronze 青铜**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -991,7 +991,7 @@ sources:
 | Bronze Greaves | 25 | 6× Bronze Ingot + 1× Bronze Buckle | 38 Fortitude, 38 Life Regeneration, 38 Maximum Life |
 | Bronze Plated Greaves | 29 | 8× Bronze Ingot + 2× Bronze Buckle | 44 Fortitude, 44 Life Regeneration, 44 Maximum Life |
 
-**Steel**
+**Steel 钢**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -999,7 +999,7 @@ sources:
 | Steel Greaves | 35 | 6× Steel Ingot + 1× Steel Buckle | 53 Fortitude, 53 Life Regeneration, 53 Maximum Life |
 | Steel Plated Greaves | 39 | 8× Steel Ingot + 2× Steel Buckle | 59 Fortitude, 59 Life Regeneration, 59 Maximum Life |
 
-**Mithril**
+**Mithril 秘银**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -1007,9 +1007,9 @@ sources:
 | Mithril Greaves | 45 | 6× Mithril Ingot + 1× Mithril Buckle | 68 Fortitude, 68 Life Regeneration, 68 Maximum Life |
 | Mithril Plated Greaves | 49 | 8× Mithril Ingot + 2× Mithril Buckle | 74 Fortitude, 74 Life Regeneration, 74 Maximum Life |
 
-### Gloves
+### Gloves 手套
 
-**Copper**
+**Copper 铜**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -1017,7 +1017,7 @@ sources:
 | Copper Gauntlets | 5 | 6× Copper Ingot + 1× Copper Plating | 8 Fortitude, 8 Life Regeneration, 8 Maximum Life |
 | Copper Plated Gauntlets | 9 | 8× Copper Ingot + 2× Copper Plating | 14 Fortitude, 14 Life Regeneration, 14 Maximum Life |
 
-**Iron**
+**Iron 铁**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -1025,7 +1025,7 @@ sources:
 | Iron Gauntlets | 15 | 6× Iron Ingot + 1× Iron Plating | 23 Fortitude, 23 Life Regeneration, 23 Maximum Life |
 | Iron Plated Gauntlets | 19 | 8× Iron Ingot + 2× Iron Plating | 29 Fortitude, 29 Life Regeneration, 29 Maximum Life |
 
-**Bronze**
+**Bronze 青铜**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -1033,7 +1033,7 @@ sources:
 | Bronze Gauntlets | 25 | 6× Bronze Ingot + 1× Bronze Plating | 38 Fortitude, 38 Life Regeneration, 38 Maximum Life |
 | Bronze Plated Gauntlets | 29 | 8× Bronze Ingot + 2× Bronze Plating | 44 Fortitude, 44 Life Regeneration, 44 Maximum Life |
 
-**Steel**
+**Steel 钢**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -1041,7 +1041,7 @@ sources:
 | Steel Gauntlets | 35 | 6× Steel Ingot + 1× Steel Plating | 53 Fortitude, 53 Life Regeneration, 53 Maximum Life |
 | Steel Plated Gauntlets | 39 | 8× Steel Ingot + 2× Steel Plating | 59 Fortitude, 59 Life Regeneration, 59 Maximum Life |
 
-**Mithril**
+**Mithril 秘银**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -1049,9 +1049,9 @@ sources:
 | Mithril Gauntlets | 45 | 6× Mithril Ingot + 1× Mithril Plating | 68 Fortitude, 68 Life Regeneration, 68 Maximum Life |
 | Mithril Plated Gauntlets | 49 | 8× Mithril Ingot + 2× Mithril Plating | 74 Fortitude, 74 Life Regeneration, 74 Maximum Life |
 
-### Helmets
+### Helmets 头盔
 
-**Copper**
+**Copper 铜**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -1059,7 +1059,7 @@ sources:
 | Copper Barbute | 5 | 6× Copper Ingot + 2× Copper Plating | 15 Fortitude, 15 Life Regeneration, 15 Maximum Life |
 | Copper Great Helmet | 9 | 8× Copper Ingot + 3× Copper Plating + 1× Copper Buckle | 27 Fortitude, 27 Life Regeneration, 27 Maximum Life |
 
-**Iron**
+**Iron 铁**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -1067,7 +1067,7 @@ sources:
 | Iron Barbute | 15 | 6× Iron Ingot + 2× Iron Plating | 45 Fortitude, 45 Life Regeneration, 45 Maximum Life |
 | Iron Great Helmet | 19 | 8× Iron Ingot + 3× Iron Plating + 1× Iron Buckle | 57 Fortitude, 57 Life Regeneration, 57 Maximum Life |
 
-**Bronze**
+**Bronze 青铜**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -1075,7 +1075,7 @@ sources:
 | Bronze Barbute | 25 | 6× Bronze Ingot + 2× Bronze Plating | 75 Fortitude, 75 Life Regeneration, 75 Maximum Life |
 | Bronze Great Helmet | 29 | 8× Bronze Ingot + 3× Bronze Plating + 1× Bronze Buckle | 87 Fortitude, 87 Life Regeneration, 87 Maximum Life |
 
-**Steel**
+**Steel 钢**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -1083,7 +1083,7 @@ sources:
 | Steel Barbute | 35 | 6× Steel Ingot + 2× Steel Plating | 105 Fortitude, 105 Life Regeneration, 105 Maximum Life |
 | Steel Great Helmet | 39 | 8× Steel Ingot + 3× Steel Plating + 1× Steel Buckle | 117 Fortitude, 117 Life Regeneration, 117 Maximum Life |
 
-**Mithril**
+**Mithril 秘银**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -1091,9 +1091,9 @@ sources:
 | Mithril Barbute | 45 | 6× Mithril Ingot + 2× Mithril Plating | 135 Fortitude, 135 Life Regeneration, 135 Maximum Life |
 | Mithril Great Helmet | 49 | 8× Mithril Ingot + 3× Mithril Plating + 1× Mithril Buckle | 147 Fortitude, 147 Life Regeneration, 147 Maximum Life |
 
-### Leggings
+### Leggings 护腿
 
-**Copper**
+**Copper 铜**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -1101,7 +1101,7 @@ sources:
 | Copper Chausses | 5 | 6× Copper Ingot + 2× Copper Plating | 15 Fortitude, 15 Life Regeneration, 15 Maximum Life |
 | Copper Plated Chausses | 9 | 8× Copper Ingot + 3× Copper Plating + 1× Copper Buckle | 27 Fortitude, 27 Life Regeneration, 27 Maximum Life |
 
-**Iron**
+**Iron 铁**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -1109,7 +1109,7 @@ sources:
 | Iron Chausses | 15 | 6× Iron Ingot + 2× Iron Plating | 45 Fortitude, 45 Life Regeneration, 45 Maximum Life |
 | Iron Plated Chausses | 19 | 8× Iron Ingot + 3× Iron Plating + 1× Iron Buckle | 57 Fortitude, 57 Life Regeneration, 57 Maximum Life |
 
-**Bronze**
+**Bronze 青铜**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -1117,7 +1117,7 @@ sources:
 | Bronze Chausses | 25 | 6× Bronze Ingot + 2× Bronze Plating | 75 Fortitude, 75 Life Regeneration, 75 Maximum Life |
 | Bronze Plated Chausses | 29 | 8× Bronze Ingot + 3× Bronze Plating + 1× Bronze Buckle | 87 Fortitude, 87 Life Regeneration, 87 Maximum Life |
 
-**Steel**
+**Steel 钢**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -1125,7 +1125,7 @@ sources:
 | Steel Chausses | 35 | 6× Steel Ingot + 2× Steel Plating | 105 Fortitude, 105 Life Regeneration, 105 Maximum Life |
 | Steel Plated Chausses | 39 | 8× Steel Ingot + 3× Steel Plating + 1× Steel Buckle | 117 Fortitude, 117 Life Regeneration, 117 Maximum Life |
 
-**Mithril**
+**Mithril 秘银**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -1133,9 +1133,9 @@ sources:
 | Mithril Chausses | 45 | 6× Mithril Ingot + 2× Mithril Plating | 135 Fortitude, 135 Life Regeneration, 135 Maximum Life |
 | Mithril Plated Chausses | 49 | 8× Mithril Ingot + 3× Mithril Plating + 1× Mithril Buckle | 147 Fortitude, 147 Life Regeneration, 147 Maximum Life |
 
-### Shields
+### Shields 盾牌
 
-**Copper**
+**Copper 铜**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -1143,7 +1143,7 @@ sources:
 | Copper Kite Shield | 5 | 6× Copper Ingot + 2× Copper Plating | 15 Fortitude, 15 Life Regeneration, 15 Maximum Life |
 | Copper Tower Shield | 9 | 8× Copper Ingot + 4× Copper Plating | 27 Fortitude, 27 Life Regeneration, 27 Maximum Life |
 
-**Iron**
+**Iron 铁**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -1151,7 +1151,7 @@ sources:
 | Iron Kite Shield | 15 | 6× Iron Ingot + 2× Iron Plating | 45 Fortitude, 45 Life Regeneration, 45 Maximum Life |
 | Iron Tower Shield | 19 | 8× Iron Ingot + 4× Iron Plating | 57 Fortitude, 57 Life Regeneration, 57 Maximum Life |
 
-**Bronze**
+**Bronze 青铜**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -1159,7 +1159,7 @@ sources:
 | Bronze Kite Shield | 25 | 6× Bronze Ingot + 2× Bronze Plating | 75 Fortitude, 75 Life Regeneration, 75 Maximum Life |
 | Bronze Tower Shield | 29 | 8× Bronze Ingot + 4× Bronze Plating | 87 Fortitude, 87 Life Regeneration, 87 Maximum Life |
 
-**Steel**
+**Steel 钢**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -1167,7 +1167,7 @@ sources:
 | Steel Kite Shield | 35 | 6× Steel Ingot + 2× Steel Plating | 105 Fortitude, 105 Life Regeneration, 105 Maximum Life |
 | Steel Tower Shield | 39 | 8× Steel Ingot + 4× Steel Plating | 117 Fortitude, 117 Life Regeneration, 117 Maximum Life |
 
-**Mithril**
+**Mithril 秘银**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -1175,9 +1175,9 @@ sources:
 | Mithril Kite Shield | 45 | 6× Mithril Ingot + 2× Mithril Plating | 135 Fortitude, 135 Life Regeneration, 135 Maximum Life |
 | Mithril Tower Shield | 49 | 8× Mithril Ingot + 4× Mithril Plating | 147 Fortitude, 147 Life Regeneration, 147 Maximum Life |
 
-### Chests
+### Chests 胸甲
 
-**Copper**
+**Copper 铜**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -1185,7 +1185,7 @@ sources:
 | Copper Plated Mail | 5 | 10× Copper Ingot + 2× Copper Plating + 1× Copper Buckle | 30 Fortitude, 30 Life Regeneration, 30 Maximum Life |
 | Copper Breast Plate | 9 | 16× Copper Ingot + 4× Copper Plating + 2× Copper Buckle | 54 Fortitude, 54 Life Regeneration, 54 Maximum Life |
 
-**Iron**
+**Iron 铁**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -1193,7 +1193,7 @@ sources:
 | Iron Plated Mail | 15 | 10× Iron Ingot + 2× Iron Plating + 1× Iron Buckle | 90 Fortitude, 90 Life Regeneration, 90 Maximum Life |
 | Iron Breast Plate | 19 | 16× Iron Ingot + 4× Iron Plating + 2× Iron Buckle | 114 Fortitude, 114 Life Regeneration, 114 Maximum Life |
 
-**Bronze**
+**Bronze 青铜**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -1201,7 +1201,7 @@ sources:
 | Bronze Plated Mail | 25 | 10× Bronze Ingot + 2× Bronze Plating + 1× Bronze Buckle | 150 Fortitude, 150 Life Regeneration, 150 Maximum Life |
 | Bronze Breast Plate | 29 | 16× Bronze Ingot + 4× Bronze Plating + 2× Bronze Buckle | 174 Fortitude, 174 Life Regeneration, 174 Maximum Life |
 
-**Steel**
+**Steel 钢**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -1209,7 +1209,7 @@ sources:
 | Steel Plated Mail | 35 | 10× Steel Ingot + 2× Steel Plating + 1× Steel Buckle | 210 Fortitude, 210 Life Regeneration, 210 Maximum Life |
 | Steel Breast Plate | 39 | 16× Steel Ingot + 4× Steel Plating + 2× Steel Buckle | 234 Fortitude, 234 Life Regeneration, 234 Maximum Life |
 
-**Mithril**
+**Mithril 秘银**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -1222,192 +1222,192 @@ sources:
 
 > 官方 help id=117。制作台见对应 NPC。
 
-### Holiday
+### Holiday 节日
 
-**Oktoberfest**
+**Oktoberfest 慕尼黑啤酒节**
 
 - `Norrothbrau` ← ?× (未公布)
 
-**Saint Patrick's Day**
+**Saint Patrick's Day 圣帕特里克节**
 
 - `Corned Beef` ← ?× (未公布)
 
-**Halloween**
+**Halloween 万圣节**
 
 - `Blood Soup` ← 5× Anatomical Heart
 
-**Easter**
+**Easter 复活节**
 
 - `Chocolate Egg` ← 5× Cacao Bean
 
-**Winterdays**
+**Winterdays 冬幕节**
 
 - `Gingerbread Cookie` ← 5× Cookie Dough
 
-**Valentine**
+**Valentine 情人节**
 
 - `Love Cupcake` ← 5× Cupcake Mix
 
-### Mucky
+### Mucky 污秽(T1)
 
-**Vegetables**
+**Vegetables 蔬菜**
 
 - `Mucky Vegetable Salad` ← 1× Mucky Vegetables
 - `Mucky Vegetable Pie` ← 2× Mucky Vegetables
 - `Mucky Vegetable Stew` ← 3× Mucky Vegetables
 
-**Fish**
+**Fish 鱼**
 
 - `Smoked Minnow` ← 1× Minnow
 - `Minnow Sausage` ← 2× Minnow
 - `Grilled Minnow Fillets` ← 3× Minnow
 
-**Fruits**
+**Fruits 水果**
 
 - `Mucky Fruit Skewer` ← 1× Mucky Fruits
 - `Mucky Fruit Jam` ← 2× Mucky Fruits
 - `Mucky Fruit Salad` ← 3× Mucky Fruits
 
-**Meat**
+**Meat 肉**
 
 - `Mucky Meat Stick` ← 1× Mucky Meat
 - `Mucky Tart` ← 2× Mucky Meat
 - `Mucky Steak` ← 3× Mucky Meat
 
-**Mixed**
+**Mixed 混合**
 
 - `Mucky Beef Stew` ← 1× Mucky Meat + 3× Sweet Potato
 - `Mucky Fish And Chips` ← 2× Minnow + 3× Sweet Potato
 - `Mucky Sweet Potato Salad` ← 3× Mucky Fruits + 3× Sweet Potato
 - `Mucky Peasant Salad` ← 3× Mucky Vegetables + 3× Sweet Potato
 
-### Scrap
+### Scrap 废料(T2)
 
-**Fruits**
+**Fruits 水果**
 
 - `Scrap Fruit Skewer` ← 2× Scrap Fruits
 - `Scrap Fruit Jam` ← 3× Scrap Fruits
 - `Scrap Fruit Salad` ← 4× Scrap Fruits
 
-**Meat**
+**Meat 肉**
 
 - `Scrap Meat Stick` ← 2× Scrap Meat
 - `Scrap Tart` ← 3× Scrap Meat
 - `Scrap Steak` ← 4× Scrap Meat
 
-**Mixed**
+**Mixed 混合**
 
 - `Scrap Beef Stew` ← 2× Scrap Meat + 3× Common Mushroom
 - `Scrap Fish And Chips` ← 3× Shrimp + 3× Common Mushroom
 - `Scrap Sweet Mushroom Salad` ← 4× Scrap Fruits + 3× Common Mushroom
 - `Scrap Peasant Salad` ← 4× Scrap Vegetables + 3× Common Mushroom
 
-**Vegetables**
+**Vegetables 蔬菜**
 
 - `Scrap Vegetable Salad` ← 2× Scrap Vegetables
 - `Scrap Vegetable Pie` ← 3× Scrap Vegetables
 - `Scrap Vegetable Stew` ← 4× Scrap Vegetables
 
-**Fish**
+**Fish 鱼**
 
 - `Smoked Shrimp` ← 2× Shrimp
 - `Shrimp Sausage` ← 3× Shrimp
 - `Grilled Shrimp Fillets` ← 4× Shrimp
 
-### Low Quality
+### Low Quality 低品质(T3)
 
-**Fruits**
+**Fruits 水果**
 
 - `Low Quality Fruit Skewer` ← 3× Low Quality Fruits
 - `Low Quality Fruit Jam` ← 4× Low Quality Fruits
 - `Low Quality Fruit Salad` ← 5× Low Quality Fruits
 
-**Meat**
+**Meat 肉**
 
 - `Low Quality Meat Stick` ← 3× Low Quality Meat
 - `Low Quality Tart` ← 4× Low Quality Meat
 - `Low Quality Steak` ← 5× Low Quality Meat
 
-**Mixed**
+**Mixed 混合**
 
 - `Low Quality Beef Stew` ← 3× Low Quality Meat + 3× Beans
 - `Low Quality Fish And Chips` ← 4× White Bass + 3× Beans
 - `Low Quality Sweet Bean Salad` ← 5× Low Quality Fruits + 3× Beans
 - `Low Quality Peasant Salad` ← 5× Low Quality Vegetables + 3× Beans
 
-**Vegetables**
+**Vegetables 蔬菜**
 
 - `Low Quality Vegetable Salad` ← 3× Low Quality Vegetables
 - `Low Quality Vegetable Pie` ← 4× Low Quality Vegetables
 - `Low Quality Vegetable Stew` ← 5× Low Quality Vegetables
 
-**Fish**
+**Fish 鱼**
 
 - `Smoked White Bass` ← 3× White Bass
 - `White Bass Sausage` ← 4× White Bass
 - `Grilled White Bass Fillets` ← 5× White Bass
 
-### Medium Quality
+### Medium Quality 中品质(T4)
 
-**Fruits**
+**Fruits 水果**
 
 - `Medium Quality Fruit Skewer` ← 4× Medium Quality Fruits
 - `Medium Quality Fruit Jam` ← 5× Medium Quality Fruits
 - `Medium Quality Fruit Salad` ← 6× Medium Quality Fruits
 
-**Meat**
+**Meat 肉**
 
 - `Medium Quality Meat Stick` ← 4× Medium Quality Meat
 - `Medium Quality Tart` ← 5× Medium Quality Meat
 - `Medium Quality Steak` ← 6× Medium Quality Meat
 
-**Mixed**
+**Mixed 混合**
 
 - `Medium Quality Beef Stew` ← 4× Medium Quality Meat + 3× Sugar Beet
 - `Medium Quality Fish And Chips` ← 5× Smallmouth Bass + 3× Sugar Beet
 - `Medium Quality Sweet Beet Salad` ← 6× Medium Quality Fruits + 3× Sugar Beet
 - `Medium Quality Peasant Salad` ← 6× Medium Quality Vegetables + 3× Sugar Beet
 
-**Vegetables**
+**Vegetables 蔬菜**
 
 - `Medium Quality Vegetable Salad` ← 4× Medium Quality Vegetables
 - `Medium Quality Vegetable Pie` ← 5× Medium Quality Vegetables
 - `Medium Quality Vegetable Stew` ← 6× Medium Quality Vegetables
 
-**Fish**
+**Fish 鱼**
 
 - `Smoked Smallmouth Bass` ← 4× Smallmouth Bass
 - `Smallmouth Bass Sausage` ← 5× Smallmouth Bass
 - `Grilled Smallmouth Bass Fillets` ← 6× Smallmouth Bass
 
-### Quality
+### Quality 高品质(T5)
 
-**Fish**
+**Fish 鱼**
 
 - `Smoked Largemouth Bass` ← 5× Largemouth Bass
 - `Largemouth Bass Sausage` ← 6× Largemouth Bass
 - `Grilled Largemouth Bass Fillets` ← 7× Largemouth Bass
 
-**Fruits**
+**Fruits 水果**
 
 - `Quality Fruit Skewer` ← 5× Quality Fruits
 - `Quality Fruit Jam` ← 6× Quality Fruits
 - `Quality Fruit Salad` ← 7× Quality Fruits
 
-**Meat**
+**Meat 肉**
 
 - `Quality Meat Stick` ← 5× Quality Meat
 - `Quality Tart` ← 6× Quality Meat
 - `Quality Steak` ← 7× Quality Meat
 
-**Mixed**
+**Mixed 混合**
 
 - `Quality Beef Stew` ← 5× Quality Meat + 3× Corn
 - `Quality Fish And Chips` ← 6× Largemouth Bass + 3× Corn
 - `Quality Sweet Corn Salad` ← 7× Quality Fruits + 3× Corn
 - `Quality Peasant Salad` ← 7× Quality Vegetables + 3× Corn
 
-**Vegetables**
+**Vegetables 蔬菜**
 
 - `Quality Vegetable Salad` ← 5× Quality Vegetables
 - `Quality Vegetable Pie` ← 6× Quality Vegetables
@@ -1418,9 +1418,9 @@ sources:
 
 > 官方 help id=118。制作台见对应 NPC。
 
-### Jewels
+### Jewels 宝石（成品）
 
-**Cabochon**
+**Cabochon 蛋面**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -1432,7 +1432,7 @@ sources:
 | Cabochon Jewel | 1 | 1× Cabochon Sphene + 1× Copper Wire |  |
 | Cabochon Jewel | 1 | 1× Cabochon Spinel + 1× Copper Wire |  |
 
-**Round**
+**Round 圆形**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -1444,7 +1444,7 @@ sources:
 | Round Jewel | 10 | 1× Round Sphene + 1× Iron Wire |  |
 | Round Jewel | 10 | 1× Round Spinel + 1× Iron Wire |  |
 
-**Princess**
+**Princess 公主方**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -1456,7 +1456,7 @@ sources:
 | Princess Jewel | 20 | 1× Princess Sphene + 1× Bronze Wire |  |
 | Princess Jewel | 20 | 1× Princess Spinel + 1× Bronze Wire |  |
 
-**Emerald**
+**Emerald 祖母绿**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -1468,7 +1468,7 @@ sources:
 | Emerald Jewel | 30 | 1× Emerald Sphene + 1× Steel Wire |  |
 | Emerald Jewel | 30 | 1× Emerald Spinel + 1× Steel Wire |  |
 
-**Radiant**
+**Radiant 雷迪恩**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -1480,9 +1480,9 @@ sources:
 | Radiant Jewel | 40 | 1× Radiant Sphene + 1× Mithril Wire |  |
 | Radiant Jewel | 40 | 1× Radiant Spinel + 1× Mithril Wire |  |
 
-### Jewelry
+### Jewelry 首饰
 
-**Copper**
+**Copper 铜**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -1490,7 +1490,7 @@ sources:
 | Copper Earrings | 1 | 4× Copper Wire | 4 Maximum Life |
 | Copper Necklace | 1 | 8× Copper Wire | 4 Fortitude |
 
-**Iron**
+**Iron 铁**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -1498,7 +1498,7 @@ sources:
 | Iron Earrings | 10 | 4× Iron Wire | 35 Maximum Life |
 | Iron Necklace | 10 | 8× Iron Wire | 35 Fortitude |
 
-**Bronze**
+**Bronze 青铜**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -1506,7 +1506,7 @@ sources:
 | Bronze Earrings | 20 | 4× Bronze Wire | 70 Maximum Life |
 | Bronze Necklace | 20 | 8× Bronze Wire | 70 Fortitude |
 
-**Steel**
+**Steel 钢**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -1514,7 +1514,7 @@ sources:
 | Steel Earrings | 30 | 4× Steel Wire | 105 Maximum Life |
 | Steel Necklace | 30 | 8× Steel Wire | 105 Fortitude |
 
-**Mithril**
+**Mithril 秘银**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -1522,9 +1522,9 @@ sources:
 | Mithril Earrings | 40 | 4× Mithril Wire | 140 Maximum Life |
 | Mithril Necklace | 40 | 8× Mithril Wire | 140 Fortitude |
 
-### Gem
+### Gem 宝石（切割）
 
-**Cabochon**
+**Cabochon 蛋面**
 
 - `Cabochon Garnet` ← 3× Rough Garnet
 - `Cabochon Onyx` ← 3× Rough Onyx
@@ -1534,7 +1534,7 @@ sources:
 - `Cabochon Sphene` ← 3× Rough Sphene
 - `Cabochon Spinel` ← 3× Rough Spinel
 
-**Round**
+**Round 圆形**
 
 - `Round Garnet` ← 3× Cabochon Garnet
 - `Round Onyx` ← 3× Cabochon Onyx
@@ -1544,7 +1544,7 @@ sources:
 - `Round Sphene` ← 3× Cabochon Sphene
 - `Round Spinel` ← 3× Cabochon Spinel
 
-**Princess**
+**Princess 公主方**
 
 - `Princess Garnet` ← 3× Round Garnet
 - `Princess Onyx` ← 3× Round Onyx
@@ -1554,7 +1554,7 @@ sources:
 - `Princess Sphene` ← 3× Round Sphene
 - `Princess Spinel` ← 3× Round Spinel
 
-**Emerald**
+**Emerald 祖母绿**
 
 - `Emerald Garnet` ← 3× Princess Garnet
 - `Emerald Onyx` ← 3× Princess Onyx
@@ -1564,7 +1564,7 @@ sources:
 - `Emerald Sphene` ← 3× Princess Sphene
 - `Emerald Spinel` ← 3× Princess Spinel
 
-**Radiant**
+**Radiant 雷迪恩**
 
 - `Radiant Garnet` ← 3× Emerald Garnet
 - `Radiant Onyx` ← 3× Emerald Onyx
@@ -1579,9 +1579,9 @@ sources:
 
 > 官方 help id=119。制作台见对应 NPC。
 
-### Materials
+### Materials 材料 / 半成品
 
-**Paper Scrolls**
+**Paper Scrolls 纸卷轴**
 
 - `Mucky Scroll` ← 1× Aspen Log
 - `Scrap Scroll` ← 2× Elm Log
@@ -1589,44 +1589,44 @@ sources:
 - `Medium Quality Scroll` ← 4× Maple Log
 - `Quality Scroll` ← 5× Beech Log
 
-**Aspen**
+**Aspen 白杨**
 
 - `Aspen Rod` ← 4× Aspen Log
 - `Aspen Club` ← 4× Aspen Log
 - `Aspen Planks` ← 4× Aspen Log
 - `Aspen Handle` ← 1× Aspen Rod
 
-**Elm**
+**Elm 榆木**
 
 - `Elm Rod` ← 5× Elm Log
 - `Elm Club` ← 5× Elm Log
 - `Elm Planks` ← 5× Elm Log
 - `Elm Handle` ← 1× Elm Rod
 
-**Spruce**
+**Spruce 云杉**
 
 - `Spruce Rod` ← 6× Spruce Log
 - `Spruce Club` ← 6× Spruce Log
 - `Spruce Planks` ← 6× Spruce Log
 - `Spruce Handle` ← 1× Spruce Rod
 
-**Maple**
+**Maple 枫木**
 
 - `Maple Rod` ← 7× Maple Log
 - `Maple Club` ← 7× Maple Log
 - `Maple Planks` ← 7× Maple Log
 - `Maple Handle` ← 1× Maple Rod
 
-**Beech**
+**Beech 山毛榉**
 
 - `Beech Rod` ← 8× Beech Log
 - `Beech Club` ← 8× Beech Log
 - `Beech Planks` ← 8× Beech Log
 - `Beech Handle` ← 1× Beech Rod
 
-### Crossbow
+### Crossbow 弩
 
-**Aspen**
+**Aspen 白杨**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -1634,7 +1634,7 @@ sources:
 | Aspen Repeating Crossbow 〔双手〕 | 5 | 2× Aspen Rod + 1× Copper Nails + 3× Mucky String | 18 Armor Penetration, 18 Critical Strike, 18 Hit Rating |
 | Aspen Arbalest 〔双手〕 | 9 | 4× Aspen Rod + 1× Copper Nails + 4× Mucky String | 32 Armor Penetration, 32 Critical Strike, 32 Hit Rating |
 
-**Elm**
+**Elm 榆木**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -1642,7 +1642,7 @@ sources:
 | Elm Repeating Crossbow 〔双手〕 | 15 | 2× Elm Rod + 1× Iron Nails + 3× Scrap String | 53 Armor Penetration, 53 Critical Strike, 53 Hit Rating |
 | Elm Arbalest 〔双手〕 | 19 | 4× Elm Rod + 1× Iron Nails + 4× Scrap String | 67 Armor Penetration, 67 Critical Strike, 67 Hit Rating |
 
-**Spruce**
+**Spruce 云杉**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -1650,7 +1650,7 @@ sources:
 | Spruce Repeating Crossbow 〔双手〕 | 25 | 2× Spruce Rod + 1× Bronze Nails + 3× Low Quality String | 88 Armor Penetration, 88 Critical Strike, 88 Hit Rating |
 | Spruce Arbalest 〔双手〕 | 29 | 4× Spruce Rod + 1× Bronze Nails + 4× Low Quality String | 102 Armor Penetration, 102 Critical Strike, 102 Hit Rating |
 
-**Maple**
+**Maple 枫木**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -1658,7 +1658,7 @@ sources:
 | Maple Repeating Crossbow 〔双手〕 | 35 | 2× Maple Rod + 1× Steel Nails + 3× Medium Quality String | 123 Armor Penetration, 123 Critical Strike, 123 Hit Rating |
 | Maple Arbalest 〔双手〕 | 39 | 4× Maple Rod + 1× Steel Nails + 4× Medium Quality String | 137 Armor Penetration, 137 Critical Strike, 137 Hit Rating |
 
-**Beech**
+**Beech 山毛榉**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -1671,9 +1671,9 @@ sources:
 
 > 官方 help id=120。制作台见对应 NPC。
 
-### Materials
+### Materials 材料 / 半成品
 
-**Ink**
+**Ink 墨水**
 
 - `Aspen Gall Ink` ← 1× Aspen Gall
 - `Elm Gall Ink` ← 2× Elm Gall
@@ -1681,7 +1681,7 @@ sources:
 - `Maple Gall Ink` ← 4× Maple Gall
 - `Beech Gall Ink` ← 5× Beech Gall
 
-**Fabric Scrolls**
+**Fabric Scrolls 布制卷轴**
 
 - `Mucky Scroll` ← 1× Cotton Boll
 - `Scrap Scroll` ← 2× Silkworm Cocoon
@@ -1689,7 +1689,7 @@ sources:
 - `Medium Quality Scroll` ← 4× Nettle
 - `Quality Scroll` ← 5× Ramie
 
-**Hide Scrolls**
+**Hide Scrolls 皮制卷轴**
 
 - `Mucky Scroll` ← 1× Mucky Hide
 - `Scrap Scroll` ← 2× Scrap Hide
@@ -1697,9 +1697,9 @@ sources:
 - `Medium Quality Scroll` ← 4× Medium Quality Hide
 - `Quality Scroll` ← 5× Quality Hide
 
-### Maps
+### Maps 远征地图
 
-**Expedition T1**
+**Expedition T1 远征 T1**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -1709,7 +1709,7 @@ sources:
 | Mucky Static Map | 9 | 10× Mucky Scroll + 4× Aspen Gall Ink + 2× Aspen Rod + 1× Cabochon Sphene + 500× Spirit Essence |  |
 | Mucky Arcane Map | 9 | 10× Mucky Scroll + 4× Aspen Gall Ink + 2× Aspen Rod + 1× Cabochon Spinel + 500× Spirit Essence |  |
 
-**Expedition T2**
+**Expedition T2 远征 T2**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -1719,7 +1719,7 @@ sources:
 | Scrap Static Map | 19 | 12× Scrap Scroll + 6× Elm Gall Ink + 2× Elm Rod + 1× Round Sphene + 1000× Spirit Essence |  |
 | Scrap Arcane Map | 19 | 12× Scrap Scroll + 6× Elm Gall Ink + 2× Elm Rod + 1× Round Spinel + 1000× Spirit Essence |  |
 
-**Expedition T3**
+**Expedition T3 远征 T3**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -1729,7 +1729,7 @@ sources:
 | Low Quality Static Map | 29 | 14× Low Quality Scroll + 8× Spruce Gall Ink + 2× Spruce Rod + 1× Princess Sphene + 1500× Spirit Essence |  |
 | Low Quality Arcane Map | 29 | 14× Low Quality Scroll + 8× Spruce Gall Ink + 2× Spruce Rod + 1× Princess Spinel + 1500× Spirit Essence |  |
 
-**Expedition T4**
+**Expedition T4 远征 T4**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -1739,7 +1739,7 @@ sources:
 | Medium Quality Static Map | 39 | 16× Medium Quality Scroll + 10× Maple Gall Ink + 2× Maple Rod + 1× Emerald Sphene + 2000× Spirit Essence |  |
 | Medium Quality Arcane Map | 39 | 16× Medium Quality Scroll + 10× Maple Gall Ink + 2× Maple Rod + 1× Emerald Spinel + 2000× Spirit Essence |  |
 
-**Expedition T5**
+**Expedition T5 远征 T5**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -1749,9 +1749,9 @@ sources:
 | Quality Static Map | 49 | 18× Quality Scroll + 12× Beech Gall Ink + 2× Beech Rod + 1× Radiant Sphene + 2500× Spirit Essence |  |
 | Quality Arcane Map | 49 | 18× Quality Scroll + 12× Beech Gall Ink + 2× Beech Rod + 1× Radiant Spinel + 2500× Spirit Essence |  |
 
-### Scrolls
+### Scrolls 卷轴
 
-**Blueprints**
+**Blueprints 蓝图**
 
 - `Mucky Blueprint` ← 1× Mucky Scroll + 1× Aspen Gall Ink
 - `Scrap Blueprint` ← 1× Scrap Scroll + 1× Elm Gall Ink
@@ -1759,15 +1759,15 @@ sources:
 - `Medium Quality Blueprint` ← 1× Medium Quality Scroll + 1× Maple Gall Ink
 - `Quality Blueprint` ← 1× Quality Scroll + 1× Beech Gall Ink
 
-**Home Scrolls T1**
+**Home Scrolls T1 回城卷轴 T1**
 
 - `El Caspar Home Scroll` ← 1× Mucky Scroll + 1× Aspen Gall Ink + 10× Spirit Essence
 
-**Spell Scrolls**
+**Spell Scrolls 法术卷轴**
 
 - `Identification Scroll` ← 1× Mucky Scroll + 1× Aspen Gall Ink + 20× Spirit Essence
 
-**Home Scrolls T2**
+**Home Scrolls T2 回城卷轴 T2**
 
 - `Elundi Home Scroll` ← 1× Scrap Scroll + 1× Elm Gall Ink + 20× Spirit Essence
 - `Owranbu Home Scroll` ← 1× Scrap Scroll + 1× Elm Gall Ink + 20× Spirit Essence
@@ -1775,19 +1775,19 @@ sources:
 - `Drouver Home Scroll` ← 1× Scrap Scroll + 1× Elm Gall Ink + 20× Spirit Essence
 - `Sanjuo Home Scroll` ← 1× Scrap Scroll + 1× Elm Gall Ink + 20× Spirit Essence
 
-**Home Scrolls T3**
+**Home Scrolls T3 回城卷轴 T3**
 
 - `Bungavik Home Scroll` ← 1× Low Quality Scroll + 1× Spruce Gall Ink + 30× Spirit Essence
 - `Saurville Home Scroll` ← 1× Low Quality Scroll + 1× Spruce Gall Ink + 30× Spirit Essence
 - `Ururg Home Scroll` ← 1× Low Quality Scroll + 1× Spruce Gall Ink + 30× Spirit Essence
 
-**Home Scrolls T4**
+**Home Scrolls T4 回城卷轴 T4**
 
 - `Stogow Home Scroll` ← 1× Medium Quality Scroll + 1× Maple Gall Ink + 40× Spirit Essence
 - `Trescan Home Scroll` ← 1× Medium Quality Scroll + 1× Maple Gall Ink + 40× Spirit Essence
 - `Caeltys Home Scroll` ← 1× Medium Quality Scroll + 1× Maple Gall Ink + 40× Spirit Essence
 
-**Home Scrolls T5**
+**Home Scrolls T5 回城卷轴 T5**
 
 - `Galkathos Home Scroll` ← 1× Quality Scroll + 1× Beech Gall Ink + 50× Spirit Essence
 - `Nythrendal Home Scroll` ← 1× Quality Scroll + 1× Beech Gall Ink + 50× Spirit Essence
@@ -1797,9 +1797,9 @@ sources:
 
 > 官方 help id=121。制作台见对应 NPC。
 
-### Materials
+### Materials 材料 / 半成品
 
-**Slate**
+**Slate 板岩**
 
 - `Slate Bricks` ← 2× Refined Slate
 - `Refined Slate` ← 4× Slate
@@ -1807,7 +1807,7 @@ sources:
 - `Slate Pillars` ← 2× Refined Slate
 - `Slate Gravel` ← 4× Slate
 
-**Fieldstone**
+**Fieldstone 原石**
 
 - `Refined Fieldstone` ← 5× Fieldstone
 - `Fieldstone Bricks` ← 2× Refined Fieldstone
@@ -1815,7 +1815,7 @@ sources:
 - `Fieldstone Floor Tiles` ← 2× Refined Fieldstone
 - `Fieldstone Pillars` ← 2× Refined Fieldstone
 
-**Soapstone**
+**Soapstone 皂石**
 
 - `Soapstone Bricks` ← 2× Refined Soapstone
 - `Refined Soapstone` ← 6× Soapstone
@@ -1823,7 +1823,7 @@ sources:
 - `Soapstone Pillars` ← 2× Refined Soapstone
 - `Soapstone Gravel` ← 6× Soapstone
 
-**Sandstone**
+**Sandstone 砂岩**
 
 - `Sandstone Bricks` ← 2× Refined Sandstone
 - `Refined Sandstone` ← 7× Sandstone
@@ -1831,7 +1831,7 @@ sources:
 - `Sandstone Pillars` ← 2× Refined Sandstone
 - `Sandstone Gravel` ← 7× Sandstone
 
-**Laterite**
+**Laterite 红土**
 
 - `Refined Laterite` ← 8× Laterite
 - `Laterite Bricks` ← 2× Refined Laterite
@@ -1844,36 +1844,36 @@ sources:
 
 > 官方 help id=124。制作台见对应 NPC。
 
-### Materials
+### Materials 材料 / 半成品
 
-**Copper**
+**Copper 铜**
 
 - `Copper Ingot` ← 4× Copper Ore
 - `Copper Wire` ← 1× Copper Ingot
 
-**Iron**
+**Iron 铁**
 
 - `Iron Ingot` ← 5× Iron Ore
 - `Iron Wire` ← 1× Iron Ingot
 
-**Bronze**
+**Bronze 青铜**
 
 - `Bronze Wire` ← 1× Bronze Ingot
 - `Bronze Ingot` ← 1× Copper Ingot + 4× Tin Ore
 
-**Steel**
+**Steel 钢**
 
 - `Steel Ingot` ← 1× Iron Ingot + 5× Lump of Coal
 - `Steel Wire` ← 1× Steel Ingot
 
-**Mithril**
+**Mithril 秘银**
 
 - `Mithril Ingot` ← 8× Mithril Ore
 - `Mithril Wire` ← 1× Mithril Ingot
 
-### Tools
+### Tools 工具
 
-**Copper**
+**Copper 铜**
 
 - `Copper Lock` ← 1× Copper Ingot + 1× Copper Wire
 - `Copper Socketing Hammer` ← 2× Copper Ingot + 1× Aspen Handle + 1× Lucky Charm
@@ -1886,7 +1886,7 @@ sources:
 | Copper Chopping Axe | 1 | 1× Copper Ingot + 1× Aspen Rod |  |
 | Copper Fishing Rod | 1 | 1× Copper Ingot + 1× Aspen Rod |  |
 
-**Iron**
+**Iron 铁**
 
 - `Iron Lock` ← 1× Iron Ingot + 1× Iron Wire
 - `Iron Socketing Hammer` ← 3× Iron Ingot + 1× Elm Handle + 1× Lucky Charm
@@ -1899,7 +1899,7 @@ sources:
 | Iron Chopping Axe | 10 | 2× Iron Ingot + 1× Elm Rod |  |
 | Iron Fishing Rod | 10 | 2× Iron Ingot + 1× Elm Rod |  |
 
-**Bronze**
+**Bronze 青铜**
 
 - `Bronze Lock` ← 1× Bronze Ingot + 1× Bronze Wire
 - `Bronze Socketing Hammer` ← 4× Bronze Ingot + 1× Spruce Handle + 1× Lucky Charm
@@ -1912,7 +1912,7 @@ sources:
 | Bronze Chopping Axe | 20 | 2× Bronze Ingot + 1× Spruce Rod |  |
 | Bronze Fishing Rod | 20 | 2× Bronze Ingot + 1× Spruce Rod |  |
 
-**Steel**
+**Steel 钢**
 
 - `Steel Lock` ← 1× Steel Ingot + 1× Steel Wire
 - `Steel Socketing Hammer` ← 5× Steel Ingot + 1× Maple Handle + 1× Lucky Charm
@@ -1925,7 +1925,7 @@ sources:
 | Steel Chopping Axe | 30 | 2× Steel Ingot + 1× Maple Rod |  |
 | Steel Fishing Rod | 30 | 2× Steel Ingot + 1× Maple Rod |  |
 
-**Mithril**
+**Mithril 秘银**
 
 - `Mithril Lock` ← 1× Mithril Ingot + 1× Mithril Wire
 - `Mithril Socketing Hammer` ← 6× Mithril Ingot + 1× Beech Handle + 1× Lucky Charm
@@ -1938,9 +1938,9 @@ sources:
 | Mithril Chopping Axe | 40 | 2× Mithril Ingot + 1× Beech Rod |  |
 | Mithril Fishing Rod | 40 | 2× Mithril Ingot + 1× Beech Rod |  |
 
-### Throwing
+### Throwing 投掷武器
 
-**Copper**
+**Copper 铜**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -1948,7 +1948,7 @@ sources:
 | Copper Throwing Knives | 5 | 6× Copper Ingot | 18 Evasion, 18 Hit Rating |
 | Copper Throwing Stars | 9 | 10× Copper Ingot | 32 Evasion, 32 Hit Rating |
 
-**Iron**
+**Iron 铁**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -1956,7 +1956,7 @@ sources:
 | Iron Throwing Knives | 15 | 6× Iron Ingot | 53 Evasion, 53 Hit Rating |
 | Iron Throwing Stars | 19 | 10× Iron Ingot | 67 Evasion, 67 Hit Rating |
 
-**Bronze**
+**Bronze 青铜**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -1964,7 +1964,7 @@ sources:
 | Bronze Throwing Knives | 25 | 6× Bronze Ingot | 88 Evasion, 88 Hit Rating |
 | Bronze Throwing Stars | 29 | 10× Bronze Ingot | 102 Evasion, 102 Hit Rating |
 
-**Steel**
+**Steel 钢**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -1972,7 +1972,7 @@ sources:
 | Steel Throwing Knives | 35 | 6× Steel Ingot | 123 Evasion, 123 Hit Rating |
 | Steel Throwing Stars | 39 | 10× Steel Ingot | 137 Evasion, 137 Hit Rating |
 
-**Mithril**
+**Mithril 秘银**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -1980,9 +1980,9 @@ sources:
 | Mithril Throwing Knives | 45 | 6× Mithril Ingot | 158 Evasion, 158 Hit Rating |
 | Mithril Throwing Stars | 49 | 10× Mithril Ingot | 172 Evasion, 172 Hit Rating |
 
-### Weapons
+### Weapons 武器（拳刃等）
 
-**Copper**
+**Copper 铜**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -1990,7 +1990,7 @@ sources:
 | Copper Katars 〔双手〕 | 5 | 6× Copper Ingot | 18 Attack Speed, 18 Critical Chance, 18 Hit Rating |
 | Copper Split Chakram 〔双手〕 | 9 | 10× Copper Ingot + 3× Mucky String | 32 Attack Speed, 32 Critical Chance, 32 Hit Rating |
 
-**Iron**
+**Iron 铁**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -1998,7 +1998,7 @@ sources:
 | Iron Katars 〔双手〕 | 15 | 6× Iron Ingot | 53 Attack Speed, 53 Critical Chance, 53 Hit Rating |
 | Iron Split Chakram 〔双手〕 | 19 | 10× Iron Ingot + 3× Scrap String | 67 Attack Speed, 67 Critical Chance, 67 Hit Rating |
 
-**Bronze**
+**Bronze 青铜**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -2006,7 +2006,7 @@ sources:
 | Bronze Katars 〔双手〕 | 25 | 6× Bronze Ingot | 88 Attack Speed, 88 Critical Chance, 88 Hit Rating |
 | Bronze Split Chakram 〔双手〕 | 29 | 10× Bronze Ingot + 3× Low Quality String | 102 Attack Speed, 102 Critical Chance, 102 Hit Rating |
 
-**Steel**
+**Steel 钢**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -2014,7 +2014,7 @@ sources:
 | Steel Katars 〔双手〕 | 35 | 6× Steel Ingot | 123 Attack Speed, 123 Critical Chance, 123 Hit Rating |
 | Steel Split Chakram 〔双手〕 | 39 | 10× Steel Ingot + 3× Medium Quality String | 137 Attack Speed, 137 Critical Chance, 137 Hit Rating |
 
-**Mithril**
+**Mithril 秘银**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -2027,9 +2027,9 @@ sources:
 
 > 官方 help id=125。制作台见对应 NPC。
 
-### Materials
+### Materials 材料 / 半成品
 
-**Mucky**
+**Mucky 污秽(T1)**
 
 - `Mucky Cleaned Bone` ← 1× Mucky Bone
 - `Mucky Sharpened Chitin` ← 1× Mucky Chitin
@@ -2044,7 +2044,7 @@ sources:
 - `Mucky Cleaned Scale` ← 1× Mucky Scale
 - `Mucky Cleaned Wing` ← 1× Mucky Wing
 
-**Scrap**
+**Scrap 废料(T2)**
 
 - `Scrap Cleaned Bone` ← 1× Scrap Bone
 - `Scrap Sharpened Chitin` ← 1× Scrap Chitin
@@ -2059,7 +2059,7 @@ sources:
 - `Scrap Cleaned Scale` ← 1× Scrap Scale
 - `Scrap Cleaned Wing` ← 1× Scrap Wing
 
-**Low Quality**
+**Low Quality 低品质(T3)**
 
 - `Low Quality Cleaned Bone` ← 1× Low Quality Bone
 - `Low Quality Sharpened Chitin` ← 1× Low Quality Chitin
@@ -2074,7 +2074,7 @@ sources:
 - `Low Quality Cleaned Scale` ← 1× Low Quality Scale
 - `Low Quality Cleaned Wing` ← 1× Low Quality Wing
 
-**Medium Quality**
+**Medium Quality 中品质(T4)**
 
 - `Medium Quality Cleaned Bone` ← 1× Medium Quality Bone
 - `Medium Quality Sharpened Chitin` ← 1× Medium Quality Chitin
@@ -2089,7 +2089,7 @@ sources:
 - `Medium Quality Cleaned Scale` ← 1× Medium Quality Scale
 - `Medium Quality Cleaned Wing` ← 1× Medium Quality Wing
 
-**Quality**
+**Quality 高品质(T5)**
 
 - `Quality Cleaned Bone` ← 1× Quality Bone
 - `Quality Sharpened Chitin` ← 1× Quality Chitin
@@ -2104,9 +2104,9 @@ sources:
 - `Quality Cleaned Scale` ← 1× Quality Scale
 - `Quality Cleaned Wing` ← 1× Quality Wing
 
-### Belts
+### Belts 腰带
 
-**Mucky**
+**Mucky 污秽(T1)**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -2116,7 +2116,7 @@ sources:
 | Mucky Goblin Leather Belt | 1 | 1× Mucky Leather Belt Base + 4× Mucky Goblin Leather | 2 Magic Find, 2 Extra gold finding |
 | Mucky Chitin Leather Belt | 1 | 1× Mucky Leather Belt Base + 4× Mucky Sharpened Chitin | 2 Attack Speed, 2 Maximum Life, 2 Thorn Damage |
 
-**Scrap**
+**Scrap 废料(T2)**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -2126,7 +2126,7 @@ sources:
 | Scrap Goblin Leather Belt | 10 | 1× Scrap Leather Belt Base + 4× Scrap Goblin Leather | 15 Magic Find, 15 Extra gold finding |
 | Scrap Chitin Leather Belt | 10 | 1× Scrap Leather Belt Base + 4× Scrap Sharpened Chitin | 15 Attack Speed, 15 Maximum Life, 15 Thorn Damage |
 
-**Low Quality**
+**Low Quality 低品质(T3)**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -2136,7 +2136,7 @@ sources:
 | Low Quality Goblin Leather Belt | 20 | 1× Low Quality Leather Belt Base + 4× Low Quality Goblin Leather | 30 Magic Find, 30 Extra gold finding |
 | Low Quality Chitin Leather Belt | 20 | 1× Low Quality Leather Belt Base + 4× Low Quality Sharpened Chitin | 30 Attack Speed, 30 Maximum Life, 30 Thorn Damage |
 
-**Medium Quality**
+**Medium Quality 中品质(T4)**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -2146,7 +2146,7 @@ sources:
 | Medium Quality Goblin Leather Belt | 30 | 1× Medium Quality Leather Belt Base + 4× Medium Quality Goblin Leather | 45 Magic Find, 45 Extra gold finding |
 | Medium Quality Chitin Leather Belt | 30 | 1× Medium Quality Leather Belt Base + 4× Medium Quality Sharpened Chitin | 45 Attack Speed, 45 Maximum Life, 45 Thorn Damage |
 
-**Quality**
+**Quality 高品质(T5)**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -2156,9 +2156,9 @@ sources:
 | Quality Goblin Leather Belt | 40 | 1× Quality Leather Belt Base + 4× Quality Goblin Leather | 60 Magic Find, 60 Extra gold finding |
 | Quality Chitin Leather Belt | 40 | 1× Quality Leather Belt Base + 4× Quality Sharpened Chitin | 60 Attack Speed, 60 Maximum Life, 60 Thorn Damage |
 
-### Shields
+### Shields 盾牌
 
-**Mucky**
+**Mucky 污秽(T1)**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -2166,7 +2166,7 @@ sources:
 | Mucky Leather Targe | 5 | 1× Mucky Leather Belt Base + 6× Mucky Leather | 15 Mana Regeneration, 15 Maximum Life, 15 Resilience |
 | Mucky Skull Defender | 9 | 1× Mucky Leather Belt Base + 6× Mucky Leather + 6× Mucky Cleaned Bone | 27 Mana Regeneration, 27 Maximum Life, 27 Resilience |
 
-**Scrap**
+**Scrap 废料(T2)**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -2174,7 +2174,7 @@ sources:
 | Scrap Leather Targe | 15 | 1× Scrap Leather Belt Base + 6× Scrap Leather | 45 Mana Regeneration, 45 Maximum Life, 45 Resilience |
 | Scrap Skull Defender | 19 | 1× Scrap Leather Belt Base + 6× Scrap Leather + 6× Scrap Cleaned Bone | 57 Mana Regeneration, 57 Maximum Life, 57 Resilience |
 
-**Low Quality**
+**Low Quality 低品质(T3)**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -2182,7 +2182,7 @@ sources:
 | Low Quality Leather Targe | 25 | 1× Low Quality Leather Belt Base + 6× Low Quality Leather | 75 Mana Regeneration, 75 Maximum Life, 75 Resilience |
 | Low Quality Skull Defender | 29 | 1× Low Quality Leather Belt Base + 6× Low Quality Leather + 6× Low Quality Cleaned Bone | 87 Mana Regeneration, 87 Maximum Life, 87 Resilience |
 
-**Medium Quality**
+**Medium Quality 中品质(T4)**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -2190,7 +2190,7 @@ sources:
 | Medium Quality Leather Targe | 35 | 1× Medium Quality Leather Belt Base + 6× Medium Quality Leather | 105 Mana Regeneration, 105 Maximum Life, 105 Resilience |
 | Medium Quality Skull Defender | 39 | 1× Medium Quality Leather Belt Base + 6× Medium Quality Leather + 6× Medium Quality Bone | 117 Mana Regeneration, 117 Maximum Life, 117 Resilience |
 
-**Quality**
+**Quality 高品质(T5)**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -2198,9 +2198,9 @@ sources:
 | Quality Leather Targe | 45 | 1× Quality Leather Belt Base + 6× Quality Leather | 135 Mana Regeneration, 135 Maximum Life, 135 Resilience |
 | Quality Skull Defender | 49 | 1× Quality Leather Belt Base + 6× Quality Leather + 6× Quality Cleaned Bone | 147 Mana Regeneration, 147 Maximum Life, 147 Resilience |
 
-### Chests
+### Chests 胸甲
 
-**Mucky**
+**Mucky 污秽(T1)**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -2210,7 +2210,7 @@ sources:
 | Mucky Goblin Leather Armor | 1 | 1× Mucky Leather Chest Base + 12× Mucky Goblin Leather | 6 Magic Find, 6 Extra gold finding |
 | Mucky Chitin Leather Armor | 1 | 1× Mucky Leather Chest Base + 12× Mucky Sharpened Chitin | 6 Attack Speed, 6 Maximum Life, 6 Thorn Damage |
 
-**Scrap**
+**Scrap 废料(T2)**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -2220,7 +2220,7 @@ sources:
 | Scrap Goblin Leather Armor | 10 | 1× Scrap Leather Chest Base + 12× Scrap Goblin Leather | 60 Magic Find, 60 Extra gold finding |
 | Scrap Chitin Leather Armor | 10 | 1× Scrap Leather Chest Base + 12× Scrap Sharpened Chitin | 60 Attack Speed, 60 Maximum Life, 60 Thorn Damage |
 
-**Low Quality**
+**Low Quality 低品质(T3)**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -2230,7 +2230,7 @@ sources:
 | Low Quality Goblin Leather Armor | 20 | 1× Low Quality Leather Chest Base + 12× Low Quality Goblin Leather | 120 Magic Find, 120 Extra gold finding |
 | Low Quality Chitin Leather Armor | 20 | 1× Low Quality Leather Chest Base + 12× Low Quality Sharpened Chitin | 120 Attack Speed, 120 Maximum Life, 120 Thorn Damage |
 
-**Medium Quality**
+**Medium Quality 中品质(T4)**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -2240,7 +2240,7 @@ sources:
 | Medium Quality Goblin Leather Armor | 30 | 1× Medium Quality Leather Chest Base + 12× Medium Quality Goblin Leather | 180 Magic Find, 180 Extra gold finding |
 | Medium Quality Chitin Leather Armor | 30 | 1× Medium Quality Leather Chest Base + 12× Medium Quality Sharpened Chitin | 180 Attack Speed, 180 Maximum Life, 180 Thorn Damage |
 
-**Quality**
+**Quality 高品质(T5)**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -2250,9 +2250,9 @@ sources:
 | Quality Goblin Leather Armor | 40 | 1× Quality Leather Chest Base + 12× Quality Goblin Leather | 240 Magic Find, 240 Extra gold finding |
 | Quality Chitin Leather Armor | 40 | 1× Quality Leather Chest Base + 12× Quality Sharpened Chitin | 240 Attack Speed, 240 Maximum Life, 240 Thorn Damage |
 
-### Gloves
+### Gloves 手套
 
-**Mucky**
+**Mucky 污秽(T1)**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -2262,7 +2262,7 @@ sources:
 | Mucky Goblin Leather Gloves | 1 | 2× Mucky Leather Glove Base + 4× Mucky Goblin Leather | 2 Magic Find, 2 Extra gold finding |
 | Mucky Chitin Leather Gloves | 1 | 2× Mucky Leather Glove Base + 4× Mucky Sharpened Chitin | 2 Attack Speed, 2 Maximum Life, 2 Thorn Damage |
 
-**Scrap**
+**Scrap 废料(T2)**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -2272,7 +2272,7 @@ sources:
 | Scrap Goblin Leather Gloves | 10 | 2× Scrap Leather Glove Base + 4× Scrap Goblin Leather | 15 Magic Find, 15 Extra gold finding |
 | Scrap Chitin Leather Gloves | 10 | 2× Scrap Leather Glove Base + 4× Scrap Sharpened Chitin | 15 Attack Speed, 15 Maximum Life, 15 Thorn Damage |
 
-**Low Quality**
+**Low Quality 低品质(T3)**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -2282,7 +2282,7 @@ sources:
 | Low Quality Goblin Leather Gloves | 20 | 2× Low Quality Leather Glove Base + 4× Low Quality Goblin Leather | 30 Magic Find, 30 Extra gold finding |
 | Low Quality Chitin Leather Gloves | 20 | 2× Low Quality Leather Glove Base + 4× Low Quality Sharpened Chitin | 30 Attack Speed, 30 Maximum Life, 30 Thorn Damage |
 
-**Medium Quality**
+**Medium Quality 中品质(T4)**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -2292,7 +2292,7 @@ sources:
 | Medium Quality Goblin Leather Gloves | 30 | 2× Medium Quality Leather Glove Base + 4× Medium Quality Goblin Leather | 45 Magic Find, 45 Extra gold finding |
 | Medium Quality Chitin Leather Gloves | 30 | 2× Medium Quality Leather Glove Base + 4× Medium Quality Sharpened Chitin | 45 Attack Speed, 45 Maximum Life, 45 Thorn Damage |
 
-**Quality**
+**Quality 高品质(T5)**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -2302,9 +2302,9 @@ sources:
 | Quality Goblin Leather Gloves | 40 | 2× Quality Leather Glove Base + 4× Quality Goblin Leather | 60 Magic Find, 60 Extra gold finding |
 | Quality Chitin Leather Gloves | 40 | 2× Quality Leather Glove Base + 4× Quality Sharpened Chitin | 60 Attack Speed, 60 Maximum Life, 60 Thorn Damage |
 
-### Helmets
+### Helmets 头盔
 
-**Mucky**
+**Mucky 污秽(T1)**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -2314,7 +2314,7 @@ sources:
 | Mucky Goblin Leather Helmet | 1 | 1× Mucky Leather Helmet Base + 4× Mucky Goblin Leather | 3 Magic Find, 3 Extra gold finding |
 | Mucky Chitin Leather Helmet | 1 | 1× Mucky Leather Helmet Base + 4× Mucky Sharpened Chitin | 3 Attack Speed, 3 Maximum Life, 3 Thorn Damage |
 
-**Scrap**
+**Scrap 废料(T2)**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -2324,7 +2324,7 @@ sources:
 | Scrap Goblin Leather Helmet | 10 | 1× Scrap Leather Helmet Base + 4× Scrap Goblin Leather | 30 Magic Find, 30 Extra gold finding |
 | Scrap Chitin Leather Helmet | 10 | 1× Scrap Leather Helmet Base + 4× Scrap Sharpened Chitin | 30 Attack Speed, 30 Maximum Life, 30 Thorn Damage |
 
-**Low Quality**
+**Low Quality 低品质(T3)**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -2334,7 +2334,7 @@ sources:
 | Low Quality Goblin Leather Helmet | 20 | 1× Low Quality Leather Helmet Base + 4× Low Quality Goblin Leather | 60 Magic Find, 60 Extra gold finding |
 | Low Quality Chitin Leather Helmet | 20 | 1× Low Quality Leather Helmet Base + 4× Low Quality Sharpened Chitin | 60 Attack Speed, 60 Maximum Life, 60 Thorn Damage |
 
-**Medium Quality**
+**Medium Quality 中品质(T4)**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -2344,7 +2344,7 @@ sources:
 | Medium Quality Goblin Leather Helmet | 30 | 1× Medium Quality Leather Helmet Base + 4× Medium Quality Goblin Leather | 90 Magic Find, 90 Extra gold finding |
 | Medium Quality Chitin Leather Helmet | 30 | 1× Medium Quality Leather Helmet Base + 4× Medium Quality Sharpened Chitin | 90 Attack Speed, 90 Maximum Life, 90 Thorn Damage |
 
-**Quality**
+**Quality 高品质(T5)**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -2354,9 +2354,9 @@ sources:
 | Quality Goblin Leather Helmet | 40 | 1× Quality Leather Helmet Base + 4× Quality Goblin Leather | 120 Magic Find, 120 Extra gold finding |
 | Quality Chitin Leather Helmet | 40 | 1× Quality Leather Helmet Base + 4× Quality Sharpened Chitin | 120 Attack Speed, 120 Maximum Life, 120 Thorn Damage |
 
-### Leggings
+### Leggings 护腿
 
-**Mucky**
+**Mucky 污秽(T1)**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -2366,7 +2366,7 @@ sources:
 | Mucky Goblin Leather Leggings | 1 | 1× Mucky Leather Leggings Base + 8× Mucky Goblin Leather | 3 Magic Find, 3 Extra gold finding |
 | Mucky Chitin Leather Leggings | 1 | 1× Mucky Leather Leggings Base + 8× Mucky Sharpened Chitin | 3 Attack Speed, 3 Maximum Life, 3 Thorn Damage |
 
-**Scrap**
+**Scrap 废料(T2)**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -2376,7 +2376,7 @@ sources:
 | Scrap Goblin Leather Leggings | 10 | 1× Scrap Leather Leggings Base + 8× Scrap Goblin Leather | 30 Magic Find, 30 Extra gold finding |
 | Scrap Chitin Leather Leggings | 10 | 1× Scrap Leather Leggings Base + 8× Scrap Sharpened Chitin | 30 Attack Speed, 30 Maximum Life, 30 Thorn Damage |
 
-**Low Quality**
+**Low Quality 低品质(T3)**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -2386,7 +2386,7 @@ sources:
 | Low Quality Goblin Leather Leggings | 20 | 1× Low Quality Leather Leggings Base + 8× Low Quality Goblin Leather | 60 Magic Find, 60 Extra gold finding |
 | Low Quality Chitin Leather Leggings | 20 | 1× Low Quality Leather Leggings Base + 8× Low Quality Sharpened Chitin | 60 Attack Speed, 60 Maximum Life, 60 Thorn Damage |
 
-**Medium Quality**
+**Medium Quality 中品质(T4)**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -2396,7 +2396,7 @@ sources:
 | Medium Quality Goblin Leather Leggings | 30 | 1× Medium Quality Leather Leggings Base + 8× Medium Quality Goblin Leather | 90 Magic Find, 90 Extra gold finding |
 | Medium Quality Chitin Leather Leggings | 30 | 1× Medium Quality Leather Leggings Base + 8× Medium Quality Sharpened Chitin | 90 Attack Speed, 90 Maximum Life, 90 Thorn Damage |
 
-**Quality**
+**Quality 高品质(T5)**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -2406,9 +2406,9 @@ sources:
 | Quality Goblin Leather Leggings | 40 | 1× Quality Leather Leggings Base + 8× Quality Goblin Leather | 120 Magic Find, 120 Extra gold finding |
 | Quality Chitin Leather Leggings | 40 | 1× Quality Leather Leggings Base + 8× Quality Sharpened Chitin | 120 Attack Speed, 120 Maximum Life, 120 Thorn Damage |
 
-### Boots
+### Boots 靴子
 
-**Mucky**
+**Mucky 污秽(T1)**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -2418,7 +2418,7 @@ sources:
 | Mucky Goblin Leather Boots | 1 | 2× Mucky Leather Shoe Base + 4× Mucky Goblin Leather | 2 Magic Find, 2 Extra gold finding |
 | Mucky Chitin Leather Boots | 1 | 2× Mucky Leather Shoe Base + 4× Mucky Sharpened Chitin | 2 Attack Speed, 2 Maximum Life, 2 Thorn Damage |
 
-**Scrap**
+**Scrap 废料(T2)**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -2428,7 +2428,7 @@ sources:
 | Scrap Goblin Leather Boots | 10 | 2× Scrap Leather Shoe Base + 4× Scrap Goblin Leather | 15 Magic Find, 15 Extra gold finding |
 | Scrap Chitin Leather Boots | 10 | 2× Scrap Leather Shoe Base + 4× Scrap Sharpened Chitin | 15 Attack Speed, 15 Maximum Life, 15 Thorn Damage |
 
-**Low Quality**
+**Low Quality 低品质(T3)**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -2438,7 +2438,7 @@ sources:
 | Low Quality Goblin Leather Boots | 20 | 2× Low Quality Leather Shoe Base + 4× Low Quality Goblin Leather | 30 Magic Find, 30 Extra gold finding |
 | Low Quality Chitin Leather Boots | 20 | 2× Low Quality Leather Shoe Base + 4× Low Quality Sharpened Chitin | 30 Attack Speed, 30 Maximum Life, 30 Thorn Damage |
 
-**Medium Quality**
+**Medium Quality 中品质(T4)**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -2448,7 +2448,7 @@ sources:
 | Medium Quality Goblin Leather Boots | 30 | 2× Medium Quality Leather Shoe Base + 4× Medium Quality Goblin Leather | 45 Magic Find, 45 Extra gold finding |
 | Medium Quality Chitin Leather Boots | 30 | 2× Medium Quality Leather Shoe Base + 4× Medium Quality Sharpened Chitin | 45 Attack Speed, 45 Maximum Life, 45 Thorn Damage |
 
-**Quality**
+**Quality 高品质(T5)**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -2463,9 +2463,9 @@ sources:
 
 > 官方 help id=126。制作台见对应 NPC。
 
-### Bow
+### Bow 弓
 
-**Aspen**
+**Aspen 白杨**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -2473,7 +2473,7 @@ sources:
 | Aspen Compound bow 〔双手〕 | 5 | 1× Aspen Rod + 6× Mucky String | 18 Attack Speed, 18 Critical Chance, 18 Hit Rating |
 | Aspen Longbow 〔双手〕 | 9 | 1× Aspen Rod + 10× Mucky String | 32 Attack Speed, 32 Critical Chance, 32 Hit Rating |
 
-**Elm**
+**Elm 榆木**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -2481,7 +2481,7 @@ sources:
 | Elm Compound bow 〔双手〕 | 15 | 1× Elm Rod + 6× Scrap String | 53 Attack Speed, 53 Critical Chance, 53 Hit Rating |
 | Elm Longbow 〔双手〕 | 19 | 1× Elm Rod + 10× Scrap String | 67 Attack Speed, 67 Critical Chance, 67 Hit Rating |
 
-**Spruce**
+**Spruce 云杉**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -2489,7 +2489,7 @@ sources:
 | Spruce Compound bow 〔双手〕 | 25 | 1× Spruce Rod + 6× Low Quality String | 88 Attack Speed, 88 Critical Chance, 88 Hit Rating |
 | Spruce Longbow 〔双手〕 | 29 | 1× Spruce Rod + 10× Low Quality String | 102 Attack Speed, 102 Critical Chance, 102 Hit Rating |
 
-**Maple**
+**Maple 枫木**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -2497,7 +2497,7 @@ sources:
 | Maple Compound bow 〔双手〕 | 35 | 1× Maple Rod + 6× Medium Quality String | 123 Attack Speed, 123 Critical Chance, 123 Hit Rating |
 | Maple Longbow 〔双手〕 | 39 | 1× Maple Rod + 10× Medium Quality String | 137 Attack Speed, 137 Critical Chance, 137 Hit Rating |
 
-**Beech**
+**Beech 山毛榉**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -2505,9 +2505,9 @@ sources:
 | Beech Compound bow 〔双手〕 | 45 | 1× Beech Rod + 6× Quality String | 158 Attack Speed, 158 Critical Chance, 158 Hit Rating |
 | Beech Longbow 〔双手〕 | 49 | 1× Beech Rod + 10× Quality String | 172 Attack Speed, 172 Critical Chance, 172 Hit Rating |
 
-### Materials
+### Materials 材料 / 半成品
 
-**Mucky**
+**Mucky 污秽(T1)**
 
 - `Mucky Sharpened Claw` ← 1× Mucky Claw
 - `Mucky Sharpened Fang` ← 1× Mucky Fang
@@ -2517,7 +2517,7 @@ sources:
 - `Mucky String` ← 2× Mucky Tendon
 - `Mucky Sharpened Tooth` ← 1× Mucky Tooth
 
-**Scrap**
+**Scrap 废料(T2)**
 
 - `Scrap Sharpened Claw` ← 1× Scrap Claw
 - `Scrap Sharpened Fang` ← 1× Scrap Fang
@@ -2527,7 +2527,7 @@ sources:
 - `Scrap String` ← 2× Scrap Tendon
 - `Scrap Sharpened Tooth` ← 1× Scrap Tooth
 
-**Low Quality**
+**Low Quality 低品质(T3)**
 
 - `Low Quality Sharpened Claw` ← 1× Low Quality Claw
 - `Low Quality Sharpened Fang` ← 1× Low Quality Fang
@@ -2537,7 +2537,7 @@ sources:
 - `Low Quality String` ← 2× Low Quality Tendon
 - `Low Quality Sharpened Tooth` ← 1× Low Quality Tooth
 
-**Medium Quality**
+**Medium Quality 中品质(T4)**
 
 - `Medium Quality Sharpened Claw` ← 1× Medium Quality Claw
 - `Medium Quality Sharpened Fang` ← 1× Medium Quality Fang
@@ -2547,7 +2547,7 @@ sources:
 - `Medium Quality String` ← 2× Medium Quality Tendon
 - `Medium Quality Sharpened Tooth` ← 1× Medium Quality Tooth
 
-**Quality**
+**Quality 高品质(T5)**
 
 - `Quality Sharpened Claw` ← 1× Quality Claw
 - `Quality Sharpened Fang` ← 1× Quality Fang
@@ -2557,9 +2557,9 @@ sources:
 - `Quality String` ← 2× Quality Tendon
 - `Quality Sharpened Tooth` ← 1× Quality Tooth
 
-### Cestus
+### Cestus 拳套
 
-**Mucky**
+**Mucky 污秽(T1)**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -2567,7 +2567,7 @@ sources:
 | Mucky Spiked Cestus 〔双手〕 | 5 | 2× Mucky Leather Glove Base + 6× Mucky Sharpened Claw | 18 Blunt Damage, 18 Hit Rating, 18 Thorn Damage |
 | Mucky Earthshaker Cestus 〔双手〕 | 9 | 2× Mucky Leather Glove Base + 7× Mucky Sharpened Claw + 1× Mucky Shaped Skull | 32 Blunt Damage, 32 Hit Rating, 32 Thorn Damage |
 
-**Scrap**
+**Scrap 废料(T2)**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -2575,7 +2575,7 @@ sources:
 | Scrap Spiked Cestus 〔双手〕 | 15 | 2× Scrap Leather Glove Base + 6× Scrap Sharpened Claw | 53 Blunt Damage, 53 Hit Rating, 53 Thorn Damage |
 | Scrap Earthshaker Cestus 〔双手〕 | 19 | 2× Scrap Leather Glove Base + 7× Scrap Sharpened Claw + 1× Scrap Shaped Skull | 67 Blunt Damage, 67 Hit Rating, 67 Thorn Damage |
 
-**Low Quality**
+**Low Quality 低品质(T3)**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -2583,7 +2583,7 @@ sources:
 | Low Quality Claw Spiked Cestus 〔双手〕 | 25 | 2× Low Quality Leather Glove Base + 6× Low Quality Sharpened Claw | 88 Blunt Damage, 88 Hit Rating, 88 Thorn Damage |
 | Low Quality Claw Earthshaker Cestus 〔双手〕 | 29 | 2× Low Quality Leather Glove Base + 7× Low Quality Sharpened Claw + 1× Low Quality Shaped Skull | 102 Blunt Damage, 102 Hit Rating, 102 Thorn Damage |
 
-**Medium Quality**
+**Medium Quality 中品质(T4)**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -2591,7 +2591,7 @@ sources:
 | Medium Quality Spiked Cestus 〔双手〕 | 35 | 2× Medium Quality Leather Glove Base + 6× Medium Quality Sharpened Claw | 123 Blunt Damage, 123 Hit Rating, 123 Thorn Damage |
 | Medium Quality Earthshaker Cestus 〔双手〕 | 39 | 2× Medium Quality Leather Glove Base + 7× Medium Quality Sharpened Claw + 1× Medium Quality Shaped Skull | 137 Blunt Damage, 137 Hit Rating, 137 Thorn Damage |
 
-**Quality**
+**Quality 高品质(T5)**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -2599,9 +2599,9 @@ sources:
 | Quality Spiked Cestus 〔双手〕 | 45 | 2× Quality Leather Glove Base + 6× Quality Sharpened Claw | 158 Blunt Damage, 158 Hit Rating, 158 Thorn Damage |
 | Quality Earthshaker Cestus 〔双手〕 | 49 | 2× Quality Leather Glove Base + 7× Quality Sharpened Claw + 1× Quality Shaped Skull | 172 Blunt Damage, 172 Hit Rating, 172 Thorn Damage |
 
-### Necklace
+### Necklace 项链
 
-**Mucky String**
+**Mucky String 污秽弓弦**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -2612,7 +2612,7 @@ sources:
 | Mucky Hoof Necklace | 1 | 1× Mucky String + 10× Mucky Sharpened Hoof | 4 Evasion, 4 Mana |
 | Mucky Tooth Necklace | 1 | 1× Mucky String + 10× Mucky Sharpened Tooth | 4 Critical Strike, 4 Mana Steal |
 
-**Scrap String**
+**Scrap String 废料弓弦**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -2623,7 +2623,7 @@ sources:
 | Scrap Hoof Necklace | 10 | 1× Scrap String + 10× Scrap Sharpened Hoof | 35 Evasion, 35 Mana |
 | Scrap Tooth Necklace | 10 | 1× Scrap String + 10× Scrap Sharpened Tooth | 35 Critical Strike, 35 Mana Steal |
 
-**Low Quality String**
+**Low Quality String 低品质弓弦**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -2634,7 +2634,7 @@ sources:
 | Low Quality Hoof Necklace | 20 | 1× Low Quality String + 10× Low Quality Sharpened Hoof | 70 Evasion, 70 Mana |
 | Low Quality Tooth Necklace | 20 | 1× Low Quality String + 10× Low Quality Sharpened Tooth | 70 Critical Strike, 70 Mana Steal |
 
-**Medium Quality String**
+**Medium Quality String 中品质弓弦**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -2645,7 +2645,7 @@ sources:
 | Medium Quality Hoof Necklace | 30 | 1× Medium Quality String + 10× Medium Quality Sharpened Hoof | 105 Evasion, 105 Mana |
 | Medium Quality Tooth Necklace | 30 | 1× Medium Quality String + 10× Medium Quality Sharpened Tooth | 105 Critical Strike, 105 Mana Steal |
 
-**Quality String**
+**Quality String 高品质弓弦**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -2656,9 +2656,9 @@ sources:
 | Quality Hoof Necklace | 40 | 1× Quality String + 10× Quality Sharpened Hoof | 140 Evasion, 140 Mana |
 | Quality Tooth Necklace | 40 | 1× Quality String + 10× Quality Sharpened Tooth | 140 Critical Strike, 140 Mana Steal |
 
-### Earrings
+### Earrings 耳环
 
-**Mucky String**
+**Mucky String 污秽弓弦**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -2669,7 +2669,7 @@ sources:
 | Mucky Hoof Earring | 1 | 1× Mucky String + 4× Mucky Sharpened Hoof | 4 Evasion, 4 Mana |
 | Mucky Tooth Earring | 1 | 1× Mucky String + 4× Mucky Sharpened Tooth | 4 Critical Strike, 4 Mana Steal |
 
-**Scrap String**
+**Scrap String 废料弓弦**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -2680,7 +2680,7 @@ sources:
 | Scrap Hoof Earring | 10 | 1× Scrap String + 4× Scrap Sharpened Hoof | 35 Evasion, 35 Mana |
 | Scrap Tooth Earring | 10 | 1× Scrap String + 4× Scrap Sharpened Tooth | 35 Critical Strike, 35 Mana Steal |
 
-**Low Quality String**
+**Low Quality String 低品质弓弦**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -2691,7 +2691,7 @@ sources:
 | Low Quality Hoof Earring | 20 | 1× Low Quality String + 4× Low Quality Sharpened Hoof | 70 Evasion, 70 Mana |
 | Low Quality Tooth Earring | 20 | 1× Low Quality String + 4× Low Quality Sharpened Tooth | 70 Critical Strike, 70 Mana Steal |
 
-**Medium Quality String**
+**Medium Quality String 中品质弓弦**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -2702,7 +2702,7 @@ sources:
 | Medium Quality Hoof Earring | 30 | 1× Medium Quality String + 4× Medium Quality Sharpened Hoof | 105 Evasion, 105 Mana |
 | Medium Quality Tooth Earring | 30 | 1× Medium Quality String + 4× Medium Quality Sharpened Tooth | 105 Critical Strike, 105 Mana Steal |
 
-**Quality String**
+**Quality String 高品质弓弦**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -2713,9 +2713,9 @@ sources:
 | Quality Hoof Earring | 40 | 1× Quality String + 4× Quality Sharpened Hoof | 140 Evasion, 140 Mana |
 | Quality Tooth Earring | 40 | 1× Quality String + 4× Quality Sharpened Tooth | 140 Critical Strike, 140 Mana Steal |
 
-### Rings
+### Rings 戒指
 
-**Mucky String**
+**Mucky String 污秽弓弦**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -2726,7 +2726,7 @@ sources:
 | Mucky Hoof Ring | 1 | 1× Mucky String + 4× Mucky Sharpened Hoof | 4 Evasion, 4 Mana |
 | Mucky Tooth Ring | 1 | 1× Mucky String + 4× Mucky Sharpened Tooth | 4 Critical Strike, 4 Mana Steal |
 
-**Scrap String**
+**Scrap String 废料弓弦**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -2737,7 +2737,7 @@ sources:
 | Scrap Hoof Ring | 10 | 1× Scrap String + 4× Scrap Sharpened Hoof | 35 Evasion, 35 Mana |
 | Scrap Tooth Ring | 10 | 1× Scrap String + 4× Scrap Sharpened Tooth | 35 Critical Strike, 35 Mana Steal |
 
-**Low Quality String**
+**Low Quality String 低品质弓弦**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -2748,7 +2748,7 @@ sources:
 | Low Quality Hoof Ring | 20 | 1× Low Quality String + 4× Low Quality Sharpened Hoof | 70 Evasion, 70 Mana |
 | Low Quality Tooth Ring | 20 | 1× Low Quality String + 4× Low Quality Sharpened Tooth | 70 Critical Strike, 70 Mana Steal |
 
-**Medium Quality String**
+**Medium Quality String 中品质弓弦**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -2759,7 +2759,7 @@ sources:
 | Medium Quality Hoof Ring | 30 | 1× Medium Quality String + 4× Medium Quality Sharpened Hoof | 105 Evasion, 105 Mana |
 | Medium Quality Tooth Ring | 30 | 1× Medium Quality String + 4× Medium Quality Sharpened Tooth | 105 Critical Strike, 105 Mana Steal |
 
-**Quality String**
+**Quality String 高品质弓弦**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -2775,9 +2775,9 @@ sources:
 
 > 官方 help id=132。制作台见对应 NPC。
 
-### Pets
+### Pets 宠物
 
-**Tier 1**
+**Tier 1 阶级 1**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -2785,7 +2785,7 @@ sources:
 | Beaver Pet | 5 | 1× Beaver Pet Egg + 40× Mucky Pet Food | 18 Hit Rating, 18 Maximum Life, 18 Mana |
 | Wild Hog Pet | 9 | 1× Wild Hog Pet Egg + 60× Mucky Pet Food | 32 Hit Rating, 32 Maximum Life, 32 Mana |
 
-**Tier 2**
+**Tier 2 阶级 2**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -2793,7 +2793,7 @@ sources:
 | Myconid Pet | 15 | 1× Myconid Pet Egg + 100× Scrap Pet Food | 53 Hit Rating, 53 Maximum Life, 53 Mana |
 | Troll Boar Pet | 19 | 1× Troll Boar Pet Egg + 120× Scrap Pet Food | 67 Hit Rating, 67 Maximum Life, 67 Mana |
 
-**Tier 3**
+**Tier 3 阶级 3**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -2801,7 +2801,7 @@ sources:
 | Cougar Pet | 25 | 1× Cougar Pet Egg + 160× Low Quality Pet Food | 88 Hit Rating, 88 Maximum Life, 88 Mana |
 | Hydra Pet | 29 | 1× Hydra Pet Egg + 180× Low Quality Pet Food | 102 Hit Rating, 102 Maximum Life, 102 Mana |
 
-**Tier 4**
+**Tier 4 阶级 4**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -2809,7 +2809,7 @@ sources:
 | Tiger Pet | 35 | 1× Tiger Pet Egg + 220× Medium Quality Pet Food | 123 Hit Rating, 123 Maximum Life, 123 Mana |
 | Yak Pet | 39 | 1× Yak Pet Egg + 240× Medium Quality Pet Food | 137 Hit Rating, 137 Maximum Life, 137 Mana |
 
-**Tier 5**
+**Tier 5 阶级 5**
 
 | 成品 | Lv | 材料 | 属性 |
 |---|---|---|---|
@@ -2817,7 +2817,7 @@ sources:
 | Rust Monster Pet | 45 | 1× Rust Monster Pet Egg + 280× Quality Pet Food | 158 Hit Rating, 158 Maximum Life, 158 Mana |
 | Armored Ram Pet | 49 | 1× Armored Ram Pet Egg + 300× Quality Pet Food | 172 Hit Rating, 172 Maximum Life, 172 Mana |
 
-### Materials
+### Materials 材料 / 半成品
 
 **Pet Food Tier 1**
 
