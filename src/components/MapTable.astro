@@ -2,55 +2,116 @@
 import mapdb from '../data/maps.json';
 const maps = Object.values(mapdb.maps).filter((m) => m && m.name);
 const biomes = [...new Set(maps.map((m) => m.biome).filter(Boolean))].sort();
+const types = [...new Set(maps.map((m) => m.type).filter(Boolean))].sort();
+const levels = [
+  { v: '1-9', label: 'Lv1–9' },
+  { v: '10-19', label: 'Lv10–19' },
+  { v: '20-29', label: 'Lv20–29' },
+  { v: '30-39', label: 'Lv30–39' },
+  { v: '40-49', label: 'Lv40–49' },
+  { v: '50-99', label: 'Lv50+' },
+];
+const noLevel = maps.filter((m) => !m.level).length;
+const noCont = maps.filter((m) => !m.continent).length;
+const rows = maps.map((m) => ({
+  id: m.id,
+  name: m.name,
+  level: m.level == null || m.level === '' ? '' : String(m.level),
+  biome: m.biome || '',
+  type: m.type || '',
+  town: m.town ? 1 : 0,
+  g: (m.g && m.g.length) ? 1 : 0,
+  mo: (m.m && m.m.length) ? 1 : 0,
+}));
 ---
 <div class="nr-toolbar">
   <input id="map-q" type="search" placeholder="搜索：地图名 / 生物群系 / 编号…" />
-  <select id="map-biome">
-    <option value="">全部生物群系</option>
-    {biomes.map((b) => <option value={b}>{b}</option>)}
-  </select>
+  <select id="map-biome"><option value="">全部生物群系</option>{biomes.map((b) => <option value={b}>{b}</option>)}</select>
+  <select id="map-type"><option value="">全部类型</option>{types.map((t) => <option value={t}>{t}</option>)}</select>
+  <select id="map-lvl"><option value="">全部等级</option>{levels.map((l) => <option value={l.v}>{l.label}</option>)}</select>
   <label class="nr-check"><input type="checkbox" id="map-town" /> 只看城镇</label>
-  <span class="nr-count" id="map-count">{maps.length} 张</span>
+  <label class="nr-check"><input type="checkbox" id="map-g" /> 有采集</label>
+  <label class="nr-check"><input type="checkbox" id="map-m" /> 有怪物</label>
+  <span class="nr-count" id="map-count"></span>
 </div>
 <table id="map-table">
   <thead>
-    <tr><th>ID</th><th>名称</th><th>等级</th><th>生物群系</th><th>大陆</th><th>城镇</th></tr>
+    <tr>
+      <th>名称</th><th>ID</th>
+      <th class="map-sort" id="map-sortlvl" role="button" tabindex="0">等级 ⇅</th>
+      <th>生物群系</th><th>类型</th><th>采集</th><th>怪物</th><th>城镇</th>
+    </tr>
   </thead>
   <tbody>
-    {maps.map((m) => (
-      <tr data-name={(m.name || '').toLowerCase()} data-biome={m.biome || ''} data-town={m.town ? '1' : '0'}>
-        <td>{m.id}</td>
+    {rows.map((m) => (
+      <tr data-name={(m.name || '').toLowerCase()} data-biome={m.biome} data-type={m.type} data-level={m.level} data-town={m.town} data-g={m.g} data-m={m.mo}>
         <td>{m.name}</td>
-        <td>{m.level}</td>
-        <td>{m.biome}</td>
-        <td>{m.continent}</td>
+        <td>{m.id}</td>
+        <td>{m.level || '—'}</td>
+        <td>{m.biome || '—'}</td>
+        <td>{m.type || '—'}</td>
+        <td>{m.g ? '✔' : ''}</td>
+        <td>{m.mo ? '✔' : ''}</td>
         <td>{m.town ? '✔' : ''}</td>
       </tr>
     ))}
   </tbody>
 </table>
+<p class="nr-note">共 {maps.length} 张；其中 <b>{noLevel}</b> 张缺等级、<b>{noCont}</b> 张缺大陆字段（缺失显示为「—」，暂不展示大陆列）。</p>
 
 <script>
   const q = document.getElementById('map-q');
   const biome = document.getElementById('map-biome');
+  const type = document.getElementById('map-type');
+  const lvl = document.getElementById('map-lvl');
   const town = document.getElementById('map-town');
-  const rows = [...document.querySelectorAll('#map-table tbody tr')];
+  const g = document.getElementById('map-g');
+  const mo = document.getElementById('map-m');
+  const tbody = document.querySelector('#map-table tbody');
+  const rows = [...tbody.querySelectorAll('tr')];
   const count = document.getElementById('map-count');
+  const sortBtn = document.getElementById('map-sortlvl');
+  let sortDir = 0; // 0 none, 1 asc, -1 desc
+  function inLvl(v, range) {
+    if (!range) return true;
+    if (v === '') return false;
+    const n = +v; const [a, b] = range.split('-').map(Number);
+    return n >= a && n <= b;
+  }
   function apply() {
     const s = (q.value || '').toLowerCase().trim();
-    const b = biome.value;
-    const t = town.checked;
+    const b = biome.value, t = type.value, l = lvl.value;
     let n = 0;
     for (const r of rows) {
       const ok = (!s || r.dataset.name.includes(s) || r.textContent.toLowerCase().includes(s))
         && (!b || r.dataset.biome === b)
-        && (!t || r.dataset.town === '1');
+        && (!t || r.dataset.type === t)
+        && (!town.checked || r.dataset.town === '1')
+        && (!g.checked || r.dataset.g === '1')
+        && (!mo.checked || r.dataset.m === '1')
+        && inLvl(r.dataset.level, l);
       r.style.display = ok ? '' : 'none';
       if (ok) n++;
     }
     count.textContent = n + ' 张';
   }
+  function doSort() {
+    sortDir = sortDir === 1 ? -1 : 1;
+    sortBtn.textContent = sortDir === 1 ? '等级 ↑' : '等级 ↓';
+    const sorted = rows.slice().sort((a, b) => {
+      const av = a.dataset.level === '' ? 9999 : +a.dataset.level;
+      const bv = b.dataset.level === '' ? 9999 : +b.dataset.level;
+      return (av - bv) * sortDir;
+    });
+    for (const r of sorted) tbody.appendChild(r);
+  }
   q.addEventListener('input', apply);
   biome.addEventListener('change', apply);
+  type.addEventListener('change', apply);
+  lvl.addEventListener('change', apply);
   town.addEventListener('change', apply);
+  g.addEventListener('change', apply);
+  mo.addEventListener('change', apply);
+  sortBtn.addEventListener('click', doSort);
+  apply();
 </script>

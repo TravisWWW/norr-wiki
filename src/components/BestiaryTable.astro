@@ -2,44 +2,86 @@
 import bestiary from '../data/bestiary.json';
 const monsters = bestiary.filter((m) => m && m.name);
 const types = [...new Set(monsters.map((m) => m.type).filter(Boolean))].sort();
+const biomes = [...new Set(monsters.flatMap((m) => m.biomes || []).filter(Boolean))].sort();
+const levels = [
+  { v: '1-9', label: 'Lv1–9' },
+  { v: '10-19', label: 'Lv10–19' },
+  { v: '20-29', label: 'Lv20–29' },
+  { v: '30-39', label: 'Lv30–39' },
+  { v: '40-99', label: 'Lv40+' },
+];
+function parseRange(s) {
+  const m = String(s || '').match(/(\d+)\s*-\s*(\d+)/);
+  if (!m) return [null, null];
+  return [+m[1], +m[2]];
+}
+const rows = monsters.map((m) => {
+  const [lo, hi] = parseRange(m.levelRange);
+  return {
+    id: m.id,
+    name: m.name,
+    type: m.type || '',
+    levelRange: m.levelRange || '',
+    lo: lo == null ? '' : lo,
+    hi: hi == null ? '' : hi,
+    wide: (lo != null && hi != null && hi - lo >= 50) ? 1 : 0,
+    biomes: (m.biomes || []).join('、'),
+    scavenging: (m.scavenging || []).join('、'),
+  };
+});
+const wideCount = rows.filter((r) => r.wide).length;
 ---
 <div class="nr-toolbar">
   <input id="be-q" type="search" placeholder="搜索：怪物名 / 生物群系 / 掉落…" />
-  <select id="be-type">
-    <option value="">全部类型</option>
-    {types.map((t) => <option value={t}>{t}</option>)}
-  </select>
-  <span class="nr-count" id="be-count">{monsters.length} 种</span>
+  <select id="be-type"><option value="">全部类型</option>{types.map((t) => <option value={t}>{t}</option>)}</select>
+  <select id="be-biome"><option value="">全部区域</option>{biomes.map((b) => <option value={b}>{b}</option>)}</select>
+  <select id="be-lvl"><option value="">全部等级</option>{levels.map((l) => <option value={l.v}>{l.label}</option>)}</select>
+  <label class="nr-check"><input type="checkbox" id="be-wide" /> 只看特殊（宽等级）</label>
+  <span class="nr-count" id="be-count"></span>
 </div>
 <table id="be-table">
   <thead>
-    <tr><th>ID</th><th>名称</th><th>类型</th><th>等级</th><th>生物群系</th><th>拾荒掉落</th></tr>
+    <tr><th>名称</th><th>类型</th><th>等级</th><th>分布区域</th><th>拾荒掉落</th></tr>
   </thead>
   <tbody>
-    {monsters.map((m) => (
-      <tr data-type={m.type || ''}>
-        <td>{m.id}</td>
-        <td>{m.name}</td>
-        <td>{m.type}</td>
-        <td>{m.levelRange}</td>
-        <td>{(m.biomes || []).join('、')}</td>
-        <td>{(m.scavenging || []).join('、')}</td>
+    {rows.map((m) => (
+      <tr data-name={(m.name || '').toLowerCase()} data-type={m.type} data-biome={m.biomes} data-lo={m.lo} data-hi={m.hi} data-wide={m.wide}>
+        <td>{m.name}{m.wide ? ' <span class="be-tag">特殊</span>' : ''}</td>
+        <td>{m.type || '—'}</td>
+        <td>{m.levelRange || '—'}</td>
+        <td>{m.biomes || '—'}</td>
+        <td>{m.scavenging || '—'}</td>
       </tr>
     ))}
   </tbody>
 </table>
+<p class="nr-note">共 {monsters.length} 种；其中 <b>{wideCount}</b> 种等级范围较宽（≥50，标记为「特殊」，可能是跨区 / 特殊敌人）。缺失字段显示为「—」。</p>
 
 <script>
   const q = document.getElementById('be-q');
   const type = document.getElementById('be-type');
-  const rows = [...document.querySelectorAll('#be-table tbody tr')];
+  const biome = document.getElementById('be-biome');
+  const lvl = document.getElementById('be-lvl');
+  const wide = document.getElementById('be-wide');
+  const tbody = document.querySelector('#be-table tbody');
+  const rows = [...tbody.querySelectorAll('tr')];
   const count = document.getElementById('be-count');
+  function overlap(lo, hi, range) {
+    if (!range) return true;
+    if (lo === '' || hi === '') return false;
+    const [a, b] = range.split('-').map(Number);
+    return +lo <= b && +hi >= a;
+  }
   function apply() {
     const s = (q.value || '').toLowerCase().trim();
-    const t = type.value;
+    const t = type.value, b = biome.value, l = lvl.value;
     let n = 0;
     for (const r of rows) {
-      const ok = (!s || r.textContent.toLowerCase().includes(s)) && (!t || r.dataset.type === t);
+      const ok = (!s || r.textContent.toLowerCase().includes(s))
+        && (!t || r.dataset.type === t)
+        && (!b || (r.dataset.biome || '').includes(b))
+        && (!wide.checked || r.dataset.wide === '1')
+        && overlap(r.dataset.lo, r.dataset.hi, l);
       r.style.display = ok ? '' : 'none';
       if (ok) n++;
     }
@@ -47,4 +89,13 @@ const types = [...new Set(monsters.map((m) => m.type).filter(Boolean))].sort();
   }
   q.addEventListener('input', apply);
   type.addEventListener('change', apply);
+  biome.addEventListener('change', apply);
+  lvl.addEventListener('change', apply);
+  wide.addEventListener('change', apply);
+  apply();
 </script>
+
+<style>
+  .be-tag { font-size: .7rem; color: var(--nr-gold); border: 1px solid var(--nr-gold-dim); border-radius: 3px; padding: 0 .3rem; margin-left: .3rem; }
+  .nr-note { color: var(--nr-dim); font-size: .8rem; margin-top: .5rem; }
+</style>
