@@ -3,7 +3,7 @@ import skills from '../data/skills.json';
 const { cls } = Astro.props;
 const data = skills[cls];
 const slug = cls.toLowerCase();
-const portrait = `${import.meta.env.BASE_URL}img/classes/${slug}_large.png`;
+const portrait = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/img/classes/${slug}_large.png`;
 const fmt = (r) => {
   const base = `${r.stat} ${r.v1}${r.unit}`;
   return r.per ? `${base}（每级 +${r.per}${r.unit}）` : base;
