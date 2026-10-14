@@ -69,6 +69,7 @@ export default defineConfig({
 						{ label: '生活技能总览', slug: 'professions/overview' },
 						{ label: '采集', slug: 'professions/gathering' },
 						{ label: '制作', slug: 'professions/crafting' },
+						{ label: '制作配方全表', slug: 'professions/crafting-catalog' },
 					],
 				},
 				{
