@@ -6,18 +6,29 @@ const catZh = {};
 const groups = ['武器','护甲','首饰','工具'];
 for (const it of items) catZh[it.cat] = it.catZh;
 
+function clsLabel(it) {
+  const parts = [];
+  if (it.armorClass) parts.push(it.armorClass + '（护甲重量）');
+  if (it.classes && it.classes.length) parts.push(it.classes.join(' / '));
+  return parts.length ? parts.join(' · ') : '无限制';
+}
+
 const rows = items.map((it) => ({
   id: it.id, name: it.name, group: it.group, cat: it.cat, tier: it.tier || '',
   tnum: it.tierNum == null ? '' : it.tierNum, lvl: it.level == null ? '' : it.level,
-  cls: it.equipClass || '', prof: it.profZh,
+  armor: it.armorClass || '',
+  classes: (it.classes || []).join(','),
+  mats: (it.materials || []).join('|'),
+  prof: it.profZh,
   meta: [it.group, it.catZh, it.tier ? (it.tier + (it.tierZh ? ' ' + it.tierZh : '')) : '', it.level != null ? 'Lv' + it.level : ''].filter(Boolean).join(' · '),
   stat: (it.stats || []).slice(0, 3).map((s) => '+' + s).join('，'),
-  clsTxt: it.equipClass ? it.equipClass : '—',
+  clsTxt: clsLabel(it),
 }));
 
 const catsByGroup = {};
 for (const it of items) (catsByGroup[it.group] ||= {})[it.cat] = (catsByGroup[it.group][it.cat] || 0) + 1;
-const classList = [...new Set(items.map((i) => i.equipClass).filter(Boolean))].sort();
+const armorList = ['Light','Medium','Heavy'].filter((a) => items.some((i) => i.armorClass === a));
+const classList = [...new Set(items.flatMap((i) => i.classes || []))].sort();
 const allTiers = {};
 for (const it of items) if (it.tier) allTiers[it.tier] = it.tierNum == null ? 99 : it.tierNum;
 const levels = [
@@ -28,10 +39,11 @@ const base = import.meta.env.BASE_URL;
 ---
 <div class="ec" data-base={base}>
   <div class="nr-toolbar ec-toolbar">
-    <input id="ec-q" type="search" placeholder="搜索：装备名 / 词条 / 材料…" autocomplete="off" />
+    <input id="ec-q" type="search" placeholder="搜索：装备名 / 词条 / 材料（输入材料名可反查）…" autocomplete="off" />
     <select id="ec-group"><option value="">全部大类</option>{groups.map((g) => <option value={g}>{g}</option>)}</select>
     <select id="ec-cat"><option value="">全部类型</option></select>
-    <select id="ec-cls"><option value="">全部职业限制</option>{classList.map((c) => <option value={c}>{c}</option>)}</select>
+    <select id="ec-armor"><option value="">全部护甲类型</option>{armorList.map((a) => <option value={a}>{a}</option>)}</select>
+    <select id="ec-cls"><option value="">全部可用职业</option>{classList.map((c) => <option value={c}>{c}</option>)}</select>
     <select id="ec-tier"><option value="">全部 Tier</option>{[...Object.entries(allTiers)].sort((a, b) => a[1] - b[1]).map(([en, num]) => <option value={en}>{'T' + num + ' ' + en}</option>)}</select>
     <select id="ec-lvl"><option value="">全部等级</option>{levels.map((l) => <option value={l.v}>{l.label}</option>)}</select>
     <span class="nr-count" id="ec-count"></span>
@@ -39,7 +51,7 @@ const base = import.meta.env.BASE_URL;
   <p class="cc-hint" id="ec-hint">共 {items.length} 件可制作装备 · 来源：{meta.source}</p>
   <ul id="ec-list" class="cc-list">
     {rows.map((r) => (
-      <li class="cc-row" data-id={r.id} data-name={r.name} data-group={r.group} data-cat={r.cat} data-tier={r.tier} data-lvl={r.lvl} data-cls={r.cls} data-stats={r.stat}>
+      <li class="cc-row" data-id={r.id} data-name={r.name} data-group={r.group} data-cat={r.cat} data-tier={r.tier} data-lvl={r.lvl} data-armor={r.armor} data-classes={r.classes} data-mats={r.mats} data-stats={r.stat}>
         <button type="button" class="cc-head" aria-expanded="false">
           <span class="cc-title">
             <span class="cc-name">{r.name}</span>
@@ -63,6 +75,7 @@ const base = import.meta.env.BASE_URL;
     const q = document.getElementById('ec-q');
     const fGroup = document.getElementById('ec-group');
     const fCat = document.getElementById('ec-cat');
+    const fArmor = document.getElementById('ec-armor');
     const fCls = document.getElementById('ec-cls');
     const fTier = document.getElementById('ec-tier');
     const fLvl = document.getElementById('ec-lvl');
@@ -82,42 +95,63 @@ const base = import.meta.env.BASE_URL;
     }
     function apply() {
       const s = (q.value || '').toLowerCase().trim();
-      const g = fGroup.value, c = fCat.value, cl = fCls.value, t = fTier.value, l = fLvl.value;
+      const g = fGroup.value, c = fCat.value, ar = fArmor.value, cl = fCls.value, t = fTier.value, l = fLvl.value;
       let n = 0;
       for (const r of rows) {
-        const ok = (!s || r.dataset.name.toLowerCase().includes(s) || (r.dataset.stats || '').toLowerCase().includes(s))
+        const ok = (!s || r.dataset.name.toLowerCase().includes(s) || (r.dataset.stats || '').toLowerCase().includes(s) || (r.dataset.mats || '').toLowerCase().includes(s))
           && (!g || r.dataset.group === g) && (!c || r.dataset.cat === c)
-          && (!cl || r.dataset.cls === cl) && (!t || r.dataset.tier === t) && inLvl(r.dataset.lvl, l);
+          && (!ar || r.dataset.armor === ar)
+          && (!cl || (',' + (r.dataset.classes || '') + ',').indexOf(',' + cl + ',') >= 0)
+          && (!t || r.dataset.tier === t) && inLvl(r.dataset.lvl, l);
         r.style.display = ok ? '' : 'none';
         if (ok) n++;
       }
       count.textContent = n + ' 件';
       const parts = [];
-      if (g) parts.push(g); if (c) parts.push(catLabel(c)); if (cl) parts.push(cl); if (t) parts.push('Tier ' + t); if (s) parts.push('“' + q.value.trim() + '”');
+      if (g) parts.push(g); if (c) parts.push(catLabel(c)); if (ar) parts.push(ar + '（护甲）'); if (cl) parts.push(cl);
+      if (t) parts.push('Tier ' + t); if (s) parts.push('“' + q.value.trim() + '”');
       hint.textContent = (parts.length ? '筛选：' + parts.join(' · ') + ' → ' : '共 ') + n + ' 件可制作装备';
     }
     async function ensureDb() { if (db) return db; const j = await (await fetch(base + 'data/equipment.json')).json(); db = new Map(j.items.map((r) => [r.id, r])); return db; }
+    const matChip = (m) => '<span class="cc-chip">' + (m.q == null ? '?' : m.q) + '× ' + esc(m.n) + '</span>';
     async function openDetail(li) {
       const box = li.querySelector('.cc-detail'); const btn = li.querySelector('.cc-head');
       if (!box.hidden) { box.hidden = true; btn.setAttribute('aria-expanded', 'false'); return; }
       await ensureDb();
       const it = db.get(li.dataset.id); if (!it) return;
       const stats = (it.stats && it.stats.length) ? it.stats.map((x) => '<li>+' + esc(x) + '</li>').join('') : '<li class="cc-none">资料未提供</li>';
-      const mats = (it.materials && it.materials.length) ? it.materials.map((m) => '<span class="cc-chip">' + esc(m) + '</span>').join('') : '<span class="cc-none">—</span>';
+      const v0 = (it.variants && it.variants[0] && it.variants[0].mats) || [];
+      const mats = v0.length ? v0.map(matChip).join('') : '<span class="cc-none">资料未提供</span>';
+      const variants = (it.variants || []).map((v, i) => '<div class="cc-variant"><span class="cc-vlabel">配方 ' + (i + 1) + '</span>' + (v.mats.length ? v.mats.map(matChip).join('') : '<span class="cc-none">资料未提供</span>') + '</div>').join('');
+      const cls = [];
+      if (it.armorClass) cls.push(it.armorClass + '（护甲重量）');
+      if (it.classes && it.classes.length) cls.push(it.classes.join(' / '));
+      const clsTxt = cls.length ? cls.join(' · ') : '无限制';
       box.innerHTML =
         '<div class="cc-dhead">' + esc(it.name) + '</div>' +
         '<div class="cc-dmeta">' + esc([it.group, it.catZh, it.tier ? (it.tier + (it.tierZh ? ' ' + it.tierZh : '')) : '', it.level != null ? '物品等级 Lv' + it.level : ''].filter(Boolean).join(' · ')) + '</div>' +
-        '<div class="cc-sec"><b>职业限制</b>：' + (it.equipClass ? esc(it.equipClass) : '—') + (it.twoHanded ? ' · 双手' : '') + '</div>' +
+        '<div class="cc-sec"><b>职业限制</b>：' + esc(clsTxt) + (it.twoHanded ? ' · 双手' : '') + '</div>' +
         '<div class="cc-sec"><b>基础属性</b><ul class="cc-stats">' + stats + '</ul></div>' +
         '<div class="cc-sec"><b>来源 · 制作</b>：由 <b>' + esc(it.profZh) + '</b> 制作；材料：' + mats + '</div>' +
+        (it.variants && it.variants.length > 1 ? '<div class="cc-sec"><b>替代配方（' + it.variants.length + ' 种）</b>' + variants + '</div>' : '') +
         (it.vendor ? '<div class="cc-sec"><b>来源 · 商店</b>：' + esc(it.vendor) + '</div>' : '') +
-        '<div class="cc-sec"><a href="' + base + 'professions/crafting-catalog/?prof=' + esc(it.prof) + '">在制作配方图鉴中查看 →</a></div>';
+        '<div class="cc-sec"><a href="' + base + 'professions/crafting-catalog/?recipe=' + encodeURIComponent(it.id) + '">在制作配方图鉴中查看该配方 →</a></div>';
       box.hidden = false; btn.setAttribute('aria-expanded', 'true');
     }
     document.getElementById('ec-list').addEventListener('click', (e) => { const h = e.target.closest('.cc-head'); if (h) openDetail(h.closest('.cc-row')); });
     fGroup.addEventListener('change', () => { rebuildCats(); apply(); });
-    for (const el of [q, fCat, fCls, fTier, fLvl]) el.addEventListener('input', apply);
-    rebuildCats(); apply();
+    for (const el of [q, fCat, fArmor, fCls, fTier, fLvl]) el.addEventListener('input', apply);
+    // deep-link: ?group=&cat=&armor=&cls=&tier=&lvl=&q=
+    const params = new URLSearchParams(location.search);
+    if (params.get('group')) fGroup.value = params.get('group');
+    rebuildCats();
+    if (params.get('cat')) fCat.value = params.get('cat');
+    if (params.get('armor')) fArmor.value = params.get('armor');
+    if (params.get('cls')) fCls.value = params.get('cls');
+    if (params.get('tier')) fTier.value = params.get('tier');
+    if (params.get('lvl')) fLvl.value = params.get('lvl');
+    if (params.get('q')) q.value = params.get('q');
+    apply();
   }
 </script>
 
@@ -140,4 +174,6 @@ const base = import.meta.env.BASE_URL;
   .cc-stats { margin: .25rem 0 0; padding-left: 1.1rem; }
   .cc-chip { border: 1px solid var(--nr-hair); background: var(--nr-panel-2); color: var(--nr-text-soft); border-radius: 4px; padding: .1rem .45rem; font-size: .8rem; margin: 0 .25rem .25rem 0; display: inline-block; }
   .cc-none { color: var(--nr-dim); font-style: italic; }
+  .cc-variant { margin-top: .25rem; }
+  .cc-vlabel { color: var(--nr-dim); font-size: .78rem; margin-right: .4rem; }
 </style>
