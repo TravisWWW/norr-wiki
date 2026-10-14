@@ -8,6 +8,14 @@ const fmt = (r) => {
   const base = `${r.stat} ${r.v1}${r.unit}`;
   return r.per ? `${base}（每级 +${r.per}${r.unit}）` : base;
 };
+// 持续时间 / 攻击段数：把英文单位转成中文，仅在字段有值时显示
+const zhDur = (v) => (v == null ? '' : String(v).replace(/turns?/i, '回合').replace(/strikes?/i, '段').replace(/\s+/g, ' ').trim());
+const durCell = (sk) => {
+  const parts = [];
+  if (sk.lasts != null) parts.push(zhDur(sk.lasts));
+  if (sk.strikes != null) parts.push(zhDur(sk.strikes));
+  return parts.join(' · ');
+};
 ---
 <div class="nr-class-head">
   <img class="nr-class-portrait" src={portrait} alt={cls} loading="lazy" />
@@ -22,7 +30,7 @@ const fmt = (r) => {
     <h3>{g.name}</h3>
     <table>
       <thead>
-        <tr><th>技能</th><th>类型</th><th>需求</th><th>基础效果（Lv.1）与每级成长</th></tr>
+        <tr><th>技能</th><th>类型</th><th>需求</th>{g.skills.some((sk) => sk.lasts != null || sk.strikes != null) ? <th>持续 / 段数</th> : null}<th>基础效果（Lv.1）与每级成长</th></tr>
       </thead>
       <tbody>
         {g.skills.map((sk) => (
@@ -35,6 +43,7 @@ const fmt = (r) => {
               {sk.alignment ? ` · ${sk.alignment}` : ''}
             </td>
             <td>{Array.isArray(sk.requires) ? sk.requires.join(' / ') : (sk.requires || '—')}</td>
+            {g.skills.some((x) => x.lasts != null || x.strikes != null) ? <td>{durCell(sk) || '—'}</td> : null}
             <td>{sk.rows && sk.rows.length ? sk.rows.map(fmt).join('；') : (sk.raw20 || []).join('；')}</td>
           </tr>
         ))}
