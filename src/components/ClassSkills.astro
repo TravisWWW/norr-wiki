@@ -13,7 +13,7 @@ const fmt = (r) => {
   <img class="nr-class-portrait" src={portrait} alt={cls} loading="lazy" />
   <div class="nr-class-meta">
     <div class="nr-class-name">{cls}</div>
-    <div class="nr-class-sub">技能树 · 官方 Lv.20 口径（值 = Lv.1 + (等级-1) × 每级增量）</div>
+    <div class="nr-class-sub">技能树 · 数值 = Lv.1 基础值 + 每级增量（可据此推算任意等级）</div>
   </div>
 </div>
 
@@ -22,7 +22,7 @@ const fmt = (r) => {
     <h3>{g.name}</h3>
     <table>
       <thead>
-        <tr><th>技能</th><th>类型</th><th>需求</th><th>效果（Lv1 → Lv20）</th></tr>
+        <tr><th>技能</th><th>类型</th><th>需求</th><th>基础效果（Lv.1）与每级成长</th></tr>
       </thead>
       <tbody>
         {g.skills.map((sk) => (
