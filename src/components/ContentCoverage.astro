@@ -1,0 +1,33 @@
+---
+import { getCollection } from 'astro:content';
+import { sections, flattenItems } from '../navigation.mjs';
+const docs = await getCollection('docs');
+const byId = new Map(docs.map((doc) => [doc.id, doc]));
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const statusLabels: Record<string, string> = {
+  'ea-verified': 'EA 版已验证', '1.0-announced': '1.0 官方已公布',
+  '1.0-pending': '1.0 待验证', mixed: 'EA / 1.0 混合资料',
+};
+const linkedIds = new Set(sections.flatMap((section) => [section.landing, ...flattenItems(section.items).map((item) => item.slug)]));
+const other = docs.filter((doc) => doc.id !== 'index' && !linkedIds.has(doc.id));
+const formatDate = (value: unknown) => value instanceof Date ? value.toISOString().slice(0, 10) : String(value ?? '—');
+---
+<p>共收录 <strong>{docs.length}</strong> 个页面（含首页、栏目目录与参考页）。以下目录来自实际页面与导航，栏目之间可交叉引用。</p>
+{sections.map((section) => {
+  const entries = [...new Set([section.landing, ...flattenItems(section.items).map((item) => item.slug)])]
+    .map((id) => byId.get(id)).filter(Boolean);
+  return <section class="nr-coverage-section">
+    <h3>{section.label} · {entries.length} 页入口</h3>
+    <div class="nr-table-scroll" tabindex="0" role="region" aria-label={`${section.label}资料状态表`}>
+      <table>
+        <thead><tr><th>页面</th><th>资料状态</th><th>已有核对日期</th></tr></thead>
+        <tbody>{entries.map((doc) => doc && <tr>
+          <td><a href={`${base}/${doc.id}/`}>{doc.data.title}</a></td>
+          <td>{doc.data.reviewStatus ?? (doc.data.versionStatus ? statusLabels[doc.data.versionStatus] : '目录 / 参考')}</td>
+          <td>{formatDate(doc.data.verifiedDate)}</td>
+        </tr>)}</tbody>
+      </table>
+    </div>
+  </section>;
+})}
+{other.length > 0 && <section><h3>其他已收录页面</h3><ul>{other.map((doc) => <li><a href={`${base}/${doc.id}/`}>{doc.data.title}</a></li>)}</ul></section>}

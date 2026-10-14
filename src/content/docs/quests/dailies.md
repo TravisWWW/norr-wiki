@@ -33,8 +33,8 @@ sources:
 | **90 点** | 20x Laurels · 250x Coins · 250x Spirit Essence · 1x 随机 Token/Dice/Chest/Key |
 | **120 点** | 40x Laurels · 500x Coins · 1000x Spirit Essence · 2x 随机 · 2x Battle Arena Token · 2x Ducats |
 
-→ **一天做满 120 点 ≈ 65 Laurels + 850 币 + 1350 精魂 + 2 战令 + 2 杜卡特**，
-是**较稳定的日常收益**（也是 Spirit Essence 的主要来源）。
+→ **四档奖励合计 = 70 Laurels + 950 币 + 1450 精魂 + 2 战令 + 2 杜卡特**，另有表中的随机奖励。
+这是档位奖励合计；当天总收入还需加上单条任务奖励，净收益需扣除任务支出。Spirit Essence 是常用的日常资源。
 
 ## 3. 任务对照 + 单条奖励
 

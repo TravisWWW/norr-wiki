@@ -284,3 +284,27 @@ starlight-theme-select, .theme-select { display: none !important; }
   .nr-rb-desc { color: var(--nr-dim); font-size: 0.85rem; margin-top: 0.15rem; }
   .nr-rb-link { flex: 0 0 auto; color: var(--nr-gold); font-weight: 600; text-decoration: none; }
   .nr-rb-link:hover { text-decoration: underline; }
+
+/* 目录与阅读路线：共享主题，窄屏保持单列与可读间距。 */
+.nr-home-notice { padding: .85rem 1rem; border-inline-start: 3px solid var(--nr-gold-dim); background: var(--nr-panel); border-radius: 6px; color: var(--nr-text-soft); font-size: .9rem; }
+.nr-home-notice a { display: inline-block; margin-inline-start: .5rem; }
+.nr-stats { display: flex; flex-wrap: wrap; gap: .6rem 1.5rem; margin-block: 1rem; color: var(--nr-text-soft); font-size: .85rem; }
+.nr-stats strong { color: var(--nr-gold); font-size: 1.1rem; }
+.nr-category-meta { display: flex; justify-content: space-between; color: var(--nr-dim); font-size: .75rem; margin-bottom: .5rem; }
+.nr-category-action { display: block; color: var(--nr-gold); font-size: .8rem; margin-top: .75rem; }
+.nr-directory-note { color: var(--nr-dim); font-size: .8rem; }
+.nr-topic-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; }
+.nr-topic-link { display: flex; flex-direction: column; gap: .4rem; padding: 1rem; border: 1px solid var(--nr-hair); border-radius: 8px; background: var(--nr-panel); text-decoration: none; }
+.nr-topic-link strong { color: var(--nr-gold); }
+.nr-topic-link span { color: var(--nr-text-soft); font-size: .85rem; line-height: 1.65; }
+.nr-topic-link:hover { border-color: var(--nr-gold-dim); background: var(--nr-panel-2); }
+.nr-topic-list > *, .cat-grid > * { margin-top: 0 !important; }
+.nr-table-scroll { max-width: 100%; overflow-x: auto; }
+.nr-table-scroll table { width: 100%; font-size: .85rem; }
+.nr-table-scroll th { white-space: nowrap; }
+.nr-coverage-section { margin-top: 2rem; }
+:is(.cat, .nr-topic-link):focus-visible { outline: 2px solid var(--nr-gold); outline-offset: 3px; }
+@media (max-width: 40rem) {
+  .nr-topic-list { grid-template-columns: 1fr; }
+  .nr-stats { flex-direction: column; gap: .35rem; }
+}
