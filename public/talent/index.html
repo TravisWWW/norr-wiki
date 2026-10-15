@@ -180,6 +180,28 @@ function effLine(r,L){ const l=Math.max(1,L); const st=statCN(r.stat); return fm
 function rowsAt(s,L){ return s.rows.map(r=>effLine(r,L)); }
 function perRows(s){ return s.rows.filter(r=>Math.abs(r.per)>1e-9).map(r=>fmt(r.per,r.unit)+(statCN(r.stat)?(" "+statCN(r.stat)):"")+" /级"); }
 function reqCN(s){ return s.requires ? s.requires.split(",").map(w=>weapCN(w.trim())).join("、") : ""; }
+function effVal(f,p){ if(f!==0&&p!==0)return num(f)+" + "+num(p)+"%"; if(f!==0)return num(f); return num(p)+"%"; }
+function effKey(key,f,p,type){ if(f===0&&p===0)return null; const neg=f<0||p<0, v=effVal(f,p), name=statCN(key);
+  if(key==="base_damage"){ const kind=({melee:"物理",spell:"魔法",ranged:"物理",aoe:"魔法",direct:"魔法",ability:"魔法"})[String(type||"").toLowerCase()]||"物理"; return "造成 "+v+" 的「武器 + "+kind+"」伤害"; }
+  if(/_damage$/.test(key))return "额外造成 "+v+" 点"+name;
+  if(/_res$/.test(key))return (neg?"降低":"提升")+" "+v+" 点"+name;
+  if(["hit_rating","attack_speed","critical_chance","critical_strike","armor_pen"].includes(key))return (neg?"降低":"提升")+"「"+name+"」"+v;
+  if(["stun","freeze","blind","fear","root","burn","bleed","confuse","silence","infect","defile"].includes(key))return (neg?"降低":"增加")+" "+v+"% 的「"+name+"」几率";
+  if(["life","mana","life_regen","mana_regen"].includes(key))return (neg?"降低":"提升")+"「"+name+"」"+v;
+  if(key==="mana_shield")return "将 "+v+"% 的来袭伤害改为消耗法力承担（而非生命）";
+  if(key==="strikes")return (neg?"减少":"增加")+" "+v+" 段打击";
+  if(key==="cooldown")return (neg?"增加":"减少")+" "+v+" 冷却";
+  if(key==="magic_find")return (neg?"降低":"提升")+" "+v+" 的寻宝几率";
+  if(key==="gold_find")return (neg?"降低":"提升")+" "+v+" 的金币掉落率";
+  if(key==="thorn_damage")return (neg?"削弱":"反弹")+" "+v+" 点伤害给攻击者";
+  if(key==="health")return (neg?"降低":"恢复")+" "+v+" 点生命";
+  if(key==="enemy")return "死亡后召唤后继者继续战斗";
+  return (neg?"降低":"提升")+"「"+name+"」"+v; }
+function effMapAt(s,L){ const m={}; for(const r of s.rows){ const v=r.v1+(L-1)*r.per; m[r.stat]=m[r.stat]||{f:0,p:0}; if(r.unit==="%")m[r.stat].p+=v; else m[r.stat].f+=v; } return m; }
+function effMapPer(s){ const m={}; for(const r of s.rows){ m[r.stat]=m[r.stat]||{f:0,p:0}; if(r.unit==="%")m[r.stat].p+=r.per; else m[r.stat].f+=r.per; } return m; }
+function effLines(m,type){ const o=[]; for(const k in m){ const l=effKey(k,m[k].f,m[k].p,type); if(l)o.push(l);} return o; }
+function tipEffects(s,L){ return VERSION==="1.0" ? effLines(effMapAt(s,L), s.type) : rowsAt(s,L); }
+function tipPer(s){ return VERSION==="1.0" ? effLines(effMapPer(s), s.type) : perRows(s); }
 
 function renderTabs(){
   const t=document.getElementById("tabs"); t.innerHTML="";
@@ -244,8 +266,8 @@ function tipHTML(name){
   if(rows.length)h+='<div class="tt-rows">'+rows.map(r=>'<div><span>'+r[0]+'</span><b>'+esc(r[1])+'</b></div>').join("")+'</div>';
   if(lk) h+='<div class="tt-lock">该技能属于【'+alignCN(s.alignment)+'】阵营，当前角色阵营为【'+alignCN(align)+'】，无法加点。</div>';
   const L=Math.max(1,lv);
-  h+='<div class="tt-lbl">'+(lv>0?("Lv."+lv+" 效果"):"Lv.1 效果（未加点）")+'</div>'+rowsAt(s,L).map(e=>'<div class="eff">'+esc(e)+'</div>').join("");
-  const pr=perRows(s);
+  h+='<div class="tt-lbl">'+(lv>0?("Lv."+lv+" 效果"):"Lv.1 效果（未加点）")+'</div>'+tipEffects(s,L).map(e=>'<div class="eff">'+esc(e)+'</div>').join("");
+  const pr=tipPer(s);
   if(pr.length)h+='<div class="tt-lbl">每级增益</div>'+pr.map(e=>'<div class="eff">'+esc(e)+'</div>').join("");
   return h;
 }

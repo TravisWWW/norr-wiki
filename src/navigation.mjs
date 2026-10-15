@@ -51,6 +51,10 @@ export const sections = [
           {
             "label": "版本与更新历史",
             "slug": "release/ea-history"
+          },
+          {
+            "label": "EA 职业技能表（历史）",
+            "slug": "release/ea-class-skills"
           }
         ]
       }

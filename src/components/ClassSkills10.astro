@@ -9,29 +9,10 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const portrait = `${base}/img/classes/${slug}_large.png`;
 const hasPortrait = existsSync(fileURLToPath(new URL(`../../public/img/classes/${slug}_large.png`, import.meta.url)));
 
-const ZH = {
-  physical_damage:'物理伤害', base_damage:'基础伤害', attack_speed:'攻速', armor_pen:'破甲',
-  base_defense:'基础防御', base_resistance:'基础抗性', bleed:'致流血', bleed_damage:'流血伤害',
-  blunt_damage:'钝击伤害', block_rating:'格挡值', block_chance:'格挡几率', critical_chance:'暴击几率',
-  critical_strike:'暴击伤害', damage_to_animal:'对动物伤害', damage_to_humanoid:'对人形伤害',
-  dark_damage:'暗影伤害', evasion:'闪避', fire_damage:'火焰伤害', fortitude:'坚韧', hit_rating:'命中',
-  life_regen:'生命回复', life_steal:'生命偷取', life:'生命上限', light_damage:'光明伤害',
-  lightning_damage:'闪电伤害', magic_find:'魔法寻宝', gold_find:'金币寻宝', mana_regen:'法力回复',
-  mana_steal:'法力偷取', mana:'法力', max_evasion:'最大闪避', poison_damage:'毒素伤害', resilience:'韧性',
-  shield:'护盾', spell_damage:'法术伤害', strikes:'打击段数', thorn_damage:'荆棘伤害', turns:'回合',
-  arcane_damage:'奥术伤害', infect:'感染', root:'定身', silence:'沉默', stun:'眩晕', blind:'致盲',
-  burn:'灼烧', confuse:'混乱', defile:'亵渎', fear:'恐惧', radiant:'光辉', health:'治疗', defense:'防御',
-  fire_res:'火抗', lightning_res:'电抗', arcane_res:'奥抗', cold_damage:'冰霜伤害', cold_res:'冰抗',
-  freeze:'冰冻', frostbite:'霜冻', chaos_damage:'混沌伤害', chaos_res:'混沌抗', counter_strike:'反击',
-  experience:'经验', pickpocket:'扒窃', siphon_health:'虹吸生命', siphon_mana:'虹吸法力',
-  spirit_scavenging:'灵魂拾取', mana_shield:'法力护盾', resistance:'抗性', enemy:'敌人', flee:'逃跑',
-  dark_res:'暗抗', poison_res:'毒抗',
-};
 const TYPE = { passive:'被动', spell:'法术', melee:'近战', ranged:'远程', buff:'增益', debuff:'减益', ability:'主动', direct:'直接', aoe:'范围', dot:'持续伤害' };
 const zhType = (t) => TYPE[t] || t || '—';
-const fmtOne = (part) => { const [k, v] = part.split(','); return `${ZH[k] || k} ${v}`; };
-const fmt = (s) => (s ? s.split('|').filter(Boolean).map(fmtOne).join('；') : '—');
-const fmtPer = (s) => (s ? s.split('|').filter(Boolean).map(fmtOne).join('；') : '');
+const titleCase = (s) => s.split('_').map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+const join = (arr) => (arr && arr.length ? arr.join('；') : '—');
 ---
 <div class="nr-class-head">
   {hasPortrait && <img class="nr-class-portrait" src={portrait} alt={cls} loading="lazy" />}
@@ -51,17 +32,21 @@ const fmtPer = (s) => (s ? s.split('|').filter(Boolean).map(fmtOne).join('；') 
       <tbody>
         {g.skills.map((sk) => (
           <tr>
-            <td><b>{sk.name}</b></td>
+            <td><b>{titleCase(sk.name)}</b><span class="nr-slug"> {sk.name}</span></td>
             <td>{sk.level ? `Lv.${sk.level}` : '—'}</td>
             <td>{zhType(sk.type)}{sk.mana ? ` · ${sk.mana} MP` : ''}{sk.alignment ? ` · ${sk.alignment}` : ''}</td>
             <td>{sk.cd ? `CD ${sk.cd}` : '—'}</td>
             <td>{[sk.lasts ? `${sk.lasts} 回合` : null, sk.strikes ? `${sk.strikes} 段` : null].filter(Boolean).join(' · ') || '—'}</td>
-            <td>{sk.req || '—'}</td>
-            <td>{fmt(sk.effects)}</td>
-            <td>{fmtPer(sk.perLvl) || '—'}</td>
+            <td>{sk.req ? titleCase(sk.req) : '—'}</td>
+            <td>{join(sk.desc)}</td>
+            <td>{join(sk.descPer)}</td>
           </tr>
         ))}
       </tbody>
     </table>
   </section>
 ))}
+
+<style>
+.nr-slug { color: var(--sl-color-gray-4, #888); font-size: 0.75em; margin-left: 0.35em; }
+</style>

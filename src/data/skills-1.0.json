@@ -16,7 +16,18 @@
       "req": null,
       "effects": "base_damage,25%|arcane_damage,12%|lightning_damage,12%|fire_damage,12%",
       "perLvl": "base_damage,3%|arcane_damage,12%|lightning_damage,12%|fire_damage,12%",
-      "weapon": null
+      "desc": [
+       "造成 25% 的「武器 + 魔法」伤害",
+       "额外造成 12% 点奥术伤害",
+       "额外造成 12% 点闪电伤害",
+       "额外造成 12% 点火焰伤害"
+      ],
+      "descPer": [
+       "造成 3% 的「武器 + 魔法」伤害",
+       "额外造成 12% 点奥术伤害",
+       "额外造成 12% 点闪电伤害",
+       "额外造成 12% 点火焰伤害"
+      ]
      },
      {
       "name": "treasure_finder",
@@ -30,7 +41,12 @@
       "req": "magic_orb",
       "effects": "magic_find,20",
       "perLvl": "magic_find,8%",
-      "weapon": null
+      "desc": [
+       "提升 20 的寻宝几率"
+      ],
+      "descPer": [
+       "提升 8 的寻宝几率"
+      ]
      }
     ]
    },
@@ -49,7 +65,12 @@
       "req": null,
       "effects": "arcane_damage,10|arcane_damage,5%",
       "perLvl": "arcane_damage,4%",
-      "weapon": null
+      "desc": [
+       "额外造成 10 + 5% 点奥术伤害"
+      ],
+      "descPer": [
+       "额外造成 4 点奥术伤害"
+      ]
      },
      {
       "name": "arcane_bolt",
@@ -63,7 +84,16 @@
       "req": "arcane_mastery",
       "effects": "base_damage,35%|arcane_damage,30|arcane_damage,10%|silence,5",
       "perLvl": "base_damage,6%|arcane_damage,9%|silence,2",
-      "weapon": null
+      "desc": [
+       "造成 35% 的「武器 + 魔法」伤害",
+       "额外造成 30 + 10% 点奥术伤害",
+       "增加 5% 的「沉默」几率"
+      ],
+      "descPer": [
+       "造成 6% 的「武器 + 魔法」伤害",
+       "额外造成 9 点奥术伤害",
+       "增加 2% 的「沉默」几率"
+      ]
      },
      {
       "name": "arcane_thrust",
@@ -77,7 +107,16 @@
       "req": "arcane_bolt",
       "effects": "base_damage,55%|arcane_damage,25%|silence,10",
       "perLvl": "base_damage,8%|arcane_damage,20%|silence,4",
-      "weapon": null
+      "desc": [
+       "造成 55% 的「武器 + 魔法」伤害",
+       "额外造成 25% 点奥术伤害",
+       "增加 10% 的「沉默」几率"
+      ],
+      "descPer": [
+       "造成 8% 的「武器 + 魔法」伤害",
+       "额外造成 20% 点奥术伤害",
+       "增加 4% 的「沉默」几率"
+      ]
      },
      {
       "name": "arcane_storm",
@@ -91,7 +130,16 @@
       "req": "arcane_thrust",
       "effects": "base_damage,80%|arcane_damage,20%|silence,15",
       "perLvl": "base_damage,10%|arcane_damage,15%|silence,6",
-      "weapon": null
+      "desc": [
+       "造成 80% 的「武器 + 魔法」伤害",
+       "额外造成 20% 点奥术伤害",
+       "增加 15% 的「沉默」几率"
+      ],
+      "descPer": [
+       "造成 10% 的「武器 + 魔法」伤害",
+       "额外造成 15% 点奥术伤害",
+       "增加 6% 的「沉默」几率"
+      ]
      },
      {
       "name": "arcane_enervation",
@@ -105,7 +153,12 @@
       "req": "arcane_storm",
       "effects": "arcane_res,-10%",
       "perLvl": "arcane_res,-4%",
-      "weapon": null
+      "desc": [
+       "降低 -10% 点奥术抗性"
+      ],
+      "descPer": [
+       "降低 -4% 点奥术抗性"
+      ]
      },
      {
       "name": "arcane_beam",
@@ -119,7 +172,16 @@
       "req": "arcane_enervation",
       "effects": "base_damage,100%|arcane_damage,50%|silence,20",
       "perLvl": "base_damage,12%|arcane_damage,20%|silence,10",
-      "weapon": null
+      "desc": [
+       "造成 100% 的「武器 + 魔法」伤害",
+       "额外造成 50% 点奥术伤害",
+       "增加 20% 的「沉默」几率"
+      ],
+      "descPer": [
+       "造成 12% 的「武器 + 魔法」伤害",
+       "额外造成 20% 点奥术伤害",
+       "增加 10% 的「沉默」几率"
+      ]
      }
     ]
    },
@@ -138,7 +200,12 @@
       "req": null,
       "effects": "lightning_damage,10|lightning_damage,5%",
       "perLvl": "lightning_damage,4%",
-      "weapon": null
+      "desc": [
+       "额外造成 10 + 5% 点闪电伤害"
+      ],
+      "descPer": [
+       "额外造成 4 点闪电伤害"
+      ]
      },
      {
       "name": "lightning_bolt",
@@ -152,7 +219,16 @@
       "req": "lightning_mastery",
       "effects": "base_damage,35%|lightning_damage,30|lightning_damage,10%|confuse,5",
       "perLvl": "base_damage,6%|lightning_damage,9%|confuse,2",
-      "weapon": null
+      "desc": [
+       "造成 35% 的「武器 + 魔法」伤害",
+       "额外造成 30 + 10% 点闪电伤害",
+       "增加 5% 的「混乱」几率"
+      ],
+      "descPer": [
+       "造成 6% 的「武器 + 魔法」伤害",
+       "额外造成 9 点闪电伤害",
+       "增加 2% 的「混乱」几率"
+      ]
      },
      {
       "name": "lightning_thrust",
@@ -166,7 +242,16 @@
       "req": "lightning_bolt",
       "effects": "base_damage,55%|lightning_damage,25%|confuse,10",
       "perLvl": "base_damage,8%|lightning_damage,20%|confuse,4",
-      "weapon": null
+      "desc": [
+       "造成 55% 的「武器 + 魔法」伤害",
+       "额外造成 25% 点闪电伤害",
+       "增加 10% 的「混乱」几率"
+      ],
+      "descPer": [
+       "造成 8% 的「武器 + 魔法」伤害",
+       "额外造成 20% 点闪电伤害",
+       "增加 4% 的「混乱」几率"
+      ]
      },
      {
       "name": "lightning_storm",
@@ -180,7 +265,16 @@
       "req": "lightning_thrust",
       "effects": "base_damage,80%|lightning_damage,20%|confuse,15",
       "perLvl": "base_damage,10%|lightning_damage,15%|confuse,6",
-      "weapon": null
+      "desc": [
+       "造成 80% 的「武器 + 魔法」伤害",
+       "额外造成 20% 点闪电伤害",
+       "增加 15% 的「混乱」几率"
+      ],
+      "descPer": [
+       "造成 10% 的「武器 + 魔法」伤害",
+       "额外造成 15% 点闪电伤害",
+       "增加 6% 的「混乱」几率"
+      ]
      },
      {
       "name": "lightning_enervation",
@@ -194,7 +288,12 @@
       "req": "lightning_storm",
       "effects": "lightning_res,-10%",
       "perLvl": "lightning_res,-4%",
-      "weapon": null
+      "desc": [
+       "降低 -10% 点闪电抗性"
+      ],
+      "descPer": [
+       "降低 -4% 点闪电抗性"
+      ]
      },
      {
       "name": "lightning_beam",
@@ -208,7 +307,16 @@
       "req": "lightning_enervation",
       "effects": "base_damage,100%|lightning_damage,50%|confuse,20",
       "perLvl": "base_damage,12%|lightning_damage,20%|confuse,10",
-      "weapon": null
+      "desc": [
+       "造成 100% 的「武器 + 魔法」伤害",
+       "额外造成 50% 点闪电伤害",
+       "增加 20% 的「混乱」几率"
+      ],
+      "descPer": [
+       "造成 12% 的「武器 + 魔法」伤害",
+       "额外造成 20% 点闪电伤害",
+       "增加 10% 的「混乱」几率"
+      ]
      }
     ]
    },
@@ -227,7 +335,12 @@
       "req": null,
       "effects": "fire_damage,10|fire_damage,5%",
       "perLvl": "fire_damage,4%",
-      "weapon": null
+      "desc": [
+       "额外造成 10 + 5% 点火焰伤害"
+      ],
+      "descPer": [
+       "额外造成 4 点火焰伤害"
+      ]
      },
      {
       "name": "fire_bolt",
@@ -241,7 +354,16 @@
       "req": "fire_mastery",
       "effects": "base_damage,35%|fire_damage,30|fire_damage,10%|burn,5",
       "perLvl": "base_damage,6%|fire_damage,9%|burn,2",
-      "weapon": null
+      "desc": [
+       "造成 35% 的「武器 + 魔法」伤害",
+       "额外造成 30 + 10% 点火焰伤害",
+       "增加 5% 的「灼烧」几率"
+      ],
+      "descPer": [
+       "造成 6% 的「武器 + 魔法」伤害",
+       "额外造成 9 点火焰伤害",
+       "增加 2% 的「灼烧」几率"
+      ]
      },
      {
       "name": "fire_thrust",
@@ -255,7 +377,16 @@
       "req": "fire_bolt",
       "effects": "base_damage,55%|fire_damage,25%|burn,10",
       "perLvl": "base_damage,8%|fire_damage,20%|burn,4",
-      "weapon": null
+      "desc": [
+       "造成 55% 的「武器 + 魔法」伤害",
+       "额外造成 25% 点火焰伤害",
+       "增加 10% 的「灼烧」几率"
+      ],
+      "descPer": [
+       "造成 8% 的「武器 + 魔法」伤害",
+       "额外造成 20% 点火焰伤害",
+       "增加 4% 的「灼烧」几率"
+      ]
      },
      {
       "name": "fire_storm",
@@ -269,7 +400,16 @@
       "req": "fire_thrust",
       "effects": "base_damage,80%|fire_damage,20%|burn,15",
       "perLvl": "base_damage,10%|fire_damage,15%|burn,6",
-      "weapon": null
+      "desc": [
+       "造成 80% 的「武器 + 魔法」伤害",
+       "额外造成 20% 点火焰伤害",
+       "增加 15% 的「灼烧」几率"
+      ],
+      "descPer": [
+       "造成 10% 的「武器 + 魔法」伤害",
+       "额外造成 15% 点火焰伤害",
+       "增加 6% 的「灼烧」几率"
+      ]
      },
      {
       "name": "fire_enervation",
@@ -283,7 +423,12 @@
       "req": "fire_storm",
       "effects": "fire_res,-10%",
       "perLvl": "fire_res,-4%",
-      "weapon": null
+      "desc": [
+       "降低 -10% 点火焰抗性"
+      ],
+      "descPer": [
+       "降低 -4% 点火焰抗性"
+      ]
      },
      {
       "name": "fire_beam",
@@ -297,7 +442,16 @@
       "req": "fire_enervation",
       "effects": "base_damage,100%|fire_damage,50%|burn,20",
       "perLvl": "base_damage,12%|fire_damage,20%|burn,10",
-      "weapon": null
+      "desc": [
+       "造成 100% 的「武器 + 魔法」伤害",
+       "额外造成 50% 点火焰伤害",
+       "增加 20% 的「灼烧」几率"
+      ],
+      "descPer": [
+       "造成 12% 的「武器 + 魔法」伤害",
+       "额外造成 20% 点火焰伤害",
+       "增加 10% 的「灼烧」几率"
+      ]
      }
     ]
    },
@@ -316,7 +470,12 @@
       "req": null,
       "effects": "spell_damage,15|spell_damage,5%",
       "perLvl": "spell_damage,4%",
-      "weapon": null
+      "desc": [
+       "额外造成 15 + 5% 点法术伤害"
+      ],
+      "descPer": [
+       "额外造成 4 点法术伤害"
+      ]
      },
      {
       "name": "focused_energy",
@@ -330,7 +489,14 @@
       "req": "greater_spirit",
       "effects": "critical_strike,5%|hit_rating,10",
       "perLvl": "critical_strike,3%|hit_rating,3%",
-      "weapon": null
+      "desc": [
+       "提升「暴击伤害」5%",
+       "提升「命中」10"
+      ],
+      "descPer": [
+       "提升「暴击伤害」3%",
+       "提升「命中」3"
+      ]
      },
      {
       "name": "glass_cannon",
@@ -344,7 +510,14 @@
       "req": "focused_energy",
       "effects": "life,-10%|spell_damage,10%",
       "perLvl": "life,-5%|spell_damage,5%",
-      "weapon": null
+      "desc": [
+       "降低「生命上限」-10%",
+       "额外造成 10% 点法术伤害"
+      ],
+      "descPer": [
+       "降低「生命上限」-5%",
+       "额外造成 5% 点法术伤害"
+      ]
      }
     ]
    },
@@ -363,7 +536,12 @@
       "req": null,
       "effects": "mana,50|mana,15%",
       "perLvl": "mana,10%",
-      "weapon": null
+      "desc": [
+       "提升「法力」50 + 15%"
+      ],
+      "descPer": [
+       "提升「法力」10"
+      ]
      },
      {
       "name": "mana_recovery",
@@ -377,7 +555,12 @@
       "req": "mana_pool",
       "effects": "mana_regen,100",
       "perLvl": "mana_regen,30%",
-      "weapon": null
+      "desc": [
+       "提升「法力回复」100"
+      ],
+      "descPer": [
+       "提升「法力回复」30"
+      ]
      },
      {
       "name": "mana_shield",
@@ -391,7 +574,12 @@
       "req": "mana_recovery",
       "effects": "mana_shield,10",
       "perLvl": "mana_shield,5",
-      "weapon": null
+      "desc": [
+       "将 10% 的来袭伤害改为消耗法力承担（而非生命）"
+      ],
+      "descPer": [
+       "将 5% 的来袭伤害改为消耗法力承担（而非生命）"
+      ]
      }
     ]
    }
@@ -414,7 +602,12 @@
       "req": null,
       "effects": "physical_damage,5%",
       "perLvl": "physical_damage,4%",
-      "weapon": "Shortsword,Scimitar,Warblade"
+      "desc": [
+       "额外造成 5% 点物理伤害"
+      ],
+      "descPer": [
+       "额外造成 4% 点物理伤害"
+      ]
      },
      {
       "name": "double_swing",
@@ -428,7 +621,14 @@
       "req": "sword_mastery",
       "effects": "base_damage,45%|physical_damage,10",
       "perLvl": "base_damage,10%|physical_damage,10%",
-      "weapon": "Shortsword,Scimitar,Warblade"
+      "desc": [
+       "造成 45% 的「武器 + 物理」伤害",
+       "额外造成 10 点物理伤害"
+      ],
+      "descPer": [
+       "造成 10% 的「武器 + 物理」伤害",
+       "额外造成 10 点物理伤害"
+      ]
      },
      {
       "name": "sinister_blades",
@@ -442,7 +642,15 @@
       "req": "double_swing",
       "effects": "base_damage,73%|arcane_damage,20|fear,20",
       "perLvl": "base_damage,4%|arcane_damage,24%",
-      "weapon": "Shortsword,Scimitar,Warblade"
+      "desc": [
+       "造成 73% 的「武器 + 物理」伤害",
+       "额外造成 20 点奥术伤害",
+       "增加 20% 的「恐惧」几率"
+      ],
+      "descPer": [
+       "造成 4% 的「武器 + 物理」伤害",
+       "额外造成 24 点奥术伤害"
+      ]
      },
      {
       "name": "enchanted_blades",
@@ -456,7 +664,15 @@
       "req": "double_swing",
       "effects": "base_damage,73%|lightning_damage,20|blind,20",
       "perLvl": "base_damage,4%|lightning_damage,24%",
-      "weapon": "Shortsword,Scimitar,Warblade"
+      "desc": [
+       "造成 73% 的「武器 + 物理」伤害",
+       "额外造成 20 点闪电伤害",
+       "增加 20% 的「致盲」几率"
+      ],
+      "descPer": [
+       "造成 4% 的「武器 + 物理」伤害",
+       "额外造成 24 点闪电伤害"
+      ]
      },
      {
       "name": "battle_tactics",
@@ -470,7 +686,14 @@
       "req": "enchanted_blades|sinister_blades",
       "effects": "hit_rating,50|attack_speed,25",
       "perLvl": "hit_rating,4%|attack_speed,2%",
-      "weapon": "Shortsword,Scimitar,Warblade"
+      "desc": [
+       "提升「命中」50",
+       "提升「攻速」25"
+      ],
+      "descPer": [
+       "提升「命中」4",
+       "提升「攻速」2"
+      ]
      },
      {
       "name": "perforating_strike",
@@ -484,7 +707,16 @@
       "req": "battle_tactics",
       "effects": "base_damage,100%|critical_chance,25|lightning_damage,20|arcane_damage,20",
       "perLvl": "base_damage,20%|critical_chance,10%",
-      "weapon": "Shortsword,Scimitar,Warblade"
+      "desc": [
+       "造成 100% 的「武器 + 物理」伤害",
+       "提升「暴击几率」25",
+       "额外造成 20 点闪电伤害",
+       "额外造成 20 点奥术伤害"
+      ],
+      "descPer": [
+       "造成 20% 的「武器 + 物理」伤害",
+       "提升「暴击几率」10"
+      ]
      }
     ]
    },
@@ -503,7 +735,12 @@
       "req": null,
       "effects": "bleed_damage,5%",
       "perLvl": "bleed_damage,4%",
-      "weapon": "Berserker Axe,Battle Axe,Twin-bladed Axe"
+      "desc": [
+       "额外造成 5% 点流血伤害"
+      ],
+      "descPer": [
+       "额外造成 4% 点流血伤害"
+      ]
      },
      {
       "name": "barbaric_cleave",
@@ -517,7 +754,16 @@
       "req": "axe_mastery",
       "effects": "base_damage,45%|bleed_damage,25|bleed,45",
       "perLvl": "base_damage,10%|bleed_damage,10%|bleed,10",
-      "weapon": "Berserker Axe,Battle Axe,Twin-bladed Axe"
+      "desc": [
+       "造成 45% 的「武器 + 物理」伤害",
+       "额外造成 25 点流血伤害",
+       "增加 45% 的「致流血」几率"
+      ],
+      "descPer": [
+       "造成 10% 的「武器 + 物理」伤害",
+       "额外造成 10 点流血伤害",
+       "增加 10% 的「致流血」几率"
+      ]
      },
      {
       "name": "sinister_axes",
@@ -531,7 +777,16 @@
       "req": "barbaric_cleave",
       "effects": "base_damage,73%|bleed,25|arcane_damage,20|fear,20",
       "perLvl": "base_damage,4%|arcane_damage,24%",
-      "weapon": "Berserker Axe,Battle Axe,Twin-bladed Axe"
+      "desc": [
+       "造成 73% 的「武器 + 物理」伤害",
+       "增加 25% 的「致流血」几率",
+       "额外造成 20 点奥术伤害",
+       "增加 20% 的「恐惧」几率"
+      ],
+      "descPer": [
+       "造成 4% 的「武器 + 物理」伤害",
+       "额外造成 24 点奥术伤害"
+      ]
      },
      {
       "name": "enchanted_axes",
@@ -545,7 +800,16 @@
       "req": "barbaric_cleave",
       "effects": "base_damage,73%|bleed,25|lightning_damage,20|blind,20",
       "perLvl": "base_damage,4%|lightning_damage,24%",
-      "weapon": "Berserker Axe,Battle Axe,Twin-bladed Axe"
+      "desc": [
+       "造成 73% 的「武器 + 物理」伤害",
+       "增加 25% 的「致流血」几率",
+       "额外造成 20 点闪电伤害",
+       "增加 20% 的「致盲」几率"
+      ],
+      "descPer": [
+       "造成 4% 的「武器 + 物理」伤害",
+       "额外造成 24 点闪电伤害"
+      ]
      },
      {
       "name": "lethal_strikes",
@@ -559,7 +823,10 @@
       "req": "enchanted_axes|sinister_axes",
       "effects": "bleed,15",
       "perLvl": "bleed_damage,4%",
-      "weapon": "Berserker Axe,Battle Axe,Twin-bladed Axe"
+      "desc": [
+       "增加 15% 的「致流血」几率"
+      ],
+      "descPer": []
      },
      {
       "name": "hemorrhaging_swing",
@@ -573,7 +840,18 @@
       "req": "lethal_strikes",
       "effects": "base_damage,100%|bleed,25|bleed_damage,10%|lightning_damage,20|arcane_damage,20",
       "perLvl": "base_damage,20%|bleed,10|bleed_damage,10%",
-      "weapon": "Berserker Axe,Battle Axe,Twin-bladed Axe"
+      "desc": [
+       "造成 100% 的「武器 + 物理」伤害",
+       "增加 25% 的「致流血」几率",
+       "额外造成 10% 点流血伤害",
+       "额外造成 20 点闪电伤害",
+       "额外造成 20 点奥术伤害"
+      ],
+      "descPer": [
+       "造成 20% 的「武器 + 物理」伤害",
+       "增加 10% 的「致流血」几率",
+       "额外造成 10% 点流血伤害"
+      ]
      }
     ]
    },
@@ -592,7 +870,12 @@
       "req": null,
       "effects": "blunt_damage,5%",
       "perLvl": "blunt_damage,4%",
-      "weapon": "Great Club,Heavy Flail,Warhammer"
+      "desc": [
+       "额外造成 5% 点钝击伤害"
+      ],
+      "descPer": [
+       "额外造成 4% 点钝击伤害"
+      ]
      },
      {
       "name": "stunning_blow",
@@ -606,7 +889,16 @@
       "req": "mace_mastery",
       "effects": "base_damage,45%|blunt_damage,10|stun,10",
       "perLvl": "base_damage,10%|blunt_damage,10%|stun,2",
-      "weapon": "Great Club,Heavy Flail,Warhammer"
+      "desc": [
+       "造成 45% 的「武器 + 物理」伤害",
+       "额外造成 10 点钝击伤害",
+       "增加 10% 的「眩晕」几率"
+      ],
+      "descPer": [
+       "造成 10% 的「武器 + 物理」伤害",
+       "额外造成 10 点钝击伤害",
+       "增加 2% 的「眩晕」几率"
+      ]
      },
      {
       "name": "sinister_maces",
@@ -620,7 +912,17 @@
       "req": "stunning_blow",
       "effects": "base_damage,73%|stun,25|blunt_damage,10%|arcane_damage,20|fear,20",
       "perLvl": "base_damage,4%|arcane_damage,24%",
-      "weapon": "Great Club,Heavy Flail,Warhammer"
+      "desc": [
+       "造成 73% 的「武器 + 物理」伤害",
+       "增加 25% 的「眩晕」几率",
+       "额外造成 10% 点钝击伤害",
+       "额外造成 20 点奥术伤害",
+       "增加 20% 的「恐惧」几率"
+      ],
+      "descPer": [
+       "造成 4% 的「武器 + 物理」伤害",
+       "额外造成 24 点奥术伤害"
+      ]
      },
      {
       "name": "enchanted_maces",
@@ -634,7 +936,17 @@
       "req": "stunning_blow",
       "effects": "base_damage,73%|stun,25|blunt_damage,10%|lightning_damage,20|blind,20",
       "perLvl": "base_damage,4%|lightning_damage,24%",
-      "weapon": "Great Club,Heavy Flail,Warhammer"
+      "desc": [
+       "造成 73% 的「武器 + 物理」伤害",
+       "增加 25% 的「眩晕」几率",
+       "额外造成 10% 点钝击伤害",
+       "额外造成 20 点闪电伤害",
+       "增加 20% 的「致盲」几率"
+      ],
+      "descPer": [
+       "造成 4% 的「武器 + 物理」伤害",
+       "额外造成 24 点闪电伤害"
+      ]
      },
      {
       "name": "heavy_handed",
@@ -648,7 +960,12 @@
       "req": "enchanted_maces|sinister_maces",
       "effects": "critical_chance,15",
       "perLvl": "critical_chance,4%",
-      "weapon": "Great Club,Heavy Flail,Warhammer"
+      "desc": [
+       "提升「暴击几率」15"
+      ],
+      "descPer": [
+       "提升「暴击几率」4"
+      ]
      },
      {
       "name": "enveloping_blow",
@@ -662,7 +979,17 @@
       "req": "heavy_handed",
       "effects": "base_damage,100%|stun,25|blunt_damage,10%|lightning_damage,20|arcane_damage,20",
       "perLvl": "base_damage,20%|stun,10",
-      "weapon": "Great Club,Heavy Flail,Warhammer"
+      "desc": [
+       "造成 100% 的「武器 + 物理」伤害",
+       "增加 25% 的「眩晕」几率",
+       "额外造成 10% 点钝击伤害",
+       "额外造成 20 点闪电伤害",
+       "额外造成 20 点奥术伤害"
+      ],
+      "descPer": [
+       "造成 20% 的「武器 + 物理」伤害",
+       "增加 10% 的「眩晕」几率"
+      ]
      }
     ]
    },
@@ -681,7 +1008,12 @@
       "req": null,
       "effects": "base_damage,55%",
       "perLvl": "base_damage,12%",
-      "weapon": null
+      "desc": [
+       "造成 55% 的「武器 + 物理」伤害"
+      ],
+      "descPer": [
+       "造成 12% 的「武器 + 物理」伤害"
+      ]
      },
      {
       "name": "vicious_attack",
@@ -695,7 +1027,14 @@
       "req": "leap",
       "effects": "base_damage,55%|critical_chance,20",
       "perLvl": "base_damage,15%|critical_chance,10%",
-      "weapon": null
+      "desc": [
+       "造成 55% 的「武器 + 物理」伤害",
+       "提升「暴击几率」20"
+      ],
+      "descPer": [
+       "造成 15% 的「武器 + 物理」伤害",
+       "提升「暴击几率」10"
+      ]
      },
      {
       "name": "dark_whirlwind",
@@ -709,7 +1048,12 @@
       "req": "vicious_attack",
       "effects": "arcane_damage,30|arcane_damage,30%",
       "perLvl": "base_damage,7%|arcane_damage,12%",
-      "weapon": null
+      "desc": [
+       "额外造成 30 + 30% 点奥术伤害"
+      ],
+      "descPer": [
+       "额外造成 12 点奥术伤害"
+      ]
      },
      {
       "name": "seismic_leap",
@@ -723,7 +1067,16 @@
       "req": "vicious_attack",
       "effects": "base_damage,60%|lightning_damage,50|stun,50",
       "perLvl": "base_damage,10%|stun,2|lightning_damage,16%",
-      "weapon": null
+      "desc": [
+       "造成 60% 的「武器 + 物理」伤害",
+       "额外造成 50 点闪电伤害",
+       "增加 50% 的「眩晕」几率"
+      ],
+      "descPer": [
+       "造成 10% 的「武器 + 物理」伤害",
+       "额外造成 16 点闪电伤害",
+       "增加 2% 的「眩晕」几率"
+      ]
      },
      {
       "name": "fury_cutter",
@@ -737,7 +1090,16 @@
       "req": "seismic_leap|dark_whirlwind",
       "effects": "base_damage,40%|critical_chance,25|critical_strike,25",
       "perLvl": "base_damage,20%|critical_chance,6%|critical_strike,2%",
-      "weapon": null
+      "desc": [
+       "造成 40% 的「武器 + 物理」伤害",
+       "提升「暴击几率」25",
+       "提升「暴击伤害」25"
+      ],
+      "descPer": [
+       "造成 20% 的「武器 + 物理」伤害",
+       "提升「暴击几率」6",
+       "提升「暴击伤害」2"
+      ]
      },
      {
       "name": "frenzy_focus",
@@ -751,7 +1113,16 @@
       "req": "fury_cutter",
       "effects": "hit_rating,30|strikes,0.2|turns,0.1",
       "perLvl": "hit_rating,6%|strikes,0.2|turns,0.1",
-      "weapon": null
+      "desc": [
+       "提升「命中」30",
+       "增加 0.2 段打击",
+       "提升「回合」0.1"
+      ],
+      "descPer": [
+       "提升「命中」6",
+       "增加 0.2 段打击",
+       "提升「回合」0.1"
+      ]
      }
     ]
    },
@@ -770,7 +1141,19 @@
       "req": null,
       "effects": "block_chance,-100%|base_defense,-2%|attack_speed,100|hit_rating,150|critical_strike,50",
       "perLvl": "base_defense,-2%|attack_speed,5%|hit_rating,5%|critical_strike,5%",
-      "weapon": null
+      "desc": [
+       "降低「格挡几率」-100%",
+       "降低「基础防御」-2%",
+       "提升「攻速」100",
+       "提升「命中」150",
+       "提升「暴击伤害」50"
+      ],
+      "descPer": [
+       "降低「基础防御」-2%",
+       "提升「攻速」5",
+       "提升「命中」5",
+       "提升「暴击伤害」5"
+      ]
      },
      {
       "name": "ancestral_fury",
@@ -784,7 +1167,14 @@
       "req": "primal_rage",
       "effects": "arcane_damage,5%|lightning_damage,5%",
       "perLvl": "arcane_damage,10%|lightning_damage,10%",
-      "weapon": null
+      "desc": [
+       "额外造成 5% 点奥术伤害",
+       "额外造成 5% 点闪电伤害"
+      ],
+      "descPer": [
+       "额外造成 10% 点奥术伤害",
+       "额外造成 10% 点闪电伤害"
+      ]
      },
      {
       "name": "ancestral_transformation",
@@ -798,7 +1188,18 @@
       "req": "ancestral_fury",
       "effects": "critical_chance,15|arcane_damage,5%|lightning_damage,5%|turns,0.2",
       "perLvl": "critical_chance,12|arcane_damage,5%|lightning_damage,5%|turns,0.2",
-      "weapon": null
+      "desc": [
+       "提升「暴击几率」15",
+       "额外造成 5% 点奥术伤害",
+       "额外造成 5% 点闪电伤害",
+       "提升「回合」0.2"
+      ],
+      "descPer": [
+       "提升「暴击几率」12",
+       "额外造成 5% 点奥术伤害",
+       "额外造成 5% 点闪电伤害",
+       "提升「回合」0.2"
+      ]
      }
     ]
    },
@@ -817,7 +1218,14 @@
       "req": null,
       "effects": "life,100|life_regen,50",
       "perLvl": "life,4%|life_regen,2%",
-      "weapon": null
+      "desc": [
+       "提升「生命上限」100",
+       "提升「生命回复」50"
+      ],
+      "descPer": [
+       "提升「生命上限」4",
+       "提升「生命回复」2"
+      ]
      },
      {
       "name": "blood_rage",
@@ -831,7 +1239,12 @@
       "req": "growth_spirit",
       "effects": "life_steal,15|life_steal,4%",
       "perLvl": "life_steal,15|life_steal,4%",
-      "weapon": null
+      "desc": [
+       "提升「生命偷取」15 + 4%"
+      ],
+      "descPer": [
+       "提升「生命偷取」15 + 4%"
+      ]
      },
      {
       "name": "warlords_greed",
@@ -845,7 +1258,14 @@
       "req": "blood_rage",
       "effects": "magic_find,5%|gold_find,5%",
       "perLvl": "magic_find,5%|gold_find,5%",
-      "weapon": null
+      "desc": [
+       "提升 5% 的寻宝几率",
+       "提升 5% 的金币掉落率"
+      ],
+      "descPer": [
+       "提升 5% 的寻宝几率",
+       "提升 5% 的金币掉落率"
+      ]
      }
     ]
    }
@@ -868,7 +1288,12 @@
       "req": null,
       "effects": "base_resistance,20",
       "perLvl": "base_resistance,2%",
-      "weapon": null
+      "desc": [
+       "提升「基础抗性」20"
+      ],
+      "descPer": [
+       "提升「基础抗性」2"
+      ]
      },
      {
       "name": "armor_of_resilience",
@@ -882,7 +1307,12 @@
       "req": "natural_resistance",
       "effects": "resilience,20",
       "perLvl": "resilience,20%",
-      "weapon": null
+      "desc": [
+       "提升「韧性」20"
+      ],
+      "descPer": [
+       "提升「韧性」20"
+      ]
      },
      {
       "name": "oak_skin",
@@ -896,7 +1326,12 @@
       "req": "armor_of_resilience",
       "effects": "base_defense,50",
       "perLvl": "base_defense,8%",
-      "weapon": null
+      "desc": [
+       "提升「基础防御」50"
+      ],
+      "descPer": [
+       "提升「基础防御」8"
+      ]
      },
      {
       "name": "stand_your_ground",
@@ -910,7 +1345,14 @@
       "req": "oak_skin",
       "effects": "base_defense,50|fortitude,20",
       "perLvl": "base_defense,10%|fortitude,10%",
-      "weapon": null
+      "desc": [
+       "提升「基础防御」50",
+       "提升「坚韧」20"
+      ],
+      "descPer": [
+       "提升「基础防御」10",
+       "提升「坚韧」10"
+      ]
      }
     ]
    },
@@ -929,7 +1371,16 @@
       "req": null,
       "effects": "fortitude,20|blunt_damage,2%|life,2%",
       "perLvl": "fortitude,40|blunt_damage,4%|life,4%",
-      "weapon": "Thorned Cestus,Spiked Cestus,Earthshaker Cestus"
+      "desc": [
+       "提升「坚韧」20",
+       "额外造成 2% 点钝击伤害",
+       "提升「生命上限」2%"
+      ],
+      "descPer": [
+       "提升「坚韧」40",
+       "额外造成 4% 点钝击伤害",
+       "提升「生命上限」4%"
+      ]
      },
      {
       "name": "brute_maul",
@@ -943,7 +1394,14 @@
       "req": "heart_of_the_bear",
       "effects": "base_damage,40%|blunt_damage,10%",
       "perLvl": "base_damage,8%|blunt_damage,4%",
-      "weapon": "Thorned Cestus,Spiked Cestus,Earthshaker Cestus"
+      "desc": [
+       "造成 40% 的「武器 + 物理」伤害",
+       "额外造成 10% 点钝击伤害"
+      ],
+      "descPer": [
+       "造成 8% 的「武器 + 物理」伤害",
+       "额外造成 4% 点钝击伤害"
+      ]
      },
      {
       "name": "claw_strike",
@@ -957,7 +1415,15 @@
       "req": "brute_maul",
       "effects": "base_damage,75%|blunt_damage,10%|critical_chance,50",
       "perLvl": "blunt_damage,12%|critical_chance,10",
-      "weapon": "Thorned Cestus,Spiked Cestus,Earthshaker Cestus"
+      "desc": [
+       "造成 75% 的「武器 + 物理」伤害",
+       "额外造成 10% 点钝击伤害",
+       "提升「暴击几率」50"
+      ],
+      "descPer": [
+       "额外造成 12% 点钝击伤害",
+       "提升「暴击几率」10"
+      ]
      },
      {
       "name": "jaw_breaker",
@@ -971,7 +1437,16 @@
       "req": "claw_strike",
       "effects": "base_damage,70%|blunt_damage,10%|silence,50",
       "perLvl": "base_damage,10%|blunt_damage,10%|base_damage,4%|silence,10",
-      "weapon": "Thorned Cestus,Spiked Cestus,Earthshaker Cestus"
+      "desc": [
+       "造成 70% 的「武器 + 物理」伤害",
+       "额外造成 10% 点钝击伤害",
+       "增加 50% 的「沉默」几率"
+      ],
+      "descPer": [
+       "造成 10% 的「武器 + 物理」伤害",
+       "额外造成 10% 点钝击伤害",
+       "增加 10% 的「沉默」几率"
+      ]
      },
      {
       "name": "enrage",
@@ -985,7 +1460,18 @@
       "req": "jaw_breaker",
       "effects": "base_damage,100%|blunt_damage,8%|critical_chance,5%|stun,5",
       "perLvl": "base_damage,4%|blunt_damage,16%|critical_chance,10%|stun,10",
-      "weapon": "Thorned Cestus,Spiked Cestus,Earthshaker Cestus"
+      "desc": [
+       "造成 100% 的「武器 + 物理」伤害",
+       "额外造成 8% 点钝击伤害",
+       "提升「暴击几率」5%",
+       "增加 5% 的「眩晕」几率"
+      ],
+      "descPer": [
+       "造成 4% 的「武器 + 物理」伤害",
+       "额外造成 16% 点钝击伤害",
+       "提升「暴击几率」10%",
+       "增加 10% 的「眩晕」几率"
+      ]
      },
      {
       "name": "earthquake",
@@ -999,7 +1485,16 @@
       "req": "enrage",
       "effects": "base_damage,120%|blunt_damage,60|base_damage,40%|stun,10",
       "perLvl": "base_damage,20%|blunt_damage,10%|stun,10",
-      "weapon": "Thorned Cestus,Spiked Cestus,Earthshaker Cestus"
+      "desc": [
+       "造成 160% 的「武器 + 物理」伤害",
+       "额外造成 60 点钝击伤害",
+       "增加 10% 的「眩晕」几率"
+      ],
+      "descPer": [
+       "造成 20% 的「武器 + 物理」伤害",
+       "额外造成 10 点钝击伤害",
+       "增加 10% 的「眩晕」几率"
+      ]
      }
     ]
    },
@@ -1018,7 +1513,16 @@
       "req": null,
       "effects": "armor_pen,10|bleed,5.5|attack_speed,2%",
       "perLvl": "armor_pen,40|bleed,0.5|bleed_damage,4%|attack_speed,4%",
-      "weapon": "Spear,Pike,Trident"
+      "desc": [
+       "提升「破甲」10",
+       "增加 5.5% 的「致流血」几率",
+       "提升「攻速」2%"
+      ],
+      "descPer": [
+       "提升「破甲」40",
+       "增加 0.5% 的「致流血」几率",
+       "提升「攻速」4%"
+      ]
      },
      {
       "name": "lacerate",
@@ -1032,7 +1536,16 @@
       "req": "heart_of_the_wolf",
       "effects": "base_damage,40%|bleed,15|bleed_damage,1%",
       "perLvl": "base_damage,7%|bleed,8|bleed_damage,4%",
-      "weapon": "Spear,Pike,Trident"
+      "desc": [
+       "造成 40% 的「武器 + 物理」伤害",
+       "增加 15% 的「致流血」几率",
+       "额外造成 1% 点流血伤害"
+      ],
+      "descPer": [
+       "造成 7% 的「武器 + 物理」伤害",
+       "增加 8% 的「致流血」几率",
+       "额外造成 4% 点流血伤害"
+      ]
      },
      {
       "name": "impactful_strike",
@@ -1046,7 +1559,14 @@
       "req": "lacerate",
       "effects": "base_damage,75%|base_damage,8%|armor_pen,40",
       "perLvl": "base_damage,7%|armor_pen,16%",
-      "weapon": "Spear,Pike,Trident"
+      "desc": [
+       "造成 83% 的「武器 + 物理」伤害",
+       "提升「破甲」40"
+      ],
+      "descPer": [
+       "造成 7% 的「武器 + 物理」伤害",
+       "提升「破甲」16"
+      ]
      },
      {
       "name": "javelin_throw",
@@ -1060,7 +1580,14 @@
       "req": "impactful_strike",
       "effects": "base_damage,70%|bleed,10",
       "perLvl": "base_damage,10%|bleed,5",
-      "weapon": "Spear,Pike,Trident"
+      "desc": [
+       "造成 70% 的「武器 + 物理」伤害",
+       "增加 10% 的「致流血」几率"
+      ],
+      "descPer": [
+       "造成 10% 的「武器 + 物理」伤害",
+       "增加 5% 的「致流血」几率"
+      ]
      },
      {
       "name": "wildwood_impale",
@@ -1074,7 +1601,16 @@
       "req": "javelin_throw",
       "effects": "base_damage,100%|bleed,10|armor_pen,10",
       "perLvl": "base_damage,12%|bleed,7|armor_pen,10%",
-      "weapon": "Spear,Pike,Trident"
+      "desc": [
+       "造成 100% 的「武器 + 物理」伤害",
+       "增加 10% 的「致流血」几率",
+       "提升「破甲」10"
+      ],
+      "descPer": [
+       "造成 12% 的「武器 + 物理」伤害",
+       "增加 7% 的「致流血」几率",
+       "提升「破甲」10"
+      ]
      },
      {
       "name": "pack_attack",
@@ -1088,7 +1624,17 @@
       "req": "wildwood_impale",
       "effects": "base_damage,120%|bleed_damage,40|armor_pen,10|bleed,10",
       "perLvl": "base_damage,20%|bleed,6|bleed_damage,10%|strikes,0.2",
-      "weapon": "Spear,Pike,Trident"
+      "desc": [
+       "造成 120% 的「武器 + 物理」伤害",
+       "额外造成 40 点流血伤害",
+       "提升「破甲」10",
+       "增加 10% 的「致流血」几率"
+      ],
+      "descPer": [
+       "造成 20% 的「武器 + 物理」伤害",
+       "额外造成 10 点流血伤害",
+       "增加 6% 的「致流血」几率"
+      ]
      }
     ]
    },
@@ -1107,7 +1653,16 @@
       "req": null,
       "effects": "hit_rating,20|spell_damage,2%|evasion,2%",
       "perLvl": "hit_rating,40|spell_damage,4%|evasion,4%",
-      "weapon": "Novice Staff,Initiate Staff,Grandmaster Staff"
+      "desc": [
+       "提升「命中」20",
+       "额外造成 2% 点法术伤害",
+       "提升「闪避」2%"
+      ],
+      "descPer": [
+       "提升「命中」40",
+       "额外造成 4% 点法术伤害",
+       "提升「闪避」4%"
+      ]
      },
      {
       "name": "owl_peck",
@@ -1121,7 +1676,14 @@
       "req": "heart_of_the_owl",
       "effects": "base_damage,40%|blind,5",
       "perLvl": "base_damage,8%|blind,2",
-      "weapon": "Novice Staff,Initiate Staff,Grandmaster Staff"
+      "desc": [
+       "造成 40% 的「武器 + 魔法」伤害",
+       "增加 5% 的「致盲」几率"
+      ],
+      "descPer": [
+       "造成 8% 的「武器 + 魔法」伤害",
+       "增加 2% 的「致盲」几率"
+      ]
      },
      {
       "name": "claw_assault",
@@ -1135,7 +1697,15 @@
       "req": "owl_peck",
       "effects": "base_damage,75%|spell_damage,30|attack_speed,5%",
       "perLvl": "spell_damage,10%|attack_speed,4%",
-      "weapon": "Novice Staff,Initiate Staff,Grandmaster Staff"
+      "desc": [
+       "造成 75% 的「武器 + 魔法」伤害",
+       "额外造成 30 点法术伤害",
+       "提升「攻速」5%"
+      ],
+      "descPer": [
+       "额外造成 10 点法术伤害",
+       "提升「攻速」4%"
+      ]
      },
      {
       "name": "summon_flies",
@@ -1149,7 +1719,16 @@
       "req": "claw_assault",
       "effects": "base_damage,70%|spell_damage,10|blind,10",
       "perLvl": "base_damage,8%|spell_damage,10%|blind,15",
-      "weapon": "Novice Staff,Initiate Staff,Grandmaster Staff"
+      "desc": [
+       "造成 70% 的「武器 + 魔法」伤害",
+       "额外造成 10 点法术伤害",
+       "增加 10% 的「致盲」几率"
+      ],
+      "descPer": [
+       "造成 8% 的「武器 + 魔法」伤害",
+       "额外造成 10 点法术伤害",
+       "增加 15% 的「致盲」几率"
+      ]
      },
      {
       "name": "feather_throw",
@@ -1163,7 +1742,15 @@
       "req": "summon_flies",
       "effects": "base_damage,100%|spell_damage,10%|root,50",
       "perLvl": "spell_damage,10%|root,10",
-      "weapon": "Novice Staff,Initiate Staff,Grandmaster Staff"
+      "desc": [
+       "造成 100% 的「武器 + 魔法」伤害",
+       "额外造成 10% 点法术伤害",
+       "增加 50% 的「定身」几率"
+      ],
+      "descPer": [
+       "额外造成 10% 点法术伤害",
+       "增加 10% 的「定身」几率"
+      ]
      },
      {
       "name": "tornado",
@@ -1177,7 +1764,16 @@
       "req": "feather_throw",
       "effects": "base_damage,130%|spell_damage,100|silence,10",
       "perLvl": "base_damage,20%|spell_damage,12%|silence,10",
-      "weapon": "Novice Staff,Initiate Staff,Grandmaster Staff"
+      "desc": [
+       "造成 130% 的「武器 + 魔法」伤害",
+       "额外造成 100 点法术伤害",
+       "增加 10% 的「沉默」几率"
+      ],
+      "descPer": [
+       "造成 20% 的「武器 + 魔法」伤害",
+       "额外造成 12 点法术伤害",
+       "增加 10% 的「沉默」几率"
+      ]
      }
     ]
    },
@@ -1196,7 +1792,14 @@
       "req": null,
       "effects": "base_damage,45%|thorn_damage,50",
       "perLvl": "base_damage,4%|thorn_damage,4%",
-      "weapon": null
+      "desc": [
+       "造成 45% 的「武器 + 物理」伤害",
+       "额外造成 50 点荆棘伤害"
+      ],
+      "descPer": [
+       "造成 4% 的「武器 + 物理」伤害",
+       "额外造成 4 点荆棘伤害"
+      ]
      },
      {
       "name": "way_of_thorns",
@@ -1210,7 +1813,12 @@
       "req": "natures_fury",
       "effects": "thorn_damage,4%",
       "perLvl": "thorn_damage,4%",
-      "weapon": null
+      "desc": [
+       "额外造成 4% 点荆棘伤害"
+      ],
+      "descPer": [
+       "额外造成 4% 点荆棘伤害"
+      ]
      }
     ]
    },
@@ -1229,7 +1837,12 @@
       "req": null,
       "effects": "health,100",
       "perLvl": "health,200",
-      "weapon": null
+      "desc": [
+       "恢复 100 点生命"
+      ],
+      "descPer": [
+       "恢复 200 点生命"
+      ]
      },
      {
       "name": "oakheart",
@@ -1243,7 +1856,12 @@
       "req": "natures_mend",
       "effects": "life,100",
       "perLvl": "life,6%",
-      "weapon": null
+      "desc": [
+       "提升「生命上限」100"
+      ],
+      "descPer": [
+       "提升「生命上限」6"
+      ]
      },
      {
       "name": "roots_of_the_oak",
@@ -1257,7 +1875,14 @@
       "req": "oakheart",
       "effects": "life_regen,200|life_regen,20%|turns,0.5",
       "perLvl": "life_regen,20%|turns,0.5",
-      "weapon": null
+      "desc": [
+       "提升「生命回复」200 + 20%",
+       "提升「回合」0.5"
+      ],
+      "descPer": [
+       "提升「生命回复」20",
+       "提升「回合」0.5"
+      ]
      }
     ]
    }
@@ -1280,7 +1905,12 @@
       "req": null,
       "effects": "base_resistance,20",
       "perLvl": "base_resistance,2%",
-      "weapon": null
+      "desc": [
+       "提升「基础抗性」20"
+      ],
+      "descPer": [
+       "提升「基础抗性」2"
+      ]
      },
      {
       "name": "bandage",
@@ -1294,7 +1924,12 @@
       "req": "natural_resistance",
       "effects": "health,200",
       "perLvl": "health,200",
-      "weapon": null
+      "desc": [
+       "恢复 200 点生命"
+      ],
+      "descPer": [
+       "恢复 200 点生命"
+      ]
      },
      {
       "name": "improved_reflexes",
@@ -1308,7 +1943,12 @@
       "req": "bandage",
       "effects": "evasion,10%",
       "perLvl": "evasion,3%",
-      "weapon": null
+      "desc": [
+       "提升「闪避」10%"
+      ],
+      "descPer": [
+       "提升「闪避」3%"
+      ]
      }
     ]
    },
@@ -1327,7 +1967,14 @@
       "req": null,
       "effects": "physical_damage,5%|attack_speed,5%",
       "perLvl": "physical_damage,2%|attack_speed,1%",
-      "weapon": "Short Bow,Compound Bow,Longbow"
+      "desc": [
+       "额外造成 5% 点物理伤害",
+       "提升「攻速」5%"
+      ],
+      "descPer": [
+       "额外造成 2% 点物理伤害",
+       "提升「攻速」1%"
+      ]
      },
      {
       "name": "double_shot",
@@ -1341,7 +1988,12 @@
       "req": "bow_mastery",
       "effects": "base_damage,50%",
       "perLvl": "base_damage,6%",
-      "weapon": "Short Bow,Compound Bow,Longbow"
+      "desc": [
+       "造成 50% 的「武器 + 物理」伤害"
+      ],
+      "descPer": [
+       "造成 6% 的「武器 + 物理」伤害"
+      ]
      },
      {
       "name": "poison_shot",
@@ -1355,7 +2007,16 @@
       "req": "double_shot",
       "effects": "base_damage,60%|poison_damage,10|poison_damage,30%|infect,15",
       "perLvl": "base_damage,3%|poison_damage,6%|infect,2",
-      "weapon": "Short Bow,Compound Bow,Longbow"
+      "desc": [
+       "造成 60% 的「武器 + 物理」伤害",
+       "额外造成 10 + 30% 点毒素伤害",
+       "增加 15% 的「感染」几率"
+      ],
+      "descPer": [
+       "造成 3% 的「武器 + 物理」伤害",
+       "额外造成 6 点毒素伤害",
+       "增加 2% 的「感染」几率"
+      ]
      },
      {
       "name": "pin_down",
@@ -1369,7 +2030,16 @@
       "req": "poison_shot",
       "effects": "base_damage,85%|root,55|infect,20",
       "perLvl": "base_damage,5%|poison_damage,8%|root,4|infect,5",
-      "weapon": "Short Bow,Compound Bow,Longbow"
+      "desc": [
+       "造成 85% 的「武器 + 魔法」伤害",
+       "增加 55% 的「定身」几率",
+       "增加 20% 的「感染」几率"
+      ],
+      "descPer": [
+       "造成 5% 的「武器 + 魔法」伤害",
+       "增加 4% 的「定身」几率",
+       "增加 5% 的「感染」几率"
+      ]
      },
      {
       "name": "venom_barrage",
@@ -1383,7 +2053,16 @@
       "req": "pin_down",
       "effects": "base_damage,110%|poison_damage,20|poison_damage,30%|infect,20",
       "perLvl": "base_damage,10%|poison_damage,20|poison_damage,25%|infect,10",
-      "weapon": "Short Bow,Compound Bow,Longbow"
+      "desc": [
+       "造成 110% 的「武器 + 魔法」伤害",
+       "额外造成 20 + 30% 点毒素伤害",
+       "增加 20% 的「感染」几率"
+      ],
+      "descPer": [
+       "造成 10% 的「武器 + 魔法」伤害",
+       "额外造成 20 + 25% 点毒素伤害",
+       "增加 10% 的「感染」几率"
+      ]
      }
     ]
    },
@@ -1402,7 +2081,14 @@
       "req": null,
       "effects": "physical_damage,5%|armor_pen,5%",
       "perLvl": "physical_damage,2%|armor_pen,1%",
-      "weapon": "Pistol Crossbow,Repeating Crossbow,Arbalest"
+      "desc": [
+       "额外造成 5% 点物理伤害",
+       "提升「破甲」5%"
+      ],
+      "descPer": [
+       "额外造成 2% 点物理伤害",
+       "提升「破甲」1%"
+      ]
      },
      {
       "name": "piercing_bolt",
@@ -1416,7 +2102,18 @@
       "req": "crossbow_mastery",
       "effects": "base_damage,45%|bleed,15|critical_strike,5%|armor_pen,10",
       "perLvl": "base_damage,4%|bleed,1|armor_pen,3%|critical_strike,1%",
-      "weapon": "Pistol Crossbow,Repeating Crossbow,Arbalest"
+      "desc": [
+       "造成 45% 的「武器 + 物理」伤害",
+       "增加 15% 的「致流血」几率",
+       "提升「暴击伤害」5%",
+       "提升「破甲」10"
+      ],
+      "descPer": [
+       "造成 4% 的「武器 + 物理」伤害",
+       "增加 1% 的「致流血」几率",
+       "提升「暴击伤害」1%",
+       "提升「破甲」3"
+      ]
      },
      {
       "name": "splintering_shot",
@@ -1430,7 +2127,15 @@
       "req": "piercing_bolt",
       "effects": "base_damage,60%|bleed_damage,10|bleed_damage,30%|bleed,15",
       "perLvl": "bleed_damage,5%|bleed,3",
-      "weapon": "Pistol Crossbow,Repeating Crossbow,Arbalest"
+      "desc": [
+       "造成 60% 的「武器 + 物理」伤害",
+       "额外造成 10 + 30% 点流血伤害",
+       "增加 15% 的「致流血」几率"
+      ],
+      "descPer": [
+       "额外造成 5 点流血伤害",
+       "增加 3% 的「致流血」几率"
+      ]
      },
      {
       "name": "boltnet_shot",
@@ -1444,7 +2149,16 @@
       "req": "splintering_shot",
       "effects": "base_damage,85%|root,55|bleed,20",
       "perLvl": "base_damage,5%|bleed_damage,8%|root,4|bleed,5",
-      "weapon": "Pistol Crossbow,Repeating Crossbow,Arbalest"
+      "desc": [
+       "造成 85% 的「武器 + 魔法」伤害",
+       "增加 55% 的「定身」几率",
+       "增加 20% 的「致流血」几率"
+      ],
+      "descPer": [
+       "造成 5% 的「武器 + 魔法」伤害",
+       "增加 4% 的「定身」几率",
+       "增加 5% 的「致流血」几率"
+      ]
      },
      {
       "name": "crimson_volley",
@@ -1458,7 +2172,14 @@
       "req": "boltnet_shot",
       "effects": "base_damage,100%|attack_speed,50|attack_speed,20%",
       "perLvl": "base_damage,5%|attack_speed,10%",
-      "weapon": "Pistol Crossbow,Repeating Crossbow,Arbalest"
+      "desc": [
+       "造成 100% 的「武器 + 物理」伤害",
+       "提升「攻速」50 + 20%"
+      ],
+      "descPer": [
+       "造成 5% 的「武器 + 物理」伤害",
+       "提升「攻速」10"
+      ]
      }
     ]
    },
@@ -1477,7 +2198,14 @@
       "req": null,
       "effects": "base_damage,45%|root,40",
       "perLvl": "base_damage,3%|root,5",
-      "weapon": null
+      "desc": [
+       "造成 45% 的「武器 + 魔法」伤害",
+       "增加 40% 的「定身」几率"
+      ],
+      "descPer": [
+       "造成 3% 的「武器 + 魔法」伤害",
+       "增加 5% 的「定身」几率"
+      ]
      },
      {
       "name": "dazing_trap",
@@ -1491,7 +2219,14 @@
       "req": "snare_trap",
       "effects": "base_damage,45%|confuse,40",
       "perLvl": "base_damage,4%|confuse,6",
-      "weapon": null
+      "desc": [
+       "造成 45% 的「武器 + 魔法」伤害",
+       "增加 40% 的「混乱」几率"
+      ],
+      "descPer": [
+       "造成 4% 的「武器 + 魔法」伤害",
+       "增加 6% 的「混乱」几率"
+      ]
      },
      {
       "name": "poison_cloud_trap",
@@ -1505,7 +2240,16 @@
       "req": "dazing_trap",
       "effects": "base_damage,50%|poison_damage,25|confuse,40",
       "perLvl": "base_damage,8%|poison_damage,10%|confuse,6",
-      "weapon": null
+      "desc": [
+       "造成 50% 的「武器 + 魔法」伤害",
+       "额外造成 25 点毒素伤害",
+       "增加 40% 的「混乱」几率"
+      ],
+      "descPer": [
+       "造成 8% 的「武器 + 魔法」伤害",
+       "额外造成 10 点毒素伤害",
+       "增加 6% 的「混乱」几率"
+      ]
      },
      {
       "name": "bear_trap",
@@ -1519,7 +2263,16 @@
       "req": "poison_cloud_trap",
       "effects": "base_damage,55%|bleed_damage,50|root,45",
       "perLvl": "base_damage,8%|bleed_damage,8%|root,7",
-      "weapon": null
+      "desc": [
+       "造成 55% 的「武器 + 魔法」伤害",
+       "额外造成 50 点流血伤害",
+       "增加 45% 的「定身」几率"
+      ],
+      "descPer": [
+       "造成 8% 的「武器 + 魔法」伤害",
+       "额外造成 8 点流血伤害",
+       "增加 7% 的「定身」几率"
+      ]
      },
      {
       "name": "choking_spores",
@@ -1533,7 +2286,16 @@
       "req": "bear_trap",
       "effects": "base_damage,50%|poison_damage,100|infect,50",
       "perLvl": "base_damage,5%|poison_damage,15%|infect,5",
-      "weapon": null
+      "desc": [
+       "造成 50% 的「武器 + 魔法」伤害",
+       "额外造成 100 点毒素伤害",
+       "增加 50% 的「感染」几率"
+      ],
+      "descPer": [
+       "造成 5% 的「武器 + 魔法」伤害",
+       "额外造成 15 点毒素伤害",
+       "增加 5% 的「感染」几率"
+      ]
      }
     ]
    },
@@ -1552,7 +2314,14 @@
       "req": null,
       "effects": "hit_rating,10%|critical_strike,5%",
       "perLvl": "hit_rating,4%|critical_strike,1%",
-      "weapon": null
+      "desc": [
+       "提升「命中」10%",
+       "提升「暴击伤害」5%"
+      ],
+      "descPer": [
+       "提升「命中」4%",
+       "提升「暴击伤害」1%"
+      ]
      },
      {
       "name": "perfect_shot",
@@ -1566,7 +2335,14 @@
       "req": "improved_sight",
       "effects": "hit_rating,100|critical_chance,50",
       "perLvl": "hit_rating,10%|critical_chance,10%",
-      "weapon": null
+      "desc": [
+       "提升「命中」100",
+       "提升「暴击几率」50"
+      ],
+      "descPer": [
+       "提升「命中」10",
+       "提升「暴击几率」10"
+      ]
      },
      {
       "name": "rapid_fire",
@@ -1580,7 +2356,14 @@
       "req": "perfect_shot",
       "effects": "attack_speed,50|strikes,1",
       "perLvl": "attack_speed,15%|strikes,.25",
-      "weapon": null
+      "desc": [
+       "提升「攻速」50",
+       "增加 1 段打击"
+      ],
+      "descPer": [
+       "提升「攻速」15",
+       "增加 0.25 段打击"
+      ]
      }
     ]
    },
@@ -1599,7 +2382,12 @@
       "req": null,
       "effects": "damage_to_animal,4%",
       "perLvl": "damage_to_animal,4%",
-      "weapon": null
+      "desc": [
+       "提升「对动物伤害」4%"
+      ],
+      "descPer": [
+       "提升「对动物伤害」4%"
+      ]
      },
      {
       "name": "bounty_hunter",
@@ -1613,7 +2401,12 @@
       "req": "animal_hunter",
       "effects": "damage_to_humanoid,4%",
       "perLvl": "damage_to_humanoid,4%",
-      "weapon": null
+      "desc": [
+       "提升「对人形伤害」4%"
+      ],
+      "descPer": [
+       "提升「对人形伤害」4%"
+      ]
      },
      {
       "name": "hawk_attack",
@@ -1627,7 +2420,17 @@
       "req": "bounty_hunter",
       "effects": "base_damage,40%|light_damage,20|blind,15|bleed,10",
       "perLvl": "light_damage,20%|blind,5|bleed,4",
-      "weapon": null
+      "desc": [
+       "造成 40% 的「武器 + 魔法」伤害",
+       "额外造成 20 点光明伤害",
+       "增加 15% 的「致盲」几率",
+       "增加 10% 的「致流血」几率"
+      ],
+      "descPer": [
+       "额外造成 20 点光明伤害",
+       "增加 5% 的「致盲」几率",
+       "增加 4% 的「致流血」几率"
+      ]
      },
      {
       "name": "crow_attack",
@@ -1641,7 +2444,17 @@
       "req": "bounty_hunter",
       "effects": "base_damage,40%|dark_damage,20|fear,25|bleed,10",
       "perLvl": "dark_damage,20%|fear,8|bleed,4",
-      "weapon": null
+      "desc": [
+       "造成 40% 的「武器 + 魔法」伤害",
+       "额外造成 20 点暗影伤害",
+       "增加 25% 的「恐惧」几率",
+       "增加 10% 的「致流血」几率"
+      ],
+      "descPer": [
+       "额外造成 20 点暗影伤害",
+       "增加 8% 的「恐惧」几率",
+       "增加 4% 的「致流血」几率"
+      ]
      }
     ]
    }
@@ -1664,7 +2477,14 @@
       "req": null,
       "effects": "physical_damage,5%|bleed,5.5",
       "perLvl": "physical_damage,3%|bleed,0.5",
-      "weapon": "Shiv Dagger,Dirk Dagger,Kris Dagger"
+      "desc": [
+       "额外造成 5% 点物理伤害",
+       "增加 5.5% 的「致流血」几率"
+      ],
+      "descPer": [
+       "额外造成 3% 点物理伤害",
+       "增加 0.5% 的「致流血」几率"
+      ]
      },
      {
       "name": "intimidate",
@@ -1678,7 +2498,14 @@
       "req": "dagger_mastery",
       "effects": "base_damage,45%|silence,5",
       "perLvl": "base_damage,10%|silence,1",
-      "weapon": "Shiv Dagger,Dirk Dagger,Kris Dagger"
+      "desc": [
+       "造成 45% 的「武器 + 物理」伤害",
+       "增加 5% 的「沉默」几率"
+      ],
+      "descPer": [
+       "造成 10% 的「武器 + 物理」伤害",
+       "增加 1% 的「沉默」几率"
+      ]
      },
      {
       "name": "soulpierce",
@@ -1692,7 +2519,16 @@
       "req": "intimidate",
       "effects": "base_damage,75%|dark_damage,50|fear,15",
       "perLvl": "base_damage,8%|dark_damage,8%|fear,5",
-      "weapon": "Shiv Dagger,Dirk Dagger,Kris Dagger"
+      "desc": [
+       "造成 75% 的「武器 + 魔法」伤害",
+       "额外造成 50 点暗影伤害",
+       "增加 15% 的「恐惧」几率"
+      ],
+      "descPer": [
+       "造成 8% 的「武器 + 魔法」伤害",
+       "额外造成 8 点暗影伤害",
+       "增加 5% 的「恐惧」几率"
+      ]
      },
      {
       "name": "radiant_dagger",
@@ -1706,7 +2542,16 @@
       "req": "intimidate",
       "effects": "base_damage,75%|light_damage,50|blind,15",
       "perLvl": "base_damage,8%|light_damage,8%|blind,5",
-      "weapon": "Shiv Dagger,Dirk Dagger,Kris Dagger"
+      "desc": [
+       "造成 75% 的「武器 + 魔法」伤害",
+       "额外造成 50 点光明伤害",
+       "增加 15% 的「致盲」几率"
+      ],
+      "descPer": [
+       "造成 8% 的「武器 + 魔法」伤害",
+       "额外造成 8 点光明伤害",
+       "增加 5% 的「致盲」几率"
+      ]
      },
      {
       "name": "backstab",
@@ -1720,7 +2565,15 @@
       "req": "soulpierce|radiant_dagger",
       "effects": "base_damage,100%|bleed,50|life_steal,2%",
       "perLvl": "bleed_damage,13%|bleed,5|life_steal,2%",
-      "weapon": "Shiv Dagger,Dirk Dagger,Kris Dagger"
+      "desc": [
+       "造成 100% 的「武器 + 物理」伤害",
+       "增加 50% 的「致流血」几率",
+       "提升「生命偷取」2%"
+      ],
+      "descPer": [
+       "增加 5% 的「致流血」几率",
+       "提升「生命偷取」2%"
+      ]
      },
      {
       "name": "dagger_rain",
@@ -1734,7 +2587,14 @@
       "req": "backstab",
       "effects": "base_damage,110%|life_steal,20",
       "perLvl": "base_damage,20%|life_steal,10|life_steal,10%|strikes,0.15",
-      "weapon": "Shiv Dagger,Dirk Dagger,Kris Dagger"
+      "desc": [
+       "造成 110% 的「武器 + 物理」伤害",
+       "提升「生命偷取」20"
+      ],
+      "descPer": [
+       "造成 20% 的「武器 + 物理」伤害",
+       "提升「生命偷取」10"
+      ]
      }
     ]
    },
@@ -1753,7 +2613,14 @@
       "req": null,
       "effects": "physical_damage,5%|silence,1",
       "perLvl": "physical_damage,3%|silence,0.15",
-      "weapon": "Throwing Spikes,Throwing Knives,Throwing Stars"
+      "desc": [
+       "额外造成 5% 点物理伤害",
+       "增加 1% 的「沉默」几率"
+      ],
+      "descPer": [
+       "额外造成 3% 点物理伤害",
+       "增加 0.15% 的「沉默」几率"
+      ]
      },
      {
       "name": "mute_stars",
@@ -1767,7 +2634,14 @@
       "req": "throwing_mastery",
       "effects": "base_damage,45%|silence,6",
       "perLvl": "base_damage,10%|silence,1",
-      "weapon": "Throwing Spikes,Throwing Knives,Throwing Stars"
+      "desc": [
+       "造成 45% 的「武器 + 物理」伤害",
+       "增加 6% 的「沉默」几率"
+      ],
+      "descPer": [
+       "造成 10% 的「武器 + 物理」伤害",
+       "增加 1% 的「沉默」几率"
+      ]
      },
      {
       "name": "ghost_spikes",
@@ -1781,7 +2655,16 @@
       "req": "mute_stars",
       "effects": "base_damage,75%|dark_damage,50|fear,15",
       "perLvl": "base_damage,7%|dark_damage,7%|fear,3",
-      "weapon": "Throwing Spikes,Throwing Knives,Throwing Stars"
+      "desc": [
+       "造成 75% 的「武器 + 物理」伤害",
+       "额外造成 50 点暗影伤害",
+       "增加 15% 的「恐惧」几率"
+      ],
+      "descPer": [
+       "造成 7% 的「武器 + 物理」伤害",
+       "额外造成 7 点暗影伤害",
+       "增加 3% 的「恐惧」几率"
+      ]
      },
      {
       "name": "veiled_spikes",
@@ -1795,7 +2678,16 @@
       "req": "mute_stars",
       "effects": "base_damage,75%|light_damage,45|blind,10",
       "perLvl": "base_damage,7%|light_damage,7%|blind,3",
-      "weapon": "Throwing Spikes,Throwing Knives,Throwing Stars"
+      "desc": [
+       "造成 75% 的「武器 + 物理」伤害",
+       "额外造成 45 点光明伤害",
+       "增加 10% 的「致盲」几率"
+      ],
+      "descPer": [
+       "造成 7% 的「武器 + 物理」伤害",
+       "额外造成 7 点光明伤害",
+       "增加 3% 的「致盲」几率"
+      ]
      },
      {
       "name": "cripple_strike",
@@ -1809,7 +2701,14 @@
       "req": "ghost_spikes|veiled_spikes",
       "effects": "base_damage,100%|root,23",
       "perLvl": "base_damage,12%|root,3",
-      "weapon": "Throwing Spikes,Throwing Knives,Throwing Stars"
+      "desc": [
+       "造成 100% 的「武器 + 物理」伤害",
+       "增加 23% 的「定身」几率"
+      ],
+      "descPer": [
+       "造成 12% 的「武器 + 物理」伤害",
+       "增加 3% 的「定身」几率"
+      ]
      },
      {
       "name": "flurry_of_spikes",
@@ -1823,7 +2722,16 @@
       "req": "cripple_strike",
       "effects": "base_damage,110%|armor_pen,50|root,10|silence,10",
       "perLvl": "base_damage,20%|armor_pen,5%|strike,0.1",
-      "weapon": "Throwing Spikes,Throwing Knives,Throwing Stars"
+      "desc": [
+       "造成 110% 的「武器 + 物理」伤害",
+       "提升「破甲」50",
+       "增加 10% 的「定身」几率",
+       "增加 10% 的「沉默」几率"
+      ],
+      "descPer": [
+       "造成 20% 的「武器 + 物理」伤害",
+       "提升「破甲」5"
+      ]
      }
     ]
    },
@@ -1842,7 +2750,12 @@
       "req": null,
       "effects": "physical_damage,6%",
       "perLvl": "physical_damage,4%",
-      "weapon": "Sai Forks,Katars,Split Chakram"
+      "desc": [
+       "额外造成 6% 点物理伤害"
+      ],
+      "descPer": [
+       "额外造成 4% 点物理伤害"
+      ]
      },
      {
       "name": "divine_forks",
@@ -1856,7 +2769,14 @@
       "req": "fists_mastery",
       "effects": "base_damage,45%|hit_rating,50",
       "perLvl": "base_damage,10%|hit_rating,6%",
-      "weapon": "Sai Forks,Katars,Split Chakram"
+      "desc": [
+       "造成 45% 的「武器 + 物理」伤害",
+       "提升「命中」50"
+      ],
+      "descPer": [
+       "造成 10% 的「武器 + 物理」伤害",
+       "提升「命中」6"
+      ]
      },
      {
       "name": "lethal_slash",
@@ -1870,7 +2790,16 @@
       "req": "divine_forks",
       "effects": "base_damage,75%|dark_damage,50|fear,15",
       "perLvl": "base_damage,7%|dark_damage,7%|fear,3",
-      "weapon": "Sai Forks,Katars,Split Chakram"
+      "desc": [
+       "造成 75% 的「武器 + 物理」伤害",
+       "额外造成 50 点暗影伤害",
+       "增加 15% 的「恐惧」几率"
+      ],
+      "descPer": [
+       "造成 7% 的「武器 + 物理」伤害",
+       "额外造成 7 点暗影伤害",
+       "增加 3% 的「恐惧」几率"
+      ]
      },
      {
       "name": "puncture",
@@ -1884,7 +2813,16 @@
       "req": "divine_forks",
       "effects": "base_damage,75%|light_damage,45|blind,10",
       "perLvl": "base_damage,7%|light_damage,7%|blind,3",
-      "weapon": "Sai Forks,Katars,Split Chakram"
+      "desc": [
+       "造成 75% 的「武器 + 物理」伤害",
+       "额外造成 45 点光明伤害",
+       "增加 10% 的「致盲」几率"
+      ],
+      "descPer": [
+       "造成 7% 的「武器 + 物理」伤害",
+       "额外造成 7 点光明伤害",
+       "增加 3% 的「致盲」几率"
+      ]
      },
      {
       "name": "assassinate",
@@ -1898,7 +2836,16 @@
       "req": "lethal_slash|puncture",
       "effects": "base_damage,100%|critical_strike,10%|critical_chance,50%",
       "perLvl": "base_damage,14%|critical_strike,8%|critical_chance,5%",
-      "weapon": "Sai Forks,Katars,Split Chakram"
+      "desc": [
+       "造成 100% 的「武器 + 物理」伤害",
+       "提升「暴击伤害」10%",
+       "提升「暴击几率」50%"
+      ],
+      "descPer": [
+       "造成 14% 的「武器 + 物理」伤害",
+       "提升「暴击伤害」8%",
+       "提升「暴击几率」5%"
+      ]
      },
      {
       "name": "execute",
@@ -1912,7 +2859,16 @@
       "req": "assassinate",
       "effects": "base_damage,150%|armor_pen,50|hit_rating,50",
       "perLvl": "base_damage,25%|armor_pen,5%|hit_rating,5%",
-      "weapon": "Sai Forks,Katars,Split Chakram"
+      "desc": [
+       "造成 150% 的「武器 + 魔法」伤害",
+       "提升「破甲」50",
+       "提升「命中」50"
+      ],
+      "descPer": [
+       "造成 25% 的「武器 + 魔法」伤害",
+       "提升「破甲」5",
+       "提升「命中」5"
+      ]
      }
     ]
    },
@@ -1931,7 +2887,14 @@
       "req": null,
       "effects": "max_evasion,1|evasion,6%",
       "perLvl": "max_evasion,1|evasion,3%",
-      "weapon": null
+      "desc": [
+       "提升「最大闪避」1",
+       "提升「闪避」6%"
+      ],
+      "descPer": [
+       "提升「最大闪避」1",
+       "提升「闪避」3%"
+      ]
      },
      {
       "name": "swift_strike",
@@ -1945,7 +2908,14 @@
       "req": "sidestep",
       "effects": "attack_speed,5%|hit_rating,20",
       "perLvl": "attack_speed,2%|hit_rating,0.5%",
-      "weapon": null
+      "desc": [
+       "提升「攻速」5%",
+       "提升「命中」20"
+      ],
+      "descPer": [
+       "提升「攻速」2%",
+       "提升「命中」0.5"
+      ]
      },
      {
       "name": "fog_bomb",
@@ -1959,7 +2929,16 @@
       "req": "swift_strike",
       "effects": "base_damage,80%|blind,30|confuse,50",
       "perLvl": "base_damage,7%|blind,10|confuse,10",
-      "weapon": null
+      "desc": [
+       "造成 80% 的「武器 + 魔法」伤害",
+       "增加 30% 的「致盲」几率",
+       "增加 50% 的「混乱」几率"
+      ],
+      "descPer": [
+       "造成 7% 的「武器 + 魔法」伤害",
+       "增加 10% 的「致盲」几率",
+       "增加 10% 的「混乱」几率"
+      ]
      },
      {
       "name": "nimble_guard",
@@ -1973,7 +2952,12 @@
       "req": "fog_bomb",
       "effects": "fortitude,20",
       "perLvl": "fortitude,10|fortitude,4%",
-      "weapon": "Buckler,Targe,Defender"
+      "desc": [
+       "提升「坚韧」20"
+      ],
+      "descPer": [
+       "提升「坚韧」10"
+      ]
      }
     ]
    },
@@ -1992,7 +2976,14 @@
       "req": null,
       "effects": "base_damage,60%|silence,5",
       "perLvl": "base_damage,6%|silence,1",
-      "weapon": null
+      "desc": [
+       "造成 60% 的「武器 + 物理」伤害",
+       "增加 5% 的「沉默」几率"
+      ],
+      "descPer": [
+       "造成 6% 的「武器 + 物理」伤害",
+       "增加 1% 的「沉默」几率"
+      ]
      },
      {
       "name": "shivers",
@@ -2006,7 +2997,16 @@
       "req": "high_kick",
       "effects": "hit_rating,-50|attack_speed,-50|evasion,-50",
       "perLvl": "hit_rating,-2%|attack_speed,-2%|evasion,-2%",
-      "weapon": null
+      "desc": [
+       "降低「命中」-50",
+       "降低「攻速」-50",
+       "降低「闪避」-50"
+      ],
+      "descPer": [
+       "降低「命中」-2",
+       "降低「攻速」-2",
+       "降低「闪避」-2"
+      ]
      },
      {
       "name": "thiefs_fortune",
@@ -2020,7 +3020,12 @@
       "req": "shivers",
       "effects": "gold_find,20",
       "perLvl": "gold_find,5%",
-      "weapon": null
+      "desc": [
+       "提升 20 的金币掉落率"
+      ],
+      "descPer": [
+       "提升 5 的金币掉落率"
+      ]
      },
      {
       "name": "pickpocket",
@@ -2034,7 +3039,12 @@
       "req": "thiefs_fortune",
       "effects": "pickpocket,42",
       "perLvl": "pickpocket,2",
-      "weapon": null
+      "desc": [
+       "提升「扒窃」42"
+      ],
+      "descPer": [
+       "提升「扒窃」2"
+      ]
      }
     ]
    },
@@ -2053,7 +3063,16 @@
       "req": null,
       "effects": "base_damage,100%|dark_damage,30|defile,20",
       "perLvl": "base_damage,5%|dark_damage,10%|defile,5",
-      "weapon": null
+      "desc": [
+       "造成 100% 的「武器 + 魔法」伤害",
+       "额外造成 30 点暗影伤害",
+       "增加 20% 的「污染」几率"
+      ],
+      "descPer": [
+       "造成 5% 的「武器 + 魔法」伤害",
+       "额外造成 10 点暗影伤害",
+       "增加 5% 的「污染」几率"
+      ]
      },
      {
       "name": "magnesium_bomb",
@@ -2067,7 +3086,16 @@
       "req": null,
       "effects": "base_damage,100%|light_damage,30|radiant,20",
       "perLvl": "base_damage,5%|light_damage,10%|radiant,5",
-      "weapon": null
+      "desc": [
+       "造成 100% 的「武器 + 魔法」伤害",
+       "额外造成 30 点光明伤害",
+       "提升「光辉」20"
+      ],
+      "descPer": [
+       "造成 5% 的「武器 + 魔法」伤害",
+       "额外造成 10 点光明伤害",
+       "提升「光辉」5"
+      ]
      },
      {
       "name": "defortification",
@@ -2081,7 +3109,16 @@
       "req": "tar_bomb|magnesium_bomb",
       "effects": "base_defense,-100|fortitude,-50|block_rating,-100",
       "perLvl": "base_defense,-3%|fortitude,-2%|block_rating,-2%",
-      "weapon": null
+      "desc": [
+       "降低「基础防御」-100",
+       "降低「坚韧」-50",
+       "降低「格挡值」-100"
+      ],
+      "descPer": [
+       "降低「基础防御」-3",
+       "降低「坚韧」-2",
+       "降低「格挡值」-2"
+      ]
      }
     ]
    }
@@ -2104,7 +3141,14 @@
       "req": null,
       "effects": "blunt_damage,5%|critical_strike,5%",
       "perLvl": "blunt_damage,4%|critical_strike,2%",
-      "weapon": "Great Club,Heavy Flail,Warhammer"
+      "desc": [
+       "额外造成 5% 点钝击伤害",
+       "提升「暴击伤害」5%"
+      ],
+      "descPer": [
+       "额外造成 4% 点钝击伤害",
+       "提升「暴击伤害」2%"
+      ]
      },
      {
       "name": "smite",
@@ -2118,7 +3162,14 @@
       "req": "hammer_mastery",
       "effects": "base_damage,40%|stun,5",
       "perLvl": "base_damage,16%|stun,10",
-      "weapon": "Great Club,Heavy Flail,Warhammer"
+      "desc": [
+       "造成 40% 的「武器 + 物理」伤害",
+       "增加 5% 的「眩晕」几率"
+      ],
+      "descPer": [
+       "造成 16% 的「武器 + 物理」伤害",
+       "增加 10% 的「眩晕」几率"
+      ]
      },
      {
       "name": "hammer_of_justice",
@@ -2132,7 +3183,14 @@
       "req": "smite",
       "effects": "base_damage,40%|light_damage,30",
       "perLvl": "base_damage,10%|light_damage,10%",
-      "weapon": "Great Club,Heavy Flail,Warhammer"
+      "desc": [
+       "造成 40% 的「武器 + 物理」伤害",
+       "额外造成 30 点光明伤害"
+      ],
+      "descPer": [
+       "造成 10% 的「武器 + 物理」伤害",
+       "额外造成 10 点光明伤害"
+      ]
      },
      {
       "name": "hammer_of_doom",
@@ -2146,7 +3204,14 @@
       "req": "smite",
       "effects": "base_damage,40%|dark_damage,30",
       "perLvl": "base_damage,10%|dark_damage,10%",
-      "weapon": "Great Club,Heavy Flail,Warhammer"
+      "desc": [
+       "造成 40% 的「武器 + 物理」伤害",
+       "额外造成 30 点暗影伤害"
+      ],
+      "descPer": [
+       "造成 10% 的「武器 + 物理」伤害",
+       "额外造成 10 点暗影伤害"
+      ]
      },
      {
       "name": "iron_reckoning",
@@ -2160,7 +3225,12 @@
       "req": "hammer_of_justice|hammer_of_doom",
       "effects": "physical_damage,50",
       "perLvl": "physical_damage,20%",
-      "weapon": "Great Club,Heavy Flail,Warhammer"
+      "desc": [
+       "额外造成 50 点物理伤害"
+      ],
+      "descPer": [
+       "额外造成 20 点物理伤害"
+      ]
      },
      {
       "name": "down_to_earth",
@@ -2174,7 +3244,14 @@
       "req": "iron_reckoning",
       "effects": "base_damage,80%|stun,10",
       "perLvl": "base_damage,30%|stun,10",
-      "weapon": "Great Club,Heavy Flail,Warhammer"
+      "desc": [
+       "造成 80% 的「武器 + 魔法」伤害",
+       "增加 10% 的「眩晕」几率"
+      ],
+      "descPer": [
+       "造成 30% 的「武器 + 魔法」伤害",
+       "增加 10% 的「眩晕」几率"
+      ]
      }
     ]
    },
@@ -2193,7 +3270,14 @@
       "req": null,
       "effects": "physical_damage,5%|hit_rating,5%",
       "perLvl": "physical_damage,4%|hit_rating,2%",
-      "weapon": "Shortsword,Scimitar,Warblade"
+      "desc": [
+       "额外造成 5% 点物理伤害",
+       "提升「命中」5%"
+      ],
+      "descPer": [
+       "额外造成 4% 点物理伤害",
+       "提升「命中」2%"
+      ]
      },
      {
       "name": "bright_strike",
@@ -2207,7 +3291,14 @@
       "req": "blade_mastery",
       "effects": "base_damage,40%|light_damage,10|light_damage,30%",
       "perLvl": "base_damage,20%|light_damage,20%",
-      "weapon": "Shortsword,Scimitar,Warblade"
+      "desc": [
+       "造成 40% 的「武器 + 物理」伤害",
+       "额外造成 10 + 30% 点光明伤害"
+      ],
+      "descPer": [
+       "造成 20% 的「武器 + 物理」伤害",
+       "额外造成 20 点光明伤害"
+      ]
      },
      {
       "name": "shadow_strike",
@@ -2221,7 +3312,14 @@
       "req": "blade_mastery",
       "effects": "base_damage,40%|dark_damage,10|dark_damage,30%",
       "perLvl": "base_damage,20%|dark_damage,20%",
-      "weapon": "Shortsword,Scimitar,Warblade"
+      "desc": [
+       "造成 40% 的「武器 + 物理」伤害",
+       "额外造成 10 + 30% 点暗影伤害"
+      ],
+      "descPer": [
+       "造成 20% 的「武器 + 物理」伤害",
+       "额外造成 20 点暗影伤害"
+      ]
      },
      {
       "name": "parry_stance",
@@ -2235,7 +3333,14 @@
       "req": "bright_strike|shadow_strike",
       "effects": "evasion,100|block_chance,10",
       "perLvl": "evasion,4%|block_chance,10",
-      "weapon": "Shortsword,Scimitar,Warblade"
+      "desc": [
+       "提升「闪避」100",
+       "提升「格挡几率」10"
+      ],
+      "descPer": [
+       "提升「闪避」4",
+       "提升「格挡几率」10"
+      ]
      },
      {
       "name": "balanced_strike",
@@ -2249,7 +3354,16 @@
       "req": "parry_stance",
       "effects": "base_damage,60%|dark_damage,10|light_damage,10",
       "perLvl": "base_damage,15%|light_damage,15%|dark_damage,15%",
-      "weapon": "Shortsword,Scimitar,Warblade"
+      "desc": [
+       "造成 60% 的「武器 + 物理」伤害",
+       "额外造成 10 点暗影伤害",
+       "额外造成 10 点光明伤害"
+      ],
+      "descPer": [
+       "造成 15% 的「武器 + 物理」伤害",
+       "额外造成 15 点暗影伤害",
+       "额外造成 15 点光明伤害"
+      ]
      }
     ]
    },
@@ -2268,7 +3382,12 @@
       "req": null,
       "effects": "light_damage,15|light_damage,10%",
       "perLvl": "light_damage,15|light_damage,6%",
-      "weapon": null
+      "desc": [
+       "额外造成 15 + 10% 点光明伤害"
+      ],
+      "descPer": [
+       "额外造成 15 + 6% 点光明伤害"
+      ]
      },
      {
       "name": "overwhelming_light",
@@ -2282,7 +3401,12 @@
       "req": "lighting_of_spirit",
       "effects": "light_damage,20|light_damage,10%",
       "perLvl": "light_damage,20|light_damage,7%",
-      "weapon": null
+      "desc": [
+       "额外造成 20 + 10% 点光明伤害"
+      ],
+      "descPer": [
+       "额外造成 20 + 7% 点光明伤害"
+      ]
      },
      {
       "name": "blinding_touch",
@@ -2296,7 +3420,16 @@
       "req": "overwhelming_light",
       "effects": "base_damage,40%|light_damage,30|blind,20",
       "perLvl": "base_damage,20%|light_damage,15%|blind,5",
-      "weapon": null
+      "desc": [
+       "造成 40% 的「武器 + 魔法」伤害",
+       "额外造成 30 点光明伤害",
+       "增加 20% 的「致盲」几率"
+      ],
+      "descPer": [
+       "造成 20% 的「武器 + 魔法」伤害",
+       "额外造成 15 点光明伤害",
+       "增加 5% 的「致盲」几率"
+      ]
      },
      {
       "name": "holy_body_armor",
@@ -2310,7 +3443,16 @@
       "req": "blinding_touch",
       "effects": "base_defense,300|base_resistance,30|turns,0.2",
       "perLvl": "base_defense,10%|base_resistance,6%|turns,0.2",
-      "weapon": null
+      "desc": [
+       "提升「基础防御」300",
+       "提升「基础抗性」30",
+       "提升「回合」0.2"
+      ],
+      "descPer": [
+       "提升「基础防御」10",
+       "提升「基础抗性」6",
+       "提升「回合」0.2"
+      ]
      },
      {
       "name": "holy_blast",
@@ -2324,7 +3466,16 @@
       "req": "holy_body_armor",
       "effects": "base_damage,70%|light_damage,20|light_damage,20%|radiant,25",
       "perLvl": "base_damage,15%|light_damage,20|light_damage,20%|radiant,5",
-      "weapon": null
+      "desc": [
+       "造成 70% 的「武器 + 魔法」伤害",
+       "额外造成 20 + 20% 点光明伤害",
+       "提升「光辉」25"
+      ],
+      "descPer": [
+       "造成 15% 的「武器 + 魔法」伤害",
+       "额外造成 20 + 20% 点光明伤害",
+       "提升「光辉」5"
+      ]
      }
     ]
    },
@@ -2343,7 +3494,12 @@
       "req": null,
       "effects": "dark_damage,15|dark_damage,10%",
       "perLvl": "dark_damage,15|dark_damage,6%",
-      "weapon": null
+      "desc": [
+       "额外造成 15 + 10% 点暗影伤害"
+      ],
+      "descPer": [
+       "额外造成 15 + 6% 点暗影伤害"
+      ]
      },
      {
       "name": "overwhelming_dark",
@@ -2357,7 +3513,12 @@
       "req": "darkening_of_spirit",
       "effects": "dark_damage,20|dark_damage,10%",
       "perLvl": "dark_damage,20|dark_damage,7%",
-      "weapon": null
+      "desc": [
+       "额外造成 20 + 10% 点暗影伤害"
+      ],
+      "descPer": [
+       "额外造成 20 + 7% 点暗影伤害"
+      ]
      },
      {
       "name": "fearing_touch",
@@ -2371,7 +3532,16 @@
       "req": "overwhelming_dark",
       "effects": "base_damage,40%|dark_damage,30|fear,20",
       "perLvl": "base_damage,20%|dark_damage,15%|fear,5",
-      "weapon": null
+      "desc": [
+       "造成 40% 的「武器 + 魔法」伤害",
+       "额外造成 30 点暗影伤害",
+       "增加 20% 的「恐惧」几率"
+      ],
+      "descPer": [
+       "造成 20% 的「武器 + 魔法」伤害",
+       "额外造成 15 点暗影伤害",
+       "增加 5% 的「恐惧」几率"
+      ]
      },
      {
       "name": "unholy_barrier",
@@ -2385,7 +3555,16 @@
       "req": "fearing_touch",
       "effects": "base_defense,300|thorn_damage,20|turns,0.25",
       "perLvl": "base_defense,10%|thorn_damage,20|thorn_damage,2%|turns,0.25",
-      "weapon": null
+      "desc": [
+       "提升「基础防御」300",
+       "额外造成 20 点荆棘伤害",
+       "提升「回合」0.25"
+      ],
+      "descPer": [
+       "提升「基础防御」10",
+       "额外造成 20 点荆棘伤害",
+       "提升「回合」0.25"
+      ]
      },
      {
       "name": "unholy_shroud",
@@ -2399,7 +3578,16 @@
       "req": "unholy_barrier",
       "effects": "base_damage,70%|dark_damage,20|dark_damage,20%|defile,25",
       "perLvl": "base_damage,15%|dark_damage,20|dark_damage,20%|defile,5",
-      "weapon": null
+      "desc": [
+       "造成 70% 的「武器 + 魔法」伤害",
+       "额外造成 20 + 20% 点暗影伤害",
+       "增加 25% 的「污染」几率"
+      ],
+      "descPer": [
+       "造成 15% 的「武器 + 魔法」伤害",
+       "额外造成 20 + 20% 点暗影伤害",
+       "增加 5% 的「污染」几率"
+      ]
      }
     ]
    },
@@ -2418,7 +3606,16 @@
       "req": null,
       "effects": "hit_rating,-100|attack_speed,-50|critical_strike,-50",
       "perLvl": "hit_rating,-10%|attack_speed,-10%|critical_strike,-10%",
-      "weapon": null
+      "desc": [
+       "降低「命中」-100",
+       "降低「攻速」-50",
+       "降低「暴击伤害」-50"
+      ],
+      "descPer": [
+       "降低「命中」-10",
+       "降低「攻速」-10",
+       "降低「暴击伤害」-10"
+      ]
      },
      {
       "name": "balanced_touch",
@@ -2432,7 +3629,16 @@
       "req": "faithbreaker",
       "effects": "base_damage,40%|light_damage,30|dark_damage,30",
       "perLvl": "base_damage,20%|light_damage,15%|dark_damage,15%",
-      "weapon": null
+      "desc": [
+       "造成 40% 的「武器 + 魔法」伤害",
+       "额外造成 30 点光明伤害",
+       "额外造成 30 点暗影伤害"
+      ],
+      "descPer": [
+       "造成 20% 的「武器 + 魔法」伤害",
+       "额外造成 15 点光明伤害",
+       "额外造成 15 点暗影伤害"
+      ]
      },
      {
       "name": "divine_wrath",
@@ -2446,7 +3652,16 @@
       "req": "balanced_touch",
       "effects": "base_damage,60%|light_damage,20|light_damage,20%|radiant,10",
       "perLvl": "base_damage,20%|light_damage,10|light_damage,25%|radiant,10",
-      "weapon": null
+      "desc": [
+       "造成 60% 的「武器 + 魔法」伤害",
+       "额外造成 20 + 20% 点光明伤害",
+       "提升「光辉」10"
+      ],
+      "descPer": [
+       "造成 20% 的「武器 + 魔法」伤害",
+       "额外造成 10 + 25% 点光明伤害",
+       "提升「光辉」10"
+      ]
      },
      {
       "name": "dark_leech_aura",
@@ -2460,7 +3675,16 @@
       "req": "balanced_touch",
       "effects": "base_damage,60%|dark_damage,20|dark_damage,20%|defile,10",
       "perLvl": "base_damage,20%|dark_damage,10|dark_damage,25%|defile,10",
-      "weapon": null
+      "desc": [
+       "造成 60% 的「武器 + 魔法」伤害",
+       "额外造成 20 + 20% 点暗影伤害",
+       "增加 10% 的「污染」几率"
+      ],
+      "descPer": [
+       "造成 20% 的「武器 + 魔法」伤害",
+       "额外造成 10 + 25% 点暗影伤害",
+       "增加 10% 的「污染」几率"
+      ]
      }
     ]
    },
@@ -2479,7 +3703,14 @@
       "req": null,
       "effects": "block_rating,20|block_chance,2",
       "perLvl": "block_rating,4%|block_chance,0.5",
-      "weapon": "Round Shield,Kite Shield,Tower Shield"
+      "desc": [
+       "提升「格挡值」20",
+       "提升「格挡几率」2"
+      ],
+      "descPer": [
+       "提升「格挡值」4",
+       "提升「格挡几率」0.5"
+      ]
      },
      {
       "name": "shield_throw",
@@ -2493,7 +3724,16 @@
       "req": "shield_mastery",
       "effects": "base_damage,40%|blunt_damage,50|silence,25",
       "perLvl": "base_damage,10%|blunt_damage,25|silence,7",
-      "weapon": "Round Shield,Kite Shield,Tower Shield"
+      "desc": [
+       "造成 40% 的「武器 + 物理」伤害",
+       "额外造成 50 点钝击伤害",
+       "增加 25% 的「沉默」几率"
+      ],
+      "descPer": [
+       "造成 10% 的「武器 + 物理」伤害",
+       "额外造成 25 点钝击伤害",
+       "增加 7% 的「沉默」几率"
+      ]
      },
      {
       "name": "phalanx",
@@ -2507,7 +3747,12 @@
       "req": "shield_throw",
       "effects": "shield,75",
       "perLvl": "shield,150|shield,14%",
-      "weapon": "Round Shield,Kite Shield,Tower Shield"
+      "desc": [
+       "提升「护盾」75"
+      ],
+      "descPer": [
+       "提升「护盾」150"
+      ]
      },
      {
       "name": "shield_bash",
@@ -2521,7 +3766,14 @@
       "req": "phalanx",
       "effects": "base_damage,60%|stun,20",
       "perLvl": "base_damage,15%|stun,10",
-      "weapon": "Round Shield,Kite Shield,Tower Shield"
+      "desc": [
+       "造成 60% 的「武器 + 物理」伤害",
+       "增加 20% 的「眩晕」几率"
+      ],
+      "descPer": [
+       "造成 15% 的「武器 + 物理」伤害",
+       "增加 10% 的「眩晕」几率"
+      ]
      }
     ]
    },
@@ -2540,7 +3792,12 @@
       "req": null,
       "effects": "mana,50|mana,5%",
       "perLvl": "mana,50|mana,5%",
-      "weapon": null
+      "desc": [
+       "提升「法力」50 + 5%"
+      ],
+      "descPer": [
+       "提升「法力」50 + 5%"
+      ]
      },
      {
       "name": "true_vigor",
@@ -2554,7 +3811,14 @@
       "req": "mana_influx",
       "effects": "hit_rating,100|turns,0.2",
       "perLvl": "hit_rating,10%|turns,0.2",
-      "weapon": null
+      "desc": [
+       "提升「命中」100",
+       "提升「回合」0.2"
+      ],
+      "descPer": [
+       "提升「命中」10",
+       "提升「回合」0.2"
+      ]
      },
      {
       "name": "invigoration",
@@ -2568,7 +3832,12 @@
       "req": "true_vigor",
       "effects": "life,100",
       "perLvl": "life,10%",
-      "weapon": null
+      "desc": [
+       "提升「生命上限」100"
+      ],
+      "descPer": [
+       "提升「生命上限」10"
+      ]
      },
      {
       "name": "royal_blood",
@@ -2582,7 +3851,14 @@
       "req": "invigoration",
       "effects": "magic_find,10|gold_find,10",
       "perLvl": "magic_find,4%|gold_find,4%",
-      "weapon": null
+      "desc": [
+       "提升 10 的寻宝几率",
+       "提升 10 的金币掉落率"
+      ],
+      "descPer": [
+       "提升 4 的寻宝几率",
+       "提升 4 的金币掉落率"
+      ]
      }
     ]
    }
@@ -2605,7 +3881,12 @@
       "req": null,
       "effects": "blunt_damage,5%",
       "perLvl": "blunt_damage,4%",
-      "weapon": "Great Club,Heavy Flail,Warhammer"
+      "desc": [
+       "额外造成 5% 点钝击伤害"
+      ],
+      "descPer": [
+       "额外造成 4% 点钝击伤害"
+      ]
      },
      {
       "name": "hail_storm",
@@ -2619,7 +3900,14 @@
       "req": null,
       "effects": "cold_damage,20|freeze,5",
       "perLvl": "cold_damage,5%|freeze,2",
-      "weapon": "Great Club,Heavy Flail,Warhammer"
+      "desc": [
+       "额外造成 20 点寒冰伤害",
+       "增加 5% 的「冻结」几率"
+      ],
+      "descPer": [
+       "额外造成 5 点寒冰伤害",
+       "增加 2% 的「冻结」几率"
+      ]
      },
      {
       "name": "ice_tomb",
@@ -2633,7 +3921,13 @@
       "req": null,
       "effects": "cold_damage,2|freeze,100",
       "perLvl": "cold_damage,7%|spell_damage,3%",
-      "weapon": "Great Club,Heavy Flail,Warhammer"
+      "desc": [
+       "额外造成 2 点寒冰伤害",
+       "增加 100% 的「冻结」几率"
+      ],
+      "descPer": [
+       "额外造成 7 点寒冰伤害"
+      ]
      },
      {
       "name": "cold_snap",
@@ -2647,7 +3941,16 @@
       "req": null,
       "effects": "cold_damage,25|base_damage,40%|freeze,5",
       "perLvl": "cold_damage,7%|base_damage,5%|freeze,2",
-      "weapon": "Great Club,Heavy Flail,Warhammer"
+      "desc": [
+       "额外造成 25 点寒冰伤害",
+       "造成 40% 的「武器 + 物理」伤害",
+       "增加 5% 的「冻结」几率"
+      ],
+      "descPer": [
+       "额外造成 7 点寒冰伤害",
+       "造成 5% 的「武器 + 物理」伤害",
+       "增加 2% 的「冻结」几率"
+      ]
      },
      {
       "name": "jotun_smash",
@@ -2661,7 +3964,16 @@
       "req": null,
       "effects": "cold_damage,15|base_damage,40%|stun,5",
       "perLvl": "cold_damage,5%|base_damage,7%|stun,2",
-      "weapon": "Great Club,Heavy Flail,Warhammer"
+      "desc": [
+       "额外造成 15 点寒冰伤害",
+       "造成 40% 的「武器 + 物理」伤害",
+       "增加 5% 的「眩晕」几率"
+      ],
+      "descPer": [
+       "额外造成 5 点寒冰伤害",
+       "造成 7% 的「武器 + 物理」伤害",
+       "增加 2% 的「眩晕」几率"
+      ]
      },
      {
       "name": "thunderstorm",
@@ -2675,7 +3987,14 @@
       "req": null,
       "effects": "lightning_damage,50|spell_damage,5%",
       "perLvl": "lightning_damage,15%|spell_damage,5%|confuse,1",
-      "weapon": "Great Club,Heavy Flail,Warhammer"
+      "desc": [
+       "额外造成 50 点闪电伤害",
+       "额外造成 5% 点法术伤害"
+      ],
+      "descPer": [
+       "额外造成 15 点闪电伤害",
+       "额外造成 5% 点法术伤害"
+      ]
      },
      {
       "name": "overcharge",
@@ -2689,7 +4008,16 @@
       "req": null,
       "effects": "lightning_damage,15|confuse,10|stun,5",
       "perLvl": "lightning_damage,10%|confuse,3|stun,1",
-      "weapon": "Great Club,Heavy Flail,Warhammer"
+      "desc": [
+       "额外造成 15 点闪电伤害",
+       "增加 10% 的「混乱」几率",
+       "增加 5% 的「眩晕」几率"
+      ],
+      "descPer": [
+       "额外造成 10 点闪电伤害",
+       "增加 3% 的「混乱」几率",
+       "增加 1% 的「眩晕」几率"
+      ]
      },
      {
       "name": "thors_hammer",
@@ -2703,7 +4031,16 @@
       "req": null,
       "effects": "base_damage,40%|lightning_damage,20|confuse,10",
       "perLvl": "base_damage,5%|lightning_damage,10%|confuse,2",
-      "weapon": "Great Club,Heavy Flail,Warhammer"
+      "desc": [
+       "造成 40% 的「武器 + 物理」伤害",
+       "额外造成 20 点闪电伤害",
+       "增加 10% 的「混乱」几率"
+      ],
+      "descPer": [
+       "造成 5% 的「武器 + 物理」伤害",
+       "额外造成 10 点闪电伤害",
+       "增加 2% 的「混乱」几率"
+      ]
      },
      {
       "name": "lightning_confuse",
@@ -2717,7 +4054,14 @@
       "req": null,
       "effects": "lightning_damage,30|confuse,10",
       "perLvl": "lightning_damage,10%|confuse,2",
-      "weapon": "Great Club,Heavy Flail,Warhammer"
+      "desc": [
+       "额外造成 30 点闪电伤害",
+       "增加 10% 的「混乱」几率"
+      ],
+      "descPer": [
+       "额外造成 10 点闪电伤害",
+       "增加 2% 的「混乱」几率"
+      ]
      }
     ]
    },
@@ -2736,7 +4080,14 @@
       "req": null,
       "effects": "hit_rating,2%|armor_pen,1%",
       "perLvl": "hit_rating,2%|armor_pen,1%",
-      "weapon": "Spear,Pike,Trident"
+      "desc": [
+       "提升「命中」2%",
+       "提升「破甲」1%"
+      ],
+      "descPer": [
+       "提升「命中」2%",
+       "提升「破甲」1%"
+      ]
      },
      {
       "name": "ymirs_tear",
@@ -2750,7 +4101,15 @@
       "req": null,
       "effects": "spell_damage,5|cold_damage,5|freeze,1.5",
       "perLvl": "cold_damage,5%|freeze,0.5",
-      "weapon": "Spear,Pike,Trident"
+      "desc": [
+       "额外造成 5 点法术伤害",
+       "额外造成 5 点寒冰伤害",
+       "增加 1.5% 的「冻结」几率"
+      ],
+      "descPer": [
+       "额外造成 5 点寒冰伤害",
+       "增加 0.5% 的「冻结」几率"
+      ]
      },
      {
       "name": "frozen_shards",
@@ -2764,7 +4123,15 @@
       "req": null,
       "effects": "spell_damage,2|cold_damage,2|armor_pen,5",
       "perLvl": "cold_damage,2%|armor_pen,1%",
-      "weapon": "Spear,Pike,Trident"
+      "desc": [
+       "额外造成 2 点法术伤害",
+       "额外造成 2 点寒冰伤害",
+       "提升「破甲」5"
+      ],
+      "descPer": [
+       "额外造成 2 点寒冰伤害",
+       "提升「破甲」1"
+      ]
      },
      {
       "name": "chilling_impale",
@@ -2778,7 +4145,14 @@
       "req": null,
       "effects": "cold_damage,20|armor_pen,10",
       "perLvl": "cold_damage,4%|armor_pen,3%",
-      "weapon": "Spear,Pike,Trident"
+      "desc": [
+       "额外造成 20 点寒冰伤害",
+       "提升「破甲」10"
+      ],
+      "descPer": [
+       "额外造成 4 点寒冰伤害",
+       "提升「破甲」3"
+      ]
      },
      {
       "name": "glacial_harpoon",
@@ -2792,7 +4166,18 @@
       "req": null,
       "effects": "cold_damage,50|freeze,1|critical_chance,1|critical_strike,10",
       "perLvl": "cold_damage,5%|freeze,1|critical_chance,1|critical_strike,2%",
-      "weapon": "Spear,Pike,Trident"
+      "desc": [
+       "额外造成 50 点寒冰伤害",
+       "增加 1% 的「冻结」几率",
+       "提升「暴击几率」1",
+       "提升「暴击伤害」10"
+      ],
+      "descPer": [
+       "额外造成 5 点寒冰伤害",
+       "增加 1% 的「冻结」几率",
+       "提升「暴击几率」1",
+       "提升「暴击伤害」2"
+      ]
      },
      {
       "name": "forked_lightning",
@@ -2806,7 +4191,16 @@
       "req": null,
       "effects": "lightning_damage,5%|armor_pen,10|confuse,1",
       "perLvl": "lightning_damage,5%|armor_pen,10|confuse,1",
-      "weapon": "Spear,Pike,Trident"
+      "desc": [
+       "额外造成 5% 点闪电伤害",
+       "提升「破甲」10",
+       "增加 1% 的「混乱」几率"
+      ],
+      "descPer": [
+       "额外造成 5% 点闪电伤害",
+       "提升「破甲」10",
+       "增加 1% 的「混乱」几率"
+      ]
      },
      {
       "name": "thunder_maelstrom",
@@ -2820,7 +4214,16 @@
       "req": null,
       "effects": "lightning_damage,10|spell_damage,5|confuse,1",
       "perLvl": "lightning_damage,10|spell_damage,5|confuse,1",
-      "weapon": "Spear,Pike,Trident"
+      "desc": [
+       "额外造成 10 点闪电伤害",
+       "额外造成 5 点法术伤害",
+       "增加 1% 的「混乱」几率"
+      ],
+      "descPer": [
+       "额外造成 10 点闪电伤害",
+       "额外造成 5 点法术伤害",
+       "增加 1% 的「混乱」几率"
+      ]
      },
      {
       "name": "thunder_impale",
@@ -2834,7 +4237,14 @@
       "req": null,
       "effects": "lightning_damage,5|armor_pen,10",
       "perLvl": "lightning_damage,2%|armor_pen,1%",
-      "weapon": "Spear,Pike,Trident"
+      "desc": [
+       "额外造成 5 点闪电伤害",
+       "提升「破甲」10"
+      ],
+      "descPer": [
+       "额外造成 2 点闪电伤害",
+       "提升「破甲」1"
+      ]
      },
      {
       "name": "odins_spear",
@@ -2848,7 +4258,16 @@
       "req": null,
       "effects": "lightning_damage,20|hit_rating,20|critical_chance,20",
       "perLvl": "lightning_damage,8%|hit_rating,2%|critical_chance,3%",
-      "weapon": "Spear,Pike,Trident"
+      "desc": [
+       "额外造成 20 点闪电伤害",
+       "提升「命中」20",
+       "提升「暴击几率」20"
+      ],
+      "descPer": [
+       "额外造成 8 点闪电伤害",
+       "提升「命中」2",
+       "提升「暴击几率」3"
+      ]
      }
     ]
    },
@@ -2867,7 +4286,14 @@
       "req": null,
       "effects": "block_rating,20|block_chance,2",
       "perLvl": "block_rating,4%|block_chance,0.5",
-      "weapon": "Round Shield,Kite Shield,Tower Shield"
+      "desc": [
+       "提升「格挡值」20",
+       "提升「格挡几率」2"
+      ],
+      "descPer": [
+       "提升「格挡值」4",
+       "提升「格挡几率」0.5"
+      ]
      },
      {
       "name": "shield_throw",
@@ -2881,7 +4307,16 @@
       "req": "shield_mastery",
       "effects": "base_damage,40%|blunt_damage,50|silence,25",
       "perLvl": "base_damage,10%|blunt_damage,25|silence,7",
-      "weapon": "Round Shield,Kite Shield,Tower Shield"
+      "desc": [
+       "造成 40% 的「武器 + 物理」伤害",
+       "额外造成 50 点钝击伤害",
+       "增加 25% 的「沉默」几率"
+      ],
+      "descPer": [
+       "造成 10% 的「武器 + 物理」伤害",
+       "额外造成 25 点钝击伤害",
+       "增加 7% 的「沉默」几率"
+      ]
      }
     ]
    },
@@ -2900,7 +4335,12 @@
       "req": null,
       "effects": "lightning_damage,10|lightning_damage,5%",
       "perLvl": "lightning_damage,2%",
-      "weapon": null
+      "desc": [
+       "额外造成 10 + 5% 点闪电伤害"
+      ],
+      "descPer": [
+       "额外造成 2 点闪电伤害"
+      ]
      },
      {
       "name": "cold_mastery",
@@ -2914,7 +4354,12 @@
       "req": null,
       "effects": "cold_damage,10|cold_damage,5%",
       "perLvl": "cold_damage,2%",
-      "weapon": null
+      "desc": [
+       "额外造成 10 + 5% 点寒冰伤害"
+      ],
+      "descPer": [
+       "额外造成 2 点寒冰伤害"
+      ]
      },
      {
       "name": "glacial_armor",
@@ -2928,7 +4373,12 @@
       "req": null,
       "effects": "thorn_damage,50",
       "perLvl": "thorn_damage,10%|freeze,0.25",
-      "weapon": null
+      "desc": [
+       "额外造成 50 点荆棘伤害"
+      ],
+      "descPer": [
+       "额外造成 10 点荆棘伤害"
+      ]
      },
      {
       "name": "shielding_storm",
@@ -2942,7 +4392,12 @@
       "req": null,
       "effects": "thorn_damage,50",
       "perLvl": "thorn_damage,10%|confuse,0.5",
-      "weapon": null
+      "desc": [
+       "额外造成 50 点荆棘伤害"
+      ],
+      "descPer": [
+       "额外造成 10 点荆棘伤害"
+      ]
      },
      {
       "name": "eternal_winter",
@@ -2956,7 +4411,16 @@
       "req": null,
       "effects": "cold_res,-20|evasion,-20|frostbite,5",
       "perLvl": "cold_res,-2%|evasion,-2%|frostbite,2",
-      "weapon": null
+      "desc": [
+       "降低 -20 点寒冰抗性",
+       "降低「闪避」-20",
+       "提升「霜冻」5"
+      ],
+      "descPer": [
+       "降低 -2 点寒冰抗性",
+       "降低「闪避」-2",
+       "提升「霜冻」2"
+      ]
      },
      {
       "name": "storm_bringer",
@@ -2970,7 +4434,8 @@
       "req": null,
       "effects": "lightning_res,|hit_rating,|confuse,",
       "perLvl": "lightning_res,|hit_rating,|confuse,",
-      "weapon": null
+      "desc": [],
+      "descPer": []
      },
      {
       "name": "shield_maiden",
@@ -2984,7 +4449,15 @@
       "req": null,
       "effects": "block_chance,100|fortitude,20|shield,20",
       "perLvl": "block_rating,15|fortitude,5%|shield,10",
-      "weapon": null
+      "desc": [
+       "提升「格挡几率」100",
+       "提升「坚韧」20",
+       "提升「护盾」20"
+      ],
+      "descPer": [
+       "提升「坚韧」5",
+       "提升「护盾」10"
+      ]
      },
      {
       "name": "eye_of_the_taiga",
@@ -2998,7 +4471,14 @@
       "req": null,
       "effects": "cold_res,10|lightning_res,10",
       "perLvl": "cold_res,4%|lightning_res,4%",
-      "weapon": null
+      "desc": [
+       "提升 10 点寒冰抗性",
+       "提升 10 点闪电抗性"
+      ],
+      "descPer": [
+       "提升 4 点寒冰抗性",
+       "提升 4 点闪电抗性"
+      ]
      },
      {
       "name": "warmth_shout",
@@ -3012,7 +4492,12 @@
       "req": null,
       "effects": "life_regen,50",
       "perLvl": "life_regen,10|life_regen,2%",
-      "weapon": null
+      "desc": [
+       "提升「生命回复」50"
+      ],
+      "descPer": [
+       "提升「生命回复」10"
+      ]
      }
     ]
    }
@@ -3035,7 +4520,16 @@
       "req": null,
       "effects": "poison_damage,15|dark_damage,15|spell_damage,-2%",
       "perLvl": "poison_damage,4%|dark_damage,4%|spell_damage,-2%",
-      "weapon": null
+      "desc": [
+       "额外造成 15 点毒素伤害",
+       "额外造成 15 点暗影伤害",
+       "额外造成 -2% 点法术伤害"
+      ],
+      "descPer": [
+       "额外造成 4 点毒素伤害",
+       "额外造成 4 点暗影伤害",
+       "额外造成 -2% 点法术伤害"
+      ]
      },
      {
       "name": "bloodbriar_pact",
@@ -3049,7 +4543,16 @@
       "req": "corruption_mastery",
       "effects": "thorn_damage,50|life_steal,50|turns,0.2",
       "perLvl": "thorn_damage,20%|life_steal,20%|turns,0.2",
-      "weapon": null
+      "desc": [
+       "额外造成 50 点荆棘伤害",
+       "提升「生命偷取」50",
+       "提升「回合」0.2"
+      ],
+      "descPer": [
+       "额外造成 20 点荆棘伤害",
+       "提升「生命偷取」20",
+       "提升「回合」0.2"
+      ]
      }
     ]
    },
@@ -3068,7 +4571,13 @@
       "req": null,
       "effects": "poison_damage,50|poison_damage,25%|infect,100",
       "perLvl": "poison_damage,15%",
-      "weapon": null
+      "desc": [
+       "额外造成 50 + 25% 点毒素伤害",
+       "增加 100% 的「感染」几率"
+      ],
+      "descPer": [
+       "额外造成 15 点毒素伤害"
+      ]
      },
      {
       "name": "wither",
@@ -3082,7 +4591,14 @@
       "req": "hex_of_rot",
       "effects": "base_damage,40%|poison_damage,10|infect,100",
       "perLvl": "poison_damage,10%",
-      "weapon": null
+      "desc": [
+       "造成 40% 的「武器 + 魔法」伤害",
+       "额外造成 10 点毒素伤害",
+       "增加 100% 的「感染」几率"
+      ],
+      "descPer": [
+       "额外造成 10 点毒素伤害"
+      ]
      },
      {
       "name": "plagueforge",
@@ -3096,7 +4612,12 @@
       "req": "wither",
       "effects": "poison_damage,10%",
       "perLvl": "poison_damage,10%",
-      "weapon": null
+      "desc": [
+       "额外造成 10% 点毒素伤害"
+      ],
+      "descPer": [
+       "额外造成 10% 点毒素伤害"
+      ]
      },
      {
       "name": "toxic_rain",
@@ -3110,7 +4631,15 @@
       "req": "blightgrasp",
       "effects": "base_damage,40%|poison_damage,10|infect,100|blind,100",
       "perLvl": "poison_damage,8%",
-      "weapon": null
+      "desc": [
+       "造成 40% 的「武器 + 魔法」伤害",
+       "额外造成 10 点毒素伤害",
+       "增加 100% 的「感染」几率",
+       "增加 100% 的「致盲」几率"
+      ],
+      "descPer": [
+       "额外造成 8 点毒素伤害"
+      ]
      }
     ]
    },
@@ -3129,7 +4658,13 @@
       "req": null,
       "effects": "dark_damage,50|dark_damage,25%|defile,100",
       "perLvl": "dark_damage,15%",
-      "weapon": null
+      "desc": [
+       "额外造成 50 + 25% 点暗影伤害",
+       "增加 100% 的「污染」几率"
+      ],
+      "descPer": [
+       "额外造成 15 点暗影伤害"
+      ]
      },
      {
       "name": "shadow_mist",
@@ -3143,7 +4678,14 @@
       "req": "hex_of_despair",
       "effects": "base_damage,40%|dark_damage,10|defile,100",
       "perLvl": "dark_damage,10%",
-      "weapon": null
+      "desc": [
+       "造成 40% 的「武器 + 魔法」伤害",
+       "额外造成 10 点暗影伤害",
+       "增加 100% 的「污染」几率"
+      ],
+      "descPer": [
+       "额外造成 10 点暗影伤害"
+      ]
      },
      {
       "name": "shadowforge",
@@ -3157,7 +4699,12 @@
       "req": "shadow_mist",
       "effects": "dark_damage,10%",
       "perLvl": "dark_damage,10%",
-      "weapon": null
+      "desc": [
+       "额外造成 10% 点暗影伤害"
+      ],
+      "descPer": [
+       "额外造成 10% 点暗影伤害"
+      ]
      },
      {
       "name": "doomclutch",
@@ -3171,7 +4718,17 @@
       "req": "shadowforge",
       "effects": "base_damage,10%|dark_damage,80|life_steal,5%|defile,100",
       "perLvl": "base_damage,5%|dark_damage,15%|life_steal,25",
-      "weapon": null
+      "desc": [
+       "造成 10% 的「武器 + 物理」伤害",
+       "额外造成 80 点暗影伤害",
+       "提升「生命偷取」5%",
+       "增加 100% 的「污染」几率"
+      ],
+      "descPer": [
+       "造成 5% 的「武器 + 物理」伤害",
+       "额外造成 15 点暗影伤害",
+       "提升「生命偷取」25%"
+      ]
      },
      {
       "name": "call_of_shadows",
@@ -3185,7 +4742,15 @@
       "req": "doomclutch",
       "effects": "base_damage,40%|dark_damage,10|defile,100|fear,100",
       "perLvl": "dark_damage,8%",
-      "weapon": null
+      "desc": [
+       "造成 40% 的「武器 + 魔法」伤害",
+       "额外造成 10 点暗影伤害",
+       "增加 100% 的「污染」几率",
+       "增加 100% 的「恐惧」几率"
+      ],
+      "descPer": [
+       "额外造成 8 点暗影伤害"
+      ]
      }
     ]
    },
@@ -3204,7 +4769,15 @@
       "req": null,
       "effects": "base_damage,40%|silence,20|spell_damage,5%",
       "perLvl": "silence,5|spell_damage,2%",
-      "weapon": "Common Flask,Mighty Flask,Imperial Flask"
+      "desc": [
+       "造成 40% 的「武器 + 魔法」伤害",
+       "增加 20% 的「沉默」几率",
+       "额外造成 5% 点法术伤害"
+      ],
+      "descPer": [
+       "增加 5% 的「沉默」几率",
+       "额外造成 2% 点法术伤害"
+      ]
      },
      {
       "name": "weakening_tonic",
@@ -3218,7 +4791,14 @@
       "req": "supressing_tonic",
       "effects": "poison_res,-10%|dark_res,-10%",
       "perLvl": "poison_res,-3%|dark_res,-3%",
-      "weapon": "Common Flask,Mighty Flask,Imperial Flask"
+      "desc": [
+       "降低 -10% 点毒素抗性",
+       "降低 -10% 点暗影抗性"
+      ],
+      "descPer": [
+       "降低 -3% 点毒素抗性",
+       "降低 -3% 点暗影抗性"
+      ]
      },
      {
       "name": "nightmare_tonic",
@@ -3232,7 +4812,15 @@
       "req": "supressing_tonic",
       "effects": "base_damage,40%|fear,20|spell_damage,5%",
       "perLvl": "fear,5|spell_damage,2%",
-      "weapon": "Common Flask,Mighty Flask,Imperial Flask"
+      "desc": [
+       "造成 40% 的「武器 + 魔法」伤害",
+       "增加 20% 的「恐惧」几率",
+       "额外造成 5% 点法术伤害"
+      ],
+      "descPer": [
+       "增加 5% 的「恐惧」几率",
+       "额外造成 2% 点法术伤害"
+      ]
      },
      {
       "name": "alleviation_tonic",
@@ -3246,7 +4834,12 @@
       "req": "weakening_tonic",
       "effects": "health,150",
       "perLvl": "health,110",
-      "weapon": "Common Flask,Mighty Flask,Imperial Flask"
+      "desc": [
+       "恢复 150 点生命"
+      ],
+      "descPer": [
+       "恢复 110 点生命"
+      ]
      },
      {
       "name": "resistance_tonic",
@@ -3260,7 +4853,14 @@
       "req": "alleviation_tonic",
       "effects": "dark_res,20%|poison_res,20%",
       "perLvl": "dark_res,5%|poison_res,5%",
-      "weapon": "Common Flask,Mighty Flask,Imperial Flask"
+      "desc": [
+       "提升 20% 点暗影抗性",
+       "提升 20% 点毒素抗性"
+      ],
+      "descPer": [
+       "提升 5% 点暗影抗性",
+       "提升 5% 点毒素抗性"
+      ]
      }
     ]
    },
@@ -3279,7 +4879,13 @@
       "req": null,
       "effects": "mana_steal,10|mana_steal,5%|siphon_mana,100",
       "perLvl": "mana_steal,2%",
-      "weapon": null
+      "desc": [
+       "提升「法力偷取」10 + 5%",
+       "提升「虹吸法力」100"
+      ],
+      "descPer": [
+       "提升「法力偷取」2"
+      ]
      },
      {
       "name": "siphon_strength",
@@ -3293,7 +4899,14 @@
       "req": "siphon_mana",
       "effects": "physical_damage,-15%|blunt_damage,-15%",
       "perLvl": "physical_damage,-4%|blunt_damage,-4%",
-      "weapon": null
+      "desc": [
+       "额外造成 -15% 点物理伤害",
+       "额外造成 -15% 点钝击伤害"
+      ],
+      "descPer": [
+       "额外造成 -4% 点物理伤害",
+       "额外造成 -4% 点钝击伤害"
+      ]
      },
      {
       "name": "siphon_health",
@@ -3307,7 +4920,13 @@
       "req": "siphon_strength",
       "effects": "life_steal,10|life_steal,5%|siphon_health,100",
       "perLvl": "life_steal,2%",
-      "weapon": null
+      "desc": [
+       "提升「生命偷取」10 + 5%",
+       "提升「虹吸生命」100"
+      ],
+      "descPer": [
+       "提升「生命偷取」2"
+      ]
      }
     ]
    },
@@ -3326,7 +4945,14 @@
       "req": null,
       "effects": "life,50|mana_regen,50",
       "perLvl": "life,4%|mana_regen,2%",
-      "weapon": null
+      "desc": [
+       "提升「生命上限」50",
+       "提升「法力回复」50"
+      ],
+      "descPer": [
+       "提升「生命上限」4",
+       "提升「法力回复」2"
+      ]
      },
      {
       "name": "soul_extraction",
@@ -3340,7 +4966,12 @@
       "req": "wretched_spirit",
       "effects": "spirit_scavenging,5%",
       "perLvl": "spirit_scavenging,3%",
-      "weapon": null
+      "desc": [
+       "提升「灵魂拾取」5%"
+      ],
+      "descPer": [
+       "提升「灵魂拾取」3%"
+      ]
      }
     ]
    }
