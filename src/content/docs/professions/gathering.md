@@ -1,14 +1,18 @@
 ---
 title: 采集
 description: 采集机制与经验、采集点分布、杂物点、工具耐久、离线采集与拾荒。
-gameVersion: "EA"
-verifiedDate: 2026-10-13
-versionStatus: ea-verified
+gameVersion: "1.0"
+verifiedDate: 2026-10-15
+versionStatus: mixed
 sources:
   - type: official
-    reference: 游戏内帮助文档（采集点 / 工具耐久 / Tier 与材料）
+    reference: 官方 1.0 Wiki（Gathering Spots / 工具耐久度 / 层级与材料）
+    url: https://wiki.norroth.com/p/49/
+    date: "2026-10-15"
+  - type: official
+    reference: 游戏内帮助文档（EA 版）
   - type: observed
-    reference: 游戏内实测
+    reference: 游戏内实测（EA 版）
 ---
 
 ## 结论速览
@@ -27,10 +31,13 @@ sources:
 - 必须装备**对应工具**。
 - 采集物直接进背包（不像战斗那样需要额外拾取）。
 
-## 采集点分布【官方】
+## 采集点分布【1.0 官方 Wiki】
 
-帮助文档列出 **Chopping / Farming / Fishing / Foraging / Mining / Quarrying** 六类采集点，
-每类给出 `地点名 + Tier + 地图等级`。要点：
+官方 1.0 Wiki 的 **Gathering Spots** 页按采集技能列出每张地图的 `地点 + Tier + 地图等级`，共 **141 条**
+（EA 采集到 112 条，1.0 新增 15 条）。分技能条数：Fishing 37、Chopping 27、Mining 21、Farming 19、
+Foraging 19、Quarrying 18。完整清单见[采集点分布](/norr-wiki/professions/gathering-locations/)。
+
+要点：
 
 - 世界地图上**蓝点 = 有采集点**，但**未探索过的地图不显示蓝点**。
 - Tier 1 采集点集中在 Arodas 新手区；Tier 2 从 Lv7-10 的 Owranbu River / Arodas Beach / Elundi 开始。
@@ -72,13 +79,25 @@ sources:
 - 一次采集 = **3 次尝试**，Tier-1 节点共扣 **6 耐久**，产出约 2 份材料，**+10 经验**，18 秒冷却。
 - 工具耐久耗尽前，界面会显示剩余耐久与还能采几次。
 
-## 工具耐久
+## 工具耐久【1.0 官方 Wiki】
 
-- **每次采集消耗 6 点工具耐久**（Tier-1 节点）。
-- 界面里的「Remaining Durability: N (M turns)」是**工具**的剩余耐久，`M = N / 6` 就是还能采几次。
-- **工具耐久归零后采集会静默失败**——不是节点枯竭，是工具坏了。
-- **城市铁匠可以修工具**（站在 smith 格子上修理），所以长挂采集要定期回城修工具。
-- 一次采集循环约 160~330 次，之后必须回城修工具。
+**耐久消耗公式：地图阶级 + 两者中的最高阶级**（每次采集动作）。
+
+| 每次动作耐久消耗 | T1 | T2 | T3 | T4 | T5 | T6 |
+|---|---|---|---|---|---|---|
+| 铜质工具 | 2 | 4 | 6 | 8 | 10 | 12 |
+| 铁质工具 | 3 | 4 | 6 | 8 | 10 | 12 |
+| 青铜工具 | 4 | 5 | 6 | 8 | 10 | 12 |
+| 钢质工具 | 5 | 6 | 7 | 8 | 10 | 12 |
+| 秘银工具 | 6 | 7 | 8 | 9 | 10 | 12 |
+| 瓦伦塔尔工具 | 7 | 8 | 9 | 10 | 11 | 12 |
+
+- **剩余次数 = 当前耐久度 ÷ 每次动作消耗**；界面显示「Remaining Durability: N (M turns)」。
+- 损坏的工具在修复前无法使用：在**城镇铁匠**处修复，或使用**物品修复工具包**。
+- 示例：T1 地图用 T4 工具 → 4 + 1 = 每次 5 点；T5 地图用 T2 工具 → 5 + 5 = 每次 10 点。
+
+> EA 实测补充：一次采集（run）= **3 次尝试**，Tier-1 节点共扣 **6 点**耐久，产出约 2 份材料，**+10 经验**，18 秒冷却。
+> **工具耐久归零后采集会静默失败**——不是节点枯竭，是工具坏了。一次采集循环约 160~330 次，之后必须回城修工具。
 
 ## Idle Mode（离线采集）
 

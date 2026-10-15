@@ -1,8 +1,8 @@
 ---
 title: 地图、移动与传送
 description: 两种地图、城镇坐标、走格、传送与快速旅行、死亡复活。
-gameVersion: "EA"
-verifiedDate: 2026-10-13
+gameVersion: "1.0"
+verifiedDate: 2026-10-15
 versionStatus: mixed
 sources:
   - type: official
@@ -111,6 +111,22 @@ Elena's Crossroad → Forested Canyon(4-5) → Tree of Life(5-6) → Grasping Ma
 - **世界地图**：新增 **战争迷雾（Fog of War）**、tooltip 改进、显示某活动的全部地点、地图不再越界滚动。
 - **缩放上限**由 140% 提升到 **200%**。
 
+## 传送方式与费用【1.0 官方 Wiki】
+
+| 方式 | 说明 | 费用 |
+|---|---|---|
+| **Waygate** | 城市与部分野外图上的快速旅行网络；站在 Waygate（或用公会传送门）选择目的地传送 | **Spirit Essence**，`Tier² × 50`（T1 50 / T2 200 / T3 450 / T4 800 / T5 1250 / T6 1800） |
+| **Home Scrolls** | Cartography 制作，传送到已访问过的特定城镇 | 卷轴 |
+| **Teleportation Scrolls** | 传送到任何去过的地图（副本与秘密地图除外）；来自 Event Merchant 换票、Party Popper 礼物、特殊 Order Board 任务、Celestial Market | 卷轴 |
+| **Infusion Stones** | 升级 Teleport 技能；每块石头可跳 200 个节点，点视野内任意节点直接传送，每跳一格扣 1 | 石头 |
+| **Guild Portal** | 公会建筑，可传送到每个已解锁城市 | — |
+
+- **Spirit Essence** 来自战斗掉落、Geodes 等；数量显示在 Waygate 窗口顶部与 Currency Pouch。
+- **Smugglers' Routes（走私路线）**：隐藏运输网络，站在路线格上打开界面，按 **Ride** 付费直达；**费用 = 目的地等级 × 80 金币**（Lv1 = 80，Lv20 = 1600）。已发现的路线在世界地图上以**商队图标**标记。
+- **Waysign（路标）**：点击后列出本图兴趣点并快速定位。
+
+> 1.0 世界地图新增**战争迷雾**、改进 tooltip、显示活动的全部地点，缩放上限提升到 200%。
+
 ## 相关
 
 - [地图清单](/norr-wiki/world/maps/)
@@ -118,6 +134,8 @@ Elena's Crossroad → Forested Canyon(4-5) → Tree of Life(5-6) → Grasping Ma
 - [副本与 Boss](/norr-wiki/quests/dungeons/)
 
 ## 资料来源
+
+- 官方 1.0 Wiki（wiki.norroth.com），2026-10-15 抓取。
 
 - 官方帮助文档：Worldmap、Basic Movement、Teleport and Fast Travel、Expeditions。
 - 游戏内实测（EA 版）：城镇坐标、移动机制、死亡规则、地图勘察数据。

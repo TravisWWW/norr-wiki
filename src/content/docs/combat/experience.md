@@ -1,9 +1,9 @@
 ---
 title: 经验与成长
 description: 经验来源（必须拾取）、等级压制、经验曲线、PvE 死亡不掉经验。
-gameVersion: "EA"
-verifiedDate: 2026-10-13
-versionStatus: ea-verified
+gameVersion: "1.0"
+verifiedDate: 2026-10-15
+versionStatus: mixed
 sources:
   - type: official
     reference: 游戏内帮助文档（战斗 / 敌人颜色与星级）
@@ -73,6 +73,11 @@ sources:
 
 - 升级会**回满 HP / 蓝**，并给 **5 属性点 + 2 技能点**。
 - 升级所需经验随等级上升（约 ×1.8 / 级），等级越高升级越慢。
+
+## 敌人颜色与经验【1.0 官方 Wiki】
+
+敌人名字颜色表示相对等级：**灰**（远低于你，0 经验）、**绿**（略低，经验减少）、**黄**（同级，正常）、**橙**（更高，奖励更丰厚）、**红**（明显更高，危险）。
+星级（Champion / Rare / Elite）额外提供战斗经验与战利品，星级越高掉落越多。
 
 ## 相关
 

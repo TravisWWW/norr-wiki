@@ -1,9 +1,9 @@
 ---
 title: 物品专家：精炼/镶嵌/重铸
 description: Item Specialist 的六个功能、规则与配套商店。
-gameVersion: "EA"
-verifiedDate: 2026-10-13
-versionStatus: ea-verified
+gameVersion: "1.0"
+verifiedDate: 2026-10-15
+versionStatus: mixed
 sources:
   - type: official
     reference: 游戏内帮助文档（Refining Items / Max Sockets / Item Specialist / Jewel Stats / Item Stats）
@@ -115,6 +115,40 @@ sources:
 3. **开孔要先买 Socketing Hammer**。
 4. **重铸可以预览再决定**（不确认不生效）。
 5. Spirit Essence 主要来自**日常任务**，所以每天做日常是维持传送开销的关键。
+
+## 精炼与护符【1.0 官方 Wiki】
+
+**精炼（Refining）**：在城市物品专家处精炼，提升**最大耐久**，护甲提升**防御**、武器提升**伤害**；**最高 Quality 100**；**Quality 16 起有几率碎裂**，建议携带 **Safety Charm**。
+
+| 稀有度 | 最低 Quality | 最高 Quality |
+|---|---|---|
+| Normal | 1 | 30 |
+| Magic | 1 | 35 |
+| Rare | 5 | 40 |
+| Epic | 10 | 45 |
+| Mystical | 15 | 50 |
+| Ascended | 20 | 60 |
+| Legendary | 25 | 80 |
+| Relic | 30 | 100 |
+| Unique | 按 Tier | T1=40 / T3=50 / T5=80 / T6=100（可精炼，但不可升稀有度） |
+
+**Lucky Charm**：镶嵌宝石时每个 **+10%** 成功率，单次最多用 **5 个**（5 个 = 100%）。
+**Safety Charm**：**保护物品不被销毁**，销毁时由护符顶替；两者都来自敌人掉落与 Laurel Market。
+
+## 余烬熔炉与升阶代币【1.0 官方 Wiki】
+
+**Ember Forge（余烬熔炉）**：仅可用于**未 Exalted 的武器与护甲**，操作后物品**账号绑定**。
+- **Upgrade Rarity**：把 Ascended / Legendary 升到下一稀有度；升到 Legendary / Relic 需要对应 **Token**；成功率 **100%**。
+- **Perfect Reroll**：把所有词条重掷为**最大值**，消耗与普通重铸相同。
+- **Exalt**：追加一条随机 **Exalted** 词条；Exalted 物品**永久锁定，不能重铸**。
+
+**Legendary / Relic Upgrade Token**：Legendary Token 把 Ascended 升为 Legendary，Relic Token 把 Legendary 升为 Relic。来源：Overlord、Legendary 远征、Strongbox、商人（10 个碎片）。升级方式：**Ember Forge 100% 成功**，或 **Item Specialist** 从 25% 起、每次失败 +5% 直到 100%（每次尝试都消耗 Token）。
+
+## 战利品强化 Trophy Enhancing【1.0 官方 Wiki】
+
+- 在 Hunter **Artemas Fletcher** 处选 **Enhance**，用**精炼后的战利品材料**给装备附加一条**随机属性**。
+- 每件装备同时只能有 **1 条** Trophy 强化；对已有强化的装备再次强化会**替换**旧词条；被强化的属性在 tooltip 上带**战利品图标**。
+- **任何角色都能用，不需要 Hunting 专业。**
 
 ## 相关
 

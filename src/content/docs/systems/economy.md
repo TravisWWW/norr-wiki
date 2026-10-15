@@ -1,8 +1,8 @@
 ---
 title: 经济与货币
 description: 货币体系、打怪与卖店收入、玩家市场、各市场与比价。
-gameVersion: "EA"
-verifiedDate: 2026-10-13
+gameVersion: "1.0"
+verifiedDate: 2026-10-15
 versionStatus: mixed
 sources:
   - type: official
@@ -92,6 +92,11 @@ sources:
 4. **Trading Post 卖高价材料**：商店价 10 倍以内只收 2.5% 手续费。
 5. **日常 + Client Order Board** 是 Laurels / Spirit Essence 的主要来源。
 6. 洗属性价格动态，**无需因「洗点贵」而回避**；但属性点仍建议先测量再分配。
+
+## 货币清单【1.0 官方 Wiki】
+
+- 官方 **Currencies** 页在 1.0 Wiki 中为空（未提供正文）。已知货币：Coins 金币、Spirit Essence 灵气精华、Golden Laurels、Achievement Tokens、Ducats 杜卡特、Rebirth Marks 重生印记、Norroth Coins (NC)、Prestige Points、Event Tickets、Lost Soul Shards、Resource Rush Tokens 等。
+- 各货币的获取与用途见[经济与交易](/norr-wiki/economy/)、[代币商店](/norr-wiki/systems/token-shops/)与[邮件](/norr-wiki/systems/mail/)。
 
 ## 相关
 

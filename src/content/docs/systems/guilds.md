@@ -1,8 +1,8 @@
 ---
 title: 公会系统
 description: 开/加公会、公会建筑、公会任务板。
-gameVersion: "EA"
-verifiedDate: 2026-10-13
+gameVersion: "1.0"
+verifiedDate: 2026-10-15
 versionStatus: mixed
 sources:
   - type: official
@@ -90,12 +90,25 @@ sources:
 - **Guild Portal 免费传送**（EA 版实测）、**Guild Bank 共享存储**、**公会任务板**额外奖励。
 - 公会协作、交易与组队探索是官方在正式版中明确支持的内容。
 
+## 公会设施与佣兵【1.0 官方 Wiki】
+
+- **建立公会**：战斗等级 **20+**，费用 **50 金币**，在 **Drouver 的 Guild Hall** 创建；只能邀请**同阵营**玩家。公会标签在角色名前显示（Dark 红、Light 蓝）。
+- **Guild Bank**：存放公会资源，可升级增加槽位与堆叠上限。
+- **Guild Headquarters**：升级总部解锁更多建筑。
+- **Guild Bed Chambers**：升级床位扩大成员上限。
+- **Guild Portal**：可传送到每个已解锁城市，省去 Home / Teleportation Scroll。
+- **Guild Library**：存放公会信息书籍，升级后可看更多。
+- **Guild Armory**：捐赠物品会**完全转移所有权给公会**，之后只能**借用**，不能取回。
+- **Guild Quartermaster（佣兵）**：招募 / 解雇 / 复活 / 移除佣兵，用于公会战（GvG）。招募用 **Guild Gold**；**复活需消耗 1 个 Infusion Stone**；新佣兵每 **24 小时**刷新。
+
 ## 相关
 
 - [任务板与日志](/norr-wiki/quests/boards/)
 - [职业自给自足矩阵](/norr-wiki/guides/crafting-matrix/)
 
 ## 资料来源
+
+- 官方 1.0 Wiki（wiki.norroth.com），2026-10-15 抓取。
 
 - 官方帮助文档：Start and Join Guild、公会建筑各条目。
 - 游戏内实测（EA 版）：开公会条件与费用。

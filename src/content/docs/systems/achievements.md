@@ -1,8 +1,8 @@
 ---
 title: 成就
 description: 成就等级（AP）、成就代币、1.0 奖励与成就清单。
-gameVersion: "EA"
-verifiedDate: 2026-10-13
+gameVersion: "1.0"
+verifiedDate: 2026-10-15
 versionStatus: mixed
 sources:
   - type: official
@@ -42,6 +42,10 @@ sources:
   - **Norroth Coin Points (NC)** —— 只有充值才有。
 
 > **安全提示**：兑换码属于个人凭据，请勿公开或分享；本站不展示任何真实兑换码。
+
+## 成就规模【1.0 官方 Wiki】
+
+官方 1.0 Wiki 的 **Achievements** 页一次性列出 **526** 个成就（名称 / 描述 / Achievement Token 奖励），代币合计 **91,940**，覆盖深渊塔、Boss、探索、职业、竞技场、活动等。完整清单见官方页 https://wiki.norroth.com/p/54/achievements 。
 
 ## 相关内容
 

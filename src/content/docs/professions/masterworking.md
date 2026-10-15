@@ -2,8 +2,8 @@
 title: 大师制作 Masterworking
 description: 大师制作、战利品强化、升华、珠宝灌注，以及从银行直接制作。
 gameVersion: "1.0"
-verifiedDate: 2026-10-14
-versionStatus: 1.0-announced
+verifiedDate: 2026-10-15
+versionStatus: mixed
 sources:
   - type: official
     reference: 官方 Discord #dev-blog（2026）
@@ -38,6 +38,12 @@ sources:
 - **材料可锁定**（与装备锁定类似），避免误用。
 - **可学习的制作配方**（1.0 新增）。
 
+## 战利品强化与余烬熔炉【1.0 官方 Wiki】
+
+- **Trophy Enhancing（战利品强化）**：在 Hunter **Artemas Fletcher** 处用精炼战利品材料给装备附加一条随机属性；每件装备同时只能有 1 条，重复强化会替换；被强化属性带战利品图标；**任何角色都能用，不需要 Hunting 专业**。
+- **Ember Forge（余烬熔炉）**：Upgrade Rarity（100% 成功，升 Legendary / Relic 需 Token）、Perfect Reroll（词条重掷为最大值）、Exalt（追加一条 Exalted 词条并永久锁定）；仅限未 Exalted 的武器与护甲，操作后账号绑定。
+- **Legendary / Relic Upgrade Token**：来源 Overlord、Legendary 远征、Strongbox、商人（10 碎片）。
+
 ## 相关
 
 - [制作](/norr-wiki/professions/crafting/)
@@ -46,5 +52,7 @@ sources:
 - [1.0 机制变更](/norr-wiki/release/v1-changes/)
 
 ## 资料来源
+
+- 官方 1.0 Wiki（wiki.norroth.com），2026-10-15 抓取。
 
 - 官方 Discord：`#🔧dev-blog`（2026）。

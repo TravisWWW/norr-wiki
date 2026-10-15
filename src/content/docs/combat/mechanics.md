@@ -1,8 +1,8 @@
 ---
 title: 战斗机制
 description: 战斗流程、敌人等级与经验、攻击与额外打击、伤害结算、异常状态与自动战斗。
-gameVersion: "EA"
-verifiedDate: 2026-10-13
+gameVersion: "1.0"
+verifiedDate: 2026-10-15
 versionStatus: mixed
 sources:
   - type: official
@@ -107,6 +107,29 @@ sources:
 
 详见 [1.0 机制变更](/norr-wiki/release/v1-changes/) 与 [1.0 职业平衡](/norr-wiki/release/v1-class-balance/)。
 
+## 敌人阶级、词缀与阵营【1.0 官方 Wiki】
+
+- **阶级（星级）**由名字旁的星星与灵气颜色显示：**冠军 Champion（蓝）**属性提升较少、**稀有 Rare（黄）**中等、**精英 Elite（紫）**大幅提升。星级越高，掉落与战斗经验越多。
+- **精英词缀（Elite Prefixes）**：只有 **Elite** 稀有度的敌人会随机获得一个词缀（显示在名字前，如 `Hellfire Wolf`），按敌人类型（Humanoid / Undead / Animal 等）随机抽取。词缀可提供额外属性、战斗技能、开场/死亡效果，并附加一个敌人类型。
+
+| 词缀 | 效果 |
+|---|---|
+| Arcanwall | 护盾 + Bone Shield 技能 + Fortified 类型 |
+| Colossal | 巨额生命 + Giant 类型 |
+| Corrupted | 暗影伤害/抗性 + 暗影攻击 + 开场 Spectral Fear + 死亡 Last Curse |
+| Divine | 光明伤害/抗性 + 可能致盲 + Flying 类型 |
+| Glacierborn | 冰冷伤害/抗性 + Cryophile 类型 |
+| Hellfire | 火焰伤害/抗性 + 死亡 Explosive Demise |
+| Manatapper | 额外法力 + 偷取敌人法力 |
+| Plaguefang | 毒素伤害/抗性 + 死亡额外效果 |
+| Powerful | 提高基础伤害 |
+| Runeburst | 奥术伤害/抗性 |
+| Stormlash | 闪电伤害/抗性 |
+| Thick Skinned | 提高基础防御 + Fortified 类型 |
+| Vampiric | 生命偷取 + Bite 技能 + 开场 Blood Hunger |
+
+**阵营（Alignment）**：创建角色时选择 **Light（光明）** 或 **Dark（黑暗）**，影响可加入的公会阵营、成就与阵营点数、宠物表情与任务对话，并与部分技能（如 Zealot 光/暗系）绑定。
+
 ## 相关
 
 - [经验与成长](/norr-wiki/combat/experience/)
@@ -114,6 +137,8 @@ sources:
 - [技能系统](/norr-wiki/combat/skills/)
 
 ## 资料来源
+
+- 官方 1.0 Wiki（wiki.norroth.com），2026-10-15 抓取。
 
 - 官方帮助文档：战斗、攻速与额外打击、状态效果等条目。
 - 游戏内实测（EA 版）：敌人名称颜色与经验、自动战斗技能栏、精英怪经验等。

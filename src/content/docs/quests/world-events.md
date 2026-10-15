@@ -2,8 +2,8 @@
 title: 世界事件日历
 description: Event Calendar、每日服务器事件（每周轮换）、节日 Overlord 与事件奖励。
 gameVersion: "1.0"
-verifiedDate: 2026-10-14
-versionStatus: 1.0-announced
+verifiedDate: 2026-10-15
+versionStatus: mixed
 sources:
   - type: official
     reference: 官方 Discord #dev-blog / #announcements（1.0）
@@ -40,6 +40,12 @@ sources:
 - **Hatchglow Event**：测试完成（2026-04-17）。
 - EA 期的活动与远征规则见[活动与探险](/norr-wiki/quests/events/)（**EA 口径**）。
 
+## 活动池与召唤图腾【1.0 官方 Wiki】
+
+- 每日服务器事件按周轮换，已知包括 **Wandering Merchant / Starlit Hunt / Hidden Hoard / Resource Rush / Hatchglow / Doubledawn / Arena Frenzy / Double XP Weekend**，详见[活动入口](/norr-wiki/quests/events/)。
+- **Void Rift Outbreak** 关闭整波后给全服 30 分钟随机增益。
+- **Summoning Totem（召唤图腾）**：部分地图上的特殊地点，消耗 **Lost Soul Shards** 召唤一只与该图相关的额外敌人。仪式三档：**Champion 7 / Rare 11 / Elite 15** 个碎片，越贵召唤越强。碎片由该图击杀敌人获得。
+
 ## 相关
 
 - [世界 Boss 与虚空裂隙](/norr-wiki/quests/world-boss/)
@@ -47,5 +53,7 @@ sources:
 - [1.0 内容清单](/norr-wiki/release/v1-content/)
 
 ## 资料来源
+
+- 官方 1.0 Wiki（wiki.norroth.com），2026-10-15 抓取。
 
 - 官方 Discord：`#🔧dev-blog`、`#📣announcements`（1.0）。

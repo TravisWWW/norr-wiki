@@ -1,9 +1,9 @@
 ---
 title: 日常任务 Dailies
 description: 面板与刷新、奖励档位、任务对照与最优路线。
-gameVersion: "EA"
-verifiedDate: 2026-10-13
-versionStatus: ea-verified
+gameVersion: "1.0"
+verifiedDate: 2026-10-15
+versionStatus: mixed
 sources:
   - type: official
     reference: 游戏内帮助文档（Dailies）
@@ -98,6 +98,12 @@ Finish a Battle Arena Fight（需 Lv15）、Upgrade an Item's Rarity（通常亏
 - 成功 → Quality +1；失败 → 仍扣钱。
 - **成功一次即完成日常「Refine an Item's Quality」**（失败的尝试不算）。
 - 更多见[物品专家：精炼/镶嵌/重铸](/norr-wiki/equipment/item-specialist/)。
+
+## 日常任务【1.0 官方 Wiki】
+
+- 每天一组任务；**每完成 3 个日常额外获得一袋战利品**，**完成 12 个可拿满全部额外奖励袋**。
+- 奖励袋包含金币、Laurels、Spirit Essence，并按袋子开出最多 4 个公会代币；也可能开出代币、骰子、宝箱或钥匙。
+- **每日 00:00 服务器时间**重置。
 
 ## 相关
 

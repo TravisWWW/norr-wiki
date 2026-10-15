@@ -1,9 +1,9 @@
 ---
 title: 宠物系统
 description: 宠物总览、饲料配方、掉蛋怪、繁殖孵化与喂养。
-gameVersion: "EA"
-verifiedDate: 2026-10-13
-versionStatus: ea-verified
+gameVersion: "1.0"
+verifiedDate: 2026-10-15
+versionStatus: mixed
 sources:
   - type: official
     reference: 游戏内帮助文档（Petbreeding / Feed Pet）
@@ -75,6 +75,32 @@ sources:
 - **只有 Druid 能孵蛋 / 带宠**；想玩宠物需要练一个 **Druid** 角色
   （账号共享生活技能进度，但 Petbreeding 需要 Druid 职业）。
 - 其它职业可通过交易 / 购买获得成品蛋或宠物。
+
+## 动物狩猎（陷阱捕获）【1.0 官方 Wiki】
+
+1.0 新增：在战斗中**捕获动物类敌人**并转化为永久宠物。
+
+- 需要道具**笼子 / 陷阱（Cage）**；只有**动物类**敌人可被捕获。
+- 条件（全部满足）：拥有 **Hunting 职业**、**狩猎技能等级 ≥ 敌人等级**、**陷阱阶级 ≥ 敌人阶级**、**敌人生命 ≤ 20%**、背包中有陷阱。
+- 使用：把敌人打到 20% 以下 → 自己回合打开道具选陷阱 → 判定。
+- **成功**：获得一个随机稀有度的宠物道具，**不获得正常战利品与经验**。**失败**：陷阱消耗、动物逃跑消失。
+- **捕获几率**：`50% + 10% × 陷阱阶级 − 0.5% × 敌人等级`，限制在 **5%~95%**。
+- **宠物稀有度**由敌人阶级决定：普通→(普通/魔法)；勇士→(普通/魔法/稀有)；稀有→(普通/魔法/稀有/史诗)；精英→(普通/魔法/稀有/史诗/神秘)。
+
+## Petbreeding（孵蛋）【1.0 官方 Wiki】
+
+- 把 **Pet Egg** 放进孵化槽 + 付金币，由 **Amelie Papillon** 孵化；队列最多 **3 个槽位**。
+- **费用 = `tier² × 500` 金币**；**时间 = `tier²` 小时**（T1 = 5 银 / 1 小时；T4 = 80 银 / 16 小时；T6 = 1 金 80 银 / 36 小时）。
+- 孵化时显示宠物与其稀有度；**Hatchglow 事件期间**稀有度与品质在**放蛋时**决定。
+- **掉蛋怪**：Snake、Woodland Spider、Scorpion、Myconid、Cassowary、Bog Worm、Blood Queen、Hydra、Werebat、Rust Monster、Komodo Basilisk。
+
+## 喂养 Feed Pet【1.0 官方 Wiki】
+
+- 用背包里的 **Pet Food**，或在宠物面板按 **Feed**（必须先装备宠物）。
+- **饲料档位按宠物等级自动选择**（Lv1-9=T1，10-19=T2…）；可从 **Petbreeder 购买**或由 **Cooking** 制作。
+- **Energy**：每块饲料回 `150 Energy × 档位`；0 Energy 的宠物不再提供战斗加成；也可放在自家 estate 的 **Pet Shelter** 回能。
+- **Growth**：仅在 Energy 已满时喂食才有机会 +1；成功率随 Growth 提高而下降；上限由稀有度决定；涨 Growth 会提高最大 Energy 并回满。
+- 成功喂食计入 **Feed Your Pet** 日常目标（每天一次）；**公会宠物不能喂**。
 
 ## 相关
 

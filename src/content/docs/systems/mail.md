@@ -1,9 +1,9 @@
 ---
 title: 邮件
 description: Post Office 收发邮件、邮费、邮箱验证与成就奖励领取。
-gameVersion: "EA"
-verifiedDate: 2026-10-13
-versionStatus: ea-verified
+gameVersion: "1.0"
+verifiedDate: 2026-10-15
+versionStatus: mixed
 sources:
   - type: official
     reference: 游戏内帮助文档（Post Office）
@@ -50,12 +50,20 @@ sources:
 - 验证码会超时，超时后重新发送即可。
 - **买（Trading Post 购买）不受影响**，只有卖 / 挂单被挡。
 
+## 邮件【1.0 官方 Wiki】
+
+- **Post Office** 处理收发邮件；可在城镇邮局或菜单中打开；Trading Post、成就等系统的邮件会进入 Inbox。
+- **寄送物品 / 资源**要付**按物品价值计算的邮费**；**邮箱槽位 20 个**。
+- **Read Message**：打开邮件查看主题、正文与附件；**Collect** 仅在邮件含免费附件且满足条件时出现（必须在 Inbox、非货到付款 CoD、**当前 Hardcore 模式与发件时一致**）；模式不一致会显示红色警告。
+
 ## 相关
 
 - [代币商店](/norr-wiki/systems/token-shops/)
 - [成就](/norr-wiki/systems/achievements/)
 
 ## 资料来源
+
+- 官方 1.0 Wiki（wiki.norroth.com），2026-10-15 抓取。
 
 - 官方帮助文档：Post Office。
 - 游戏内实测（EA 版）：收发邮件流程、邮费、邮箱验证门槛。

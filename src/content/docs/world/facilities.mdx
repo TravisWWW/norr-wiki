@@ -1,9 +1,9 @@
 ---
 title: NPC 与设施查询
 description: 按类型 / 地图查询全站 NPC 与设施位置（商人、制作台、任务板、传送点等）。
-gameVersion: "EA"
-verifiedDate: 2026-10-14
-versionStatus: ea-verified
+gameVersion: "1.0"
+verifiedDate: 2026-10-15
+versionStatus: mixed
 sources:
   - type: observed
     reference: 游戏内地图勘察记录
@@ -18,6 +18,11 @@ import FacilityTable from '../../../components/FacilityTable.astro';
 
 <FacilityTable />
 
+## 城镇与路标【1.0 官方 Wiki】
+
+- 官方 1.0 Wiki 的 **Towns & Cities** 页列出 12 座城镇及其等级 / Tier / 世界坐标（El Caspar 1/T1；Elundi、Owranbu 10/T2；Drouver、Vileton 15/T2；Sanjuo 19/T2；Bungavik、Saurville、Ururg 20/T3；Caeltys、Trescan、Stogow 30/T4）。
+- **Waysign（路标）**：地图上的指示牌（常在城镇），点击后列出本图兴趣点（商店与 NPC、通往其它地图的门、Waygate 等），按名称排序；点名称地图会移动到该格并闪烁标出。
+
 ## 相关
 
 - [地图清单](/norr-wiki/world/maps/)
@@ -25,5 +30,7 @@ import FacilityTable from '../../../components/FacilityTable.astro';
 - [任务板与日志](/norr-wiki/quests/boards/)
 
 ## 资料来源
+
+- 官方 1.0 Wiki（wiki.norroth.com），2026-10-15 抓取。
 
 - 游戏内地图勘察记录（EA 版）：设施类型、名称与坐标。

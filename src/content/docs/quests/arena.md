@@ -1,9 +1,9 @@
 ---
 title: 竞技场（PvP）
 description: Battle Arena 的入场、计分、分区与周奖励。
-gameVersion: "EA"
-verifiedDate: 2026-10-14
-versionStatus: ea-verified
+gameVersion: "1.0"
+verifiedDate: 2026-10-15
+versionStatus: mixed
 sources:
   - type: official
     reference: 游戏内帮助文档（Battle Arena）
@@ -24,6 +24,13 @@ sources:
 ## Battle Token 来源
 
 日常任务、Event Merchant / Dock Merchant / Celestial Store。
+
+## 竞技场【1.0 官方 Wiki】
+
+- 每场需要 **Battle Token**，可在**同 Tier 范围**内选 3 个对手（例：Lv23 → 对手 Lv20-29）。
+- Arena 战斗按**普通战斗**计算：有掉落、有战斗经验、可拾取对手尸体；**失败会扣战斗经验**。
+- **计分**：按胜场**每周**结算；达到 **100%** 后本周不再增减分；失败扣分；**逃跑算失败并额外扣 2 分**。
+- **分区**：每周一 **00:01** 服务器时间结算 —— **100% 晋级**、**25% 保级**、< 25% 降级。
 
 ## 相关
 

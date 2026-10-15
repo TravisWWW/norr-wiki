@@ -1,9 +1,9 @@
 ---
 title: 代币商店
 description: Achievement Market / Laurel Market 兑换表与动态库存。
-gameVersion: "EA"
-verifiedDate: 2026-10-13
-versionStatus: ea-verified
+gameVersion: "1.0"
+verifiedDate: 2026-10-15
+versionStatus: mixed
 sources:
   - type: official
     reference: 游戏内帮助文档（Achievement Market / Laurel Market）
@@ -45,6 +45,13 @@ sources:
 > 任务板与任务奖励见[任务板与日志](/norr-wiki/quests/boards/)。
 
 > NPC 商店的**动态库存**说明见[商人与药水](/norr-wiki/equipment/vendors/)。
+
+## 代币商店与氪金档位【1.0 官方 Wiki】
+
+- **Achievement Market**：用**成就点数**购买，成就等级每升一档解锁更多商品。
+- **Norroth Coins Shop（金币商店）**：用真钱购买 **Norroth Coins (NC)**，用于皮肤 / 光环 / 特效等高级购买；**每 1 NC = 10 Prestige Points**。
+- **Celestial Tier Spender（星界档位消费奖励）**：购买 NC 时按 **Prestige Points** 累积，共 **10 档 × 4 检查点**，每个检查点解锁可领取奖励（含个人与社区 / 服务器奖励）；部分特殊礼包不计入。
+- **Laurel Market**：用 **Golden Laurels** 兑换，**成就 Tier 越高解锁越多**；Laurels 来自 Client Order Board、Overlord、每周 Legend Box、Daily Tasks。
 
 ## 相关
 

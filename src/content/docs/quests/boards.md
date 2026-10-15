@@ -1,9 +1,9 @@
 ---
 title: 任务板与日志
 description: 任务板、日常任务、任务日志与节奏表。
-gameVersion: "EA"
-verifiedDate: 2026-10-13
-versionStatus: ea-verified
+gameVersion: "1.0"
+verifiedDate: 2026-10-15
+versionStatus: mixed
 sources:
   - type: official
     reference: 游戏内帮助文档（Dailies / Quest Board / Quest Journal）
@@ -68,6 +68,17 @@ sources:
 3. 检查主线 / 支线。
 4. 打怪 / 采集 / 制作推进任务进度。
 5. 回城交任务、卖垃圾、补药、修装备。
+
+## 三种任务板【1.0 官方 Wiki】
+
+每个城镇有三种任务板：
+
+- **Client Order Board**：城镇居民的材料请求（采集 / 制作 / 购买 / 交易均可），交付换取奖励，偶尔有稀有或高级奖励；**板子 Tier = 城镇 Tier**。
+- **Bounty Hunter Board**：战斗类悬赏，列出需要击败的敌人；接取后开始计数，击杀足够数量完成。
+- **Guild Quest Board**：大规模**公会专属**目标。
+
+**任务日志（Journal）**：显示所有已接未完成的任务与已完成概览；任务分 **Main Storyline（红）** 与 **Side Quests（蓝）**。
+**任务详情（Quest Details）**：显示最终地点缩略图、任务名与等级（推荐任务 / 技能等级）、当前目标、任务类型、完成地点（地图名 + X/Y 坐标）与奖励。
 
 ## 相关
 

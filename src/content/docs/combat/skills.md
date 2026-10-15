@@ -1,9 +1,9 @@
 ---
 title: 技能系统
 description: 技能点、解锁、阵营与技能栏规则；具体技能树集中在职业页。
-gameVersion: "EA"
-verifiedDate: 2026-10-13
-versionStatus: ea-verified
+gameVersion: "1.0"
+verifiedDate: 2026-10-15
+versionStatus: mixed
 sources:
   - type: official
     reference: 游戏内帮助文档（职业页 / Skillbook / Alignment）
@@ -55,6 +55,23 @@ sources:
 ## 技能栏与自动战斗
 
 EA 第 1 格固定为普通攻击，自动战斗读取第 2–5 格。技能解锁后还需加入实际技能栏；武器、阵营与冷却条件仍需满足。配置取舍见职业攻略，点数重置见[洗点](/norr-wiki/combat/respec/)。
+
+## 技能书（Skillbook）与施放信息【1.0 官方 Wiki】
+
+- **Skillbook** 汇总已解锁技能，并可自定义**战斗技能栏（Combat Hotbar）**。
+- 开启 **Auto Combat** 后，每回合按优先级、生命、法力等因素自动选择技能栏中的技能。
+- 技能 tooltip 右下角图标：⏳ **冷却（Cooldown）**、💧 **法力消耗（Mana Cost）**、♻️ **持续（Duration）**。
+
+| 技能类型 | 说明 | 可 miss | 可闪避 | 吃攻速额外打击 |
+|---|---|---|---|---|
+| Passive 被动 | 学会后常驻，不占技能栏（部分需特定武器） | — | — | — |
+| Melee 近战 | 近距离攻击，按武器与物理属性缩放 | ✔ | ✔ | ✔ |
+| Ranged 远程 | 远程物理攻击 | ✔ | ✔ | ✔ |
+| Spell 法术 | 魔法攻击，按魔法属性缩放 | ✔ | ✔ | ✔ |
+| Direct 直接法术 | 瞬发指向法术，只按技能自身段数 | ✔ | ✔ | ✘ |
+| Ability 能力 | 战斗中主动使用，多为功能/变身类 | 视技能 | 视技能 | 视技能 |
+
+> 致盲（Blind）会让锁定的近战 / 远程 / 法术 / 直接攻击**必定未命中**。
 
 ## 相关
 

@@ -1,0 +1,75 @@
+---
+title: 官方 1.0 Wiki 抓取与对照
+description: 官方 1.0 Wiki（wiki.norroth.com）的抓取范围、与本站 EA 资料的差异，以及内容并入各页面的位置。
+gameVersion: "1.0"
+verifiedDate: 2026-10-15
+versionStatus: mixed
+sources:
+  - type: official
+    reference: 官方 1.0 Wiki
+    url: https://wiki.norroth.com/
+    date: "2026-10-15"
+---
+
+## 本次抓取
+
+- 来源：官方 1.0 Wiki `https://wiki.norroth.com/`（简体中文优先，英文作对照 / 回退）。
+- 日期：**2026-10-15**。方式：只读 HTTP 抓取，**未登录游戏、未执行任何游戏内操作**。
+- 规模：**169** 篇页面（zh_CN 169 + en_US 169，全部 HTTP 200）；其中 **19** 篇有简体中文正文，其余为英文原文，另有 5 篇官方页面为空。
+- 原始 HTML、转写 Markdown 与结构化数据保存在仓库 `data/wiki_official_1.0/`；差异明细见 `data/wiki_official_1.0/COMPARISON.md`。
+
+## 内容并入位置
+
+本次**没有**新建一套平行条目，官方 1.0 内容已并入对应的既有页面：
+
+| 官方内容 | 并入页面 |
+|---|---|
+| 专业概述 / 层级与材料 / 工具耐久度 | [生活技能总览](/norr-wiki/professions/overview/)、[采集](/norr-wiki/professions/gathering/) |
+| 各制作专业（113~126） | [制作](/norr-wiki/professions/crafting/)、[制作配方图鉴](/norr-wiki/professions/crafting-catalog/) |
+| Trophy Enhancing / Ember Forge | [大师制作](/norr-wiki/professions/masterworking/)、[物品专家](/norr-wiki/equipment/item-specialist/) |
+| 六职业页（属性成长） | [职业与技能](/norr-wiki/classes/) 及各职业页 |
+| 属性与数值 | [角色属性](/norr-wiki/combat/attributes/)、[属性公式](/norr-wiki/combat/formulas/) |
+| 敌人颜色与星级 / 精英词缀 / 阵营 / 技能书 | [战斗机制](/norr-wiki/combat/mechanics/)、[技能系统](/norr-wiki/combat/skills/) |
+| Rebirth | [重生与进阶成长](/norr-wiki/combat/rebirth/) |
+| Enemies / Bosses / Dungeons | [怪物图鉴](/norr-wiki/world/bestiary/)、[副本与 Boss](/norr-wiki/quests/dungeons/) |
+| 霸主 / 霸主大厅 / 深渊之塔 / 竞技场 | [世界 Boss](/norr-wiki/quests/world-boss/)、[深渊塔](/norr-wiki/quests/abyssal-tower/)、[竞技场](/norr-wiki/quests/arena/) |
+| 任务板 / 日常 / 活动（9 个） | [任务板与日志](/norr-wiki/quests/boards/)、[日常](/norr-wiki/quests/dailies/)、[活动入口](/norr-wiki/quests/events/) |
+| 地图 / 传送 / 路标 / 城镇 | [地图、移动与传送](/norr-wiki/world/movement/)、[地图清单](/norr-wiki/world/maps/)、[NPC 与设施](/norr-wiki/world/facilities/) |
+| 成就（526） | [成就](/norr-wiki/systems/achievements/) |
+| 宠物 / 动物狩猎 / Feed Pet | [宠物系统](/norr-wiki/systems/pets/) |
+| Housing（9 页） | [住房系统](/norr-wiki/systems/housing/) |
+| Guilds（11 页） | [公会系统](/norr-wiki/systems/guilds/) |
+| Socials / Mail / 代币商店 / 货币 | [社交机制](/norr-wiki/systems/social/)、[邮件](/norr-wiki/systems/mail/)、[代币商店](/norr-wiki/systems/token-shops/)、[经济与货币](/norr-wiki/systems/economy/) |
+| Item Stats / Max Sockets / Jewel Stats / Refining | [物品与容器](/norr-wiki/equipment/items/)、[宝石与镶嵌](/norr-wiki/equipment/jewels/)、[物品专家](/norr-wiki/equipment/item-specialist/) |
+| 新手指南 | [游戏介绍与入门](/norr-wiki/getting-started/intro/) |
+
+## 新增页面
+
+官方 1.0 Wiki 中**本站原本没有对应主题**的内容，按板块新建了页面：
+
+- **账号与支持**（新栏目 `support/`）：账号 6 篇、技术支持 11 篇、支付 6 篇、规则与条款 5 篇、关于 3 篇。
+- **战斗与成长**：[训练场](/norr-wiki/combat/training-grounds/)。
+- **任务与挑战**：[图鉴 Codex](/norr-wiki/quests/codices/)、[神器 Artifacts](/norr-wiki/quests/artifacts/)、[礼物与 Party Popper](/norr-wiki/quests/party-popper/)。
+- **经济与交易**：[活动商人](/norr-wiki/economy/event-merchant/)、[异界看护者](/norr-wiki/economy/eldritch-caretaker/)、[暗影代理人](/norr-wiki/economy/shadow-broker/)。
+
+零散条目并入既有页面：Lore Bubbles → [地图清单](/norr-wiki/world/maps/)；战利品背包 → [物品与容器](/norr-wiki/equipment/items/)；制作队列细则 → [制作](/norr-wiki/professions/crafting/)；Augments / Ember Forge / 升阶代币 / 战利品强化 → [物品专家](/norr-wiki/equipment/item-specialist/)。
+
+## 与 EA 资料的主要差异
+
+- **帮助页面**：新增 85 篇、删除 4 篇（含 Toolsmithing 工具锻造整页）、清空 5 篇（90 / 92 / 96 / 112 / 133）。
+- **制作专业**：13 → **10** 个角色绑定专业；Toolsmithing 并入 Weaponsmithing，Petbreeding 不再是专业。
+- **配方**：1418 vs 1216；新增 390（Bamboo 阶梯、背包类、箭袋、拳刃、法书等）、移除 358（Goblin Leather、Compound bow、Caduceus / Scepter / Crozier、Chain、部分药水等）、材料 / 数量变动 406（卷轴去掉原木输入；靴子 / 护腿 Cord 由 1/2 上调为 3/4）。
+- **怪物图鉴**：132 vs 141（新增 16、移除 25、等级区间变动 30）。
+- **Boss**：16 vs 15（新增 Drazhul, The Demon Smith）。
+- **采集点**：141 vs 112（新增 15）。
+- **城镇**：12 座；**成就**：526 条；**属性**：54 项；**阶梯**：6 阶。
+
+## 版本口径
+
+官方 1.0 Wiki 代表**正式版**；本站既有数值多来自 **EA / Legacy**。并入时逐条标注来源，**未删除** EA 实测内容（经验、冷却、产量等），也未把 1.0 官方口径当作已实测。
+
+## 相关
+
+- [资料来源与证据等级](/norr-wiki/reference/sources/)
+- [1.0 机制变更](/norr-wiki/release/v1-changes/)
+- [游戏帮助文档](/norr-wiki/reference/help-index/)

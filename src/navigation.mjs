@@ -33,6 +33,10 @@ export const sections = [
             "slug": "release/v1-changes"
           },
           {
+            "label": "1.0 官方 Wiki 详细变更记录",
+            "slug": "release/v1-official-wiki-changes"
+          },
+          {
             "label": "1.0 职业平衡",
             "slug": "release/v1-class-balance"
           },
@@ -131,6 +135,10 @@ export const sections = [
       {
         "label": "属性公式与数值计算",
         "slug": "combat/formulas"
+      },
+      {
+        "label": "训练场",
+        "slug": "combat/training-grounds"
       }
     ],
     "id": "combat",
@@ -298,6 +306,23 @@ export const sections = [
             "slug": "quests/events"
           }
         ]
+      },
+      {
+        "label": "图鉴与收藏",
+        "items": [
+          {
+            "label": "图鉴 Codex",
+            "slug": "quests/codices"
+          },
+          {
+            "label": "神器 Artifacts",
+            "slug": "quests/artifacts"
+          },
+          {
+            "label": "礼物与 Party Popper",
+            "slug": "quests/party-popper"
+          }
+        ]
       }
     ],
     "id": "quests",
@@ -364,6 +389,18 @@ export const sections = [
       {
         "label": "订阅与付费服务",
         "slug": "systems/subscription"
+      },
+      {
+        "label": "活动商人",
+        "slug": "economy/event-merchant"
+      },
+      {
+        "label": "异界看护者",
+        "slug": "economy/eldritch-caretaker"
+      },
+      {
+        "label": "暗影代理人",
+        "slug": "economy/shadow-broker"
       }
     ],
     "id": "economy",
@@ -408,6 +445,73 @@ export const sections = [
     "description": "练级、日常安排、装备养成与职业分工的行动建议。",
     "collapsed": true
   }
+,
+  {
+    "label": "账号与支持",
+    "items": [
+      { "label": "栏目总览", "slug": "support" },
+      {
+        "label": "账号",
+        "items": [
+          { "label": "账号设置", "slug": "support/account/settings" },
+          { "label": "登录与密码", "slug": "support/account/login-password" },
+          { "label": "邮箱验证", "slug": "support/account/email-verification" },
+          { "label": "账号安全（2FA）", "slug": "support/account/security" },
+          { "label": "角色恢复", "slug": "support/account/character-recovery" },
+          { "label": "封禁与暂停", "slug": "support/account/bans-suspensions" }
+        ]
+      },
+      {
+        "label": "技术支持",
+        "items": [
+          { "label": "无法加载", "slug": "support/technical/game-not-loading" },
+          { "label": "浏览器兼容", "slug": "support/technical/browser-compatibility" },
+          { "label": "断线与掉线", "slug": "support/technical/connection-disconnects" },
+          { "label": "卡顿与性能", "slug": "support/technical/performance-lag" },
+          { "label": "报错", "slug": "support/technical/errors" },
+          { "label": "缓存与 Cookie", "slug": "support/technical/cache-cookies" },
+          { "label": "移动端", "slug": "support/technical/mobile" },
+          { "label": "Steam", "slug": "support/technical/steam" },
+          { "label": "桌面客户端", "slug": "support/technical/desktop" },
+          { "label": "Bug 报告", "slug": "support/technical/bugs" },
+          { "label": "服务器状态", "slug": "support/technical/server-status" }
+        ]
+      },
+      {
+        "label": "支付",
+        "items": [
+          { "label": "支付方式", "slug": "support/payments/methods" },
+          { "label": "支付失败", "slug": "support/payments/failed" },
+          { "label": "未到账", "slug": "support/payments/not-received" },
+          { "label": "待处理支付", "slug": "support/payments/pending" },
+          { "label": "退款", "slug": "support/payments/refunds" },
+          { "label": "错误扣费", "slug": "support/payments/incorrect-charges" }
+        ]
+      },
+      {
+        "label": "规则与条款",
+        "items": [
+          { "label": "聊天准则", "slug": "support/guidelines/chat" },
+          { "label": "通用规则", "slug": "support/guidelines/general-rules" },
+          { "label": "服务条款", "slug": "support/guidelines/terms-of-service" },
+          { "label": "Cookie 政策", "slug": "support/guidelines/cookie-policy" },
+          { "label": "隐私政策", "slug": "support/guidelines/privacy-policy" }
+        ]
+      },
+      {
+        "label": "关于",
+        "items": [
+          { "label": "管理团队与职位", "slug": "support/about/staff" },
+          { "label": "Norroth 的起源", "slug": "support/about/story" },
+          { "label": "推荐好友", "slug": "support/about/referrals" }
+        ]
+      }
+    ],
+    "id": "support",
+    "landing": "support",
+    "description": "账号安全、技术支持、支付与规则条款，以及游戏背景与团队信息。",
+    "collapsed": true
+  }
 ];
 
 export const referenceItems = [
@@ -430,7 +534,11 @@ export const referenceItems = [
   {
     "label": "本次资料采集与截图",
     "slug": "reference/research-2026-10-14"
-  }
+  },
+  {
+    "label": "官方 1.0 Wiki 抓取与对照",
+    "slug": "reference/official-wiki-2026-10-15"
+  },
 ];
 
 export function flattenItems(items) {

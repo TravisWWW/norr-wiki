@@ -2,7 +2,7 @@
 title: 船只与航海
 description: 正式版造船与航海说明（官方已公布，细节待补充）。
 gameVersion: "1.0"
-verifiedDate: 2026-10-13
+verifiedDate: 2026-10-15
 versionStatus: mixed
 sources:
   - type: official
@@ -39,12 +39,20 @@ sources:
 - 岛屿探索的奖励与风险。
 - 1.0 航海与 EA 版 Expeditions 的对应关系（官方已确认会**扩展 / 重做**，但细节未公布）。
 
+## 远征与船只【1.0 官方 Wiki】
+
+- **买船**：在 Elundi、Bungavik、Vileton Entrance、Trescan's Dock、Nythrendal 的码头花 **10 金币**购买；初始船由 Dockhand 提供，之后可升级。
+- **升级船**：在码头升级，各升级提升船的性能；**优先升级 Hull（船体）**以进入更高级地图。升级需材料 + **Ducats**（来自 Overlord、日常、远征）。
+- **创建远征**：每个 Tier 可在制图师处制作第一档（Magic）地图；远征可能获得更高一档的地图，终极目标为 **Relic Map**。
+
 ## 相关
 
 - [副本与 Boss](/norr-wiki/quests/dungeons/)
 - [地图、移动与传送](/norr-wiki/world/movement/)
 
 ## 资料来源
+
+- 官方 1.0 Wiki（wiki.norroth.com），2026-10-15 抓取。
 
 - 官方商店页（Steam）：<https://store.steampowered.com/app/2503480/Norroth_Online/>
 - 游戏内帮助文档：Expeditions（EA 版）。

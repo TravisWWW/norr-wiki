@@ -1,9 +1,9 @@
 ---
 title: 深渊塔
 description: Abyssal Tower 的层数、难度解锁、成就奖励与兑换。
-gameVersion: "EA"
-verifiedDate: 2026-10-14
-versionStatus: ea-verified
+gameVersion: "1.0"
+verifiedDate: 2026-10-15
+versionStatus: mixed
 sources:
   - type: official
     reference: 游戏内帮助文档（The Abyssal Tower）
@@ -36,6 +36,14 @@ Nightmare / Chaos 各层奖励更高。
 
 - 爬塔给紫 / 橙装备；约 **10 层一地形**；需要铁钥匙。
 - 塔**不能反复刷打过的楼层**。
+
+## 深渊之塔【1.0 官方 Wiki】
+
+- 目前包含 **5 个阶层**，每个阶层的**楼层数对应其等级**；每层以独特挑战（任务或首领）开始，并有独特地图设计。
+- 首次进入从 **Normal** 开始。
+- 完成每个阶层获得 **混沌纹章（Chaos Crests）**，可在**深渊商人**处兑换多种物品。
+- **难度**：越往下解锁 **Nightmare / Chaos**；**达到当前难度第 20 层解锁下一难度**。
+
 
 ## 相关
 

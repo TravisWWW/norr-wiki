@@ -1,9 +1,9 @@
 ---
 title: 制作配方图鉴
 description: 按专业 / 物品类型 / Tier / 等级筛选并检索 13 个制作专业的全部配方；支持材料反查与配方展开。
-gameVersion: "EA"
-verifiedDate: 2026-10-14
-versionStatus: ea-verified
+gameVersion: "1.0"
+verifiedDate: 2026-10-15
+versionStatus: mixed
 sources:
   - type: official
     reference: 游戏内帮助文档（各制作职业配方页，id=113~132）
@@ -22,6 +22,10 @@ import CraftingCatalog from '../../../components/CraftingCatalog.astro';
 - **配方变体**：同一成品的多种等价配方（例如不同宝石的同一件首饰、可互相替代的药水材料）已合并为一条，展开后列出全部。
 - **资料未提供**：官方帮助未标注该成品的属性或材料时显示为「资料未提供」，不代表该成品没有属性。
 - **覆盖范围**：当前收录 **T1–T5**；T6（Valentaal / Ash / Bamboo / Travertine / Northern Pike 等）的详细配方官方尚未提供，待补充。
+
+## 1.0 官方配方规模【1.0 官方 Wiki】
+
+官方 1.0 Wiki 各制作专业页共 **1418** 条配方（EA 为 1216 条），按专业：Leatherworking 193、Weaponsmithing 187、Tailoring 157、Armorsmithing 151、Jeweling 151、Hunter 139、Alchemy 136、Cooking 132、Cartography 93、Carpentry 49、Stonemasonry 30。1.0 新增 Bamboo 阶梯、背包类、箭袋、拳刃、法书（改由 Cartography）等；移除了 Toolsmithing（并入 Weaponsmithing）与 Goblin Leather / Compound bow 等。
 
 ## 相关
 
