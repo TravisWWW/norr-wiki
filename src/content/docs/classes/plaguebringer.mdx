@@ -1,0 +1,52 @@
+---
+title: Plaguebringer 瘟疫使者（待确认）
+description: Plaguebringer（瘟疫使者）职业页——数据来自 1.0 游戏客户端，官方 Wiki 尚未收录，技能数据不完整。
+versionStatus: 1.0-pending
+gameVersion: "1.0"
+verifiedDate: 2026-10-15
+sources:
+  - type: game-client
+    reference: 游戏客户端技能数据 tooltip_texts.js（P20250820，skill_json）
+    url: https://www.norroth.com/includes/js/P20250820/tooltip_texts.js
+    date: "2026-10-15"
+    status: 待确认
+---
+
+import ClassSkills10 from '../../../components/ClassSkills10.astro';
+
+> ⚠️ **待确认职业**：Plaguebringer（瘟疫使者）**未收录于官方 1.0 Wiki 的 Classes 分类**，本页内容全部来自**游戏客户端技能数据**（`skill_json`，P20250820）。其**是否可创建、是否已上线、属性成长与职业描述均未确认**，且**客户端技能数据本身不完整**（见下），请以游戏内实际为准。
+
+## 定位（据技能数据推断）
+
+Plaguebringer 是**法术输出 / 持续伤害型职业**：
+
+- **法术线**：**瘟疫（中毒 Poison）**与**暗影（Dark）**两系对称魔法（`hex_of_rot` / `hex_of_despair`、`wither` / `shadow_mist`、`toxic_rain` / `call_of_shadows` 等）。
+- **药剂线（Tonic Mastery）**：`weakening_tonic`、`supressing_tonic`、`nightmare_tonic`、`alleviation_tonic`、`resistance_tonic` 提供减益、沉默、恐惧、治疗与抗性。
+- **虹吸线（Siphon）**：`siphon_mana`、`siphon_health`、`siphon_strength` 吸取法力 / 生命 / 削弱敌人。
+- **腐蚀（Corruption）**：`corruption_mastery`、`bloodbriar_pact`（荆棘 + 生命偷取）。
+
+## 属性成长
+
+> **官方未公布**。官方 1.0 Wiki 无此职业页，客户端技能数据也不含属性成长表，故本页不提供数值。
+
+## 技能树【1.0 客户端数据】
+
+<ClassSkills10 cls="Plaguebringer" />
+
+## 数据完整度
+
+| 项 | 情况 |
+|---|---|
+| 技能槽位 | 29（Corruption 2 · Plague Magic 4 · Dark Magic 5 · Tonic Mastery 5 · Siphon 3 · Misc 2 + **8 个空占位**） |
+| 有完整数据 | **21 个**（名称 / 解锁等级 / 效果 / 每级成长齐全） |
+| 空占位 | **8 个**（客户端 `skill_json` 中 id=121/129/134/145/146/147/148/149，无名称、无分组、无效果） |
+| 属性成长 | 缺失 |
+| 职业描述 / 官方 Wiki 页 | 缺失 |
+
+> **注意**：8 个空占位说明该职业在客户端中**尚未完成**（可能是开发中/未上线职业）。上表只列出已有数据的 21 个技能，**不代表最终技能树**。
+
+## 相关
+
+- [职业总览](/norr-wiki/classes/)
+- [1.0 职业技能变化详解](/norr-wiki/release/v1-class-skill-changes/)
+- [技能系统](/norr-wiki/combat/skills/)

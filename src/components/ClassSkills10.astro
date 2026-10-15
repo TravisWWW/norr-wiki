@@ -1,9 +1,13 @@
 ---
 import skills from '../data/skills-1.0.json';
+import { existsSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 const { cls } = Astro.props;
 const data = skills[cls];
 const slug = cls.toLowerCase();
-const portrait = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/img/classes/${slug}_large.png`;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const portrait = `${base}/img/classes/${slug}_large.png`;
+const hasPortrait = existsSync(fileURLToPath(new URL(`../../public/img/classes/${slug}_large.png`, import.meta.url)));
 
 const ZH = {
   physical_damage:'物理伤害', base_damage:'基础伤害', attack_speed:'攻速', armor_pen:'破甲',
@@ -21,6 +25,7 @@ const ZH = {
   freeze:'冰冻', frostbite:'霜冻', chaos_damage:'混沌伤害', chaos_res:'混沌抗', counter_strike:'反击',
   experience:'经验', pickpocket:'扒窃', siphon_health:'虹吸生命', siphon_mana:'虹吸法力',
   spirit_scavenging:'灵魂拾取', mana_shield:'法力护盾', resistance:'抗性', enemy:'敌人', flee:'逃跑',
+  dark_res:'暗抗', poison_res:'毒抗',
 };
 const TYPE = { passive:'被动', spell:'法术', melee:'近战', ranged:'远程', buff:'增益', debuff:'减益', ability:'主动', direct:'直接', aoe:'范围', dot:'持续伤害' };
 const zhType = (t) => TYPE[t] || t || '—';
@@ -29,10 +34,10 @@ const fmt = (s) => (s ? s.split('|').filter(Boolean).map(fmtOne).join('；') : '
 const fmtPer = (s) => (s ? s.split('|').filter(Boolean).map(fmtOne).join('；') : '');
 ---
 <div class="nr-class-head">
-  <img class="nr-class-portrait" src={portrait} alt={cls} loading="lazy" />
+  {hasPortrait && <img class="nr-class-portrait" src={portrait} alt={cls} loading="lazy" />}
   <div class="nr-class-meta">
     <div class="nr-class-name">{cls}</div>
-    <div class="nr-class-sub">1.0 官方 Wiki 技能树 · 数值 = Lv.1 基础值，另列每级成长；「解锁」为所需角色等级</div>
+    <div class="nr-class-sub">1.0 官方 Wiki / 客户端技能树 · 数值 = Lv.1 基础值，另列每级成长；「解锁」为所需角色等级</div>
   </div>
 </div>
 

@@ -1,18 +1,26 @@
 ---
-title: 技能天赋模拟器（旧版）
-description: 基于 EA 版天赋数据的 Norroth 6 职业天赋树模拟器。
-gameVersion: "EA"
-verifiedDate: 2026-10-13
-versionStatus: 1.0-pending
+title: 技能天赋模拟器
+description: 基于官方 1.0 Wiki / 客户端数据的 Norroth 职业天赋树模拟器（可切换 EA 历史数据）。
+gameVersion: "1.0"
+verifiedDate: 2026-10-15
+versionStatus: mixed
+sources:
+  - type: official
+    reference: 官方 1.0 Wiki 职业页 + 游戏客户端技能数据（P20250820）
+    url: https://wiki.norroth.com/p/139/ranger
+    date: "2026-10-15"
 ---
 
 export const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
 <iframe class="talent-frame" src={`${base}/talent/index.html`} title="Norroth 技能天赋模拟器" loading="lazy"></iframe>
 
-> 操作：左键 +1 ｜ 右键 -1 ｜ Shift ±5。光明 / 黑暗阵营互斥。
+> 操作：左键 +1 ｜ 右键 -1 ｜ Shift ±5。光明 / 黑暗阵营互斥。顶部可切换 **1.0 / EA** 两套数据。
 >
-> **资料状态**：本模拟器使用 **EA 版**天赋数据（6 职业、阵营互斥）。正式版职业与技能结构尚未完成对照，
-> 相关数值 **1.0 上线后待验证**。
+> **数据口径**：
+> - **1.0**（默认）：官方 1.0 Wiki 职业页 + 游戏客户端技能数据（`skill_json`，P20250820），含 6 个官方职业 + 2 个**待确认职业**（Stormherald / Plaguebringer）。
+> - **EA**（历史）：官方职业页 Lv.20 口径 + 实测 6 个 1 级角色面板。
+>
+> **注意**：技能等级上限（面板显示 20）来自 EA 口径，1.0 官方未公布上限，**待游戏内确认**；Stormherald / Plaguebringer 官方 Wiki 未收录，Plaguebringer 客户端数据不完整。
 >
 > 如果上方无法显示，可[在新窗口打开模拟器](/norr-wiki/talent/index.html)。

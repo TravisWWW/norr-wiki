@@ -92,6 +92,14 @@ export const sections = [
         "slug": "classes/zealot"
       },
       {
+        "label": "Stormherald 风暴使者（待确认）",
+        "slug": "classes/stormherald"
+      },
+      {
+        "label": "Plaguebringer 瘟疫使者（待确认）",
+        "slug": "classes/plaguebringer"
+      },
+      {
         "label": "角色与账号",
         "slug": "systems/characters"
       }

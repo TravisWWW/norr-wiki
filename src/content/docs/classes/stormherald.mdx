@@ -1,0 +1,51 @@
+---
+title: Stormherald 风暴使者（待确认）
+description: Stormherald（风暴使者）职业页——数据来自 1.0 游戏客户端，官方 Wiki 尚未收录。
+versionStatus: 1.0-pending
+gameVersion: "1.0"
+verifiedDate: 2026-10-15
+sources:
+  - type: game-client
+    reference: 游戏客户端技能数据 tooltip_texts.js（P20250820，skill_json）
+    url: https://www.norroth.com/includes/js/P20250820/tooltip_texts.js
+    date: "2026-10-15"
+    status: 待确认
+---
+
+import ClassSkills10 from '../../../components/ClassSkills10.astro';
+
+> ⚠️ **待确认职业**：Stormherald（风暴使者）**未收录于官方 1.0 Wiki 的 Classes 分类**，本页内容全部来自**游戏客户端技能数据**（`skill_json`，P20250820）。其**是否可创建、是否已上线、属性成长与职业描述均未确认**，请以游戏内实际为准。
+
+## 定位（据技能数据推断）
+
+Stormherald 是**近战武器 + 元素法术的混合职业**：
+
+- **武器线**：锤 Mace（Mace Mastery）+ 长枪 Spear（Spear Mastery），并带**盾系（Shield Mastery）**。
+- **法术线**：以**风暴（闪电 Lightning）**与**寒冰（Cold）**两系元素为主，含冻结（Freeze）、混乱（Confuse）、眩晕（Stun）等控制。
+- **防御/反伤**：`glacial_armor`、`shielding_storm` 提供荆棘反伤，`shield_maiden` 提供格挡与护盾。
+
+## 属性成长
+
+> **官方未公布**。官方 1.0 Wiki 无此职业页，客户端技能数据也不含属性成长表，故本页不提供数值。
+
+## 技能树【1.0 客户端数据】
+
+<ClassSkills10 cls="Stormherald" />
+
+## 数据完整度
+
+| 项 | 情况 |
+|---|---|
+| 技能槽位 | 30（Mace Mastery 9 · Spear Mastery 9 · Shield Mastery 2 · Misc 9 + 1 空占位） |
+| 有完整数据 | **29 个**（名称 / 解锁等级 / 效果 / 每级成长齐全） |
+| 空占位 | 1 个（客户端 `skill_json` 中 id=178，无名称与效果） |
+| 属性成长 | 缺失 |
+| 职业描述 / 官方 Wiki 页 | 缺失 |
+
+> 其中 `mace_mastery` 与 Berserker **共享**（客户端 `for_class = berserker,stormherald`）；`shield_mastery`、`shield_throw` 与 Zealot **共享**。
+
+## 相关
+
+- [职业总览](/norr-wiki/classes/)
+- [1.0 职业技能变化详解](/norr-wiki/release/v1-class-skill-changes/)
+- [技能系统](/norr-wiki/combat/skills/)
