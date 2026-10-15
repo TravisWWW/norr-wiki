@@ -37,6 +37,10 @@ export const sections = [
             "slug": "release/v1-official-wiki-changes"
           },
           {
+            "label": "1.0 职业技能变化详解",
+            "slug": "release/v1-class-skill-changes"
+          },
+          {
             "label": "1.0 职业平衡",
             "slug": "release/v1-class-balance"
           },

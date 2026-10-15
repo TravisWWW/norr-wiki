@@ -12,6 +12,7 @@ description: Berserker（狂战士）技能树与定位。
 ---
 
 import ClassSkills from '../../../components/ClassSkills.astro';
+import ClassSkills10 from '../../../components/ClassSkills10.astro';
 
 > 近战高爆发，靠双手武器与流血打出高额伤害。
 
@@ -45,11 +46,34 @@ Berserker 是近战物理输出，以双手武器（斧 / 剑 / 锤）为主，�
 
 技能分组（1.0 官方 Wiki）：Sword Mastery、Axe Mastery、Mace Mastery、Offense、Defense、Rage。
 
-> 下方技能树与 Lv.20 数值来自 **EA 版**实测/帮助文档，1.0 尚未逐条复核。
+> 下方 **1.0 技能树**来自官方 1.0 Wiki / 客户端技能数据；其后的 **EA 版**技能树仅作历史对照。
 
-## 技能树
+## 技能树【1.0 官方 Wiki】
+
+<ClassSkills10 cls="Berserker" />
+
+<details>
+<summary>EA 版技能树（历史参考，Lv.1 基础值 + 每级成长）</summary>
 
 <ClassSkills cls="Berserker" />
+
+</details>
+
+## 1.0 技能变化（相对 EA）
+
+| 项 | EA | 1.0 |
+|---|---|---|
+| 技能总数 | 30 | 30 |
+| 分组 | 三系精通 + Misc | 三系精通 + **Offense** + **Rage** + **Defense** |
+| 新增 | — | `seismic_leap`、`primal_rage`、`ancestral_fury`、`blood_rage` |
+| 移除 | — | `ancestral_assistance`、`war_god_shout`、`ancestral_seismic_leap`、`natural_resistance` |
+
+- **新增 Rage（怒气）机制组**：`primal_rage` 是**自我减益换爆发**（格挡几率 −100%、基础防御 −2%，换攻速 / 命中 / 暴击伤害），把"高风险高输出"写进机制。
+- `ancestral_seismic_leap`（EA）→ `seismic_leap`（1.0）：同思路的位移 + 眩晕技能重做，移入 Offense 组。
+- `blood_rage` 归入 **Defense 组**，生命偷取成为**续航核心**（与官方 dev-blog "Blood Rage +4%、Life Steal 公式 ÷5" 一致）。
+- **移除 `war_god_shout`（团队增益）与 `ancestral_assistance`（被动增伤）**：团队辅助被削弱，整体转向自我强化。
+
+> 逐条明细与影响分析见 [1.0 职业技能变化详解](/norr-wiki/release/v1-class-skill-changes/)。
 
 ## 相关
 

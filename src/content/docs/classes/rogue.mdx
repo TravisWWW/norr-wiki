@@ -12,6 +12,7 @@ description: Rogue（盗贼）技能树与定位。
 ---
 
 import ClassSkills from '../../../components/ClassSkills.astro';
+import ClassSkills10 from '../../../components/ClassSkills10.astro';
 
 > 潜行、毒与双持的敏捷近战。
 
@@ -45,11 +46,32 @@ Rogue 是敏捷型近战 / 远程混合，擅长潜行、毒与双持，武器�
 
 技能分组（1.0 官方 Wiki）：Dagger Mastery、Throwing Mastery、Fists Mastery、Mobility、Trickery、Sabotage。
 
-> 下方技能树与 Lv.20 数值来自 **EA 版**实测/帮助文档，1.0 尚未逐条复核。
+> 下方 **1.0 技能树**来自官方 1.0 Wiki / 客户端技能数据；其后的 **EA 版**技能树仅作历史对照。
 
-## 技能树
+## 技能树【1.0 官方 Wiki】
+
+<ClassSkills10 cls="Rogue" />
+
+<details>
+<summary>EA 版技能树（历史参考，Lv.1 基础值 + 每级成长）</summary>
 
 <ClassSkills cls="Rogue" />
+
+</details>
+
+## 1.0 技能变化（相对 EA）
+
+| 项 | EA | 1.0 |
+|---|---|---|
+| 技能总数 | 29 | 29 |
+| 分组 | 三系精通 + Misc | 三系精通 + **Mobility** + **Trickery** + **Sabotage** |
+| 新增 | — | `ghost_spikes`（Lv.10，暗影投掷 + 恐惧） |
+| 移除 | — | `shadow_spikes` |
+
+- `shadow_spikes` → `ghost_spikes` 属**同定位技能替换**（暗影投掷），机制与数值升级（新增恐惧）。
+- **Mobility / Trickery / Sabotage 三组独立**：把杂项里的**机动、诡计（偷窃 / 减益）、破坏（炸弹 / 破防）**三条副流派显式化，盗贼的"工具人 / 控制"定位更清晰。
+
+> 逐条明细与影响分析见 [1.0 职业技能变化详解](/norr-wiki/release/v1-class-skill-changes/)。
 
 ## 相关
 

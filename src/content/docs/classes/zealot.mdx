@@ -12,6 +12,7 @@ sources:
 ---
 
 import ClassSkills from '../../../components/ClassSkills.astro';
+import ClassSkills10 from '../../../components/ClassSkills10.astro';
 
 > 近战 + 法术混合，光明 / 黑暗双阵营互斥。
 
@@ -45,11 +46,35 @@ Zealot 是近战与法术混合职业，可用剑 / 锤与盾，兼具物理与�
 
 技能分组（1.0 官方 Wiki）：Sword Mastery、Hammer Mastery、Shield Mastery、Light Mastery、Dark Mastery、Spirit、Zeal。
 
-> 下方技能树与 Lv.20 数值来自 **EA 版**实测/帮助文档，1.0 尚未逐条复核。
+> 下方 **1.0 技能树**来自官方 1.0 Wiki / 客户端技能数据；其后的 **EA 版**技能树仅作历史对照。
 
-## 技能树
+## 技能树【1.0 官方 Wiki】
+
+<ClassSkills10 cls="Zealot" />
+
+<details>
+<summary>EA 版技能树（历史参考，Lv.1 基础值 + 每级成长）</summary>
 
 <ClassSkills cls="Zealot" />
+
+</details>
+
+## 1.0 技能变化（相对 EA）—— 扩充最多
+
+| 项 | EA | 1.0 |
+|---|---|---|
+| 技能总数 | 29 | 33 |
+| 分组 | Weapon Mastery + 光 / 暗 + Misc | **Sword / Hammer Mastery（拆分）** + **Shield Mastery** + 光 / 暗 + **Spirit** + **Zeal** |
+| 新增 | — | `hammer_of_justice`、`hammer_of_doom`、`iron_reckoning`、`down_to_earth`、`parry_stance`、`faithbreaker`、`divine_wrath`（共 7） |
+| 移除 | — | `light_aura`、`holy_light_bubble`、`spirit_breaker` |
+
+- **盾系（Shield Mastery）独立成组**：`shield_mastery / shield_throw / phalanx / shield_bash` 从杂项升格为独立武器线，**盾战（坦克）成为独立流派**。
+- **锤系（Hammer Mastery）大幅补全**：新增光 / 暗双系锤击与增伤、AoE 眩晕，锤从"单一武器"变成**完整武器线**。
+- **新增 Zeal（狂热）组**：`faithbreaker`（命中 −100 / 攻速 −50 / 暴击伤害 −50 的强力减益）等，代表**光暗均衡 / 爆发**流派。
+- **新增 Spirit 组**：法力、命中、生命、寻宝，补齐续航与收益。
+- **移除 `light_aura` / `holy_light_bubble`（光系防御增益）与 `spirit_breaker`（暗系减益）**：光暗系进一步**偏向输出**，防御职能交给独立的盾系。
+
+> 逐条明细与影响分析见 [1.0 职业技能变化详解](/norr-wiki/release/v1-class-skill-changes/)。
 
 ## 相关
 

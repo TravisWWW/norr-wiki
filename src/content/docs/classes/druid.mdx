@@ -12,6 +12,7 @@ description: Druid（德鲁伊）技能树与定位。
 ---
 
 import ClassSkills from '../../../components/ClassSkills.astro';
+import ClassSkills10 from '../../../components/ClassSkills10.astro';
 
 > 自然法术与变形，唯一能孵蛋带宠的职业。
 
@@ -45,11 +46,32 @@ Druid 兼具自然系法术与变形，输出与生存较均衡；是**唯一能
 
 技能分组（1.0 官方 Wiki）：Cestus Mastery、Spear Mastery、Staff Mastery、Defense、Thorns、Spirit。
 
-> 下方技能树与 Lv.20 数值来自 **EA 版**实测/帮助文档，1.0 尚未逐条复核。
+> 下方 **1.0 技能树**来自官方 1.0 Wiki / 客户端技能数据；其后的 **EA 版**技能树仅作历史对照。
 
-## 技能树
+## 技能树【1.0 官方 Wiki】
+
+<ClassSkills10 cls="Druid" />
+
+<details>
+<summary>EA 版技能树（历史参考，Lv.1 基础值 + 每级成长）</summary>
 
 <ClassSkills cls="Druid" />
+
+</details>
+
+## 1.0 技能变化（相对 EA）
+
+| 项 | EA | 1.0 |
+|---|---|---|
+| 技能总数 | 27 | 27 |
+| 分组 | 三系精通 + Misc | 三系精通 + **Defense** + **Thorns** + **Spirit** |
+| 新增 / 移除 | — | **技能零增删** |
+
+- 玩法基本不变，属**结构清理**：笼统的 Misc 被拆成 Defense（4）/ Thorns（2）/ Spirit（3）。
+- **Thorns（荆棘）独立成组**：荆棘反伤流被正式承认为独立流派。
+- **Spirit 独立成组**：生命 / 回复类被动集中管理。
+
+> 逐条明细与影响分析见 [1.0 职业技能变化详解](/norr-wiki/release/v1-class-skill-changes/)。
 
 ## 相关
 

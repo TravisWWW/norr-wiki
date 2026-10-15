@@ -12,20 +12,23 @@ description: Ranger（游侠）技能树与定位。
 ---
 
 import ClassSkills from '../../../components/ClassSkills.astro';
+import ClassSkills10 from '../../../components/ClassSkills10.astro';
 
-> 远程弓弩输出，辅以匕首。
+> 远程弓弩输出，辅以陷阱控制。
 
 ## 定位
 
-Ranger 是远程物理输出，以弓 / 弩为主、匕首为辅；命中（Dexterity）与闪避 / 攻速（Agility）是核心。
+Ranger 是**纯远程物理输出**，以弓 / 弩为主、辅以陷阱控制；命中（Dexterity）与闪避 / 攻速（Agility）是核心。
+
+> **1.0 变化**：游侠**不再能使用匕首**——EA 版的整套 Dagger Mastery 已被移除，匕首精通改为盗贼专属。
 
 ## 主要武器与属性倾向
 
 | 项 | 内容 |
 |---|---|
-| 主要武器 | 弓 Bow / 弩 Crossbow / 匕首 Daggers |
+| 主要武器 | 弓 Bow / 弩 Crossbow（**1.0 已移除匕首**） |
 | 属性倾向 | Dexterity（命中 / 暴击）+ Agility（闪避 / 攻速） |
-| 特色机制 | 远程射击、流血 / 中毒状态、定身（Root）控制 |
+| 特色机制 | 远程射击、陷阱（定身 / 混乱 / 中毒）、流血 / 中毒状态 |
 | 专属制作技能 | Cartography 制图 / Cooking 烹饪 / Hunting 狩猎 / Leatherworking 制皮 / Carpentry 木工 |
 
 ## 属性成长【1.0 官方 Wiki】
@@ -45,11 +48,35 @@ Ranger 是远程物理输出，以弓 / 弩为主、匕首为辅；命中（Dext
 
 技能分组（1.0 官方 Wiki）：Bow Mastery、Crossbow Mastery、Traps、Defense、Precision、Hunting。
 
-> 下方技能树与 Lv.20 数值来自 **EA 版**实测/帮助文档，1.0 尚未逐条复核。
+> 下方 **1.0 技能树**来自官方 1.0 Wiki / 客户端技能数据；其后的 **EA 版**技能树仅作历史对照。
 
-## 技能树
+## 技能树【1.0 官方 Wiki】
+
+<ClassSkills10 cls="Ranger" />
+
+<details>
+<summary>EA 版技能树（历史参考，Lv.1 基础值 + 每级成长）</summary>
 
 <ClassSkills cls="Ranger" />
+
+</details>
+
+## 1.0 技能变化（相对 EA）—— 本次改动最大
+
+| 项 | EA | 1.0 |
+|---|---|---|
+| 技能总数 | 27 | 25 |
+| 分组 | Bow Mastery + **Dagger Mastery** + Misc | Bow Mastery + **Crossbow Mastery** + **Traps** + **Precision** + **Hunting** + Defense |
+| 新增 | — | 弩系 5 + 陷阱 5 + `perfect_shot` 等，共 10 个 |
+| 移除 | — | **整套 Dagger Mastery（9 个匕首技能）** + `bodkin_arrow`、`sharp_arrow`、`arrow_barrage` |
+
+- **游侠不再能玩匕首流**：整套 `Dagger Mastery`（被动 + 近战攻击共 9 个）被移除，匕首精通改为**盗贼专属**。游侠从"弓 + 匕首"近远混合，重塑为**纯远程专精**。
+- **新增弩系（Crossbow Mastery）**：与弓系并列的第二条远程武器线，走**破甲 / 流血**路线，与弓系的**中毒 / 感染**路线形成两条 build。
+- **新增陷阱系（Traps）**：定身、混乱、中毒等控制，游侠获得**区域控制 / 埋伏**玩法。
+- **Precision / Hunting 独立成组**：命中暴击与对动物 / 人形增伤、鹰 / 鸦召唤从杂项升格为显式流派。
+- **代价**：失去全部近战手段，**被贴脸时更脆弱**，生存依赖 Defense 组与走位。
+
+> 逐条明细与影响分析见 [1.0 职业技能变化详解](/norr-wiki/release/v1-class-skill-changes/)。
 
 ## 相关
 
