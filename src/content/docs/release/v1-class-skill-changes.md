@@ -49,9 +49,9 @@ sources:
 
 **新增**
 
-| 技能 | 分组 | 解锁 | 消耗 | Lv.1 效果 |
+| 技能 | 分组 | 解锁（角色等级） | 消耗 | Lv.1 效果 |
 |---|---|---|---|---|
-| lightning_thrust | Lightning Mastery | Lv.5 | 30 MP · CD3 | 基础伤害 55%、闪电伤害 25、混乱 10 |
+| lightning_thrust | Lightning Mastery | 角色 Lv.5 | 30 MP · CD3 | 基础伤害 55%、闪电伤害 25、混乱 10 |
 
 **移除（EA 口径）**
 
@@ -76,12 +76,12 @@ sources:
 
 **新增**
 
-| 技能 | 分组 | 解锁 | 消耗 | Lv.1 效果 |
+| 技能 | 分组 | 解锁（角色等级） | 消耗 | Lv.1 效果 |
 |---|---|---|---|---|
-| seismic_leap | Offense | Lv.8 | 10 MP · CD8 | 基础伤害 60%、闪电伤害 50、眩晕 50 |
-| primal_rage | Rage | Lv.7 | 30 MP · CD7 | 格挡几率 −100%、基础防御 −2%、攻速 100、命中 150、暴击伤害 50 |
-| ancestral_fury | Rage | Lv.9 | 被动 | 奥术伤害 5%、闪电伤害 5% |
-| blood_rage | Defense | Lv.9 | 被动 | 生命偷取 15、生命偷取 4% |
+| seismic_leap | Offense | 角色 Lv.8 | 10 MP · CD8 | 基础伤害 60%、闪电伤害 50、眩晕 50 |
+| primal_rage | Rage | 角色 Lv.7 | 30 MP · CD7 | 格挡几率 −100%、基础防御 −2%、攻速 100、命中 150、暴击伤害 50 |
+| ancestral_fury | Rage | 角色 Lv.9 | 被动 | 奥术伤害 5%、闪电伤害 5% |
+| blood_rage | Defense | 角色 Lv.9 | 被动 | 生命偷取 15、生命偷取 4% |
 
 **移除（EA 口径）**
 
@@ -116,18 +116,18 @@ sources:
 
 **新增**
 
-| 技能 | 分组 | 解锁 | 消耗 | Lv.1 效果 |
+| 技能 | 分组 | 解锁（角色等级） | 消耗 | Lv.1 效果 |
 |---|---|---|---|---|
-| venom_barrage | Bow Mastery | Lv.20 | 30 MP · CD7 | 基础伤害 110%、毒素伤害 20、毒素伤害 30%、感染 20 |
-| piercing_bolt | Crossbow Mastery | Lv.2 | 5 MP · CD2 | 基础伤害 45%、致流血 15、暴击伤害 5%、破甲 10 |
-| boltnet_shot | Crossbow Mastery | Lv.12 | 20 MP · CD4 | 基础伤害 85%、定身 55、致流血 20 |
-| crimson_volley | Crossbow Mastery | Lv.20 | 30 MP · CD6 | 基础伤害 100%、攻速 50、攻速 20% |
-| snare_trap | Traps | Lv.2 | 14 MP · CD3 | 基础伤害 45%、定身 40 |
-| dazing_trap | Traps | Lv.6 | 16 MP · CD3 | 基础伤害 45%、混乱 40 |
-| poison_cloud_trap | Traps | Lv.8 | 25 MP · CD4 | 基础伤害 50%、毒素伤害 25、混乱 40 |
-| bear_trap | Traps | Lv.11 | 25 MP · CD4 | 基础伤害 55%、流血伤害 50、定身 45 |
-| perfect_shot | Precision | Lv.11 | 20 MP · CD4 | 命中 100、暴击几率 50 |
-| choking_spores | Traps | Lv.16 | 30 MP · CD5 | 基础伤害 50%、毒素伤害 100、感染 50 |
+| venom_barrage | Bow Mastery | 角色 Lv.20 | 30 MP · CD7 | 基础伤害 110%、毒素伤害 20、毒素伤害 30%、感染 20 |
+| piercing_bolt | Crossbow Mastery | 角色 Lv.2 | 5 MP · CD2 | 基础伤害 45%、致流血 15、暴击伤害 5%、破甲 10 |
+| boltnet_shot | Crossbow Mastery | 角色 Lv.12 | 20 MP · CD4 | 基础伤害 85%、定身 55、致流血 20 |
+| crimson_volley | Crossbow Mastery | 角色 Lv.20 | 30 MP · CD6 | 基础伤害 100%、攻速 50、攻速 20% |
+| snare_trap | Traps | 角色 Lv.2 | 14 MP · CD3 | 基础伤害 45%、定身 40 |
+| dazing_trap | Traps | 角色 Lv.6 | 16 MP · CD3 | 基础伤害 45%、混乱 40 |
+| poison_cloud_trap | Traps | 角色 Lv.8 | 25 MP · CD4 | 基础伤害 50%、毒素伤害 25、混乱 40 |
+| bear_trap | Traps | 角色 Lv.11 | 25 MP · CD4 | 基础伤害 55%、流血伤害 50、定身 45 |
+| perfect_shot | Precision | 角色 Lv.11 | 20 MP · CD4 | 命中 100、暴击几率 50 |
+| choking_spores | Traps | 角色 Lv.16 | 30 MP · CD5 | 基础伤害 50%、毒素伤害 100、感染 50 |
 
 **移除（EA 口径）**
 
@@ -163,9 +163,9 @@ sources:
 
 **新增**
 
-| 技能 | 分组 | 解锁 | 消耗 | Lv.1 效果 |
+| 技能 | 分组 | 解锁（角色等级） | 消耗 | Lv.1 效果 |
 |---|---|---|---|---|
-| ghost_spikes | Throwing Mastery | Lv.10 | 15 MP · CD2 | 基础伤害 75%、暗影伤害 50、恐惧 15 |
+| ghost_spikes | Throwing Mastery | 角色 Lv.10 | 15 MP · CD2 | 基础伤害 75%、暗影伤害 50、恐惧 15 |
 
 **移除（EA 口径）**
 
@@ -188,15 +188,15 @@ sources:
 
 **新增**
 
-| 技能 | 分组 | 解锁 | 消耗 | Lv.1 效果 |
+| 技能 | 分组 | 解锁（角色等级） | 消耗 | Lv.1 效果 |
 |---|---|---|---|---|
-| hammer_of_justice | Hammer Mastery | Lv.3 | 20 MP · CD3 | 基础伤害 40%、光明伤害 30 |
-| hammer_of_doom | Hammer Mastery | Lv.3 | 20 MP · CD3 | 基础伤害 40%、暗影伤害 30 |
-| iron_reckoning | Hammer Mastery | Lv.10 | 30 MP · CD5 | 物理伤害 50 |
-| down_to_earth | Hammer Mastery | Lv.20 | 50 MP · CD7 | 基础伤害 80%、眩晕 10 |
-| parry_stance | Sword Mastery | Lv.10 | CD10 | 闪避 100、格挡几率 10 |
-| faithbreaker | Zeal | Lv.7 | 24 MP · CD8 | 命中 −100、攻速 −50、暴击伤害 −50 |
-| divine_wrath | Zeal | Lv.15 | 40 MP · CD7 | 基础伤害 60%、光明伤害 20、光明伤害 20%、光辉 10 |
+| hammer_of_justice | Hammer Mastery | 角色 Lv.3 | 20 MP · CD3 | 基础伤害 40%、光明伤害 30 |
+| hammer_of_doom | Hammer Mastery | 角色 Lv.3 | 20 MP · CD3 | 基础伤害 40%、暗影伤害 30 |
+| iron_reckoning | Hammer Mastery | 角色 Lv.10 | 30 MP · CD5 | 物理伤害 50 |
+| down_to_earth | Hammer Mastery | 角色 Lv.20 | 50 MP · CD7 | 基础伤害 80%、眩晕 10 |
+| parry_stance | Sword Mastery | 角色 Lv.10 | CD10 | 闪避 100、格挡几率 10 |
+| faithbreaker | Zeal | 角色 Lv.7 | 24 MP · CD8 | 命中 −100、攻速 −50、暴击伤害 −50 |
+| divine_wrath | Zeal | 角色 Lv.15 | 40 MP · CD7 | 基础伤害 60%、光明伤害 20、光明伤害 20%、光辉 10 |
 
 **移除（EA 口径）**
 
