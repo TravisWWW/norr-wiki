@@ -1,0 +1,69 @@
+---
+title: 官方 1.0 Wiki 更新对照（2026-10-16）
+description: 官方 1.0 Wiki（wiki.norroth.com）2026-10-16 复核：新增页面、中文翻译进度与内容改动，以及并入本站的位置。
+gameVersion: "1.0"
+verifiedDate: 2026-10-16
+versionStatus: mixed
+sources:
+  - type: official
+    reference: 官方 1.0 Wiki
+    url: https://wiki.norroth.com/
+    date: "2026-10-16"
+---
+
+## 本次复核
+
+- 来源：官方 1.0 Wiki `https://wiki.norroth.com/`（简体中文优先，英文作对照 / 回退）。
+- 日期：**2026-10-16**。方式：只读 HTTP 抓取，**未登录游戏、未执行任何游戏内操作**。
+- 对照基准：本站 **2026-10-15** 抓取快照。原始 HTML 保存在 `data/wiki_official_1.0/raw_2026-10-16/`，转写 Markdown 与结构化数据在 `pages_2026-10-16/`、`structured_2026-10-16/`。
+
+## 变化摘要
+
+| 类别 | 2026-10-15 | 2026-10-16 | 说明 |
+|---|---|---|---|
+| 导航内页面总数 | 169 | 169 | 无增删 |
+| **未列入导航的新页面** | 0 | **+2** | `207 Quest Lore`、`209 Noble Status` |
+| 简体中文页面 | 19 | **50** | 新增 32 篇翻译（`165` 失去中文回退英文） |
+| 结构化数据（配方 / 图鉴 / Boss / 采集点 / 成就 / 属性） | — | 不变 | 1418 / 132 / 16 / 141 / 526 / 54 |
+| 内容实质改动 | — | **4 篇** | `19`、`42`、`165`、`236` |
+
+## 内容改动明细
+
+### 新增页面
+
+- **`207 Quest Lore`**：任务界面可重读当前任务的故事与背景 → 并入[任务板与日志](/norr-wiki/quests/boards/)。
+- **`209 Noble Status`**：账号级订阅的完整权益清单 → 并入[订阅与付费服务](/norr-wiki/systems/subscription/)。
+
+### 内容改动
+
+- **`165 Dungeons`（副本）**：**进入不再消耗钥匙**（选难度即可进入），钥匙改为**击败 Boss 后开 Lootbox** 时消耗；难度加成由「Gold / Magic Find」改为**经验 + Lootbox Magic Find**（Normal +0%/+0%、Nightmare +25%/+50%、Chaos +50%/+100%）；新增 Unique Rank 与难度说明 → 并入[副本与 Boss](/norr-wiki/quests/dungeons/)。
+- **`236 游戏模式`**：术语由「专家 / 自强 / 专家自强」改为「**硬核 / 钢铁侠 / 硬核钢铁侠**」；**Ironman 专业槽位 5 → 6** → 并入[角色与账号](/norr-wiki/systems/characters/)、[生活技能总览](/norr-wiki/professions/overview/)。
+- **`19 General Rules`（通用规则）**：账号政策收紧——除「每人一个账号」外新增「**每台设备一个账号**」；明确禁止共享 / 交易 / 出售 / 赠送 / 转让；以家人朋友名义注册不豁免 → 并入[通用规则](/norr-wiki/support/guidelines/general-rules/)。
+- **`42 Terms of Service`**：第 20 节由「ADDENDUM」更名为「**GENERAL RULES AND ADDITIONAL POLICIES**」，明确通用规则构成 TOS 的一部分 → 并入[服务条款](/norr-wiki/support/guidelines/terms-of-service/)。
+- **`178 Referrals`**：措辞微调（Grave Wyrmstone → Grave Wyrmstone Skin、Wyrm Acolyte Skin → Wyrm Acolyte Character Skin、Wyrmling Pet → Wyrmling Pet Skin）。
+
+### 新翻译为简体中文的页面（32 篇）
+
+`38 城镇与城市`、`40 基本移动`、`47 精炼物品`、`48 最大孔数`、`58 月桂市场`、`63 贸易行`、`77 创建和加入行会`、`80 每日任务`、`82 成就市场`、`83 活动商人`、`84 天界市场`、`127 竞技场`、`130 报告漏洞`、`131 任务板`、`134 阵营`、`154 事件异象`、`159 账户设置`、`161 活动`、`171 密码书`、`173 组队查找器`、`175 外观`、`178 好友邀请`、`180 制造队列`、`182 房屋 - 庄园规划`、`183 房屋 - 卧室`、`184 房屋 - 珠宝盒`、`192 注入石`、`195 战利品强化`、`201 路标`、`210 登录与密码`、`228 支付方式`、`237 认识团队`
+
+> 说明：这些页面此前为英文原文，现官方提供简体中文；内容与英文一致，本站中文表述以官方中文为准。
+
+## 技能与模拟器
+
+- **技能定义未变化**：六个职业页（`136`–`141`）与技能书页（`94`）的技能 tooltip（技能名 / id / 上限 / 解锁等级）与 2026-10-15 完全一致。
+- **技能等级上限已确认 = 10**（此前本站记为「1.0 未公布，待确认」）：
+  - 官方 1.0 Wiki 六个职业页把**全部 170 个技能**都标为 `skill-level=10`，页面即以 **Lv.10 口径**展示（`wiki.js` 把 `skill-level` 当作 tooltip 的显示等级）。
+  - 1.0 客户端 `skillbook.min.js`（P20250820）的加点逻辑把上限**硬编码为 `0xa`（=10）**：结果 >10 时拒绝并提示 `Skill Maxed`，「+」按钮在等级 ≥10 时禁用。
+  - 旁证：1.0 每级增量约为 EA 的 **2 倍**（Blade Mastery：EA Lv.20 = +43% / +24%，1.0 Lv.10 = +41% / +23%），即「等级数减半、每级增量加倍、满级值基本不变」。EA 帮助页以 `(Lv. 20)` 展示，实测 Lv17 角色可点到 16 → EA 上限 20。
+- **模拟器已更新**：`public/talent/index.html` 的**技能上限由 20 改为 10**，并**移除 EA 数据集**（模拟器现为 **1.0 专用**）；[技能系统](/norr-wiki/combat/skills/)、[1.0 职业技能变化详解](/norr-wiki/release/v1-class-skill-changes/) 同步更正。
+- 仍待确认：1.0 是否保留 EA 的「技能等级 ≤ 角色等级 − 1」限制。
+
+## 版本口径
+
+官方 1.0 Wiki 代表**正式版**，是本站**确认的 1.0 信息来源**。按「**去重**」口径：**只要官方 1.0 Wiki 覆盖了某主题，页面就以 1.0 官方内容为准，不再保留对应的 EA 信息**；官方 1.0 未覆盖的主题（如逐图清单、EA 商人价格、Inspect 定性评级）仍保留并**明确标注为 EA / 待核实**。
+
+## 相关
+
+- [官方 1.0 Wiki 抓取与对照（2026-10-15）](/norr-wiki/reference/official-wiki-2026-10-15/)
+- [1.0 官方 Wiki 详细变更记录](/norr-wiki/release/v1-official-wiki-changes/)
+- [资料来源与证据等级](/norr-wiki/reference/sources/)

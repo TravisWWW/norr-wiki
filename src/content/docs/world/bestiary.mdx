@@ -1,30 +1,40 @@
 ---
 title: 怪物图鉴
-description: 怪物类型、等级、分布区域与拾荒掉落。
+description: 官方 1.0 Wiki 敌人清单（132 种）：类型、等级、生物群系与拾荒掉落。
 gameVersion: "1.0"
-verifiedDate: 2026-10-15
-versionStatus: mixed
+verifiedDate: 2026-10-16
+versionStatus: "1.0-official"
+sources:
+  - type: official
+    reference: 官方 1.0 Wiki Enemies（p/53）
+    url: https://wiki.norroth.com/p/53/enemies
+    date: "2026-10-16"
 ---
 
-import BestiaryTable from '../../../components/BestiaryTable.astro';
+import BestiaryTable10 from '../../../components/BestiaryTable10.astro';
 
-数据来自 **EA 版**（`legacy.norroth.com`）实测。可按名称、类型、分布区域、等级筛选；等级范围过宽（≥50）的怪会标记为「特殊」。
+数据来自**官方 1.0 Wiki 的 Enemies 页**（`wiki.norroth.com/p/53/enemies`，2026-10-16 抓取），共 **132** 种敌人，含 **类型 / 等级范围 / 生物群系 / 拾荒掉落**。可按名称、类型、生物群系、等级筛选。
 
-> **版本说明**：怪物等级、分布与拾荒掉落均为 EA 版数据，**1.0 上线后待验证**。
+<BestiaryTable10 />
 
-<BestiaryTable />
+## 与 EA 版的差异（1.0 官方口径）
 
-## 独立条目与 Inspect
+- 官方 1.0 共 **132** 种敌人；EA 版为 **141** 种。
+- **新增 16 种**：Cute Bunny、Derro Miner / Pitwarden / Stalker、Girtablilu、Grell、Mountain Giant、Mummy、Roc、Sand Golem、Sandworm、Seafallen Oracle / Reaver / Stalker、Stone Dragon、Terramancer。
+- **移除 25 种**：Cockatrice、Drow、Forest Guardian、Ghost Pirate、Goblin Engineer / Pyro / Soldier、Knight、Light Elemental、Lizardman、Miner、Mutated Lizardman、Nomadic Cleric、Peasant、Phantom Miner、Phoenix、Purifier、Skeleton Archer / Mage / Warrior、Sphinx、Troglodyte、Valkyrie、Wraith、Zombie Pirate。
+- 另有 **30** 种等级区间发生变化。
 
-展开怪物行后可进入独立条目，查看 2026-10-14 游戏内 Inspect 的阵营、特殊能力、生命／防御／抗性评级与伤害类型。具体地图、等级范围和拾荒类别沿用历史记录，均在条目中单独说明来源。
+## 精英前缀与 Boss
 
-![Ankheg Inspect 显示防护等级与伤害图标](/norr-wiki/img/research/2026-10-14/enemy-inspect.png)
+- **精英前缀（Elite Prefixes）**：部分敌人带前缀，附加额外属性，见官方页 `/p/174`。
+- **Boss 清单**：见官方页 `/p/56`，或本站[副本与 Boss](/norr-wiki/quests/dungeons/)。
 
-*EA 游戏内截图，2026-10-14；评级为定性描述，不能据此推出具体数值或胜率。*
+## 相关
 
-## 1.0 官方 Wiki 图鉴【1.0 官方 Wiki】
+- [地图清单](/norr-wiki/world/maps/)
+- [副本与 Boss](/norr-wiki/quests/dungeons/)
+- [战斗机制](/norr-wiki/combat/mechanics/)
 
-官方 1.0 Wiki 的 **Enemies** 页列出 **132** 个敌人（含 Type / Level Range / Biome / Scavenging）。
-与 EA 版（141 个）对照：新增 16 个（Cute Bunny、Derro Miner / Pitwarden / Stalker、Girtablilu、Grell、Mountain Giant、Mummy、Roc、Sand Golem、Sandworm、Seafallen Oracle / Reaver / Stalker、Stone Dragon、Terramancer），移除 25 个（Cockatrice、Drow、Forest Guardian、Ghost Pirate、Goblin Engineer / Pyro / Soldier、Knight、Light Elemental、Lizardman、Miner、Mutated Lizardman、Nomadic Cleric、Peasant、Phantom Miner、Phoenix、Purifier、Skeleton Archer / Mage / Warrior、Sphinx、Troglodyte、Valkyrie、Wraith、Zombie Pirate），并有 30 个等级区间发生变化。
+## 资料来源
 
-> 官方 Wiki 的敌人列表不含 Inspect 的定性评级（生命 / 防御 / 抗性），该部分仍沿用本站 2026-10-14 的 EA 实测记录。
+- 官方 1.0 Wiki：Enemies（/p/53）、Elite Prefixes（/p/174）、Bosses（/p/56），2026-10-16 抓取。

@@ -52,10 +52,6 @@ export const sections = [
             "label": "版本与更新历史",
             "slug": "release/ea-history"
           },
-          {
-            "label": "EA 职业技能表（历史）",
-            "slug": "release/ea-class-skills"
-          }
         ]
       }
     ],
@@ -554,6 +550,10 @@ export const referenceItems = [
   {
     "label": "官方 1.0 Wiki 抓取与对照",
     "slug": "reference/official-wiki-2026-10-15"
+  },
+  {
+    "label": "官方 1.0 Wiki 更新对照（2026-10-16）",
+    "slug": "reference/official-wiki-2026-10-16"
   },
 ];
 

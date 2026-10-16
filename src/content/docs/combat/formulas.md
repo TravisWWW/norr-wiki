@@ -2,19 +2,16 @@
 title: 属性公式与数值计算
 description: 官方 1.0 每点收益、派生属性的百分比公式、伤害与减伤计算。
 gameVersion: "1.0"
-verifiedDate: 2026-10-15
-versionStatus: mixed
+verifiedDate: 2026-10-16
+versionStatus: "1.0-official"
 sources:
   - type: official
     reference: 官方 1.0 Wiki（属性与数值）
     url: https://wiki.norroth.com/p/6/
-    date: "2026-10-15"
-  - type: observed
-    reference: 游戏内实测（EA 版拟合曲线，见文末）
+    date: "2026-10-16"
 ---
 
-> 本页以 **官方 1.0 Wiki「属性与数值」** 给出的公式为主（2026-10-15 抓取），
-> 文末保留 EA 版实测拟合曲线作为历史对照。**1.0 官方公式优先于 EA 拟合值。**
+> 本页全部公式来自 **官方 1.0 Wiki「属性与数值」**（2026-10-16 抓取）。
 
 ## 1. 每 1 点属性给什么【1.0 官方】
 
@@ -86,25 +83,7 @@ sources:
 > 元素伤害的副作用：奥术→沉默、冰冷→冻结、暗影→恐惧、火焰→燃烧、光明→致盲、闪电→混乱、毒素→感染。
 > 巨人/幽灵等类型对部分效果免疫。
 
-## 4. EA 版实测拟合曲线（历史对照，已被 1.0 官方公式取代）
-
-> 以下为 EA 版换装对比拟合（Lv1–19），**仅作历史记录**；1.0 请使用上方官方公式。
-
-```
-% = 130 · r / ( r + K · L )        # L = 敌人等级，r = 属性数值
-```
-
-| 属性 | K（EA 拟合） |
-|---|---|
-| Defense / 全抗性 / Fortitude / Critical Chance / Attack Speed | ≈ 40 |
-| Critical Strike | ≈ 30 |
-| Hit Rating | ≈ 13.3 |
-| Evasion / Armor Penetration | ≈ 100 |
-| Mana Steal | ≈ 160 |
-
-- Magic Find / Gold Find（EA 实测）：`MagicFind% ≈ (100 + MF) / 1.1`、`GoldFind% ≈ (GF + 10) / 1.1`。
-
-## 5. 怎么用（结论）
+## 4. 怎么用（结论）
 
 1. **以百分比为准**：详细属性面板直接给出当前数值对应的百分比。
 2. **堆减伤要算边际**：`r ÷ (r + 485L)` 越往后越贵，同等级下 50% 需要 r = 485L。
@@ -118,5 +97,4 @@ sources:
 
 ## 资料来源
 
-- 官方 1.0 Wiki：属性与数值（/p/6），2026-10-15 抓取。
-- 游戏内实测（EA 版）：派生属性百分比拟合、Magic/Gold Find。
+- 官方 1.0 Wiki：属性与数值（/p/6），2026-10-16 抓取。

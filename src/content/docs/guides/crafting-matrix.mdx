@@ -1,24 +1,24 @@
 ---
 title: 职业自给自足矩阵
-description: 职业 × 生活技能的材料来源矩阵与瓶颈专业。
-gameVersion: "EA"
-verifiedDate: 2026-10-13
-versionStatus: ea-verified
+description: 职业 × 生活技能的材料来源矩阵与瓶颈专业（以官方 1.0 Wiki 为准）。
+gameVersion: "1.0"
+verifiedDate: 2026-10-16
+versionStatus: "1.0-official"
 sources:
   - type: official
-    reference: 游戏内帮助文档（Professions / Tiers & Materials / 各制作职业）
-  - type: observed
-    reference: 游戏内实测
+    reference: 官方 1.0 Wiki 专业概述（p/37）、阶梯与材料（p/104）、各制作专业页
+    url: https://wiki.norroth.com/p/37/
+    date: "2026-10-16"
 ---
 import CraftingMatrix from '../../../components/CraftingMatrix.astro';
 
 
-> 所有职业均可学习 **7 项采集技能**，因此原材料通常可以通过自行采集获得。
+> 所有职业均可学习 **8 项账号绑定专业**（Cooking + 7 项采集），因此原材料通常可以通过自行采集获得。
 > 主要缺口来自**跨制作专业的半成品**（木杆 / 宝石 / 宝珠 / 钉子 / 皮套 / 弓弦），需要交易或其他职业协作。
 
-## 1. 7 个采集专业 → 产出（全职业可用）
+## 1. 账号绑定专业 → 产出（全职业可用）
 
-| 采集专业 | 采集点 | 产出材料（按 Tier 1-6） |
+| 专业 | 采集点 | 产出材料（按 Tier 1-6） |
 |---|---|---|
 | Chopping 伐木 | Chopping Area | 各阶 **Log**、Hollowed Log、**Gall**（制墨水） |
 | Farming 种植 | Farming Fields | Cotton Boll、Silkworm Cocoon、Jute、Nettle、Ramie（纤维）、Soil Lump（开 Spirit Seed） |
@@ -27,42 +27,41 @@ import CraftingMatrix from '../../../components/CraftingMatrix.astro';
 | Mining 挖矿 | Mine | Copper/Iron/Tin Ore、Lump of Coal、Mithril/Valentaal/Galgonite Ore、**Geode**（开 Rough 宝石）、Spirit Ore |
 | Quarrying 采石 | Quarry | Slate、Fieldstone、Soapstone、Sandstone、Laterite、Travertine、Basalt、Conglomerate、Spirit Stone |
 | Scavenging 拾荒 | 击杀后尸体 | Hide、Bone、Chitin、Scale、Wing、Claw、Fang、Hoof、Tooth、Tendon、Skull、Goblin Ear/Hide、**Meat**、Soul(Boss) |
+| Cooking 烹饪 | 制作台 | 食物与回复 Buff 类成品 |
 
 > 注：Spirit Essence 来自 Spirit Berry/Flower/Log/Fish/Stone/Ore（由各采集专业附带产出），不是独立专业。
 
-## 2. 13 个制作专业 → 材料依赖（自动生成）
+## 2. 10 个角色绑定制作专业 → 材料依赖（自动生成）
 
-下表由**制作配方数据自动生成**，不再是人工概括；「完全自给」只对**配方输入全部自产 / 采集**的专业成立。
+下表由**制作配方数据自动生成**；「完全自给」只对**配方输入全部自产 / 采集**的专业成立。
 
 <CraftingMatrix />
 
-> 说明：一个专业即使有跨专业依赖，也往往只是**部分配方**需要（例如炼金的法杖 / 魔杖要用木工的 Rod / Handle），
-> 基础药水仍可独立完成。缺口材料都能在 **Trading Post** 买到，或由对应职业的角色补上。
+> 说明：一个专业即使有跨专业依赖，也往往只是**部分配方**需要（例如炼金的法杖 / 魔杖要用木工的 Rod / Handle），基础药水仍可独立完成。缺口材料都能在 **Trading Post** 买到，或由对应职业的角色补上。
 
-## 3. 每职业自给自足矩阵
+## 3. 每职业自给自足矩阵（1.0）
 
 | 职业 | 可使用制作专业 | 原材料是否够 | 实际缺口 |
 |---|---|---|---|
 | **Archmage** | Alchemy / Cartography / Cooking / Jeweling / Tailoring | 是 | Cartography 缺 **Rod**(Carpentry)；Jeweling 缺 **Wire** |
 | **Berserker** | Cooking / Hunting / Leatherworking / Weaponsmithing / Stonemasonry | 是 | Weaponsmithing 缺 **Handle/Club/Rod**(Carpentry) + **Orb**(Alchemy) + **宝石**(Jeweler)；Hunting 缺 **Rod** |
-| **Druid** | Cooking / Hunting / Leatherworking / Petbreeding / Tailoring | 是 | Hunting 缺 **Rod**(Carpentry)；Tailoring 缺 **宝石**(Jeweler) |
+| **Druid** | Cooking / Hunting / Leatherworking / Tailoring | 是 | Hunting 缺 **Rod**(Carpentry)；Tailoring 缺 **宝石**(Jeweler) |
 | **Ranger** | Cartography / Cooking / Hunting / Leatherworking / Carpentry | 是 | Carpentry 缺 **Nails**(Weaponsmithing)；Cartography 缺 **宝石**(Jeweler) |
 | **Zealot** | Armorsmithing / Cartography / Cooking / Hunting / Jeweling | 是 | Cartography 缺 **Rod**(Carpentry)；Hunting 缺 **Rod** + **Glove Base**(Leatherworking) |
-| **Rogue** | Toolsmithing / Cartography / Cooking / Hunting / Leatherworking | 是 | Toolsmithing ✅自给；Cartography 缺 **Rod** + **宝石**；Hunting 缺 **Rod** |
+| **Rogue** | Cartography / Cooking / Hunting / Leatherworking | 是 | Cartography 缺 **Rod** + **宝石**；Hunting 缺 **Rod** |
 
 ### 读法
-- **「原材料是否够」= 是**：因为 7 个采集专业人人都有，矿/木/皮/鱼/种子都能自己弄。
-- **缺口全是「制作成品」**：木杆(Rod/Handle/Club)、宝石(Gem)、宝珠(Orb)、钉子(Nails)、皮套(Glove Base)、弓弦(String)。
-  这些在 **Trading Post** 都能买到，或靠另一个职业角色补。
+- **「原材料是否够」= 是**：因为 8 项账号绑定专业人人都有，矿/木/皮/鱼/种子都能自己弄。
+- **缺口全是「制作成品」**：木杆(Rod/Handle/Club)、宝石(Gem)、宝珠(Orb)、钉子(Nails)、皮套(Glove Base)、弓弦(String)。这些在 **Trading Post** 都能买到，或靠另一个职业角色补。
 
 ## 4. 最关键的 4 个瓶颈专业
 
 | 瓶颈专业 | 谁需要它 | 只有谁能做 |
 |---|---|---|
-| [**Carpentry**](/norr-wiki/professions/crafting-catalog/?prof=carpentry) | Cartography、Hunting、Weaponsmithing 都要 Rod/Handle/Club | Ranger（Toolsmith 也能做 Rod/Handle，但不能做 Club） |
+| [**Carpentry**](/norr-wiki/professions/crafting-catalog/?prof=carpentry) | Cartography、Hunting、Weaponsmithing 都要 Rod/Handle/Club | Ranger |
 | [**Jeweler**](/norr-wiki/professions/crafting-catalog/?prof=jeweling) | Cartography、Tailoring、Weaponsmithing 要宝石 | Archmage、Zealot |
 | [**Alchemy**](/norr-wiki/professions/crafting-catalog/?prof=alchemy) | Weaponsmithing 要 Orb | Archmage |
-| [**Weaponsmithing**](/norr-wiki/professions/crafting-catalog/?prof=weaponsmithing) | Carpentry 要 Nails | Berserker |
+| [**Weaponsmithing**](/norr-wiki/professions/crafting-catalog/?prof=weaponsmithing) | Carpentry 要 Nails（工具锻造已并入此专业） | Berserker |
 
 > 生活技能进度账号共享，但**执行**必须用拥有该职业的角色。所以「补专业」= 开对应职业小号。
 
@@ -74,4 +73,4 @@ import CraftingMatrix from '../../../components/CraftingMatrix.astro';
 
 ## 资料来源
 
-- 官方帮助文档：Professions、Tiers & Materials、各制作职业条目。
+- 官方 1.0 Wiki：专业概述（/p/37）、阶梯与材料（/p/104）、各制作专业页，2026-10-16 抓取。

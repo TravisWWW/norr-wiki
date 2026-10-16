@@ -1,17 +1,16 @@
 ---
 title: Zealot 狂热者
 description: Zealot（狂热者）技能树与定位。
-versionStatus: mixed
+versionStatus: "1.0-official"
 gameVersion: "1.0"
-verifiedDate: 2026-10-15
+verifiedDate: 2026-10-16
 sources:
   - type: official
     reference: 官方 1.0 Wiki 职业页
     url: https://wiki.norroth.com/p/141/
-    date: "2026-10-15"
+    date: "2026-10-16"
 ---
 
-import ClassSkills from '../../../components/ClassSkills.astro';
 import ClassSkills10 from '../../../components/ClassSkills10.astro';
 
 > 近战 + 法术混合，光明 / 黑暗双阵营互斥。
@@ -46,33 +45,15 @@ Zealot 是近战与法术混合职业，可用剑 / 锤与盾，兼具物理与�
 
 技能分组（1.0 官方 Wiki）：Sword Mastery、Hammer Mastery、Shield Mastery、Light Mastery、Dark Mastery、Spirit、Zeal。
 
-> 下方技能树来自**官方 1.0 Wiki / 游戏客户端技能数据**。EA 版差异见下方「1.0 技能变化」小节。
+> 下方技能树来自**官方 1.0 Wiki / 游戏客户端技能数据**（技能上限 **10 级**）。
 
 ## 技能树【1.0 官方 Wiki】
 
 <ClassSkills10 cls="Zealot" />
-
-## 1.0 技能变化（相对 EA）—— 扩充最多
-
-| 项 | EA | 1.0 |
-|---|---|---|
-| 技能总数 | 29 | 33 |
-| 分组 | Weapon Mastery + 光 / 暗 + Misc | **Sword / Hammer Mastery（拆分）** + **Shield Mastery** + 光 / 暗 + **Spirit** + **Zeal** |
-| 新增 | — | `hammer_of_justice`、`hammer_of_doom`、`iron_reckoning`、`down_to_earth`、`parry_stance`、`faithbreaker`、`divine_wrath`（共 7） |
-| 移除 | — | `light_aura`、`holy_light_bubble`、`spirit_breaker` |
-
-- **盾系（Shield Mastery）独立成组**：`shield_mastery / shield_throw / phalanx / shield_bash` 从杂项升格为独立武器线，**盾战（坦克）成为独立流派**。
-- **锤系（Hammer Mastery）大幅补全**：新增光 / 暗双系锤击与增伤、AoE 眩晕，锤从"单一武器"变成**完整武器线**。
-- **新增 Zeal（狂热）组**：`faithbreaker`（命中 −100 / 攻速 −50 / 暴击伤害 −50 的强力减益）等，代表**光暗均衡 / 爆发**流派。
-- **新增 Spirit 组**：法力、命中、生命、寻宝，补齐续航与收益。
-- **移除 `light_aura` / `holy_light_bubble`（光系防御增益）与 `spirit_breaker`（暗系减益）**：光暗系进一步**偏向输出**，防御职能交给独立的盾系。
-
-> 逐条明细与影响分析见 [1.0 职业技能变化详解](/norr-wiki/release/v1-class-skill-changes/)。
 
 ## 相关
 
 - [狂热者配装攻略](/norr-wiki/guides/zealot-build/)
 - [技能系统](/norr-wiki/combat/skills/)
 - [制作配方图鉴](/norr-wiki/professions/crafting-catalog/?prof=armorsmithing)
-
 

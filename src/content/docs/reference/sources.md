@@ -1,9 +1,9 @@
 ---
 title: 资料来源与证据等级
 description: 本站的资料分类、证据等级、版本适用与来源字段说明。
-gameVersion: "mixed"
-verifiedDate: 2026-10-14
-versionStatus: mixed
+gameVersion: "1.0"
+verifiedDate: 2026-10-16
+versionStatus: "1.0-official"
 sources:
   - type: official
     reference: 本站编辑规范
@@ -15,6 +15,7 @@ sources:
 
 | 等级 | 标注 | 含义 |
 |---|---|---|
+| **1.0 官方 Wiki** | 【1.0 官方 Wiki】 | 官方 1.0 Wiki（wiki.norroth.com）明确写出的规则，本项目确认的 1.0 来源 |
 | **官方规则** | 【官方】 | 游戏内帮助文档（Help File）明确写出的规则 |
 | **官方公告** | 【官方 · 日期】 | 官方 Discord 公告 / 开发日志 / 开发者发言 |
 | **EA 实测** | 【实测】 | 本项目在 EA（Legacy）服务器实际验证 |
@@ -29,9 +30,10 @@ sources:
 
 | 徽标 | 含义 |
 |---|---|
-| **EA 版已验证** | 内容来自 EA 版实测，可直接参考 |
+| **1.0 官方 Wiki 已确认** | 内容直接来自**官方 1.0 Wiki**（wiki.norroth.com），是本项目的**确认 1.0 信息来源** |
 | **1.0 官方已公布** | 来自官方公告，**未在正式服实测** |
 | **1.0 待验证** | 官方已提及但细节不足，需上线后核实 |
+| **EA 版已验证** | 内容来自 EA 版实测，可直接参考（仅用于官方 1.0 Wiki 未覆盖的主题） |
 | **EA 已验证 · 1.0 待验证** | 页面同时含 EA 实测与 1.0 公告内容，注意区分 |
 
 ## 版本适用

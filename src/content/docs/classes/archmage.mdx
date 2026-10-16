@@ -1,17 +1,16 @@
 ---
-versionStatus: mixed
+versionStatus: "1.0-official"
 gameVersion: "1.0"
-verifiedDate: 2026-10-15
+verifiedDate: 2026-10-16
 sources:
   - type: official
     reference: 官方 1.0 Wiki 职业页
     url: https://wiki.norroth.com/p/136/
-    date: "2026-10-15"
+    date: "2026-10-16"
 title: Archmage 法师
 description: Archmage（法师）技能树与定位。
 ---
 
-import ClassSkills from '../../../components/ClassSkills.astro';
 import ClassSkills10 from '../../../components/ClassSkills10.astro';
 
 > 远程法术输出，主修 Arcane / Fire / Ice / Lightning，靠法力与魔法盾生存。
@@ -46,26 +45,11 @@ Archmage 是纯远程法术职业，伤害来自元素法术与法杖 / 魔杖�
 
 技能分组（1.0 官方 Wiki）：Arcane Mastery、Lightning Mastery、Fire Mastery、Mana、Offensive、Misc。
 
-> 下方技能树来自**官方 1.0 Wiki / 游戏客户端技能数据**。EA 版差异见下方「1.0 技能变化」小节。
+> 下方技能树来自**官方 1.0 Wiki / 游戏客户端技能数据**（技能上限 **10 级**）。
 
 ## 技能树【1.0 官方 Wiki】
 
 <ClassSkills10 cls="Archmage" />
-
-## 1.0 技能变化（相对 EA）
-
-| 项 | EA | 1.0 |
-|---|---|---|
-| 技能总数 | 27 | 26 |
-| 分组 | 三系精通 + Misc | 三系精通 + **Mana** + **Offensive**（Misc 仅剩 Magic Orb / Treasure Finder） |
-| 新增 | — | `lightning_thrust`（闪电穿刺，Lv.5） |
-| 移除 | — | `lightning_attack`、`mana_armor` |
-
-- **三系对称化**：奥术 / 闪电 / 火焰现在都是 `精通 → 弹 → 穿刺 → 风暴 → 衰弱 → 光束` 六级结构，`lightning_thrust` 补齐闪电系缺失的穿刺位。
-- **失去 `mana_armor`**（EA：+70 基础防御 / +50 基础抗性 / +30 坚韧 / −25 法力）：法师不再有"法力换防御"的生存手段，生存转向 `glass_cannon` / `mana_shield` 取舍。
-- **Mana 独立成组**：`mana_pool / mana_recovery / mana_shield` 从杂项升格为显式流派。
-
-> 逐条明细与影响分析见 [1.0 职业技能变化详解](/norr-wiki/release/v1-class-skill-changes/)。
 
 ## 相关
 

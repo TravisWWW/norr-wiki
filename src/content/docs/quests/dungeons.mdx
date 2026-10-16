@@ -1,29 +1,16 @@
 ---
 title: 副本与 Boss
-description: 钥匙、副本入口坐标、难度与掉落机制。
+description: 副本入口、难度、Lootbox 与钥匙（以官方 1.0 Wiki 为准）。
 gameVersion: "1.0"
-verifiedDate: 2026-10-15
-versionStatus: mixed
+verifiedDate: 2026-10-16
+versionStatus: "1.0-official"
 sources:
   - type: official
-    reference: 游戏内帮助文档（Keys / Dungeons & Bosses）
-  - type: observed
-    reference: 游戏内实测
+    reference: 官方 1.0 Wiki Dungeons（p/165）、Dungeon Lootbox（p/191）、Keys（p/106）、Event Anomalies（p/154）
+    url: https://wiki.norroth.com/p/165/
+    date: "2026-10-16"
 ---
 import DungeonTable from '../../../components/DungeonTable.astro';
-
-
-> **⚠️ 版本提示（重要）**：本页默认描述 **EA（Legacy）** 规则。**1.0 已公布副本机制将重做**，两者结论不同，请勿混用：
->
-> | 项 | EA 版（本页默认） | 1.0 已公布 |
-> |---|---|---|
-> | **进入副本** | **消耗一把对应钥匙** | **免费进入** |
-> | **钥匙用途** | 开门即消耗 | 击败 Boss 后**可选**用钥匙开 Lootbox |
-> | **掉落次数** | 固定 | 由难度决定（Normal 1× / Nightmare 1×+50% / Chaos 2×） |
-> | **难度门槛** | 无重生要求 | Normal 重生 0+ / Nightmare 5+ / Chaos 10+ |
-> | **离场** | 自动传出 | **不自动传出**，可走门或按 Leave |
->
-> 详见 [1.0 机制变更](/norr-wiki/release/v1-changes/)。**正式版实测后再确定页面默认内容。**
 
 > 本页讲**副本（Dungeons）**。其它高阶玩法见：**深渊塔**、**世界 Boss 与虚空裂隙**、**竞技场**、**活动与探险**。
 
@@ -31,20 +18,19 @@ import DungeonTable from '../../../components/DungeonTable.astro';
 
 | 玩法 | 解锁 / 入场 | 消耗 | 页面 |
 |---|---|---|---|
-| **Dungeons 副本** | 走到副本门 + 对应钥匙 | 1 把钥匙 | 本页 |
-| Abyssal Tower 深渊塔 | Activities 面板（Normal 免钥匙） | 无 / 钥匙（上层） | [深渊塔](/norr-wiki/quests/abyssal-tower/) |
-| Overlords 世界 Boss | 定时刷新（01:00 / 10:00 / 19:00） | 无 | [世界 Boss](/norr-wiki/quests/world-boss/) |
+| **Dungeons 副本** | 走到副本入口，**选难度后免费进入** | 开 Lootbox 时消耗钥匙 | 本页 |
+| Abyssal Tower 深渊塔 | Activities 面板（Lv5） | 无 | [深渊塔](/norr-wiki/quests/abyssal-tower/) |
+| Overlord Chamber 世界 Boss | 定时刷新（01:00 / 10:00 / 19:00），Lv30+ | 无 | [世界 Boss](/norr-wiki/quests/world-boss/) |
 | Void Rifts 虚空裂隙 | 地图上的裂隙 | 无 | [世界 Boss](/norr-wiki/quests/world-boss/) |
-| Battle Arena 竞技场 | 需 **Lv15** | Battle Token | [竞技场](/norr-wiki/quests/arena/) |
+| Battle Arena 竞技场 | 需 **Lv10** | Battle Token | [竞技场](/norr-wiki/quests/arena/) |
 | Event Gate 活动门 | 上交 Fragment 开启 | Fragment | [活动与探险](/norr-wiki/quests/events/) |
-| Expeditions 探险 | 建造船只后出海 | 地图物品 | [活动与探险](/norr-wiki/quests/events/) |
+| Expeditions 远征 | 建造船只后出海 | 地图物品 | [船只与航海](/norr-wiki/systems/sailing/) |
 
-## 1. 钥匙（Keys）【官方】
+## 1. 钥匙（Keys）【1.0 官方 Wiki】
 
-> 钥匙是消耗品，用来开 **Strongboxes（箱子）** 和 **Dungeon Doors（副本门）**。
+钥匙是消耗品，用来开 **Strongboxes（箱子）** 和 **Dungeon Lootbox（副本战利品箱）**。
 
-**来源**：野外打怪掉落（**主要是带星怪**）、Order/Bounty Boards、Achievement Market、
-Laurel Market、Celestial Market。
+**来源**：战斗掉落（**主要是带星怪**）、Order & Bounty Boards、Achievement Market、Dock Merchant、Event Merchant、Celestial Market。
 
 | 钥匙 | Tier | 等级 |
 |---|---|---|
@@ -54,66 +40,45 @@ Laurel Market、Celestial Market。
 | Steel Key | 4 | 30-39 |
 | Mithril Key | 5 | 40-49 |
 
-**注意：钥匙只在 Over World 野外图掉落，副本 / 事件里不掉。**
+**注意：钥匙只在 Overworld 野外图掉落，副本 / 远征 / 活动等实例内容里不掉。**
 
-## 2. 副本与 Boss【官方】
-
-> 官方原文：副本遍布 Norroth，**每个副本都需要一把钥匙**；角色等级越高，需要的钥匙 Tier 越高。
-> 高等级角色每个 Tier 有多个副本可选，但**只要你有对应钥匙，任何副本都能进**。
+## 2. 副本与 Boss【1.0 官方 Wiki】
 
 <DungeonTable />
 
-### 副本机制【社区，官方未公开名录细节】
+### 进入副本
 
-- 副本是 **instanced maps**：走到入口 → 烧一把**与副本 tier 匹配的钥匙** → 该图独立成实例。
-- 进去刷怪，有概率触发 **Anomaly Event**，**固定刷 1 只守护 Boss**。
-- 难度（入口选，队伍以队长为准）：
-
-| 难度 | 门槛 | Gold / Magic Find | Unique Rank | Lootbox Roll |
-|---|---|---|---|---|
-| Normal | 随时 | +0% / +0% | 0-1 | 1 次 |
-| Nightmare | Rebirth 5 | +10% / +10% | 0-2 | 1-2 次 |
-| Chaos | Rebirth 10 | +20% / +20% | 1-3 | 2 次 |
-
-- 打完 Boss，**Boss 格子上出现 Dungeon Lootbox**：站上去开窗，**再花一把同档钥匙**才能开。
-  多数奖励从箱子出，不是 Boss 直接掉。每人各自 claim；给多件装备 + Shadow Coins，
-  额外可能给 Socket Hammer / Reroll Dice / Infusion Stone / Lucky Charm / Safety Charm / Jewel Extractor。
-- **Anomaly Event 概率约 20%**：Loot Goblin Invasion / Elite Ambush / Void Rift / Secret Armory / Scrap Storm。
-
-## 3. 什么时候该打副本
-
-| 阶段 | 建议 |
-|---|---|
-| Lv1-15 | 只做主线 / 支线 + 日常 + 打同级怪；**钥匙留存**，暂不开箱 |
-| Lv15-20 | 开始打 Copper / Iron 副本（Marious、Tree of Life、The Baron、The Devourer） |
-| Lv20+ | 开公会（Lv20 + 100 金）、打 Bronze 副本 |
-
-## 副本难度与 Lootbox【1.0 官方 Wiki】
-
-**进入**：走到副本入口 → 花一把**匹配副本 Tier 的钥匙**进入 → 该图独立成实例。进入后：全图刷怪、可能触发 **Anomaly Event**（约 15% 概率）、刷 **1 只守护 Boss**。
-
-| 难度 | 门槛 | Gold / Magic Find | Unique Rank | Lootbox Roll |
-|---|---|---|---|---|
-| Normal | 随时 | +0% / +0% | 0-1 | 1 次 |
-| Nightmare | Rebirth 5 | +10% / +10% | 0-2 | 1-2 次 |
-| Chaos | Rebirth 10 | +20% / +20% | 1-3 | 2 次 |
-
-- **Dungeon Lootbox**：击败 Boss 后出现在 Boss 格上，**再花一把同档钥匙**才能开；多数奖励从这里出，而不是 Boss 直接掉。窗口显示难度、物品等级区间、Magic Find 与可能奖励。**每个队员各自领取**；选择 Open 或 Leave 后本次副本结束，传送到出口或传送门。
+- 走到副本入口 → **选择难度后免费进入**（**进入不再消耗钥匙**）→ 该图独立成实例。
+- 进入后全图刷怪，**可能触发 Anomaly Event**，并刷 **1 只守护 Boss**。
 - 队伍中**以队长的难度为准**。
-- **钥匙**：Copper(T1,1-9)、Iron(T2,10-19)、Bronze(T3,20-29)、Steel(T4,30-39)、Mithril(T5,40-49)；来源为带星怪掉落、Order/Bounty Board、Achievement Market、Dock Merchant、Event Merchant、Celestial Market。**只在野外图掉落，副本/远征/活动内不掉。**
-- **Anomaly Event**：每次进入副本或远征有 **15%** 概率触发，按权重随机：Loot Goblin Invasion（稀有）、Elite Ambush、Void Rift、Secret Armory 等。
+
+### 难度与 Lootbox
+
+击败 Boss 后，Boss 格子上出现 **Dungeon Lootbox**：站上去开窗，**花一把匹配副本金属档位的钥匙**开启。必须**参与过 Boss 战**才能领取；可以不开箱直接离开，但**放弃本次 Lootbox 奖励**。多数奖励从这里出，而不是 Boss 直接掉；窗口显示难度、物品等级区间与可能奖励。**每个队员各自领取**。
+
+| 难度 | 门槛 | 经验 | Lootbox Magic Find | Unique Rank | Lootbox Roll |
+|---|---|---|---|---|---|
+| Normal | 随时 | +0% | +0% | 0-1 | 1 次 |
+| Nightmare | Rebirth 5 | +25% | +50% | 0-2 | 1-2 次 |
+| Chaos | Rebirth 10 | +50% | +100% | 1-3 | 2 次 |
+
+- **Lootbox 保底**：多件装备 + **Shadow Coins**；额外可能给 **Socket Hammer / Reroll Dice / Infusion Stone / Lucky Charm / Safety Charm / Jewel Extractor**。
+- **物品等级**：基于 Boss 地图等级，在窗口显示的区间内 roll。
+- **Lootbox Magic Find**：由 Boss 等级、所选难度与队伍 Magic Find 加成计算（**个人 Magic Find 不影响 Lootbox 奖励**）。
+- **Unique 与难度**：Unique 物品按 Rank 提升（Normal 0-1 / Nightmare 0-2 / Chaos 1-3）。
+
+### Anomaly Event【1.0 官方 Wiki】
+
+每次进入副本或远征有 **15%** 概率触发，按权重随机：**Loot Goblin Invasion（稀有）、Elite Ambush、Void Rift、Secret Armory、Scrap Storm**。详见[活动入口与限时事件](/norr-wiki/quests/events/)。
 
 ## 相关
 
 - [深渊塔](/norr-wiki/quests/abyssal-tower/)
 - [世界 Boss 与虚空裂隙](/norr-wiki/quests/world-boss/)
 - [竞技场（PvP）](/norr-wiki/quests/arena/)
-- [活动与探险](/norr-wiki/quests/events/)
+- [活动入口与限时事件](/norr-wiki/quests/events/)
 - [物品与容器](/norr-wiki/equipment/items/)（宝箱）
 
 ## 资料来源
 
-- 官方 1.0 Wiki（wiki.norroth.com），2026-10-15 抓取。
-
-- 官方帮助文档：Keys、Dungeons & Bosses。
-- 游戏内实测（EA 版）：副本入口、难度、Anomaly。
+- 官方 1.0 Wiki：Dungeons（/p/165）、Dungeon Lootbox（/p/191）、Keys（/p/106）、Event Anomalies（/p/154），2026-10-16 抓取。

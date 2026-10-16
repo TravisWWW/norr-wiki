@@ -1,105 +1,60 @@
 ---
 title: 公会系统
-description: 开/加公会、公会建筑、公会任务板。
+description: 开/加公会、公会建筑、佣兵与公会任务板（以官方 1.0 Wiki 为准）。
 gameVersion: "1.0"
-verifiedDate: 2026-10-15
-versionStatus: mixed
+verifiedDate: 2026-10-16
+versionStatus: "1.0-official"
 sources:
   - type: official
-    reference: 游戏内帮助文档（Start and Join Guild / 公会建筑）
-  - type: observed
-    reference: 游戏内实测
+    reference: 官方 1.0 Wiki 开/加公会（p/77）、公会建筑（p/85–92）、公会佣兵（p/199）
+    url: https://wiki.norroth.com/p/77/
+    date: "2026-10-16"
 ---
 
 ## 结论速览
 
-- 官方确认正式版支持**公会协作、交易、组队探索**；具体等级与建设条件为 EA 版数据，**1.0 待核实**。
-- 开公会需要**战斗等级 ≥ Lv.20** 且花费 **100 Gold**；只能邀请**同阵营**的人。
+- 开公会需要**战斗等级 ≥ Lv.20** 且花费 **50 Gold**，只能邀请**同阵营**的人。
 - 加入现有公会需要**会长邀请**，没有自助申请入口。
+- 公会建筑可升级；**Guild Quartermaster** 提供公会战（GvG）佣兵。
 
-## 开公会 / 加公会【官方】
+## 开公会 / 加公会【1.0 官方 Wiki】
 
-> 官方原文：**战斗等级 ≥ Lv.20** 才能开自己的公会，**费用 100 Gold**。
-> 只能邀请**同阵营（same alignment）**的人。自定义公会标签在角色名前：
-> **Dark 阵营显示红色，Light 阵营显示蓝色**。
+- **开公会**：战斗等级 **20+**、费用 **50 Gold**，前往 **Drouver 的 Guild Hall** 创建；会从一个小 **base camp** 起步，和会友一起把它建成城市。
+- **加公会**：**没有自助申请入口**，必须由**会长邀请**。官方给的找会途径是 Discord 的 **#guild-recruitment** 频道。
+- **阵营限制**：只能邀请**同阵营（same alignment）**的人。
+- **公会标签**：显示在角色名前，**Dark 阵营红色、Light 阵营蓝色**。
 
-- **开公会**：去 **Drouver 的 Guild Hall**，从一个小 base camp 开始，和会友一起建成城。
-- **加公会**：**没有自助申请入口**，必须**会长邀请**。官方给的找会途径是 Discord 招募频道。
-
-## 从零开始：建会 / 加入 / 升级（操作流程）
-
-**建会（会长）**
-
-1. 把**战斗等级练到 Lv.20**，备好 **100 Gold**。
-2. 前往 **Drouver 的 Guild Hall**，创建公会——会从一个小 **base camp** 起步。
-3. 邀请**同阵营**的成员（只能邀请同阵营）。
-
-**加入（成员）**
-
-1. 等**会长发出邀请**（没有自助申请入口）。
-2. 接受邀请即加入；找不到公会可去官方 Discord 招募频道。
-
-**升级建筑**
-
-1. 走到公会领地内**对应的建筑**（如 Guild Bank / Bed Chambers）。
-2. 打开 **Deposit Materials** 弹窗。
-3. 从**背包或银行**捐材料推进进度；进度达标后建筑升级。
-
-**等级与上限**
-
-| 想要的效果 | 需要升级的建筑 |
-|---|---|
-| 提高**公会人数上限** | **Guild Bed Chambers**（升级床位） |
-| 增加**银行格数 / 堆叠上限** | **Guild Bank** |
-| 解锁更多建筑 | **Guild Headquarters（HQ）** |
-| 接取公会专属击杀任务 | 需在公会领地内并有**相应权限** |
-
-> 以上等级门槛与费用为 **EA 版**数据；正式版（1.0）是否调整待核实。
-
-## 公会建筑【官方】
+## 公会建筑【1.0 官方 Wiki】
 
 | 建筑 | 作用 |
 |---|---|
-| **Guild Bank** | 存公会资源；升级加 Bank Slots + 扩堆叠 |
+| **Guild Bank** | 存放公会资源；升级加 **Bank Slots** 并**扩大堆叠上限** |
 | **Guild Bed Chambers** | 升级床位 = **扩公会人数上限** |
-| **Guild Portal** | 传送到每个已解锁城市（省传送卷轴） |
+| **Guild Portal** | 传送到每个已解锁城市（省去 Home / Teleportation Scroll） |
 | **Guild Headquarters** | 升级 HQ 解锁更多建筑 |
-| **Guild Library** | 存公会信息的书；升级看得更多 |
-| **Guild Panel** | （Under Construction） |
-| **Guild Armory** | 捐装备给公会 = **所有权完全转移**，之后只能 **Borrow**，拿不回来 |
-| **Guild Temple** | （Under Construction） |
+| **Guild Library** | 存放公会信息书籍；升级后可看更多 |
+| **Guild Panel** | 官方页为空（未提供正文） |
+| **Guild Armory** | 捐赠物品 = **所有权完全转移给公会**，之后只能 **Borrow**，拿不回来 |
+| **Guild Temple** | 官方页为空（未提供正文） |
 
-**建筑升级**：走 **Deposit Materials** 弹窗，从**背包或银行**捐材料推进。官方**只给机制不给数值**
-（每级具体要多少材料 → 看游戏里 Deposit Materials 那栏）。
+**建筑升级**：走到公会领地内对应建筑，打开 **Deposit Materials** 弹窗，从**背包或银行**捐材料推进进度；捐赠材料会永久保存，可分多次贡献，达标后点绿色 **Upgrade** 升级。官方**只给机制不给数值**（每级具体要多少材料见游戏内面板）。
+
+## 公会佣兵 Guild Quartermaster【1.0 官方 Wiki】
+
+在 **Guild Quartermaster** 处招募 / 管理用于**公会战（GvG）**的佣兵：
+
+- **Recruit 招募**：从每日报价单雇佣，用 **Guild Gold** 支付；等级越高、越稀有越贵。
+- **Dismiss 解雇**：移除一名存活佣兵。
+- **Revive 复活**：复活一名死亡佣兵，消耗角色身上的 **1 个 Infusion Stone**。
+- **Remove 移除**：删除一名死亡佣兵以腾出槽位（不复活）。
+- **刷新**：新佣兵每 **24 小时**自动刷新一次报价单。
+- **权限**：只有拥有 **Quartermaster** 权限的成员才能操作，会长可在 **Guild Ranks** 中设置。
+- **战斗**：公会防守 GvG 时，存活佣兵会出现在地图上；每次阵亡降低其生命，生命归零即死亡，直到复活或移除。
+- **升级**：Quartermaster（解锁房间与佣兵槽，初始 **3** 个）、Mercenary Procurer（更强更稀有的佣兵与更多每日报价）、Mercenary Capacity（增加佣兵槽）。
 
 ## 公会任务板【官方】
 
-**Guild Quest Board** 是大规模公会专属击杀任务，**只能在公会领地（Guild Estate）内接取和管理**，
-需要相应权限。所有任务板**每周二 12:00 补货**。
-
-## 注意事项
-
-| 项 | 代价 |
-|---|---|
-| 开公会本身 | Lv.20 + **100 Gold** |
-| 公会银行 | 是**建筑**，不花那 100 金；升级加 Bank Slots + 加大堆叠 |
-| 建筑升级 | 走 **Deposit Materials** 弹窗，从背包或银行捐材料推进 |
-
-## 公会价值
-
-- **Guild Portal 免费传送**（EA 版实测）、**Guild Bank 共享存储**、**公会任务板**额外奖励。
-- 公会协作、交易与组队探索是官方在正式版中明确支持的内容。
-
-## 公会设施与佣兵【1.0 官方 Wiki】
-
-- **建立公会**：战斗等级 **20+**，费用 **50 金币**，在 **Drouver 的 Guild Hall** 创建；只能邀请**同阵营**玩家。公会标签在角色名前显示（Dark 红、Light 蓝）。
-- **Guild Bank**：存放公会资源，可升级增加槽位与堆叠上限。
-- **Guild Headquarters**：升级总部解锁更多建筑。
-- **Guild Bed Chambers**：升级床位扩大成员上限。
-- **Guild Portal**：可传送到每个已解锁城市，省去 Home / Teleportation Scroll。
-- **Guild Library**：存放公会信息书籍，升级后可看更多。
-- **Guild Armory**：捐赠物品会**完全转移所有权给公会**，之后只能**借用**，不能取回。
-- **Guild Quartermaster（佣兵）**：招募 / 解雇 / 复活 / 移除佣兵，用于公会战（GvG）。招募用 **Guild Gold**；**复活需消耗 1 个 Infusion Stone**；新佣兵每 **24 小时**刷新。
+**Guild Quest Board** 是大规模公会专属击杀任务，**只能在公会领地（Guild Estate）内接取和管理**，需要相应权限。所有任务板**每周二 12:00 补货**。
 
 ## 相关
 
@@ -108,7 +63,4 @@ sources:
 
 ## 资料来源
 
-- 官方 1.0 Wiki（wiki.norroth.com），2026-10-15 抓取。
-
-- 官方帮助文档：Start and Join Guild、公会建筑各条目。
-- 游戏内实测（EA 版）：开公会条件与费用。
+- 官方 1.0 Wiki：开/加公会（/p/77）、公会银行（/p/85）、床位（/p/86）、传送门（/p/87）、总部（/p/88）、图书馆（/p/89）、面板（/p/90）、军械库（/p/91）、神殿（/p/92）、佣兵（/p/199），2026-10-16 抓取。

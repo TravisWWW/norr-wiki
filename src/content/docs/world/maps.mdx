@@ -1,34 +1,60 @@
 ---
 title: 地图清单
-description: EA 版地图（含城镇）的可筛选清单。
+description: EA 版地图记录（含城镇）的可筛选清单，附官方 1.0 世界地图与城镇说明。
 gameVersion: "1.0"
-verifiedDate: 2026-10-15
+verifiedDate: 2026-10-16
 versionStatus: mixed
+sources:
+  - type: official
+    reference: 官方 1.0 Wiki 世界地图（p/35）、地图详情（p/168）、城镇（p/38）
+    url: https://wiki.norroth.com/p/35/
+    date: "2026-10-16"
+  - type: observed
+    reference: EA 版地图勘察记录（legacy.norroth.com）
 ---
 
 import MapTable from '../../../components/MapTable.astro';
 
-数据来自 **EA 版**（`legacy.norroth.com`）实测，共 323 张地图（含 14 个城镇）。可按名称、生物群系、类型、等级筛选，或只看城镇 / 有采集 / 有怪物，并可按等级排序。
-
-> **版本说明**：官方公布正式版有**超过 300 个手工制作的区域**，但**不能直接认定与 EA 版的 323 张地图是同一批**；
-> 正式版上线后需重新核对。
+> **口径说明**：官方 1.0 Wiki **未提供逐图清单**，因此下方表格是**本站 EA 版勘察记录**（323 张地图，含 14 个城镇），
+> 仅作查询参考，**不代表 1.0 的最终地图集**。官方 1.0 已确认的内容见下方「世界地图与城镇」。
 
 <MapTable />
-
-## 当日元数据与独立地图页
-
-323 张地图的名称、等级、群系、世界坐标和资源图标已于 2026-10-14 从官方 Map Info 重新读取。展开地图行后可打开独立地图页；具体 NPC、出口与怪物仍来自历史实地记录，本次未逐图验证。
-
-[官方采集地点](/norr-wiki/professions/gathering-locations/)提供 112 条“技能—地图”记录，可进一步跳转到地图条目。
 
 ## 世界地图与地图详情【1.0 官方 Wiki】
 
 - **World Map** 左下角有图例；悬停任意点显示：采集节点、是否有敌人、地图编号、等级与生物群系、敌人等级与兴趣点。**蓝色 = 有采集资源**，**红星 = 有任务**。点击地图点会打开窗口，去过且有传送卷轴即可传送。
 - **Map Details** 显示：区域小地图预览、地图名、推荐等级、生物群系、`Link to chat` 位置标签、可用的采集图标。底部按钮随情况变化：**Noble 订阅免费传送城市** / **City Home Scroll** / **World Teleport Scroll**（可传任意地点）。
-- **城镇（1.0 官方）**：El Caspar(1/T1)、Elundi(10/T2)、Owranbu(10/T2)、Drouver(15/T2)、Vileton(15/T2)、Sanjuo(19/T2)、Bungavik(20/T3)、Saurville(20/T3)、Ururg(20/T3)、Caeltys(30/T4)、Trescan(30/T4)、Stogow(30/T4)。
+
+## 城镇 Towns & Cities【1.0 官方 Wiki】
+
+| 城镇 | Level | Tier |
+|---|---|---|
+| El Caspar | 1 | 1 |
+| Elundi | 10 | 2 |
+| Owranbu | 10 | 2 |
+| Drouver | 15 | 2 |
+| Vileton | 15 | 2 |
+| Sanjuo | 19 | 2 |
+| Bungavik | 20 | 3 |
+| Saurville | 20 | 3 |
+| Ururg | 20 | 3 |
+| Caeltys | 30 | 4 |
+| Trescan | 30 | 4 |
+| Stogow | 30 | 4 |
 
 ## 地图兴趣点【1.0 官方 Wiki】
 
 - **Lore Bubbles（背景气泡）**：地图上的兴趣点，带一段风味文本、彩蛋或玩笑。
 - **Waysign（路标）**：点击后列出本图兴趣点（商店与 NPC、通往其它地图的门、Waygate 等）并快速定位，见 [NPC 与设施](/norr-wiki/world/facilities/)。
 - **Summoning Totem（召唤图腾）**：部分地图上的特殊点，消耗 Lost Soul Shards 召唤额外敌人，见[世界事件](/norr-wiki/quests/world-events/)。
+
+## 相关
+
+- [地图、移动与传送](/norr-wiki/world/movement/)
+- [怪物图鉴](/norr-wiki/world/bestiary/)
+- [采集地点](/norr-wiki/professions/gathering-locations/)
+
+## 资料来源
+
+- 官方 1.0 Wiki：世界地图（/p/35）、地图详情（/p/168）、城镇（/p/38），2026-10-16 抓取。
+- 游戏内地图勘察记录（EA 版）：逐图清单。

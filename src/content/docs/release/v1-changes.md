@@ -21,6 +21,9 @@ sources:
 |---|---|---|---|
 | **副本入场** | 进入需消耗对应钥匙 | **免费入场**，击败 Boss 后**可选**用钥匙开 Lootbox | [副本与 Boss](/norr-wiki/quests/dungeons/) |
 | **副本难度** | 无重生门槛 | Normal 重生 0+ / Nightmare 5+ / Chaos 10+；掉落次数随难度 | [副本与 Boss](/norr-wiki/quests/dungeons/) |
+| **技能等级上限** | 20 | **10**（每级增量约翻倍，满级值基本不变） | [技能系统](/norr-wiki/combat/skills/) |
+| **游戏模式命名 / 专业槽** | 专家 / 自强 / 专家自强 | 统一为 **硬核（Hardcore）/ 钢铁侠（Ironman）/ 硬核钢铁侠（HC Ironman）**；Ironman 角色绑定专业槽 **5 → 6** | [角色与账号](/norr-wiki/systems/characters/) |
+| **订阅** | Patreon 订阅 | 游戏内 **Noble Status** 账号级订阅（权益见订阅页） | [订阅与付费服务](/norr-wiki/systems/subscription/) |
 | **队伍** | 无正式队伍系统 | **Party 系统**：同图 + 等级差 ≤10 才有加成 | [社交机制](/norr-wiki/systems/social/) |
 | **自动战斗** | 旧版技能选择机制 | **Impact Score** 决策系统，PvE / PvP 通用 | [战斗机制](/norr-wiki/combat/mechanics/) |
 | **闪避上限** | 通常为 60% | 调整至 **50%**（Rogue 满级被动可达 60%） | [角色属性](/norr-wiki/combat/attributes/) |

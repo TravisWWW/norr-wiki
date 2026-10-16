@@ -2,13 +2,13 @@
 title: "神器 Artifacts"
 description: "发现方式、稀有度与图鉴。"
 gameVersion: "1.0"
-verifiedDate: "2026-10-15"
-versionStatus: "1.0-announced"
+verifiedDate: "2026-10-16"
+versionStatus: "1.0-official"
 sources:
   - type: official
     reference: 官方 1.0 Wiki
     url: https://wiki.norroth.com/p/166/
-    date: "2026-10-15"
+    date: "2026-10-16"
 ---
 **Artifacts（神器）**是散布在世界各处的独特发现，是远古遗物，各有名称与背景故事。找到后会列入 **Codex 的 Artifacts 界面**（按区域类型分组为 Magic / Epic / Unique 等标签）。
 

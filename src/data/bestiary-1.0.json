@@ -1,0 +1,1487 @@
+[
+ {
+  "name": "Angry Egg",
+  "type": "Creature",
+  "levelRange": "1 - 60",
+  "biome": "Bunny Remote",
+  "scavenging": [
+   "Meat",
+   "Claw",
+   "Skull"
+  ]
+ },
+ {
+  "name": "Ankheg",
+  "type": "Creature",
+  "levelRange": "31 - 40",
+  "biome": "Dark Forest",
+  "scavenging": [
+   "Meat",
+   "Chitin",
+   "Fang",
+   "Tendon",
+   "Claw"
+  ]
+ },
+ {
+  "name": "Ape Brute",
+  "type": "Humanoid",
+  "levelRange": "31 - 50",
+  "biome": "Rainforest,Ape Temple",
+  "scavenging": []
+ },
+ {
+  "name": "Arcane Imp",
+  "type": "Creature",
+  "levelRange": "19 - 39",
+  "biome": "Magic Plains,Arcane Isle",
+  "scavenging": [
+   "Meat",
+   "Hide",
+   "Tooth",
+   "Bone",
+   "Tendon",
+   "Skull",
+   "Wing",
+   "Eye"
+  ]
+ },
+ {
+  "name": "Armored Ram",
+  "type": "Animal",
+  "levelRange": "40 - 52",
+  "biome": "Dark Boreal",
+  "scavenging": [
+   "Meat",
+   "Hide",
+   "Bone",
+   "Tendon",
+   "Skull",
+   "Hoof",
+   "Eye",
+   "Tail"
+  ]
+ },
+ {
+  "name": "Arynx",
+  "type": "Creature",
+  "levelRange": "14 - 20",
+  "biome": "Savanna",
+  "scavenging": [
+   "Meat",
+   "Hide",
+   "Fang",
+   "Bone",
+   "Tendon",
+   "Skull",
+   "Claw",
+   "Eye",
+   "Tail"
+  ]
+ },
+ {
+  "name": "Badger",
+  "type": "Animal",
+  "levelRange": "1 - 10",
+  "biome": "Temperate Forest",
+  "scavenging": [
+   "Meat",
+   "Hide",
+   "Tooth",
+   "Bone",
+   "Tendon",
+   "Skull",
+   "Claw",
+   "Eye",
+   "Tail"
+  ]
+ },
+ {
+  "name": "Basilisk",
+  "type": "Creature",
+  "levelRange": "18 - 50",
+  "biome": "Red Desert",
+  "scavenging": [
+   "Meat",
+   "Scale",
+   "Tooth",
+   "Bone",
+   "Tendon",
+   "Skull",
+   "Claw",
+   "Eye",
+   "Tail"
+  ]
+ },
+ {
+  "name": "Bear",
+  "type": "Animal",
+  "levelRange": "6 - 15",
+  "biome": "Temperate Forest,Bear Den,Den Of Devourer",
+  "scavenging": [
+   "Meat",
+   "Hide",
+   "Tooth",
+   "Bone",
+   "Tendon",
+   "Skull",
+   "Claw",
+   "Eye",
+   "Tail"
+  ]
+ },
+ {
+  "name": "Beaver",
+  "type": "Animal",
+  "levelRange": "2 - 5",
+  "biome": "Temperate Forest,Coastal",
+  "scavenging": [
+   "Meat",
+   "Hide",
+   "Tooth",
+   "Bone",
+   "Tendon",
+   "Skull",
+   "Claw",
+   "Eye",
+   "Tail"
+  ]
+ },
+ {
+  "name": "Berserker",
+  "type": "Humanoid",
+  "levelRange": "25 - 50",
+  "biome": "Taiga,Arctic Isle,Frostvault Isle",
+  "scavenging": []
+ },
+ {
+  "name": "Bison",
+  "type": "Animal",
+  "levelRange": "5 - 15",
+  "biome": "Grassland,Mountain",
+  "scavenging": [
+   "Meat",
+   "Hide",
+   "Bone",
+   "Tendon",
+   "Skull",
+   "Hoof",
+   "Eye",
+   "Tail"
+  ]
+ },
+ {
+  "name": "Blood Queen",
+  "type": "Insect",
+  "levelRange": "18 - 23",
+  "biome": "Marsh",
+  "scavenging": [
+   "Chitin",
+   "Wing",
+   "Eye"
+  ]
+ },
+ {
+  "name": "Blue Stirge",
+  "type": "Creature",
+  "levelRange": "28 - 30",
+  "biome": "Stirge Lair",
+  "scavenging": [
+   "Chitin",
+   "Wing"
+  ]
+ },
+ {
+  "name": "Bog Worm",
+  "type": "Insect",
+  "levelRange": "16 - 23",
+  "biome": "Marsh",
+  "scavenging": [
+   "Meat",
+   "Fang",
+   "Tendon"
+  ]
+ },
+ {
+  "name": "Boggard",
+  "type": "Humanoid",
+  "levelRange": "16 - 23",
+  "biome": "Marsh,Oasis",
+  "scavenging": []
+ },
+ {
+  "name": "Bogleech",
+  "type": "Insect",
+  "levelRange": "16 - 23",
+  "biome": "Marsh",
+  "scavenging": [
+   "Meat",
+   "Hide",
+   "Tooth",
+   "Tendon"
+  ]
+ },
+ {
+  "name": "Bone Scarab",
+  "type": "Insect",
+  "levelRange": "10 - 20",
+  "biome": "Dry Desert,Sunken Ruins",
+  "scavenging": [
+   "Chitin",
+   "Tendon",
+   "Wing"
+  ]
+ },
+ {
+  "name": "Brute Spider",
+  "type": "Insect",
+  "levelRange": "15 - 15",
+  "biome": "Spider Den,Pumpkin Skerry",
+  "scavenging": [
+   "Fang",
+   "Chitin"
+  ]
+ },
+ {
+  "name": "Carrion Harpy",
+  "type": "Creature",
+  "levelRange": "14 - 25",
+  "biome": "Savanna,Shrubland",
+  "scavenging": [
+   "Meat",
+   "Wing",
+   "Claw",
+   "Tendon",
+   "Eye",
+   "Tail"
+  ]
+ },
+ {
+  "name": "Cassowary",
+  "type": "Animal",
+  "levelRange": "10 - 30",
+  "biome": "Dry Desert",
+  "scavenging": [
+   "Meat",
+   "Claw",
+   "Wing",
+   "Tendon",
+   "Bone",
+   "Skull",
+   "Eye",
+   "Tail"
+  ]
+ },
+ {
+  "name": "Catoblepas",
+  "type": "Creature",
+  "levelRange": "14 - 30",
+  "biome": "Shrubland",
+  "scavenging": [
+   "Meat",
+   "Hide",
+   "Fang",
+   "Bone",
+   "Tendon",
+   "Skull",
+   "Hoof",
+   "Eye",
+   "Tail"
+  ]
+ },
+ {
+  "name": "Centaur",
+  "type": "Humanoid",
+  "levelRange": "11 - 20",
+  "biome": "Deep Forest",
+  "scavenging": []
+ },
+ {
+  "name": "Cockroach",
+  "type": "Insect",
+  "levelRange": "1 - 10",
+  "biome": "Sewers",
+  "scavenging": [
+   "Chitin",
+   "Tendon",
+   "Eye"
+  ]
+ },
+ {
+  "name": "Cougar",
+  "type": "Animal",
+  "levelRange": "25 - 50",
+  "biome": "Taiga,Frost Cave",
+  "scavenging": [
+   "Meat",
+   "Hide",
+   "Fang",
+   "Bone",
+   "Tendon",
+   "Skull",
+   "Claw",
+   "Eye",
+   "Tail"
+  ]
+ },
+ {
+  "name": "Crocodile",
+  "type": "Animal",
+  "levelRange": "4 - 20",
+  "biome": "Coastal,Sewers,Oasis",
+  "scavenging": [
+   "Meat",
+   "Hide",
+   "Scale",
+   "Tooth",
+   "Bone",
+   "Tendon",
+   "Skull",
+   "Claw",
+   "Eye",
+   "Tail"
+  ]
+ },
+ {
+  "name": "Cute Bunny",
+  "type": "Animal",
+  "levelRange": "1 - 60",
+  "biome": "Frozen Float,Bunny Remote",
+  "scavenging": [
+   "Meat",
+   "Hide",
+   "Tooth",
+   "Bone",
+   "Tendon",
+   "Skull",
+   "Eye",
+   "Tail"
+  ]
+ },
+ {
+  "name": "Decaying Worm",
+  "type": "Insect",
+  "levelRange": "10 - 19",
+  "biome": "Dying Forest",
+  "scavenging": [
+   "Meat",
+   "Fang",
+   "Tendon"
+  ]
+ },
+ {
+  "name": "Deer",
+  "type": "Animal",
+  "levelRange": "4 - 6",
+  "biome": "Grassland,Temperate Forest",
+  "scavenging": [
+   "Meat",
+   "Hide",
+   "Tooth",
+   "Bone",
+   "Tendon",
+   "Skull",
+   "Hoof",
+   "Eye",
+   "Tail"
+  ]
+ },
+ {
+  "name": "Derro Miner",
+  "type": "Humanoid",
+  "levelRange": "50 - 60",
+  "biome": "Underground",
+  "scavenging": []
+ },
+ {
+  "name": "Derro Pitwarden",
+  "type": "Humanoid",
+  "levelRange": "50 - 60",
+  "biome": "Underground",
+  "scavenging": []
+ },
+ {
+  "name": "Derro Stalker",
+  "type": "Humanoid",
+  "levelRange": "50 - 60",
+  "biome": "Underground",
+  "scavenging": []
+ },
+ {
+  "name": "Druid",
+  "type": "Humanoid",
+  "levelRange": "11 - 15",
+  "biome": "Deep Forest,Bunny Remote",
+  "scavenging": []
+ },
+ {
+  "name": "Dryad",
+  "type": "Humanoid",
+  "levelRange": "10 - 19",
+  "biome": "Dying Forest",
+  "scavenging": []
+ },
+ {
+  "name": "Dune Glider",
+  "type": "Creature",
+  "levelRange": "10 - 30",
+  "biome": "Dry Desert,Sunken Ruins",
+  "scavenging": [
+   "Meat",
+   "Fang",
+   "Tendon",
+   "Chitin",
+   "Eye",
+   "Tail"
+  ]
+ },
+ {
+  "name": "Dwarven Caster",
+  "type": "Humanoid",
+  "levelRange": "40 - 52",
+  "biome": "Dark Boreal",
+  "scavenging": []
+ },
+ {
+  "name": "Dwarven Guard",
+  "type": "Humanoid",
+  "levelRange": "40 - 52",
+  "biome": "Dark Boreal",
+  "scavenging": []
+ },
+ {
+  "name": "Dwarven Hunter",
+  "type": "Humanoid",
+  "levelRange": "40 - 52",
+  "biome": "Dark Boreal",
+  "scavenging": []
+ },
+ {
+  "name": "Eel",
+  "type": "Animal",
+  "levelRange": "1 - 10",
+  "biome": "Sewers,Static Isle",
+  "scavenging": [
+   "Tooth",
+   "Tendon",
+   "Eye",
+   "Tail"
+  ]
+ },
+ {
+  "name": "Faery",
+  "type": "Creature",
+  "levelRange": "31 - 40",
+  "biome": "Coastal,Frozen Float",
+  "scavenging": [
+   "Meat",
+   "Wing",
+   "Tooth",
+   "Bone",
+   "Tendon",
+   "Skull",
+   "Eye"
+  ]
+ },
+ {
+  "name": "Fire Elemental",
+  "type": "Elemental",
+  "levelRange": "1 - 60",
+  "biome": "Vulcanic Isle, Vulcanic Underground",
+  "scavenging": []
+ },
+ {
+  "name": "Foliage Shaman",
+  "type": "Humanoid",
+  "levelRange": "31 - 50",
+  "biome": "Rainforest,Ape Temple",
+  "scavenging": []
+ },
+ {
+  "name": "Frost Elemental",
+  "type": "Elemental",
+  "levelRange": "19 - 50",
+  "biome": "Magic Plains,Arctic Isle",
+  "scavenging": []
+ },
+ {
+  "name": "Frostbinder",
+  "type": "Humanoid",
+  "levelRange": "25 - 50",
+  "biome": "Taiga,Frost Cave,Frostvault Isle",
+  "scavenging": []
+ },
+ {
+  "name": "Giant Vulture",
+  "type": "Animal",
+  "levelRange": "18 - 22",
+  "biome": "Red Desert",
+  "scavenging": [
+   "Wing",
+   "Meat",
+   "Hide",
+   "Bone",
+   "Tendon",
+   "Skull",
+   "Eye",
+   "Tail"
+  ]
+ },
+ {
+  "name": "Girtablilu",
+  "type": "Humanoid",
+  "levelRange": "50 - 60",
+  "biome": "Red Desert",
+  "scavenging": []
+ },
+ {
+  "name": "Gnoll Warlock",
+  "type": "Humanoid",
+  "levelRange": "14 - 20",
+  "biome": "Savanna,Static Isle",
+  "scavenging": []
+ },
+ {
+  "name": "Gnoll Warrior",
+  "type": "Humanoid",
+  "levelRange": "14 - 20",
+  "biome": "Savanna",
+  "scavenging": []
+ },
+ {
+  "name": "Grell",
+  "type": "Creature",
+  "levelRange": "50 - 60",
+  "biome": "Underground",
+  "scavenging": [
+   "Meat",
+   "Tendon"
+  ]
+ },
+ {
+  "name": "Hare",
+  "type": "Animal",
+  "levelRange": "1 - 3",
+  "biome": "Grassland,Love Island,Bunny Remote",
+  "scavenging": [
+   "Meat",
+   "Hide",
+   "Tooth",
+   "Bone",
+   "Tendon",
+   "Skull",
+   "Eye",
+   "Tail"
+  ]
+ },
+ {
+  "name": "Hydra",
+  "type": "Creature",
+  "levelRange": "21 - 30",
+  "biome": "Swamp",
+  "scavenging": [
+   "Hide",
+   "Meat",
+   "Tooth",
+   "Claw",
+   "Tendon",
+   "Eye",
+   "Tail"
+  ]
+ },
+ {
+  "name": "Hypnotic Bat",
+  "type": "Animal",
+  "levelRange": "6 - 10",
+  "biome": "Underground,Hollow Forest,Pumpkin Skerry",
+  "scavenging": [
+   "Meat",
+   "Fang",
+   "Wing",
+   "Tendon",
+   "Eye"
+  ]
+ },
+ {
+  "name": "Killer Centipede",
+  "type": "Insect",
+  "levelRange": "10 - 15",
+  "biome": "Marsh,Bear Den,Den Of Devourer",
+  "scavenging": [
+   "Chitin",
+   "Tendon",
+   "Tail"
+  ]
+ },
+ {
+  "name": "Komodo Basilisk",
+  "type": "Creature",
+  "levelRange": "40 - 52",
+  "biome": "Dark Boreal",
+  "scavenging": [
+   "Meat",
+   "Scale",
+   "Tooth",
+   "Bone",
+   "Tendon",
+   "Skull",
+   "Claw",
+   "Eye",
+   "Tail"
+  ]
+ },
+ {
+  "name": "Leech",
+  "type": "Insect",
+  "levelRange": "1 - 10",
+  "biome": "Sewers",
+  "scavenging": [
+   "Chitin",
+   "Tooth",
+   "Tendon",
+   "Tail"
+  ]
+ },
+ {
+  "name": "Lightning Elemental",
+  "type": "Elemental",
+  "levelRange": "19 - 50",
+  "biome": "Magic Plains,Static Isle",
+  "scavenging": []
+ },
+ {
+  "name": "Loot Goblin",
+  "type": "Humanoid",
+  "levelRange": "1 - 60",
+  "biome": "Loot Bay",
+  "scavenging": []
+ },
+ {
+  "name": "Luminous Plant",
+  "type": "Plant",
+  "levelRange": "31 - 50",
+  "biome": "Rainforest,Roots Isle",
+  "scavenging": [
+   "TIER FABRIC",
+   "Spirit Berry"
+  ]
+ },
+ {
+  "name": "Mana Webber",
+  "type": "Insect",
+  "levelRange": "15 - 15",
+  "biome": "Spider Den",
+  "scavenging": [
+   "Fang",
+   "Chitin"
+  ]
+ },
+ {
+  "name": "Merfolk",
+  "type": "Humanoid",
+  "levelRange": "11 - 40",
+  "biome": "Coastal,Marine,Oasis",
+  "scavenging": []
+ },
+ {
+  "name": "Monstrous Bat",
+  "type": "Animal",
+  "levelRange": "11 - 19",
+  "biome": "Underground,Temple,Sinister Isle",
+  "scavenging": [
+   "Meat",
+   "Fang",
+   "Wing",
+   "Tendon",
+   "Eye"
+  ]
+ },
+ {
+  "name": "Monstrous Worm",
+  "type": "Insect",
+  "levelRange": "6 - 20",
+  "biome": "Underground,Crypt,Catacombs",
+  "scavenging": [
+   "Meat",
+   "Tooth",
+   "Tendon"
+  ]
+ },
+ {
+  "name": "Mothman",
+  "type": "Creature",
+  "levelRange": "10 - 19",
+  "biome": "Dying Forest",
+  "scavenging": [
+   "Meat",
+   "Hide",
+   "Wing",
+   "Bone",
+   "Tendon",
+   "Skull",
+   "Eye"
+  ]
+ },
+ {
+  "name": "Mountain Giant",
+  "type": "Humanoid",
+  "levelRange": "50 - 60",
+  "biome": "Mountain,Vulcanic Underground,Rocky Ridge",
+  "scavenging": [
+   "Spirit Stone"
+  ]
+ },
+ {
+  "name": "Mountain Troll",
+  "type": "Humanoid",
+  "levelRange": "11 - 20",
+  "biome": "Mountain,Coastal",
+  "scavenging": []
+ },
+ {
+  "name": "Mummy",
+  "type": "Undead",
+  "levelRange": "10 - 19",
+  "biome": "Temple",
+  "scavenging": []
+ },
+ {
+  "name": "Myconid",
+  "type": "Plant",
+  "levelRange": "11 - 20",
+  "biome": "Dying Forest",
+  "scavenging": [
+   "Meat",
+   "Spirit Essence",
+   "Tendon",
+   "Eye"
+  ]
+ },
+ {
+  "name": "Ogre Mage",
+  "type": "Humanoid",
+  "levelRange": "19 - 50",
+  "biome": "Magic Plains,Arcane Isle",
+  "scavenging": []
+ },
+ {
+  "name": "Ooze",
+  "type": "Creature",
+  "levelRange": "1 - 60",
+  "biome": "Venom Isle",
+  "scavenging": []
+ },
+ {
+  "name": "Orc Hunter",
+  "type": "Humanoid",
+  "levelRange": "21 - 40",
+  "biome": "Shrubland,Red Desert",
+  "scavenging": []
+ },
+ {
+  "name": "Orc Warlock",
+  "type": "Humanoid",
+  "levelRange": "18 - 40",
+  "biome": "Shrubland,Red Desert",
+  "scavenging": []
+ },
+ {
+  "name": "Orc Warrior",
+  "type": "Humanoid",
+  "levelRange": "18 - 40",
+  "biome": "Shrubland,Red Desert",
+  "scavenging": []
+ },
+ {
+  "name": "Owlbear",
+  "type": "Creature",
+  "levelRange": "11 - 15",
+  "biome": "Deep Forest",
+  "scavenging": [
+   "Meat",
+   "Hide",
+   "Tooth",
+   "Bone",
+   "Tendon",
+   "Skull",
+   "Claw",
+   "Eye",
+   "Tail"
+  ]
+ },
+ {
+  "name": "Pirate",
+  "type": "Humanoid",
+  "levelRange": "1 - 60",
+  "biome": "Shipwreck,Pirate Ship",
+  "scavenging": []
+ },
+ {
+  "name": "Polar Bear",
+  "type": "Animal",
+  "levelRange": "1 - 60",
+  "biome": "Taiga,Arctic Isle,Frost Cave,Frozen Float",
+  "scavenging": [
+   "Meat",
+   "Hide",
+   "Tooth",
+   "Bone",
+   "Tendon",
+   "Skull",
+   "Claw",
+   "Eye"
+  ]
+ },
+ {
+  "name": "Purple Worm",
+  "type": "Insect",
+  "levelRange": "16 - 20",
+  "biome": "Underground",
+  "scavenging": [
+   "Meat",
+   "Fang",
+   "Tendon"
+  ]
+ },
+ {
+  "name": "Raider",
+  "type": "Humanoid",
+  "levelRange": "10 - 30",
+  "biome": "Dry Desert,Ruins",
+  "scavenging": []
+ },
+ {
+  "name": "Rat",
+  "type": "Animal",
+  "levelRange": "1 - 4",
+  "biome": "Sewers",
+  "scavenging": [
+   "Meat",
+   "Hide",
+   "Tooth",
+   "Bone",
+   "Tendon",
+   "Skull",
+   "Eye",
+   "Tail"
+  ]
+ },
+ {
+  "name": "Red Stirge",
+  "type": "Creature",
+  "levelRange": "28 - 30",
+  "biome": "Stirge Lair",
+  "scavenging": [
+   "Chitin",
+   "Wing"
+  ]
+ },
+ {
+  "name": "River Troll",
+  "type": "Humanoid",
+  "levelRange": "6 - 10",
+  "biome": "Coastal,Oasis",
+  "scavenging": []
+ },
+ {
+  "name": "Roc",
+  "type": "Creature",
+  "levelRange": "50 - 60",
+  "biome": "Red Desert",
+  "scavenging": []
+ },
+ {
+  "name": "Rust Monster",
+  "type": "Creature",
+  "levelRange": "40 - 49",
+  "biome": "Underground",
+  "scavenging": [
+   "Chitin",
+   "Tendon",
+   "Skull",
+   "Eye"
+  ]
+ },
+ {
+  "name": "Salamanderoid",
+  "type": "Humanoid",
+  "levelRange": "4 - 9",
+  "biome": "Coastal,Grassland",
+  "scavenging": []
+ },
+ {
+  "name": "Sand Golem",
+  "type": "Construct",
+  "levelRange": "50 - 60",
+  "biome": "Red Desert,Rocky Ridge",
+  "scavenging": []
+ },
+ {
+  "name": "Sandworm",
+  "type": "Insect",
+  "levelRange": "50 - 60",
+  "biome": "Red Desert",
+  "scavenging": [
+   "Meat",
+   "Fang",
+   "Tendon"
+  ]
+ },
+ {
+  "name": "Sasquatch",
+  "type": "Humanoid",
+  "levelRange": "1 - 1",
+  "biome": "Underground",
+  "scavenging": []
+ },
+ {
+  "name": "Scorpion",
+  "type": "Animal",
+  "levelRange": "10 - 20",
+  "biome": "Dry Desert,Savanna",
+  "scavenging": [
+   "Scale",
+   "Tendon"
+  ]
+ },
+ {
+  "name": "Seafallen Oracle",
+  "type": "Humanoid",
+  "levelRange": "50 - 60",
+  "biome": "Coastal",
+  "scavenging": []
+ },
+ {
+  "name": "Seafallen Reaver",
+  "type": "Humanoid",
+  "levelRange": "50 - 60",
+  "biome": "Coastal",
+  "scavenging": []
+ },
+ {
+  "name": "Seafallen Stalker",
+  "type": "Humanoid",
+  "levelRange": "50 - 60",
+  "biome": "Coastal",
+  "scavenging": []
+ },
+ {
+  "name": "Skeleton",
+  "type": "Undead",
+  "levelRange": "1 - 60",
+  "biome": "Hollow Forest",
+  "scavenging": []
+ },
+ {
+  "name": "Snake",
+  "type": "Animal",
+  "levelRange": "2 - 10",
+  "biome": "Underground,Grassland",
+  "scavenging": [
+   "Scale",
+   "Meat",
+   "Fang",
+   "Tendon",
+   "Eye",
+   "Tail"
+  ]
+ },
+ {
+  "name": "Snapping Turtle",
+  "type": "Animal",
+  "levelRange": "6 - 10",
+  "biome": "Coastal",
+  "scavenging": [
+   "Meat",
+   "Scale",
+   "Tendon",
+   "Skull",
+   "Eye",
+   "Tail"
+  ]
+ },
+ {
+  "name": "Snow Rabbit",
+  "type": "Animal",
+  "levelRange": "1 - 60",
+  "biome": "Frozen Float",
+  "scavenging": [
+   "Meat",
+   "Hide",
+   "Tooth",
+   "Bone",
+   "Tendon",
+   "Skull",
+   "Eye",
+   "Tail"
+  ]
+ },
+ {
+  "name": "Spitter",
+  "type": "Insect",
+  "levelRange": "15 - 15",
+  "biome": "Spider Den",
+  "scavenging": [
+   "Fang",
+   "Chitin"
+  ]
+ },
+ {
+  "name": "Stone Centipede",
+  "type": "Insect",
+  "levelRange": "18 - 50",
+  "biome": "Red Desert",
+  "scavenging": [
+   "Chitin",
+   "Tendon",
+   "Tail"
+  ]
+ },
+ {
+  "name": "Stone Dragon",
+  "type": "Creature",
+  "levelRange": "50 - 60",
+  "biome": "Mountain,Rocky Ridge",
+  "scavenging": [
+   "Meat",
+   "Scale",
+   "Bone",
+   "Tendon",
+   "Skull",
+   "Claw",
+   "Wing",
+   "Eye",
+   "Tail"
+  ]
+ },
+ {
+  "name": "Stone Hulk",
+  "type": "Creature",
+  "levelRange": "17 - 40",
+  "biome": "Underground,Rocky Ridge",
+  "scavenging": [
+   "Spirit Stone"
+  ]
+ },
+ {
+  "name": "Succubus",
+  "type": "Humanoid",
+  "levelRange": "1 - 60",
+  "biome": "Loveland,Love Island",
+  "scavenging": []
+ },
+ {
+  "name": "Swamp Dragon",
+  "type": "Creature",
+  "levelRange": "21 - 30",
+  "biome": "Swamp",
+  "scavenging": [
+   "Hide",
+   "Meat",
+   "Fang",
+   "Wing",
+   "Tendon",
+   "Eye",
+   "Tail"
+  ]
+ },
+ {
+  "name": "Tarn Linnorm",
+  "type": "Creature",
+  "levelRange": "16 - 23",
+  "biome": "Marsh",
+  "scavenging": [
+   "Scale",
+   "Meat",
+   "Fang",
+   "Tendon",
+   "Skull",
+   "Claw",
+   "Eye",
+   "Tail"
+  ]
+ },
+ {
+  "name": "Terastodon",
+  "type": "Creature",
+  "levelRange": "14 - 40",
+  "biome": "Savanna,Shrubland",
+  "scavenging": [
+   "Meat",
+   "Hide",
+   "Bone",
+   "Tendon",
+   "Skull",
+   "Eye",
+   "Tail"
+  ]
+ },
+ {
+  "name": "Terramancer",
+  "type": "Humanoid",
+  "levelRange": "50 - 60",
+  "biome": "Mountain,Vulcanic Underground",
+  "scavenging": []
+ },
+ {
+  "name": "Thorny Vines",
+  "type": "Plant",
+  "levelRange": "7 - 8",
+  "biome": "Underground,Roots Isle",
+  "scavenging": [
+   "TIER WOOD",
+   "Hollowed Log",
+   "Spirit Log"
+  ]
+ },
+ {
+  "name": "Tiger",
+  "type": "Animal",
+  "levelRange": "30 - 49",
+  "biome": "Rainforest",
+  "scavenging": [
+   "Meat",
+   "Hide",
+   "Fang",
+   "Bone",
+   "Tendon",
+   "Skull",
+   "Claw",
+   "Eye",
+   "Tail"
+  ]
+ },
+ {
+  "name": "Toad",
+  "type": "Animal",
+  "levelRange": "4 - 10",
+  "biome": "Coastal",
+  "scavenging": [
+   "Meat",
+   "Tendon",
+   "Eye"
+  ]
+ },
+ {
+  "name": "Toxic Toad",
+  "type": "Animal",
+  "levelRange": "6 - 10",
+  "biome": "Coastal,Venom Isle",
+  "scavenging": [
+   "Meat",
+   "Tendon",
+   "Eye"
+  ]
+ },
+ {
+  "name": "Troll Boar",
+  "type": "Magical Creature",
+  "levelRange": "10 - 19",
+  "biome": "Dying Forest",
+  "scavenging": [
+   "Meat",
+   "Hide",
+   "Fang",
+   "Bone",
+   "Tendon",
+   "Skull",
+   "Claw",
+   "Eye",
+   "Tail"
+  ]
+ },
+ {
+  "name": "Vampire Bat",
+  "type": "Animal",
+  "levelRange": "10 - 20",
+  "biome": "Bear Den,Den Of Devourer",
+  "scavenging": [
+   "Meat",
+   "Fang",
+   "Wing",
+   "Tendon",
+   "Eye"
+  ]
+ },
+ {
+  "name": "Venomous Viper",
+  "type": "Animal",
+  "levelRange": "1 - 60",
+  "biome": "Venom Isle,Spring Fields",
+  "scavenging": [
+   "Scale",
+   "Meat",
+   "Fang",
+   "Tendon",
+   "Eye",
+   "Tail"
+  ]
+ },
+ {
+  "name": "Vine Sniper",
+  "type": "Humanoid",
+  "levelRange": "31 - 50",
+  "biome": "Rainforest,Ape Temple",
+  "scavenging": []
+ },
+ {
+  "name": "Wandering Ent",
+  "type": "Plant",
+  "levelRange": "11 - 15",
+  "biome": "Deep Forest,Roots Isle",
+  "scavenging": [
+   "TIER WOOD",
+   "Gall",
+   "Spirit Log"
+  ]
+ },
+ {
+  "name": "Warg",
+  "type": "Creature",
+  "levelRange": "30 - 39",
+  "biome": "Shrubland,Red Desert",
+  "scavenging": [
+   "Meat",
+   "Hide",
+   "Fang",
+   "Bone",
+   "Tendon",
+   "Skull",
+   "Claw",
+   "Eye",
+   "Tail"
+  ]
+ },
+ {
+  "name": "Wasp",
+  "type": "Insect",
+  "levelRange": "4 - 6",
+  "biome": "Grassland",
+  "scavenging": [
+   "Chitin",
+   "Wing",
+   "Tendon",
+   "Fang",
+   "Eye"
+  ]
+ },
+ {
+  "name": "Wendigo",
+  "type": "Creature",
+  "levelRange": "31 - 40",
+  "biome": "Dark Forest",
+  "scavenging": [
+   "Meat",
+   "Hide",
+   "Tooth",
+   "Bone",
+   "Tendon",
+   "Skull",
+   "Hoof",
+   "Claw"
+  ]
+ },
+ {
+  "name": "Werebat",
+  "type": "Creature",
+  "levelRange": "40 - 49",
+  "biome": "Underground",
+  "scavenging": [
+   "Meat",
+   "Fang",
+   "Wing",
+   "Tendon",
+   "Eye",
+   "Tail"
+  ]
+ },
+ {
+  "name": "Wererat Slinger",
+  "type": "Humanoid",
+  "levelRange": "5 - 5",
+  "biome": "Ratdom",
+  "scavenging": []
+ },
+ {
+  "name": "Wererat Soldier",
+  "type": "Humanoid",
+  "levelRange": "5 - 5",
+  "biome": "Ratdom",
+  "scavenging": []
+ },
+ {
+  "name": "Wererat Wizard",
+  "type": "Humanoid",
+  "levelRange": "5 - 5",
+  "biome": "Ratdom",
+  "scavenging": []
+ },
+ {
+  "name": "Werewolf",
+  "type": "Magical Creature",
+  "levelRange": "11 - 15",
+  "biome": "Deep Forest",
+  "scavenging": [
+   "Meat",
+   "Hide",
+   "Fang",
+   "Bone",
+   "Tendon",
+   "Skull",
+   "Claw",
+   "Eye",
+   "Tail"
+  ]
+ },
+ {
+  "name": "Wild Dog",
+  "type": "Animal",
+  "levelRange": "1 - 10",
+  "biome": "Grassland",
+  "scavenging": [
+   "Meat",
+   "Hide",
+   "Fang",
+   "Bone",
+   "Tendon",
+   "Skull",
+   "Claw",
+   "Eye",
+   "Tail"
+  ]
+ },
+ {
+  "name": "Wild Hog",
+  "type": "Animal",
+  "levelRange": "6 - 10",
+  "biome": "Grassland,Temperate Forest",
+  "scavenging": [
+   "Meat",
+   "Hide",
+   "Fang",
+   "Bone",
+   "Tendon",
+   "Skull",
+   "Hoof",
+   "Eye",
+   "Tail"
+  ]
+ },
+ {
+  "name": "Wisp Phantom",
+  "type": "Undead",
+  "levelRange": "21 - 30",
+  "biome": "Swamp",
+  "scavenging": []
+ },
+ {
+  "name": "Wizard",
+  "type": "Humanoid",
+  "levelRange": "19 - 50",
+  "biome": "Magic Plains,Arcane Isle",
+  "scavenging": []
+ },
+ {
+  "name": "Wolf",
+  "type": "Animal",
+  "levelRange": "6 - 10",
+  "biome": "Temperate Forest,Mountain",
+  "scavenging": [
+   "Meat",
+   "Hide",
+   "Fang",
+   "Bone",
+   "Tendon",
+   "Skull",
+   "Claw",
+   "Eye",
+   "Tail"
+  ]
+ },
+ {
+  "name": "Woodland Snake",
+  "type": "Animal",
+  "levelRange": "4 - 10",
+  "biome": "Temperate Forest",
+  "scavenging": [
+   "Meat",
+   "Fang",
+   "Scale",
+   "Tendon",
+   "Eye",
+   "Tail"
+  ]
+ },
+ {
+  "name": "Woodland Spider",
+  "type": "Insect",
+  "levelRange": "6 - 10",
+  "biome": "Temperate Forest",
+  "scavenging": [
+   "Fang",
+   "Chitin"
+  ]
+ },
+ {
+  "name": "Wyvern",
+  "type": "Creature",
+  "levelRange": "1 - 60",
+  "biome": "Wyvern Forest,Vulcanic Isle",
+  "scavenging": [
+   "Meat",
+   "Fang",
+   "Wing",
+   "Tendon",
+   "Scale",
+   "Eye",
+   "Tail"
+  ]
+ },
+ {
+  "name": "Xorn",
+  "type": "Elemental",
+  "levelRange": "40 - 49",
+  "biome": "Underground",
+  "scavenging": [
+   "Spirit Stone"
+  ]
+ },
+ {
+  "name": "Yak",
+  "type": "Animal",
+  "levelRange": "30 - 50",
+  "biome": "Taiga,Frost Cave",
+  "scavenging": [
+   "Meat",
+   "Hide",
+   "Tooth",
+   "Bone",
+   "Tendon",
+   "Skull",
+   "Hoof",
+   "Eye",
+   "Tail"
+  ]
+ },
+ {
+  "name": "Zombie",
+  "type": "Undead",
+  "levelRange": "1 - 60",
+  "biome": "Pumpkin Skerry",
+  "scavenging": []
+ },
+ {
+  "name": "Zombie Horse",
+  "type": "Undead",
+  "levelRange": "21 - 30",
+  "biome": "Haunted Forest,Hollow Forest",
+  "scavenging": [
+   "Tendon",
+   "Tooth",
+   "Bone",
+   "Skull",
+   "Hoof",
+   "Eye"
+  ]
+ }
+]

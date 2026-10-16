@@ -5,6 +5,7 @@ const data = Astro.locals.starlightRoute.entry.data as Record<string, any>;
 const title = data.title as string;
 
 const STATUS_LABELS: Record<string, { text: string; tone: string }> = {
+  '1.0-official': { text: '1.0 官方 Wiki 已确认', tone: 'official' },
   'ea-verified': { text: 'EA 版已验证', tone: 'ea' },
   '1.0-announced': { text: '1.0 官方已公布', tone: 'announced' },
   '1.0-pending': { text: '1.0 待验证', tone: 'pending' },
@@ -59,6 +60,12 @@ const showMeta = Boolean(status || gameVersion || verifiedDate || reviewStatus);
     border: 1px solid transparent;
     font-weight: 600;
     line-height: 1.5;
+  }
+
+  .nr-version-official {
+    color: #7fe0c0;
+    border-color: #2f7a6b;
+    background: rgba(47, 122, 107, 0.18);
   }
 
   .nr-version-ea {

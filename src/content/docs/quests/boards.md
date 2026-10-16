@@ -1,54 +1,50 @@
 ---
 title: 任务板与日志
-description: 任务板、日常任务、任务日志与节奏表。
+description: 三种任务板、任务日志与任务详情（以官方 1.0 Wiki 为准）。
 gameVersion: "1.0"
-verifiedDate: 2026-10-15
-versionStatus: mixed
+verifiedDate: 2026-10-16
+versionStatus: "1.0-official"
 sources:
   - type: official
-    reference: 游戏内帮助文档（Dailies / Quest Board / Quest Journal）
-  - type: observed
-    reference: 游戏内实测
+    reference: 官方 1.0 Wiki Quest Board（p/131）、Quest Journal（p/81）、Quest Details（p/167）、Quest Lore（p/207）
+    url: https://wiki.norroth.com/p/131/
+    date: "2026-10-16"
 ---
 
-## 任务板（Quest Boards）【官方】
+## 三种任务板【1.0 官方 Wiki】
 
-> 官方原文：每个城镇有**三种**任务板；**所有任务板每周二 12:00 服务器时间补货**。
+每个城镇有**三种**任务板；**所有任务板每周二 12:00 服务器时间补货**。
 
 | 任务板 | 内容 | 奖励 |
 |---|---|---|
-| **Client Order Board** | 城镇居民的材料/成品订单 | 金币/材料，偶尔稀有或高级奖励。**板子 Tier = 城镇 Tier** |
-| **Bounty Hunter Board** | 击杀指定敌人 N 只 | 有用道具，偶尔稀有或高级奖励 |
-| **Guild Quest Board** | 大规模公会专属击杀任务 | 只能在公会领地接取、需要权限 |
+| **Client Order Board** | 城镇居民的材料 / 成品订单（采集、制作、购买或交易获得均可交付） | 金币 / 材料，偶尔稀有或高级奖励。**板子 Tier = 城镇 Tier** |
+| **Bounty Hunter Board** | 战斗类悬赏，列出需要击败的敌人；接取后开始计数 | 有用道具，偶尔稀有或高级奖励 |
+| **Guild Quest Board** | 大规模**公会专属**击杀任务 | 只能在**公会领地（Guild Estate）**内接取、需要相应权限 |
 
-**实测样例**：
+## 任务日志 Quest Journal【1.0 官方 Wiki】
 
-- Client Order：「A Statue for the Mayor」= 交 **24 Slate** → **1 Copper Key + 200 Quarrying XP**。
-- Bounty：「Savage Raiders」= 杀 **14 个人形怪** → **15 Laurels + 150 Combat XP + 5% bonus Pouch**。
-- 接下的订单会出现在 journal 的 **Order / Bounty** 页，进度自动追踪。
+- 显示**所有已接、未完成**的任务，以及**已完成任务的概览**。
+- 任务分 **Main Storyline（红）** 与 **Side Quests（蓝）**：主线引导你走完游戏剧情，支线作为教学逐步加入。
 
-## 日常任务（Dailies）
+## 任务详情 Quest Details【1.0 官方 Wiki】
 
-每天一组任务，**每条 10 点**，档位 **30 / 60 / 90 / 120**，每日 **00:00（服务器时间）** 重置；
-奖励为 Laurels + Coins + Spirit Essence（高档位另有代币 / 骰子 / 箱子 / 钥匙）。
+- **顶部**：任务最终地点缩略图 + 任务名 + **等级指示**（推荐任务 / 技能等级）。
+- **Objective（目标）**：当前目标（击败敌人、收集物品、交付、制作、发现秘密、前往某地等），文本随进度更新。
+- **Quest Type（任务类型）**：任务所属类别（主线 / 日常 / 订单板等）。
+- **Finish Location（完成地点）**：完成任务的**地图名 + 精确 X/Y 坐标**。
+- **Rewards（奖励）**：经验、金币、**Shadow Coins（主线任务）**及可能物品，自动计算并显示。
+- **Show Me**：在世界地图上高亮相关目标（最终地点 / 目标区域 / 坐标）。
+- **Abandon（放弃）**：离开任务，会有确认对话框。
 
-> 完整任务清单、单项奖励与效率排序见[日常任务 Dailies](/norr-wiki/quests/dailies/)。
+## 任务背景 Quest Lore【1.0 官方 Wiki】
 
-## 任务日志（Quest Journal）【官方】
-
-> 官方原文：Journal 里能看到所有已接、未完成的任务，以及已完成任务的概览。
-> 任务分 **Main Storyline（红）** 和 **Side Quests（蓝）**；世界地图上红点 = 有任务。
-
-- 空 = 没有进行中的任务。
-- 接下的订单会显示进度（例：`Slate (3/24)`）。
+任务界面可打开 **Quest Lore** 画面，**重读当前任务的故事与背景信息**。
 
 ## 接 / 交任务口径
 
 - **接任务**：任何地点都能接，不必站在 NPC 前。
-- **交任务**：在任务日志里点 **Finish / 完成**（不是 Complete）。
-- **放弃**：cancel。
+- **交任务**：在任务日志里点 **Finish / 完成**。
 - **奖励进掉落窗**，必须领取。
-- **同时持有任务上限约 7 个**（实测接到 7 个后新的接不进来）。
 
 ## 每日 / 每周节奏表
 
@@ -61,25 +57,6 @@ sources:
 | 每周 | Weekly Raffle 抽奖 | 周六 18:00 |
 | 赛季 | Leaderboard 赛季 | 每季约 3 个月 |
 
-## 上线例行流程
-
-1. 查看当天日常，能领的领掉。
-2. 在城里接订单 / 悬赏（周二补货后优先）。
-3. 检查主线 / 支线。
-4. 打怪 / 采集 / 制作推进任务进度。
-5. 回城交任务、卖垃圾、补药、修装备。
-
-## 三种任务板【1.0 官方 Wiki】
-
-每个城镇有三种任务板：
-
-- **Client Order Board**：城镇居民的材料请求（采集 / 制作 / 购买 / 交易均可），交付换取奖励，偶尔有稀有或高级奖励；**板子 Tier = 城镇 Tier**。
-- **Bounty Hunter Board**：战斗类悬赏，列出需要击败的敌人；接取后开始计数，击杀足够数量完成。
-- **Guild Quest Board**：大规模**公会专属**目标。
-
-**任务日志（Journal）**：显示所有已接未完成的任务与已完成概览；任务分 **Main Storyline（红）** 与 **Side Quests（蓝）**。
-**任务详情（Quest Details）**：显示最终地点缩略图、任务名与等级（推荐任务 / 技能等级）、当前目标、任务类型、完成地点（地图名 + X/Y 坐标）与奖励。
-
 ## 相关
 
 - [日常任务 Dailies](/norr-wiki/quests/dailies/)
@@ -88,5 +65,4 @@ sources:
 
 ## 资料来源
 
-- 官方帮助文档：Dailies、Quest Board、Quest Journal。
-- 游戏内实测（EA 版）：奖励档位、任务样例、持有上限。
+- 官方 1.0 Wiki：Quest Board（/p/131）、Quest Journal（/p/81）、Quest Details（/p/167）、Quest Lore（/p/207），2026-10-16 抓取。

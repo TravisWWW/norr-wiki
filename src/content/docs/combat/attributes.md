@@ -2,17 +2,13 @@
 title: 角色属性
 description: 八项属性每点收益、六职业每级成长、技能点上限与加点规则。
 gameVersion: "1.0"
-verifiedDate: 2026-10-15
-versionStatus: mixed
+verifiedDate: 2026-10-16
+versionStatus: "1.0-official"
 sources:
   - type: official
     reference: 官方 1.0 Wiki（属性与数值 / 各职业页）
     url: https://wiki.norroth.com/p/6/
-    date: "2026-10-15"
-  - type: official
-    reference: 游戏内帮助文档（EA 版）
-  - type: observed
-    reference: 游戏内实测（EA 版）
+    date: "2026-10-16"
 ---
 
 ## 八项属性与每点收益【官方】
@@ -70,9 +66,8 @@ sources:
 
 ## 加点规则
 
-- **属性点一次可加多点**；**技能每次只升 1 级**，需要逐级点。
-- **单个技能等级上限 = 角色等级 − 1**（例：Lv10 时最高只能把技能堆到 Lv9）。
-- 属性点与技能点洗点都收费、价格动态、**第一次免费**；属性点通常更贵，建议先测量再分配（见[洗点](/norr-wiki/combat/respec/)）。
+- **技能等级上限 = 10**（1.0 客户端硬上限）；**属性点一次可加多点**，技能逐级点。
+- 属性点与技能点洗点都收费、价格动态、**第一次免费**；Noble 订阅可让洗点**便宜 20%**（见[洗点](/norr-wiki/combat/respec/)）。
 
 ## 派生属性公式【1.0 官方】
 
@@ -90,5 +85,4 @@ sources:
 
 ## 资料来源
 
-- 官方帮助文档：Attributes & Stats、各职业页。
-- 游戏内实测（EA 版）：技能等级上限、加点行为。
+- 官方 1.0 Wiki：属性与数值（/p/6）、各职业页（/p/136~141），2026-10-16 抓取。

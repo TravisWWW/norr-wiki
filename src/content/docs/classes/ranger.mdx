@@ -1,17 +1,16 @@
 ---
-versionStatus: mixed
+versionStatus: "1.0-official"
 gameVersion: "1.0"
-verifiedDate: 2026-10-15
+verifiedDate: 2026-10-16
 sources:
   - type: official
     reference: 官方 1.0 Wiki 职业页
     url: https://wiki.norroth.com/p/139/
-    date: "2026-10-15"
+    date: "2026-10-16"
 title: Ranger 游侠
 description: Ranger（游侠）技能树与定位。
 ---
 
-import ClassSkills from '../../../components/ClassSkills.astro';
 import ClassSkills10 from '../../../components/ClassSkills10.astro';
 
 > 远程弓弩输出，辅以陷阱控制。
@@ -48,33 +47,15 @@ Ranger 是**纯远程物理输出**，以弓 / 弩为主、辅以陷阱控制；
 
 技能分组（1.0 官方 Wiki）：Bow Mastery、Crossbow Mastery、Traps、Defense、Precision、Hunting。
 
-> 下方技能树来自**官方 1.0 Wiki / 游戏客户端技能数据**。EA 版差异见下方「1.0 技能变化」小节。
+> 下方技能树来自**官方 1.0 Wiki / 游戏客户端技能数据**（技能上限 **10 级**）。
 
 ## 技能树【1.0 官方 Wiki】
 
 <ClassSkills10 cls="Ranger" />
-
-## 1.0 技能变化（相对 EA）—— 本次改动最大
-
-| 项 | EA | 1.0 |
-|---|---|---|
-| 技能总数 | 27 | 25 |
-| 分组 | Bow Mastery + **Dagger Mastery** + Misc | Bow Mastery + **Crossbow Mastery** + **Traps** + **Precision** + **Hunting** + Defense |
-| 新增 | — | 弩系 5 + 陷阱 5 + `perfect_shot` 等，共 10 个 |
-| 移除 | — | **整套 Dagger Mastery（9 个匕首技能）** + `bodkin_arrow`、`sharp_arrow`、`arrow_barrage` |
-
-- **游侠不再能玩匕首流**：整套 `Dagger Mastery`（被动 + 近战攻击共 9 个）被移除，匕首精通改为**盗贼专属**。游侠从"弓 + 匕首"近远混合，重塑为**纯远程专精**。
-- **新增弩系（Crossbow Mastery）**：与弓系并列的第二条远程武器线，走**破甲 / 流血**路线，与弓系的**中毒 / 感染**路线形成两条 build。
-- **新增陷阱系（Traps）**：定身、混乱、中毒等控制，游侠获得**区域控制 / 埋伏**玩法。
-- **Precision / Hunting 独立成组**：命中暴击与对动物 / 人形增伤、鹰 / 鸦召唤从杂项升格为显式流派。
-- **代价**：失去全部近战手段，**被贴脸时更脆弱**，生存依赖 Defense 组与走位。
-
-> 逐条明细与影响分析见 [1.0 职业技能变化详解](/norr-wiki/release/v1-class-skill-changes/)。
 
 ## 相关
 
 - [技能系统](/norr-wiki/combat/skills/)
 - [角色属性](/norr-wiki/combat/attributes/)
 - [制作配方图鉴](/norr-wiki/professions/crafting-catalog/?prof=hunting)
-
 

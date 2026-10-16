@@ -2,13 +2,13 @@
 title: "图鉴 Codex"
 description: "Bestiary / Artifacts / Augments 三类收藏与奖励。"
 gameVersion: "1.0"
-verifiedDate: "2026-10-15"
-versionStatus: "1.0-announced"
+verifiedDate: "2026-10-16"
+versionStatus: "1.0-official"
 sources:
   - type: official
     reference: 官方 1.0 Wiki
     url: https://wiki.norroth.com/p/171/
-    date: "2026-10-15"
+    date: "2026-10-16"
 ---
 **Codex（图鉴）**追踪三类收藏：**Bestiary（怪物）**、**Artifacts（神器）**、**Augments（强化）**。游玩中逐步解锁条目，打开 Codex 查看并**领取奖励**。进度**账号共享**，并分 **Softcore / Hardcore**。
 

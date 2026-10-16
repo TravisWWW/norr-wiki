@@ -1,45 +1,40 @@
 ---
 title: 制作
-description: 制作经验与冷却、各专业配方、制作链、制作台、配方分层与升级路径。
+description: 十个角色绑定制作专业、配方分层、制作链与制作队列。
 gameVersion: "1.0"
-verifiedDate: 2026-10-15
-versionStatus: mixed
+verifiedDate: 2026-10-16
+versionStatus: "1.0-official"
 sources:
   - type: official
     reference: 官方 1.0 Wiki（各制作专业 / 层级与材料 / Crafting Queue）
     url: https://wiki.norroth.com/p/37/
-    date: "2026-10-15"
-  - type: official
-    reference: 游戏内帮助文档（EA 版）
-  - type: observed
-    reference: 游戏内实测（EA 版）
+    date: "2026-10-16"
 ---
 
 ## 结论速览
 
-- 1.0 共 **10 个角色绑定制作专业**（EA 为 13 个，Toolsmithing 与 Petbreeding 已移除）。
-- 制作每次约 **+36~40 经验**，**全局冷却 10 秒**（跨配方共享）→ 约 **240 经验/分钟**【EA 实测】。
+- 共 **10 个角色绑定制作专业**（Toolsmithing 与 Petbreeding 已移除）。
 - **必须站在制作台 / NPC 处**制作（在野外无法制作）。
-- 常见通用路径：**材料可通过商人购买，但制作需要前往对应设施（制作台 / NPC 处）**。
-- 配方按子类分 3 档，解锁等级 **Lv1 / Lv5 / Lv9**【EA 实测】。
+- 配方按子类分 3 档，解锁等级 **Lv1 / Lv5 / Lv9**。
 - 做出来的食物提供**治疗 + buff**；成品可自用或卖店。
+- 制作队列（Craft Queue）**账号共享**，可离线继续。
 
-## 各制作专业能做什么【1.0 官方 Wiki】
+## 各制作专业能做什么【官方 1.0 Wiki】
 
 各专业现有独立条目，连接全部已收录成品与材料链；可在[资料数据库](/norr-wiki/reference/database/)中选择“制作专业”。
-下列**类型与配方数量为 1.0 官方 Wiki 口径**（2026-10-15 抓取，共 **1418** 条）。
+下列**类型与配方数量为 1.0 官方 Wiki 口径**（2026-10-16 抓取，共 **1418** 条）。
 
 > 每个专业可制作的**物品类型**与配方数量如下；点「在图鉴中查看」可跳转到[制作配方图鉴](/norr-wiki/professions/crafting-catalog/)，并按该专业自动筛选。
 
 ### 裁缝 Tailoring
 
-**归属职业**：Archmage / Druid ｜ **可制作 7 类 / 157 条配方** ｜ [在图鉴中查看 →](/norr-wiki/professions/crafting-catalog/?prof=tailoring)
+**归属职业**：Archmage / Druid ｜ **可制作 8 类 / 157 条配方** ｜ [在图鉴中查看 →](/norr-wiki/professions/crafting-catalog/?prof=tailoring)
 
 布甲（轻甲，75% 属性进全抗、25% 进防御）。
 
 类型：材料 / 半成品 Materials（31）、腰带 Belts（18）、靴子 Boots（18）、手套 Gloves（18）、头盔 Helmets（18）、护腿 Leggings（18）、胸甲 Chests（18）、**背包 Backpacks（18）**。
 
-> 1.0 移除了法书（Encased Tome，改由 Cartography 制作），新增**背包**类。
+> 法书（Encased Tome）改由 Cartography 制作，新增**背包**类。
 
 ### 炼金 Alchemy
 
@@ -49,13 +44,13 @@ sources:
 
 类型：药水 Potions（81）、材料 Materials（19）、法杖 Staff（18）、魔杖 Wand（18）。
 
-> 1.0 药水合并为统一的 Potions 大类（EA 分为 Mana / Buffs / Rejuvenation / Health）。
+> 药水合并为统一的 Potions 大类。
 
 ### 铸武 Weaponsmithing
 
-**归属职业**：Berserker ｜ **可制作 8 类 / 187 条配方** ｜ [在图鉴中查看 →](/norr-wiki/professions/crafting-catalog/?prof=weaponsmithing)
+**归属职业**：Berserker ｜ **可制作 9 类 / 187 条配方** ｜ [在图鉴中查看 →](/norr-wiki/professions/crafting-catalog/?prof=weaponsmithing)
 
-金属武器与**采集工具**（1.0 起并入本专业）。
+金属武器与**采集工具**（工具由 Toolsmithing 并入本专业）。
 
 类型：材料 Materials（37）、**工具 Tools（24）**、长矛 Spears（18）、剑 Swords（18）、斧 Axes（18）、锤 Maces（18）、匕首 Daggers（18）、**拳刃 Katars（18）**、投掷武器 Throwing（18）。
 
@@ -109,13 +104,11 @@ sources:
 
 ### 制皮 Leatherworking
 
-**归属职业**：Berserker / Druid / Ranger / Rogue ｜ **可制作 8 类 / 193 条配方** ｜ [在图鉴中查看 →](/norr-wiki/professions/crafting-catalog/?prof=leatherworking)
+**归属职业**：Berserker / Druid / Ranger / Rogue ｜ **可制作 9 类 / 193 条配方** ｜ [在图鉴中查看 →](/norr-wiki/professions/crafting-catalog/?prof=leatherworking)
 
 皮甲，按骨 / 鳞 / 翅 / 甲壳决定词条，含小盾与背包。
 
 类型：材料 Materials（49）、腰带 Belts（18）、盾牌 Shields（18）、胸甲 Chests（18）、手套 Gloves（18）、头盔 Helmets（18）、护腿 Leggings（18）、靴子 Boots（18）、**背包 Backpacks（18）**。
-
-> 1.0 移除了 Goblin Leather（哥布林皮革）系列。
 
 ### 狩猎 Hunter
 
@@ -125,41 +118,16 @@ sources:
 
 类型：材料 Materials（85）、拳套 Cestus（18）、弓 Bow（18）、**箭袋 Quivers（18）**。
 
-> 1.0 移除了 Compound bow（复合弓）系列；材料类扩充了尸块加工（Cleaned / Sharpened / Shaped 等）与**陷阱**（Snare Loop / Twig Trap / Critter Cage / Biteproof Box / Beast Shackles / Capture Crate）。
+> 材料类扩充了尸块加工（Cleaned / Sharpened / Shaped 等）与**陷阱**（Snare Loop / Twig Trap / Critter Cage / Biteproof Box / Beast Shackles / Capture Crate）。
 
-### 1.0 已移除的制作专业
+### 已移除的制作专业
 
 | 专业 | 处理 |
 |---|---|
 | **Toolsmithing 工具锻造** | 整页删除；工具配方并入 **Weaponsmithing** |
 | **Petbreeding 养宠** | 不再是制作专业；孵蛋改由 **Petbreeder NPC** 处理（见[宠物](/norr-wiki/systems/pets/)） |
 
-## 制作机制【EA 实测】
-
-- 制作每次约 **+36 经验**（Lv1 配方），约为采集（+10）的 3.6 倍。
-- **冷却 = 10 秒，跨配方共享**（搓完一个配方立刻搓另一个同样要等冷却）。
-- 因此制作速率上限 = **每 10 秒一次**，即 **约 240 经验/分钟**（40 经验配方）。
-- **配方经验不完全相同**：部分配方 +36，部分 +40。刷经验可优先选 **40 经验的配方**。
-- 制作出的成品可以卖店或自用（食物给 buff）。
-
-## 通用升级路径：商人买材料 + 制作
-
-**Cook 的 Buy 页直接卖制作材料**（约 4 币/份）：
-
-| 材料 | 单价 |
-|---|---|
-| Mucky Vegetables | 4 |
-| Mucky Fruits | 4 |
-| Mucky Meat | 4 |
-| Minnow | 4 |
-
-→ **4 币买 1 份材料 → 10 秒搓出 +40 经验**。材料可通过商人购买，**无需自行采集、也不消耗工具耐久**；
-但**制作本身需要前往对应设施**（制作台 / NPC 处）才能进行。
-
-其它职业的商人材料（Buy 页，均可作为该职业的升级原料）：Alchemist、Jeweler、Stonemason、Cartographer、
-Carpenter、Leatherworker、Tailoring、Hunting 等。
-
-## 制作链【1.0 官方】
+## 制作链【官方 1.0 Wiki】
 
 | Tier | 等级 | 材料 |
 |---|---|---|
@@ -177,25 +145,7 @@ Carpenter、Leatherworker、Tailoring、Hunting 等。
 - **Tailoring**：布甲 **75% 属性进全抗、25% 进 Defense**。
 - **Hunter**：用拾尸来的尸块做首饰 / 弓 / 箭袋和材料（Goblin Ear/Skull/Claw/Fang/Hoof/Tooth 各对应不同词条）。
 
-## 配方分层：每个子类 3 档，门槛 Lv1 / Lv5 / Lv9【EA 实测】
-
-以 `Mucky - Vegetables` 为例：
-
-| 配方 | 名称 | 材料 | 解锁等级 |
-|---|---|---|---|
-| — | Mucky Vegetable Salad | 1x Mucky Vegetables | Lv1 |
-| — | Mucky Vegetable Pie | 2x Mucky Vegetables | **Lv5** |
-| — | Mucky Vegetable Stew | 3x Mucky Vegetables | **Lv9** |
-
-- 未解锁配方显示**铜锁 + `Level N`**，无 Craft 按钮。
-- 生活技能等级曲线（Cooking 实测）：Lv2→3 需 522，Lv3→4 需 1392。
-
-## Craft Queue（制作队列）【1.0】
-
-制作队列有 **4 个槽位**：2 个免费、2 个需 **Infusion Stone**「Hire for 24 Hours」，
-另有 Noble Potion 槽。用于提升并行制作容量。
-
-## 制作队列细则【1.0 官方 Wiki】
+## Craft Queue（制作队列）【官方 1.0 Wiki】
 
 - 可从任意配方点 **⏳ Add to Queue**（或在工作台面板打开 **Craft Queue**）排入制作。
 - 加入任务时**所需材料立即被取走并预留**，直到你收取或取消。
@@ -213,6 +163,4 @@ Carpenter、Leatherworker、Tailoring、Hunting 等。
 
 ## 资料来源
 
-- 官方 1.0 Wiki：各制作专业（/p/113~126）、层级与材料（/p/104）、Crafting Queue（/p/180），2026-10-15 抓取。
-- 官方帮助文档：各制作职业、Tiers & Materials、Crafting Queue。
-- 游戏内实测（EA 版）：制作经验与冷却、商人材料、配方解锁等级。
+- 官方 1.0 Wiki：各制作专业（/p/113~126）、层级与材料（/p/104）、Crafting Queue（/p/180），2026-10-16 抓取。

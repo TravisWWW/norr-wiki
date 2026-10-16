@@ -1,26 +1,26 @@
 ---
 title: 技能天赋模拟器
-description: 基于官方 1.0 Wiki / 客户端数据的 Norroth 职业天赋树模拟器（可切换 EA 历史数据）。
+description: 基于官方 1.0 Wiki / 客户端数据的 Norroth 职业天赋树模拟器。
 gameVersion: "1.0"
-verifiedDate: 2026-10-15
-versionStatus: mixed
+verifiedDate: 2026-10-16
+versionStatus: "1.0-official"
 sources:
   - type: official
     reference: 官方 1.0 Wiki 职业页 + 游戏客户端技能数据（P20250820）
-    url: https://wiki.norroth.com/p/139/ranger
-    date: "2026-10-15"
+    url: https://wiki.norroth.com/p/136/
+    date: "2026-10-16"
 ---
 
 export const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
 <iframe class="talent-frame" src={`${base}/talent/index.html`} title="Norroth 技能天赋模拟器" loading="lazy"></iframe>
 
-> 操作：左键 +1 ｜ 右键 -1 ｜ Shift ±5。光明 / 黑暗阵营互斥。顶部可切换 **1.0 / EA** 两套数据。
+> 操作：左键 +1 ｜ 右键 -1 ｜ Shift ±5。光明 / 黑暗阵营互斥。
 >
-> **数据口径**：
-> - **1.0**（默认）：官方 1.0 Wiki 职业页 + 游戏客户端技能数据（`skill_json`，P20250820），含 6 个官方职业 + 2 个**待确认职业**（Stormherald / Plaguebringer）。
-> - **EA**（历史）：官方职业页 Lv.20 口径 + 实测 6 个 1 级角色面板。
+> **数据口径**：官方 1.0 Wiki 职业页 + 游戏客户端技能数据（`skill_json`，P20250820），含 6 个官方职业 + 2 个**待确认职业**（Stormherald / Plaguebringer）。
 >
-> **注意**：技能等级上限（面板显示 20）来自 EA 口径，1.0 官方未公布上限，**待游戏内确认**；Stormherald / Plaguebringer 官方 Wiki 未收录，Plaguebringer 客户端数据不完整。
+> **2026-10-16 复核**：官方 1.0 Wiki 的**技能定义未变**（六个职业页与技能书页的技能 tooltip 与 10-15 完全一致），但**技能等级上限已确认**——官方 1.0 Wiki 六个职业页把全部 **170** 个技能都标为 `skill-level=10`（以 Lv.10 口径展示），1.0 客户端 `skillbook.min.js` 的加点逻辑硬编码上限为 `0xa`（=10）。因此模拟器**技能上限为 10**。详见[官方 1.0 Wiki 更新对照（2026-10-16）](/norr-wiki/reference/official-wiki-2026-10-16/)。
+>
+> **注意**：1.0 是否仍保留 EA 的「技能等级 ≤ 角色等级 − 1」限制**待游戏内确认**；Stormherald / Plaguebringer 官方 Wiki 未收录，Plaguebringer 客户端数据不完整。
 >
 > 如果上方无法显示，可[在新窗口打开模拟器](/norr-wiki/talent/index.html)。

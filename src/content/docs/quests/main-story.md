@@ -1,7 +1,7 @@
 ---
 title: 主线任务链
 description: 主线推进机制、已实测任务链、Sewers 与副本解锁。
-gameVersion: "EA"
+gameVersion: "EA（Legacy）"
 verifiedDate: 2026-10-13
 versionStatus: ea-verified
 sources:

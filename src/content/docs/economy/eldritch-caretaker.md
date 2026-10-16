@@ -2,13 +2,13 @@
 title: "异界看护者 Eldritch Caretaker"
 description: "重生商人：用重生印记兑换专属物品。"
 gameVersion: "1.0"
-verifiedDate: "2026-10-15"
-versionStatus: "1.0-announced"
+verifiedDate: "2026-10-16"
+versionStatus: "1.0-official"
 sources:
   - type: official
     reference: 官方 1.0 Wiki
     url: https://wiki.norroth.com/p/181/
-    date: "2026-10-15"
+    date: "2026-10-16"
 ---
 **Eldritch Caretaker（异界看护者）**是位于 **Fountain of Rebirth** 的**重生商人**，用 **Rebirth Marks（重生印记）**兑换专属物品。
 

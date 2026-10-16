@@ -1,48 +1,55 @@
 ---
 title: 订阅与付费服务
-description: 正式版订阅体系变化与现有付费商店说明。
+description: Noble Status 账号订阅权益、Norroth Coins 商店与星界档位消费奖励（以官方 1.0 Wiki 为准）。
 gameVersion: "1.0"
-verifiedDate: 2026-10-13
-versionStatus: mixed
+verifiedDate: 2026-10-16
+versionStatus: "1.0-official"
 sources:
   - type: official
-    reference: 开发者公告（2026-09-13）
-    url: https://www.patreon.com/norroth/posts/new-chapter-169439017
-  - type: official
-    reference: 官方商店页（Steam）
-    url: https://store.steampowered.com/app/2503480/Norroth_Online/
+    reference: 官方 1.0 Wiki Noble Status（p/209）、Norroth Coin Shop（p/176）、Celestial Tier Spender（p/164）
+    url: https://wiki.norroth.com/p/209/
+    date: "2026-10-16"
 ---
 
-> **资料状态**：开发者 Discord 已披露**部分 Noble 档位及预计权益**，但**完整定价、最终规则与正式服实际生效情况仍待核实**。
-> 不能把 Discord 测试期消息当成已实装的正式版内容。
+## Noble Status【1.0 官方 Wiki】
 
-## 订阅体系变化（官方已公布）
+**Noble Status 是账号级订阅**：激活期间**账号下所有角色**共享权益；剩余时间以 Noble buff 图标显示。
 
-Norroth 开发者在 2026 年 9 月 13 日发布公告，明确说明：
+**已公布的权益**：
 
-- 计划从 **2026 年 10 月 16 日**起**停止 Patreon 订阅**。
-- 将支持体系转移至**游戏内订阅**。
-- 原 Patreon 对应的 **Discord 身份组将被移除**。
+- **+10% 经验**
+- **属性 / 技能洗点便宜 20%**
+- **+25 邮件槽位**（Post Office）
+- **最多 999 个交易行挂单槽位**
+- **+5 任务日志槽位**
+- **免费城市传送**（World Map / Waygate 到城市）
+- **Noble 聊天徽章**
+- **每日登录奖励加成**
+- **+2 制作队列槽位**
+- **+1 挂机采集槽位**
+- **更大的银行**（更多物品格 + 更高堆叠上限）
+- **免 5% 交易行手续费**
+- **Estate Tier 3+ 升级**，并可通过 **Noble Entrance** 进入
+- **Inspect 隐私**（对其他玩家隐藏你的装备）
+- **更多任务板订单**
 
-## 需要注意
+**获取方式**：Strongboxes、Event Merchant、Trading Post、排行榜（前 3 名）、Celestial Market（即 **Noble Potion**）。
 
-- 公告**没有披露**完整的正式版订阅价格与权益细节。
-- 因此 EA 版的 Patreon 权益、支持者奖励、Discord 权益**不能直接套用到 1.0**。
-- 「是否付费影响属性」等内容**未确认**，请以正式版实际内容为准。
+## Norroth Coins 商店【1.0 官方 Wiki】
 
-## Noble 订阅档位【官方 · Discord 已披露，待核实】
+- **Norroth Coin Shop** 是游戏内充值商店，用**真钱购买 Norroth Coins（NC）**。
+- NC 用于**高级购买**（皮肤 Skins、光环 Auras、特效 Effects）与专属礼包。
+- **Prestige Points**：每 **1 NC = 10 Prestige Points**；用于累积 **Celestial Tier Spender** 奖励。
+- 购买 NC 直接支持游戏开发（新内容、服务器与基础设施、活动 / 外观、平衡与改进）。
 
-- 1.0 **Noble 订阅重做**，新增 **Gold Noble / Diamond Noble** 档位。
-- 已披露权益：**专属外观** + 额外 **15~20% 折扣**。
-- **具体价格未公布**；各档完整权益、与旧版 Noble 的对应关系**待正式服核实**。
+## Celestial Tier Spender【1.0 官方 Wiki】
 
-> 以上来自开发者 Discord 公告（**测试期口径**），**不等于正式版最终采用**。
-
-## 现有付费商店（EA 版）
-
-- **Celestial Market**：使用 **Norroth Coins**（真钱购买），售卖 QoL 道具、皮肤、光环、礼包等。
-- **Celestial Tier Spender**：任何玩家在 Celestial Market 消费都会推进进度条，满 100% 触发全服事件
-  **Celestial Loot Rain**（详见[经济与货币](/norr-wiki/systems/economy/)）。
+- 在 Celestial Market 购买 NC 时按 **Prestige Points** 累积进度，共 **10 档 × 4 检查点**。
+- 每档进度 **0 → 25 → 50 → 75 → 100%**；每到一个检查点解锁**可领取奖励**，进度自动结转，满档后进入下一档。
+- 奖励为**按当前档位缩放**的礼包：货币、资源与成长道具、钥匙与实用道具（修复包、扩容）、社区 Buff / 活动式奖励（部分随机）、外观（仅高档次）；**部分特殊礼包不计入**。
+- **领取**：打开 Celestial Market → Tier Spender → 查看进度 → 对每个已达成的检查点按 **Reward Cache**（奖励**不自动发放**）。
+- **背包不足**时奖励**自动邮件发送**，不会丢失。
+- 完成 **Tier 10（100%）**后系统**重置回 Tier 1**，立即开始新一轮。
 
 ## 相关
 
@@ -52,5 +59,4 @@ Norroth 开发者在 2026 年 9 月 13 日发布公告，明确说明：
 
 ## 资料来源
 
-- 开发者公告（2026-09-13）：<https://www.patreon.com/norroth/posts/new-chapter-169439017>
-- 官方商店页（Steam）：<https://store.steampowered.com/app/2503480/Norroth_Online/>
+- 官方 1.0 Wiki：Noble Status（/p/209）、Norroth Coin Shop（/p/176）、Celestial Tier Spender（/p/164），2026-10-16 抓取。

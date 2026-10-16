@@ -2,13 +2,13 @@
 title: "礼物与 Party Popper Presents"
 description: "Present 节点的来源、掉落与注意事项。"
 gameVersion: "1.0"
-verifiedDate: "2026-10-15"
-versionStatus: "1.0-announced"
+verifiedDate: "2026-10-16"
+versionStatus: "1.0-official"
 sources:
   - type: official
     reference: 官方 1.0 Wiki
     url: https://wiki.norroth.com/p/169/
-    date: "2026-10-15"
+    date: "2026-10-16"
 ---
 ## 什么是「Present」
 

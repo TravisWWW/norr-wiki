@@ -1,106 +1,99 @@
 ---
 title: 宠物系统
-description: 宠物总览、饲料配方、掉蛋怪、繁殖孵化与喂养。
+description: 动物狩猎、孵蛋与喂养（以官方 1.0 Wiki 为准）。
 gameVersion: "1.0"
-verifiedDate: 2026-10-15
-versionStatus: mixed
+verifiedDate: 2026-10-16
+versionStatus: "1.0-official"
 sources:
   - type: official
-    reference: 游戏内帮助文档（Petbreeding / Feed Pet）
-  - type: observed
-    reference: 游戏内实测
+    reference: 官方 1.0 Wiki 动物狩猎（p/157）、Petbreeding（p/132）、Feed Pet（p/198）
+    url: https://wiki.norroth.com/p/157/
+    date: "2026-10-16"
 ---
 
-## 宠物总览【官方】
+宠物来源有两条：**Animal Hunting（动物狩猎，战斗捕获）** 与 **Petbreeding（孵蛋）**。捕获 / 孵化得到的是**宠物物品**，装备后作为永久同伴。
 
-15 种宠物，**5 档 × 3 种**。繁殖配方 = `1x 同名宠物蛋 + Nx 对应档位饲料`。
+## Animal Hunting（动物狩猎）【1.0 官方 Wiki】
 
-| 档 | 宠物（Level） | 饲料数量 |
-|---|---|---|
-| T1 | Hare 兔(1) / Beaver 河狸(5) / Wild Hog 野猪(9) | 20 / 40 / 60x Mucky Pet Food |
-| T2 | Scorpion 蝎(10) / Myconid 蘑菇人(15) / Troll Boar 巨魔野猪(19) | 80 / 100 / 120x Scrap Pet Food |
-| T3 | Blood Queen 血后(20) / Cougar 美洲狮(25) / Hydra 九头蛇(29) | 140 / 160 / 180x Low Quality Pet Food |
-| T4 | Warg 战狼(30) / Tiger 虎(35) / Yak 牦牛(39) | 200 / 220 / 240x Medium Quality Pet Food |
-| T5 | Werebat 蝙蝠(40) / Rust Monster 锈怪(45) / Armored Ram 装甲羊(49) | 260 / 280 / 300x Quality Pet Food |
+在战斗中捕获可成为宠物的敌人（通常是 **Animals**），把它们变成永久同伴宠物。使用名为 **Cage（笼子）** 的特殊陷阱道具。
 
-- 官方名称为 **Beaver（河狸）**。
-- 面板字段：Growth / Energy / Damage，附 `+X Hit Rating / +X Maximum Life / +X Mana`。
+### 捕获条件（全部满足）
 
-## 宠物饲料配方【官方】
+- 拥有 **Hunting** 专业。
+- **Hunting 技能等级 ≥ 敌人等级**。
+- **陷阱 Tier ≥ 敌人 Tier**。
+- 敌人生命 **≤ 20%**。
+- 敌人是**可捕获的动物（仅 Animals）**。
+- 背包中有**陷阱道具（Cage）**。
 
-每档 Pet Food = `4x 肉/果/菜/鱼 + 1 红种 + 1 蓝种 + Nx Spirit Essence`：
+### 操作
 
-| 档 | 材料（任选其一） | 种子 | Spirit Essence |
-|---|---|---|---|
-| T1 Mucky | Minnow / Mucky Fruits / Mucky Meat / Mucky Vegetables | Red + Blue Poppy Seed | 3 |
-| T2 Scrap | Scrap Fruits / Meat / Vegetables / Shrimp | Red + Blue Lily Seed | 6 |
-| T3 Low Quality | Low Quality Fruits / Meat / Vegetables / White Bass | Red + Blue Bensil Seed | 9 |
-| T4 Medium Quality | Medium Quality Fruits / Meat / Vegetables / Smallmouth Bass | Red + Blue Kerria Seed | 12 |
-| T5 Quality | Largemouth Bass / Quality Fruits / Meat / Vegetables | Red + Blue Penta Seed | 15 |
+1. 与可成为宠物的敌人（通常是 Animal）战斗。
+2. 把其生命降到 **20% 或以下**。
+3. 在你的回合打开 **Use Item**，选择 **Trap（Cage）**。
 
-## 掉蛋怪【官方点名，11 种】
+条件满足则消耗陷阱并掷捕获判定：
 
-> Snake / Woodland Spider / Scorpion / Myconid / Cassowary / Bog Worm /
-> Blood Queen / Hydra / Werebat / Rust Monster / Komodo Basilisk
+- **成功**：获得一个**随机稀有度**的宠物物品；**不获得**正常战利品与经验。
+- **失败**：陷阱消耗，动物逃跑消失；不获得宠物、战利品与经验。
 
-**掉率官方未公布**；「等级差越大越容易出蛋」为社区说法，尚未经官方确认。
+### 捕获几率
 
-## 繁殖 / 孵化【官方】
+```
+50% + (10% × 陷阱 Tier) − (0.5% × 敌人等级)
+```
 
-- 费用 **`tier² × 500 Coins`**、时长 **`tier² 小时`**（例：T1 = 5 银 / 1 小时；T6 = 1 金 80 银 / 36 小时）。
-- 孵化队列最多 **3 个槽位**，由 **Amelie Papillon** 负责；费用照扣，计时跑完取蛋。
-- **Hatchglow 事件**期间：稀有度与品质在**放蛋那一刻**就决定（非事件期间是孵化时决定）。
-- **德鲁伊是唯一能孵蛋 + 带宠的职业**（也能替别人孵）。
+- 陷阱 Tier 越高、敌人等级越低，越容易捕获。
+- 捕获几率限制在 **5%~95%**。
 
-## 喂养：Growth / Energy【官方】
+### 宠物稀有度
 
-- 打开方式：背包直接用 **Pet Food**，或宠物面板按 **Feed**；**必须先装备宠物**。
-- **只有 Energy 已满时喂食才有机会涨 Growth**；每块饲料 = 一次机会，一次 **+1 Growth**；
-  成功率显示在窗口里，**Growth 越高成功率越低**；**上限由稀有度决定**。
-- 涨 Growth 会同时提高**最大 Energy 并直接回满**；Growth 本身提升宠物伤害与最大 Energy。
-- **Energy**：每块饲料回 **150 Energy × 饲料档位**；0 Energy 的宠物不再提供战斗加成；
-  也可放自家 estate 的 **Pet Shelter** 回能。
-- 饲料档位按宠物等级自动选（Lv1-9=T1，10-19=T2…）；**Petbreeder 处可买，或由 Petbreeding（养宠）制作**；
-  **公会宠物不能喂**。
-- 成功喂食算「Feed Your Pet」日常目标（每天一次）。
+由敌人**阶级（rank）**决定：
 
-## 社区资料补充【社区】
-
-- 蛋不能堆叠（一格一个）；孵前词条未定；基数大才出紫/金宠。
-- T2 饲料只有德鲁伊能做、全服限额、卖店 20 银；蝎子蛋可当饲料吃。
-- 宠物升级约等于 10 多个饲料的经验；孵蛋给的生活经验比搓饲料多；一阶宠只吃一阶粮。
-
-## 结论
-
-- **只有 Druid 能孵蛋 / 带宠**；想玩宠物需要练一个 **Druid** 角色
-  （账号共享生活技能进度，但 Petbreeding 需要 Druid 职业）。
-- 其它职业可通过交易 / 购买获得成品蛋或宠物。
-
-## 动物狩猎（陷阱捕获）【1.0 官方 Wiki】
-
-1.0 新增：在战斗中**捕获动物类敌人**并转化为永久宠物。
-
-- 需要道具**笼子 / 陷阱（Cage）**；只有**动物类**敌人可被捕获。
-- 条件（全部满足）：拥有 **Hunting 职业**、**狩猎技能等级 ≥ 敌人等级**、**陷阱阶级 ≥ 敌人阶级**、**敌人生命 ≤ 20%**、背包中有陷阱。
-- 使用：把敌人打到 20% 以下 → 自己回合打开道具选陷阱 → 判定。
-- **成功**：获得一个随机稀有度的宠物道具，**不获得正常战利品与经验**。**失败**：陷阱消耗、动物逃跑消失。
-- **捕获几率**：`50% + 10% × 陷阱阶级 − 0.5% × 敌人等级`，限制在 **5%~95%**。
-- **宠物稀有度**由敌人阶级决定：普通→(普通/魔法)；勇士→(普通/魔法/稀有)；稀有→(普通/魔法/稀有/史诗)；精英→(普通/魔法/稀有/史诗/神秘)。
+| 敌人阶级 | 可能的宠物稀有度 |
+|---|---|
+| Normal | Normal / Magic |
+| Champion | Normal / Magic / Rare |
+| Rare | Normal / Magic / Rare / Epic |
+| Elite | Normal / Magic / Rare / Epic / Mystical |
 
 ## Petbreeding（孵蛋）【1.0 官方 Wiki】
 
-- 把 **Pet Egg** 放进孵化槽 + 付金币，由 **Amelie Papillon** 孵化；队列最多 **3 个槽位**。
-- **费用 = `tier² × 500` 金币**；**时间 = `tier²` 小时**（T1 = 5 银 / 1 小时；T4 = 80 银 / 16 小时；T6 = 1 金 80 银 / 36 小时）。
-- 孵化时显示宠物与其稀有度；**Hatchglow 事件期间**稀有度与品质在**放蛋时**决定。
+把 **Pet Egg** 放进孵化槽 + 付金币，由 **Amelie Papillon** 孵化；队列最多 **3 个槽位**。
+
+- **费用 = `tier² × 500` 金币**；**时间 = `tier²` 小时**：
+  - T1 = **5 银 / 1 小时**；T4 = **80 银 / 16 小时**；T6 = **1 金 80 银 / 36 小时**。
+- 孵化时显示宠物及其**稀有度**；**Hatchglow 事件期间**，稀有度与品质在**放蛋时**决定。
 - **掉蛋怪**：Snake、Woodland Spider、Scorpion、Myconid、Cassowary、Bog Worm、Blood Queen、Hydra、Werebat、Rust Monster、Komodo Basilisk。
 
-## 喂养 Feed Pet【1.0 官方 Wiki】
+## Feed Pet（喂养）【1.0 官方 Wiki】
 
-- 用背包里的 **Pet Food**，或在宠物面板按 **Feed**（必须先装备宠物）。
-- **饲料档位按宠物等级自动选择**（Lv1-9=T1，10-19=T2…）；可从 **Petbreeder 购买**或由 **Cooking** 制作。
-- **Energy**：每块饲料回 `150 Energy × 档位`；0 Energy 的宠物不再提供战斗加成；也可放在自家 estate 的 **Pet Shelter** 回能。
-- **Growth**：仅在 Energy 已满时喂食才有机会 +1；成功率随 Growth 提高而下降；上限由稀有度决定；涨 Growth 会提高最大 Energy 并回满。
-- 成功喂食计入 **Feed Your Pet** 日常目标（每天一次）；**公会宠物不能喂**。
+用背包里的 **Pet Food**，或在查看已装备宠物时按 **Feed**（必须先装备宠物）打开喂养窗口。
+
+### Pet Food
+
+- 饲料分不同 Tier，**按宠物等级自动选择**：Lv1-9 用 T1、Lv10-19 用 T2，依此类推。
+- 可从 **Petbreeder 购买**或由 **Cooking** 制作。
+- **公会宠物**不能用此系统喂养。
+
+### Energy
+
+- 宠物消耗 **Energy**，战斗后可能减少。
+- 宠物**未满 Energy** 时，每块饲料回复 **150 Energy × 饲料 Tier**。
+- **0 Energy** 的宠物**不再提供战斗加成**，直到再次喂养。
+- 回能方式：喂养，或让宠物在自家庄园的 **Pet Shelter** 休息。
+
+### Growth
+
+- **Growth 提高宠物伤害与最大 Energy**。
+- **仅在 Energy 已满时**才可能触发 Growth 提升。
+- 每块饲料给**一次 +1 Growth 的机会**，成功率显示在窗口中，**Growth 越高成功率越低**。
+- **最大 Growth 由稀有度决定**。
+- 涨 Growth 时，最大 Energy 同时提高并**回满**。
+
+### 日常目标
+
+- 成功喂养计入 **Feed Your Pet** 日常目标，**每天喂一次**即可完成。
 
 ## 相关
 
@@ -109,5 +102,4 @@ sources:
 
 ## 资料来源
 
-- 官方帮助文档：Petbreeding、Feed Pet。
-- 游戏内实测（EA 版）：宠物面板字段、喂养规则。
+- 官方 1.0 Wiki：动物狩猎（/p/157）、Petbreeding（/p/132）、Feed Pet（/p/198），2026-10-16 抓取。

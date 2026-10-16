@@ -2,13 +2,13 @@
 title: "训练场 Training Grounds"
 description: "用训练木桩测试技能、伤害与流派。"
 gameVersion: "1.0"
-verifiedDate: "2026-10-15"
-versionStatus: "1.0-announced"
+verifiedDate: "2026-10-16"
+versionStatus: "1.0-official"
 sources:
   - type: official
     reference: 官方 1.0 Wiki
     url: https://wiki.norroth.com/p/203/
-    date: "2026-10-15"
+    date: "2026-10-16"
 ---
 训练场允许你在**训练木桩**上练习战斗，用来测试技能、伤害与流派。
 

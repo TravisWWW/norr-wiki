@@ -2,7 +2,7 @@
 title: "服务条款 Terms of Service"
 description: "服务条款要点（以官方原文为准）。"
 gameVersion: "1.0"
-verifiedDate: "2026-10-15"
+verifiedDate: "2026-10-16"
 versionStatus: "1.0-announced"
 sources:
   - type: official
@@ -15,6 +15,7 @@ sources:
 - **条款接受**：使用 Norroth 服务即受服务条款约束；条款**可随时变更**，玩家有责任持续了解并遵守，违反可能导致**账号被立即删除且不退款**。重大变更会在登录页公告。
 - **服务描述**：Norroth 提供在线娱乐服务（玩家间互动的游戏）；服务可能包含广告。
 - **账号与行为**：账号规则、违规处理与封禁见[通用规则](/norr-wiki/support/guidelines/general-rules/)。
+- **通用规则并入 TOS**：第 20 节由「ADDENDUM」更名为「**GENERAL RULES AND ADDITIONAL POLICIES**」——通用规则及其他官方政策**构成服务条款的一部分**；违反通用规则按违反 TOS 处理（警告 / 停权 / 终止等，视严重程度而定）。
 - **付费与退款**：**Norroth 捐赠与 Norroth Coins 购买一般不可退款**；发起拒付可能导致账号冻结或封禁，见[退款](/norr-wiki/support/payments/refunds/)。
 - **数据与隐私**：见[隐私政策](/norr-wiki/support/guidelines/privacy-policy/)与 [Cookie 政策](/norr-wiki/support/guidelines/cookie-policy/)。
 
