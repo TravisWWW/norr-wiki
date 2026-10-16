@@ -255,7 +255,7 @@ function tipHTML(name){
   let h='<div class="tt-head"><div class="tt-ico" style="background-image:url(&quot;'+(ICONS[s.slug]||"")+'&quot;)"></div><div><div class="tt-name">'+esc(s.name)+'</div><div class="tt-type" style="color:'+(TYPECOLOR[s.type]||"#999")+'">'+typeCN(s.type)+' · 等级 '+lv+' / '+mx+'</div></div></div>';
   const rows=[];
   if(s.mana)rows.push(["法力",s.mana]); if(s.cd)rows.push(["冷却",s.cd]); if(s.lasts)rows.push(["持续",s.lasts]);
-  if(s.strikes)rows.push(["打击",s.strikes]); if(s.alignment)rows.push(["阵营",alignCN(s.alignment)]); if(s.requires)rows.push(["需要武器",reqCN(s)]); if(s.level)rows.push(["解锁","Lv."+s.level]); if(s.req)rows.push(["前置",s.req]);
+  if(s.strikes)rows.push(["打击",s.strikes]); if(s.alignment)rows.push(["阵营",alignCN(s.alignment)]); if(s.requires)rows.push(["需要武器",reqCN(s)]); if(s.level)rows.push(["解锁（角色等级）","角色 Lv."+s.level]); if(s.req)rows.push(["前置",s.req]);
   if(rows.length)h+='<div class="tt-rows">'+rows.map(r=>'<div><span>'+r[0]+'</span><b>'+esc(r[1])+'</b></div>').join("")+'</div>';
   if(lk) h+='<div class="tt-lock">该技能属于【'+alignCN(s.alignment)+'】阵营，当前角色阵营为【'+alignCN(align)+'】，无法加点。</div>';
   const L=Math.max(1,lv);

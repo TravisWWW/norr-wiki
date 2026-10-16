@@ -18,7 +18,7 @@ const join = (arr) => (arr && arr.length ? arr.join('；') : '—');
   {hasPortrait && <img class="nr-class-portrait" src={portrait} alt={cls} loading="lazy" />}
   <div class="nr-class-meta">
     <div class="nr-class-name">{cls}</div>
-    <div class="nr-class-sub">1.0 官方 Wiki / 客户端技能树 · 数值 = Lv.1 基础值，另列每级成长；「解锁」为所需角色等级</div>
+    <div class="nr-class-sub">1.0 官方 Wiki / 客户端技能树 · 技能等级上限 <b>Lv.10</b>；数值 = Lv.1 基础值，另列每级成长；「解锁」为所需角色等级</div>
   </div>
 </div>
 
@@ -27,13 +27,14 @@ const join = (arr) => (arr && arr.length ? arr.join('；') : '—');
     <h3>{g.name}（{g.skills.length}）</h3>
     <table>
       <thead>
-        <tr><th>技能</th><th>解锁</th><th>类型</th><th>消耗 / CD</th><th>持续 / 段数</th><th>前置</th><th>Lv.1 效果</th><th>每级成长</th></tr>
+        <tr><th>技能</th><th>解锁<br>（角色等级）</th><th>技能上限</th><th>类型</th><th>消耗 / CD</th><th>持续 / 段数</th><th>前置</th><th>Lv.1 效果</th><th>每级成长</th></tr>
       </thead>
       <tbody>
         {g.skills.map((sk) => (
           <tr>
             <td><b>{titleCase(sk.name)}</b><span class="nr-slug"> {sk.name}</span></td>
-            <td>{sk.level ? `Lv.${sk.level}` : '—'}</td>
+            <td>{sk.level ? `角色 Lv.${sk.level}` : '—'}</td>
+            <td>{`Lv.${sk.max || 10}`}</td>
             <td>{zhType(sk.type)}{sk.mana ? ` · ${sk.mana} MP` : ''}{sk.alignment ? ` · ${sk.alignment}` : ''}</td>
             <td>{sk.cd ? `CD ${sk.cd}` : '—'}</td>
             <td>{[sk.lasts ? `${sk.lasts} 回合` : null, sk.strikes ? `${sk.strikes} 段` : null].filter(Boolean).join(' · ') || '—'}</td>
