@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.77
+// @version      2.6.78
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -183,7 +183,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.77';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
+  const SCRIPT_VER = '2.6.78';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
   /* ★ v2.6.77：在线更新。
      脚本托管在 GitHub Pages（和中文 Wiki 同一个仓库 / 同一次部署），元数据块里的
      @updateURL / @downloadURL 都指向下面这个地址 —— Tampermonkey 会按自己的周期
@@ -232,7 +232,7 @@
     tripManual: false, tripOrigin: null,
     gatherFighting: false,   // 采集模式里"正在打怪"的标记
     repair: { active: false, cooldownUntil: 0, failCount: 0, smith: null, route: null },
-    sell: { active: false, cooldownUntil: 0, lastCheck: 0, free: 0, cap: 0, force: false },
+    sell: { active: false, cooldownUntil: 0, lastCheck: 0, free: 0, cap: 0, force: false, freeAt: 0 },   // ★ v2.6.78：freeAt = 触发本次行程时用的阈值
     bank: { active: false, cooldownUntil: 0, lastCheck: 0, free: 0, cap: 0, force: false },
     target: null,            // 当前锁定的目标（面板展示用）
     statusText: '就绪',
@@ -3415,7 +3415,19 @@
         }
       } else if (page) {
         const link = f.querySelector('a[onclick*="/' + page + '"]');
-        if (link && now() - lastOpen > 1000) { try { link.click(); } catch (e) { /* ignore */ } lastOpen = now(); }
+        if (now() - lastOpen > 1200) {
+          if (link) { try { link.click(); } catch (e) { /* ignore */ } }
+          else {
+            /* ★ v2.6.78：sell / salvage / repair 三个子页之间**没有互相跳转的链接**
+               （实测三个页面里 /sell、/salvage、/repair 的出现次数都是 0，只有 smith 主菜单有）。
+               若 frame 已经停在别的子页（例如上一次清包留下的收购页），「点链接」这条路走不通 →
+               会一直空转到超时，报「没打开 XXX 的拆解界面」。这里直接关掉重开目标子页。 */
+            try { closeFrameById(fid); } catch (e) { /* ignore */ }
+            await sleep(250);
+            try { if (typeof window.createDialog === 'function') window.createDialog(title, '', 'ajax', url, true); } catch (e) { /* ignore */ }
+          }
+          lastOpen = now();
+        }
       }
       await sleep(300);
     }
@@ -3559,7 +3571,13 @@
   const BAG_CHECK_MS = 30000;
   /* 兜底[休整] 清包 / 存仓失败 → 120s 内不再尝试 */
   const SELL_FAIL_COOLDOWN = 120000;
-  const TOOL_WORDS = /\b(pick|hoe|axe|rod)\b/i;   // 采集工具只有四类，判定偏保守，宁可不卖也不要错卖
+  /* ★ v2.6.78：按「名字」猜工具是个坑 —— 游戏里有 15 件「斧」类武器（Copper Berserker Axe /
+     Battle Axe / Twin-bladed Axe … Lv1~49），名字里也有 "Axe"，被 /\baxe\b/ 误判成采集工具
+     → isEquipBlock=false → 「出售」清包永远跳过它们（灰色斧头永远不会被卖掉）。
+     实测（2026-10-21，从武器商买一把灰色 Copper Berserker Axe）：收购列表里 2 件装备，脚本只认 1 件。
+     改成优先读游戏自己的物品类型文案（tooltip 的 <h2>，如 "Normal Weapon" / "Normal Chopping Axe"）。 */
+  const TOOL_WORDS = /\b(pick|hoe|axe|rod)\b/i;        // 仅作最后兜底（读不到类型文案时）
+  const TOOL_TYPES = /\b(mining pick|farmer hoe|chopping axe|fishing rod)\b/i;   // 真正的四种采集工具
 
   /** 读背包占用（只读请求，不弹窗） */
   /* ★ 解析 /modal/inventory 的物品：key → { name, rarity, count } */
@@ -3637,9 +3655,20 @@
     return { used: used, cap: cap, free: cap - used };
   }
 
+  /** 读游戏自己的「物品类型」文案：tooltip content 里 <h2> 的第一段（"Normal Weapon" / "Normal Armor" /
+   *  "Normal Chopping Axe" …）。比按名字猜可靠得多 —— 斧类武器名字里也有 "Axe"。 */
+  function itemTypeText(block) {
+    const el = block.querySelector('.item_name[content]') || block.querySelector('img[content]') || block.querySelector('[content]');
+    const c = el && el.getAttribute('content');
+    if (!c) return '';
+    const m = /<h2[^>]*>\s*([^<]*)/.exec(c);
+    return m ? m[1].trim() : '';
+  }
   function isToolBlock(block) {
     const img = block.querySelector('img[alt]');
     if (!img) return true;
+    const typeTxt = itemTypeText(block);
+    if (typeTxt) return TOOL_TYPES.test(typeTxt);      // ★ v2.6.78：以游戏类型文案为准
     const txt = ((img.getAttribute('alt') || '') + ' ' + (img.getAttribute('hover_title') || '')).replace(/_/g, ' ');
     return TOOL_WORDS.test(txt);
   }
@@ -3734,8 +3763,11 @@
   async function sellEquips(bag) {
     const box = document.getElementById('sell_items') || document.getElementById('npc_sell_items_grid');
     if (!box) throw new Error('收购界面没有出现');
-    const allEq = Array.from(box.children)
-      .filter(b => b.id && /^sell_/.test(b.id) && isEquipBlock(b))
+    /* ★ v2.6.78：把「被判定为采集工具而跳过」的件数也报出来 —— 斧类武器误判就是这么被发现的 */
+    const allRows = Array.from(box.children).filter(b => b.id && /^sell_/.test(b.id));
+    const toolRows = allRows.filter(b => b.querySelector('img[alt]') && isToolBlock(b));   // 有图标但被判成工具（资源条目没有 img）
+    const allEq = allRows
+      .filter(b => isEquipBlock(b))
       .map(b => { const img = b.querySelector('img[alt]'); return { id: b.id, lv: equipLevelOf(b), rarity: equipRarityOf(b), name: img ? img.getAttribute('alt') : '' }; });
     const list = allEq
       .filter(it => clearEligible(it.lv, it.rarity))
@@ -3743,7 +3775,12 @@
     /* ★ v2.6.76：清包诊断 —— 收购列表里有多少装备、其中多少件读不到品质（读不到就不会被清） */
     if (allEq.length) {
       const unk = allEq.filter(it => !it.rarity).length;
-      logEvent('清包：收购列表装备 ' + allEq.length + ' 件，符合条件 ' + list.length + ' 件' + (unk ? ('（' + unk + ' 件读不到品质，已跳过）') : ''));
+      const bits = [];
+      if (unk) bits.push(unk + ' 件读不到品质');
+      if (toolRows.length) bits.push(toolRows.length + ' 件采集工具');
+      const nonEquip = allRows.length - allEq.length - toolRows.length;
+      if (nonEquip > 0) bits.push(nonEquip + ' 件非装备（资源等）');
+      logEvent('清包：收购列表装备 ' + allEq.length + ' 件，符合条件 ' + list.length + ' 件' + (bits.length ? ('（跳过：' + bits.join('、') + '）') : ''));
     }
     let free = bag ? bag.free : 0, sold = 0;
     for (const it of list) {
@@ -3779,32 +3816,33 @@
   async function salvageEquips(bag) {
     const box = document.getElementById('mass_salvage_list');
     if (!box) throw new Error('拆解界面没有出现');
-    /* ★★ v2.6.76 修 bug：拆解列表的真实结构是
-         <input type='checkbox' name='item_list[]' id='item<ID>' value='<ID>'>
-         <label for='item<ID>' class=divblock id='item_block_<ID>'>…item_name[rarity]…</label>
-       旧代码找的是 .smithing_bulk_row（那是「修理」列表的结构）→ 永远 0 行 →
-       拆解从来不生效（灰色和其它品质一律不处理）。这里改成按真实 DOM 取。 */
+    /* ★★ v2.6.78：主选择器改回真实 DOM（实测 2026-10-21 抓的 /modal/weaponsmith/salvage）：
+         <div class='smithing_bulk_row' id='item_block_<ID>' data-id='<ID>'>
+           <input type='checkbox' class='smithing_pick' id='smithing_pick_salvage_<ID>' data-id='<ID>'>
+           <label class='divblock smithing_pick_label'>…<span class='item_name' rarity='normal'>…</span>…</label>
+       v2.6.76 以为主结构是 <input name='item_list[]'> —— 那个在「修理」和「拆解」列表里都不存在，
+       于是主分支永远 0 行，只靠下面的兼容分支在工作，而且诊断日志永远不打（排查时看不到任何线索）。 */
     const picked = [];
-    const inputs = Array.prototype.slice.call(box.querySelectorAll("input[name='item_list[]']"));
-    inputs.forEach(function (inp) {
-      const id = inp.getAttribute('value') || String(inp.id || '').replace(/^item/, '');
-      if (!id) return;
-      const lab = (inp.id ? box.querySelector("label[for='" + inp.id + "']") : null) || box.querySelector('#item_block_' + id) || inp.parentNode;
-      const blk = lab || inp;
-      const rar = equipRarityOf(blk);
-      if (clearEligible(equipLevelOf(blk), rar)) picked.push({ id: id, rarity: rar || '未知' });
+    const rows = Array.prototype.slice.call(box.querySelectorAll('.smithing_bulk_row'));
+    rows.forEach(function (r) {
+      const id = r.getAttribute('data-id'); if (!id) return;
+      const rar = equipRarityOf(r);
+      if (clearEligible(equipLevelOf(r), rar)) picked.push({ id: id, rarity: rar || '未知' });
     });
-    /* 兼容：万一以后前端换成 .smithing_bulk_row 结构 */
-    if (!inputs.length) {
-      Array.prototype.slice.call(box.querySelectorAll('.smithing_bulk_row')).forEach(function (r) {
-        const id = r.getAttribute('data-id'); if (!id) return;
-        const rar = equipRarityOf(r);
-        if (clearEligible(equipLevelOf(r), rar)) picked.push({ id: id, rarity: rar || '未知' });
+    /* 兼容：万一以后前端换成 <input name='item_list[]' value='<ID>'> + <label id='item_block_<ID>'> */
+    if (!rows.length) {
+      Array.prototype.slice.call(box.querySelectorAll("input[name='item_list[]']")).forEach(function (inp) {
+        const id = inp.getAttribute('value') || String(inp.id || '').replace(/^item/, '');
+        if (!id) return;
+        const lab = (inp.id ? box.querySelector("label[for='" + inp.id + "']") : null) || box.querySelector('#item_block_' + id) || inp.parentNode;
+        const blk = lab || inp;
+        const rar = equipRarityOf(blk);
+        if (clearEligible(equipLevelOf(blk), rar)) picked.push({ id: id, rarity: rar || '未知' });
       });
     }
-    if (inputs.length) {
-      const unk = inputs.length - picked.length;
-      logEvent('拆解：列表 ' + inputs.length + ' 件，符合条件 ' + picked.length + ' 件' + (unk ? ('（跳过 ' + unk + ' 件）') : ''));
+    if (rows.length) {
+      const unk = rows.length - picked.length;
+      logEvent('拆解：列表 ' + rows.length + ' 件，符合条件 ' + picked.length + ' 件' + (unk ? ('（跳过 ' + unk + ' 件）') : ''));
     }
     let free = bag ? bag.free : 0;
     if (!picked.length) return { sold: 0, free: free };
@@ -3846,7 +3884,9 @@
     const wantClear = (opts.sell === false) ? false : true;
     if (wantClear && clearFilterActive() && (manual || cfg.sellOn || st.sell.force)) {
       bag = await readBag();
-      out.needSell = !!bag && (st.sell.force || manual || bag.free <= jitterVal(cfg.sellFreeMin));
+      /* ★ v2.6.78：用触发这次行程时的同一个阈值（st.sell.freeAt），不要再摇一次随机数 */
+      const thr = (st.sell.freeAt > 0) ? st.sell.freeAt : cfg.sellFreeMin;
+      out.needSell = !!bag && (st.sell.force || manual || bag.free <= thr);
     }
     if (!out.needRepair && !out.needSell) {
       const _durList = (st.dur && st.dur.list) || [];
@@ -3977,6 +4017,7 @@
     } finally {
       if (fromEvent) st.tripHome = home0;
       st.repair.active = false; st.bank.active = false; st.sell.active = false;
+      st.sell.freeAt = 0;                      /* ★ v2.6.78：本次行程用的阈值用完即清 */
     }
   }
 
@@ -4096,7 +4137,13 @@
         if (!bag) return;
         st.sell.free = bag.free; st.sell.cap = bag.cap;
         updateStats();
-        if (bag.free <= jitterVal(cfg.sellFreeMin) && !st.sell.active && !st.repair.active && !st.bank.active) {
+        /* ★ v2.6.78：阈值只摇一次，存进 st.sell.freeAt 给 doSmithServices 复用。
+           旧实现「触发」和「到铁匠后再判一次」各摇一次独立随机数：
+           sellFreeMin=2 + 抖动 5% 时 jitterVal(2) ∈ {1,2,3}，约 1/3 概率是「出发了，
+           走到铁匠又说不需要清」→ 静默空跑（日志里只剩每 30s 一条「回城休整」），背包永远清不掉。 */
+        const thr = jitterVal(cfg.sellFreeMin);
+        if (bag.free <= thr && !st.sell.active && !st.repair.active && !st.bank.active) {
+          st.sell.freeAt = thr;
           startRestock('bag', '剩余 ' + bag.free + '/' + bag.cap + ' 格');
         }
       }).catch(() => { /* ignore */ });

@@ -1,8 +1,8 @@
 {
-  "version": "2.6.77",
+  "version": "2.6.78",
   "date": "2026-10-21",
-  "notes": "在线更新：托管到 GitHub Pages，@updateURL 自动升级 + 进游戏自动检查新版本；修掉版本号角标被标题栏拖动吞掉点击的 bug",
+  "notes": "修「灰色装备清不掉」：斧类武器被当成采集工具跳过(出售路径)；触发阈值两次独立抖动导致空跑；拆解列表选择器纠正为真实 DOM；子页无法互相跳转时强制重开",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 619862,
-  "sha256": "dee6720274683b2b3bf77075e6b74290c5a423542b81cbbdca1b700fb21cce2c"
+  "size": 623805,
+  "sha256": "5fd2356b0f96dc03dcba7e06d097133143fd5aece24d4a37aaae6831c2219491"
 }
