@@ -175,7 +175,7 @@ function perRows(s){ return s.rows.filter(r=>Math.abs(r.per)>1e-9).map(r=>fmt(r.
 function reqCN(s){ return s.requires ? s.requires.split(",").map(w=>weapCN(w.trim())).join("、") : ""; }
 function effVal(f,p){ if(f!==0&&p!==0)return num(f)+" + "+num(p)+"%"; if(f!==0)return num(f); return num(p)+"%"; }
 function effKey(key,f,p,type){ if(f===0&&p===0)return null; const neg=f<0||p<0, v=effVal(f,p), name=statCN(key);
-  if(key==="base_damage"){ const kind=({melee:"物理",spell:"魔法",ranged:"物理",aoe:"魔法",direct:"魔法",ability:"魔法"})[String(type||"").toLowerCase()]||"物理"; return "造成 "+v+" 的「武器 + "+kind+"」伤害"; }
+  if(key==="base_damage"){ const kind=({melee:"物理",spell:"魔法",ranged:"物理",aoe:"魔法",direct:"魔法",ability:"魔法",attack:"魔法"})[String(type||"").toLowerCase()]||"物理"; return "造成 "+v+" 的「武器 + "+kind+"」伤害"; }
   if(/_damage$/.test(key))return "额外造成 "+v+" 点"+name;
   if(/_res$/.test(key))return (neg?"降低":"提升")+" "+v+" 点"+name;
   if(["hit_rating","attack_speed","critical_chance","critical_strike","armor_pen"].includes(key))return (neg?"降低":"提升")+"「"+name+"」"+v;

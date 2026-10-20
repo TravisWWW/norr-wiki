@@ -59,7 +59,7 @@ sources:
   - `javelin_throw`（投掷标枪）：新增 **+20** 流血伤害（每级 **+10**）；
   - `wildwood_impale`（荒野穿刺）：新增 **+30** 流血伤害（每级 **+10**）；
   - `pack_attack`（群狼攻击）：流血伤害 **40 → 50**（每级 **+10**）。
-- **已修复解析缺陷并重算数值**：此前生成脚本按「词条出现位置」把基础值 / 每级值配对，遇到**重复属性词条**（如 `bleed_damage,10|bleed_damage,1%`）或**扁平值 + 百分比并存**时会错配、并丢弃新增的扁平词条。现已改为按 **(属性, 单位)** 聚合，与游戏客户端 `parseEffectString` 一致；对全部 **220** 个模拟器技能逐条比对游戏 `generateSkillTooltip`，**数值零差异**。
+- **已修复解析缺陷并重算数值**：此前生成脚本按「词条出现位置」把基础值 / 每级值配对，遇到**重复属性词条**（如 `bleed_damage,10|bleed_damage,1%`）或**扁平值 + 百分比并存**时会错配、并丢弃新增的扁平词条。现已改为按 **(属性, 单位)** 聚合，与游戏客户端 `parseEffectString` 一致；对全部 **220** 个模拟器技能逐条比对游戏 `generateSkillTooltip`，**数值零差异**；并修正了模拟器把 `direct` / `ability` 技能的「武器 + **魔法**伤害」误显示为「武器 + 物理伤害」的问题（共 16 个技能，含游侠的 `pin_down` / `boltnet_shot` / `snare_trap` / `dazing_trap` / `poison_cloud_trap` / `bear_trap` 等）。
 - 官方职业页现提供**中文技能分组名**（如 Bow Mastery → 弓箭专精、Arcane Mastery → 奥术精通）；本站职业页与[天赋模拟器](/norr-wiki/tools/talent/)已按官方中文名展示。
 - 模拟器**技能上限仍为 10 级**（见[官方 1.0 Wiki 更新对照（2026-10-16）](/norr-wiki/reference/official-wiki-2026-10-16/)）。
 
