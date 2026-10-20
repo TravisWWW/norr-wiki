@@ -7239,8 +7239,11 @@
   function bindPanel(panel) {
     // 拖动（pointer 事件 + setPointerCapture，拖到 iframe 上也不丢）
     els.head.addEventListener('pointerdown', e => {
-      /* ★ v2.6.17：标题栏里的按钮/下拉/输入不触发拖动（否则 pointer capture 会吞掉 click，工作台按钮点不动） */
-      if (e.target.closest('#nr-fold,#nr-hbtn,#nr-gameskin,#nr-skinmute,button,select,input,a')) return;
+      /* ★ v2.6.17：标题栏里的按钮/下拉/输入不触发拖动（否则 pointer capture 会吞掉 click，工作台按钮点不动）
+         ★ v2.6.77：加上 #nr-ver —— 版本号角标要能点（点开在线更新安装页）；
+         实测（puppeteer 真实鼠标事件）：不加这一项时 pointerdown 触发拖动 + setPointerCapture，
+         后续 click 被吞掉，programmatic .click() 却能过 —— 是个只有真点才复现的坑。 */
+      if (e.target.closest('#nr-fold,#nr-ver,#nr-hbtn,#nr-gameskin,#nr-skinmute,button,select,input,a')) return;
       dragging = { dx: e.clientX - panel.offsetLeft, dy: e.clientY - panel.offsetTop };
       els.head.setPointerCapture(e.pointerId);
     });
@@ -7257,7 +7260,7 @@
       try { els.head.releasePointerCapture(e.pointerId); } catch (err) { /* ignore */ }
     });
     els.head.addEventListener('dblclick', e => {
-      if (e.target.closest('#nr-fold,#nr-hbtn,#nr-gameskin,#nr-skinmute,button,select,input,a')) return;
+      if (e.target.closest('#nr-fold,#nr-ver,#nr-hbtn,#nr-gameskin,#nr-skinmute,button,select,input,a')) return;
       cfg.uiX = null; cfg.uiY = null; placePanel(true);
     });
 
