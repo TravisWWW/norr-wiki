@@ -10,7 +10,8 @@ function keyTier(lv) {
   if (lv <= 19) return 'Iron';
   if (lv <= 29) return 'Bronze';
   if (lv <= 39) return 'Steel';
-  return 'Mithril';
+  if (lv <= 49) return 'Mithril';
+  return '';
 }
 const rows = dungeons.map((d) => {
   const [x, y] = String(d.coords || '').split('/').map(Number);
@@ -53,7 +54,7 @@ const levels = [
     ))}
   </tbody>
 </table>
-<p class="nr-note">共 <b>{rows.length}</b> 个副本 Boss。「我的等级」填当前等级后，只显示**等级 ≤ 该值**的副本（可挑战范围）；钥匙档位按 Boss 等级推导（1-9 Copper / 10-19 Iron / 20-29 Bronze / 30-39 Steel / 40-49 Mithril）。地图名由世界坐标精确匹配得到，可点进地图清单。</p>
+<p class="nr-note">共 <b>{rows.length}</b> 个副本 Boss。「我的等级」填当前等级后，只显示**等级 ≤ 该值**的副本（可挑战范围）；钥匙档位按 Boss 等级推导（1-9 Copper / 10-19 Iron / 20-29 Bronze / 30-39 Steel / 40-49 Mithril；Lv50+ 官方未给出钥匙档位）。地图名由世界坐标精确匹配得到，可点进地图清单。</p>
 
 <script>
   const q = document.getElementById('dg-q');

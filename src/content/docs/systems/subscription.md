@@ -2,18 +2,20 @@
 title: 订阅与付费服务
 description: Noble Status 账号订阅权益、Norroth Coins 商店与星界档位消费奖励（以官方 1.0 Wiki 为准）。
 gameVersion: "1.0"
-verifiedDate: 2026-10-16
+verifiedDate: 2026-10-21
 versionStatus: "1.0-official"
 sources:
   - type: official
     reference: 官方 1.0 Wiki Noble Status（p/209）、Norroth Coin Shop（p/176）、Celestial Tier Spender（p/164）
     url: https://wiki.norroth.com/p/209/
-    date: "2026-10-16"
+    date: "2026-10-21"
 ---
 
 ## Noble Status【1.0 官方 Wiki】
 
 **Noble Status 是账号级订阅**：激活期间**账号下所有角色**共享权益；剩余时间以 Noble buff 图标显示。
+
+> 官方 2026-10-21 复核：`Noble Status`（p/209，官方中文名**贵族身份**）已**移出官方 Wiki 导航**（页面仍可访问）。
 
 **已公布的权益**：
 
@@ -59,4 +61,4 @@ sources:
 
 ## 资料来源
 
-- 官方 1.0 Wiki：Noble Status（/p/209）、Norroth Coin Shop（/p/176）、Celestial Tier Spender（/p/164），2026-10-16 抓取。
+- 官方 1.0 Wiki：Noble Status（/p/209）、Norroth Coin Shop（/p/176）、Celestial Tier Spender（/p/164），2026-10-21 抓取。

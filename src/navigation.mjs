@@ -555,6 +555,10 @@ export const referenceItems = [
     "label": "官方 1.0 Wiki 更新对照（2026-10-16）",
     "slug": "reference/official-wiki-2026-10-16"
   },
+  {
+    "label": "官方 1.0 Wiki 更新对照（2026-10-21）",
+    "slug": "reference/official-wiki-2026-10-21"
+  },
 ];
 
 export function flattenItems(items) {

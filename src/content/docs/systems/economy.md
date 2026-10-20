@@ -2,13 +2,13 @@
 title: 经济与货币
 description: 货币体系、交易行与各市场、灌注石、传奇/遗物代币与强化（以官方 1.0 Wiki 为准）。
 gameVersion: "1.0"
-verifiedDate: 2026-10-16
+verifiedDate: 2026-10-21
 versionStatus: "1.0-official"
 sources:
   - type: official
-    reference: 官方 1.0 Wiki Trading Post（p/63）、Post Order（p/61）、各市场（p/58/82/83/84/176）、Shadow Broker（p/163）、Infusion Stones（p/192）、Legendary/Relic Token（p/194）、Trophy Enhancing（p/195）、Eldritch Caretaker（p/181）
+    reference: 官方 1.0 Wiki Trading Post（p/63）、Post Order（p/61）、各市场（p/58/82/83/84/176）、货币袋（p/112）、Shadow Broker（p/163）、Infusion Stones（p/192）、Legendary/Relic Token（p/194）、Trophy Enhancing（p/195）、Eldritch Caretaker（p/181）
     url: https://wiki.norroth.com/p/63/
-    date: "2026-10-16"
+    date: "2026-10-21"
 ---
 
 ## 结论速览
@@ -35,6 +35,23 @@ sources:
 **币值换算**：**1 Gold = 100 Silver = 10000 Bronze**。
 
 > **命名说明**：游戏内货币统一为 **Coins**（Bronze / Silver / Gold 三级），文中「金币」泛指 Coins，**不是**独立货币；真钱货币是 **Norroth Coins**（氪金），两者勿混淆。
+
+## 货币袋 Currency Pouch【1.0 官方 Wiki】
+
+**货币袋（Currency Pouch）独立于背包**：存放在这里的货币**不占背包格、也不计入背包容量**。
+
+- **共享规则**：普通账号的货币在**同一游戏模式内账号共享**；**Ironman** 每个角色**各自独立**。
+- **打开方式**：点击**金币旁的图标**，或从背包打开。每种货币都有**上限**，到达上限时该条目**变红**。
+- **使用**：平时主要显示你**已拥有**的货币，少数重要货币**常驻**显示；**悬停**图标看简短提示，**点击**跳到可消费它的商店 / 窗口（若有）。
+
+| 分类 | 内容 |
+|---|---|
+| **日常货币** | **Coins** 用于多数商人、制作与手续费；其余日常货币来自日常 / 成就 / 升级，可在 **Laurel Market / Achievement Market / Celestial Market** 等处消费 |
+| **冒险货币** | 仅来自特定内容（**竞技场、深渊塔、远征、副本**），在这些地方赚取、也在这些地方或对应商人处消费 |
+| **钥匙与工具** | **钥匙**开 Strongbox 与 Dungeon Lootbox；**升级代币、重随骰子、镶嵌锤**也在袋中，在 **Item Specialist / Jeweler** 等升级 NPC 处使用 |
+| **活动** | 节日 / 全服活动期间的 **Event fragments / tickets**，在 **Event Gate / Event Merchant** 花（活动期间） |
+
+> 不知道某样东西干什么用？在袋中点它，或在 Help File 里搜它的名字。
 
 ## 交易行 Trading Post【1.0 官方 Wiki】
 
@@ -93,4 +110,4 @@ sources:
 
 ## 资料来源
 
-- 官方 1.0 Wiki：Trading Post（/p/63）、Post Order（/p/61）、Laurel Market（/p/58）、Achievement Market（/p/82）、Event Merchant（/p/83）、Celestial Market（/p/84）、Norroth Coin Shop（/p/176）、Shadow Broker（/p/163）、Infusion Stones（/p/192）、Legendary/Relic Token（/p/194）、Trophy Enhancing（/p/195）、Eldritch Caretaker（/p/181），2026-10-16 抓取。
+- 官方 1.0 Wiki：Trading Post（/p/63）、Post Order（/p/61）、Laurel Market（/p/58）、Achievement Market（/p/82）、Event Merchant（/p/83）、Celestial Market（/p/84）、Norroth Coin Shop（/p/176）、Shadow Broker（/p/163）、Infusion Stones（/p/192）、Legendary/Relic Token（/p/194）、Trophy Enhancing（/p/195）、Eldritch Caretaker（/p/181）、Currencies（/p/112），2026-10-21 抓取。

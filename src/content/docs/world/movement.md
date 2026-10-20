@@ -2,13 +2,13 @@
 title: 地图、移动与传送
 description: 世界地图、走格移动、传送与快速旅行、走私路线与死亡复活（以官方 1.0 Wiki 为准）。
 gameVersion: "1.0"
-verifiedDate: 2026-10-16
+verifiedDate: 2026-10-21
 versionStatus: "1.0-official"
 sources:
   - type: official
     reference: 官方 1.0 Wiki 世界地图（p/35）、基础移动（p/40）、地图详情（p/168）、路标（p/201）、传送与快速旅行（p/55）、传送门（p/179）、走私路线（p/189）、城镇（p/38）
     url: https://wiki.norroth.com/p/35/
-    date: "2026-10-16"
+    date: "2026-10-21"
 ---
 
 ## 结论速览
@@ -65,20 +65,26 @@ sources:
 
 ## 城镇 Towns & Cities【1.0 官方 Wiki】
 
-| 城镇 | Level | Tier |
-|---|---|---|
-| El Caspar | 1 | 1 |
-| Elundi | 10 | 2 |
-| Owranbu | 10 | 2 |
-| Drouver | 15 | 2 |
-| Vileton | 15 | 2 |
-| Sanjuo | 19 | 2 |
-| Bungavik | 20 | 3 |
-| Saurville | 20 | 3 |
-| Ururg | 20 | 3 |
-| Caeltys | 30 | 4 |
-| Trescan | 30 | 4 |
-| Stogow | 30 | 4 |
+共 **16 座**城镇（2026-10-21 官方复核）：
+
+| 城镇 | Level | Tier | 世界坐标 |
+|---|---|---|---|
+| El Caspar | 1 | 1 | 871/1551 |
+| Elundi | 10 | 2 | 585/1250 |
+| Owranbu | 10 | 2 | 1285/1561 |
+| Drouver | 15 | 2 | 1577/1124 |
+| Vileton | 15 | 2 | 1263/1835 |
+| Sanjuo | 19 | 2 | 1533/2204 |
+| Bungavik | 20 | 3 | 1433/705 |
+| Saurville | 20 | 3 | 1873/866 |
+| Ururg | 20 | 3 | 2410/1256 |
+| Caeltys | 30 | 4 | 1059/929 |
+| Trescan | 30 | 4 | 2752/890 |
+| Stogow | 30 | 4 | 1656/342 |
+| Nythrendal | 40 | 5 | 353/926 |
+| Galkhatos | 45 | 5 | 3180/1890 |
+| Dominion Spire | 50 | 6 | 2680/1547 |
+| Laen Dorei | 50 | 6 | 3153/1085 |
 
 **城镇 Tier 决定**：Client Order Board 的订单 Tier、商人卖的东西、可用的服务等级。
 
@@ -97,4 +103,4 @@ sources:
 
 ## 资料来源
 
-- 官方 1.0 Wiki：世界地图（/p/35）、基础移动（/p/40）、地图详情（/p/168）、路标（/p/201）、传送与快速旅行（/p/55）、传送门（/p/179）、走私路线（/p/189）、城镇（/p/38），2026-10-16 抓取。
+- 官方 1.0 Wiki：世界地图（/p/35）、基础移动（/p/40）、地图详情（/p/168）、路标（/p/201）、传送与快速旅行（/p/55）、传送门（/p/179）、走私路线（/p/189）、城镇（/p/38），2026-10-21 抓取。

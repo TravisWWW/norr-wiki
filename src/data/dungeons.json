@@ -1,11 +1,51 @@
 [
  {
-  "boss": "Marious, Lord of Ratdom",
+  "boss": "Angry Snowman",
+  "level": 60,
+  "key": "",
+  "coords": "",
+  "enemyImg": "164",
+  "keyVerifiedDate": "2026-10-21"
+ },
+ {
+  "boss": "Drake Boss",
+  "level": 60,
+  "key": "",
+  "coords": "",
+  "enemyImg": "137",
+  "keyVerifiedDate": "2026-10-21"
+ },
+ {
+  "boss": "Hollow Phantom",
+  "level": 60,
+  "key": "",
+  "coords": "",
+  "enemyImg": "156",
+  "keyVerifiedDate": "2026-10-21"
+ },
+ {
+  "boss": "Mutant Plant",
+  "level": 60,
+  "key": "",
+  "coords": "",
+  "enemyImg": "261",
+  "keyVerifiedDate": "2026-10-21"
+ },
+ {
+  "boss": "Oculus",
+  "level": 60,
+  "key": "",
+  "coords": "",
+  "enemyImg": "140",
+  "keyVerifiedDate": "2026-10-21"
+ },
+ {
+  "boss": "Lord Marious",
   "level": 5,
   "key": "Copper Key",
   "coords": "826/1537",
   "enemyImg": "69",
-  "keyVerifiedDate": "2026-10-14"
+  "keyVerifiedDate": "2026-10-21"
  },
  {
   "boss": "Tree of Life",
@@ -13,23 +53,31 @@
   "key": "Copper Key",
   "coords": "799/1208",
   "enemyImg": "63",
-  "keyVerifiedDate": "2026-10-14"
+  "keyVerifiedDate": "2026-10-21"
  },
  {
-  "boss": "The Baron",
+  "boss": "Baron, Manor Lord",
   "level": 9,
   "key": "Copper Key",
   "coords": "1074/1426",
   "enemyImg": "189",
-  "keyVerifiedDate": "2026-10-14"
+  "keyVerifiedDate": "2026-10-21"
  },
  {
-  "boss": "The Devourer",
-  "level": 10,
+  "boss": "Devourer",
+  "level": 12,
   "key": "Iron Key",
-  "coords": "624/1130",
+  "coords": "638/1161",
   "enemyImg": "134",
-  "keyVerifiedDate": "2026-10-14"
+  "keyVerifiedDate": "2026-10-21"
+ },
+ {
+  "boss": "Ruin Guard",
+  "level": 13,
+  "key": "Iron Key",
+  "coords": "",
+  "enemyImg": "197",
+  "keyVerifiedDate": "2026-10-21"
  },
  {
   "boss": "Spider Queen",
@@ -37,55 +85,63 @@
   "key": "Iron Key",
   "coords": "1387/1728",
   "enemyImg": "102",
-  "keyVerifiedDate": "2026-10-14"
+  "keyVerifiedDate": "2026-10-21"
  },
  {
   "boss": "Arcelia",
   "level": 19,
   "key": "Iron Key",
-  "coords": "1135/1837",
+  "coords": "1107/1883",
   "enemyImg": "142",
-  "keyVerifiedDate": "2026-10-14"
- },
- {
-  "boss": "Kraken Mother",
-  "level": 20,
-  "key": "Bronze Key",
-  "coords": "1006/1683",
-  "enemyImg": "133",
-  "keyVerifiedDate": "2026-10-14"
+  "keyVerifiedDate": "2026-10-21"
  },
  {
   "boss": "Medusa",
-  "level": 25,
+  "level": 20,
   "key": "Bronze Key",
   "coords": "1303/1096",
-  "enemyImg": "144",
-  "keyVerifiedDate": "2026-10-14"
+  "enemyImg": "243",
+  "keyVerifiedDate": "2026-10-21"
  },
  {
-  "boss": "The Leech Demon",
+  "boss": "Real Medusa",
+  "level": 20,
+  "key": "Bronze Key",
+  "coords": "",
+  "enemyImg": "144",
+  "keyVerifiedDate": "2026-10-21"
+ },
+ {
+  "boss": "Kraken Mother",
+  "level": 25,
+  "key": "Bronze Key",
+  "coords": "1043/1665",
+  "enemyImg": "133",
+  "keyVerifiedDate": "2026-10-21"
+ },
+ {
+  "boss": "Leech Demon",
   "level": 29,
   "key": "Bronze Key",
   "coords": "1530/1854",
   "enemyImg": "169",
-  "keyVerifiedDate": "2026-10-14"
+  "keyVerifiedDate": "2026-10-21"
  },
  {
-  "boss": "Yurk, the Ogre",
+  "boss": "Yurk",
   "level": 30,
   "key": "Steel Key",
-  "coords": "2487/1127",
+  "coords": "2527/1147",
   "enemyImg": "190",
-  "keyVerifiedDate": "2026-10-14"
+  "keyVerifiedDate": "2026-10-21"
  },
  {
   "boss": "Amosh, the Yeti",
   "level": 35,
   "key": "Steel Key",
-  "coords": "1752/266",
+  "coords": "1789/230",
   "enemyImg": "191",
-  "keyVerifiedDate": "2026-10-14"
+  "keyVerifiedDate": "2026-10-21"
  },
  {
   "boss": "Queen Acasia",
@@ -93,7 +149,7 @@
   "key": "Steel Key",
   "coords": "1169/843",
   "enemyImg": "192",
-  "keyVerifiedDate": "2026-10-14"
+  "keyVerifiedDate": "2026-10-21"
  },
  {
   "boss": "Ape King Goliathor",
@@ -101,22 +157,30 @@
   "key": "Mithril Key",
   "coords": "3316/1712",
   "enemyImg": "218",
-  "keyVerifiedDate": "2026-10-14"
+  "keyVerifiedDate": "2026-10-21"
  },
  {
   "boss": "Grimble",
   "level": 45,
   "key": "Mithril Key",
-  "coords": "2735/654",
+  "coords": "2688/658",
   "enemyImg": "229",
-  "keyVerifiedDate": "2026-10-14"
+  "keyVerifiedDate": "2026-10-21"
  },
  {
   "boss": "Ghrorak",
   "level": 49,
   "key": "Mithril Key",
-  "coords": "581/900",
+  "coords": "581/852",
   "enemyImg": "231",
-  "keyVerifiedDate": "2026-10-14"
+  "keyVerifiedDate": "2026-10-21"
+ },
+ {
+  "boss": "Drazhul, The Demon Smith",
+  "level": 59,
+  "key": "",
+  "coords": "2213/1482",
+  "enemyImg": "252",
+  "keyVerifiedDate": "2026-10-21"
  }
 ]

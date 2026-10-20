@@ -2,13 +2,13 @@
 title: 技能天赋模拟器
 description: 基于官方 1.0 Wiki / 客户端数据的 Norroth 职业天赋树模拟器。
 gameVersion: "1.0"
-verifiedDate: 2026-10-16
+verifiedDate: 2026-10-21
 versionStatus: "1.0-official"
 sources:
   - type: official
     reference: 官方 1.0 Wiki 职业页 + 游戏客户端技能数据（P20250820）
     url: https://wiki.norroth.com/p/136/
-    date: "2026-10-16"
+    date: "2026-10-21"
 ---
 
 export const base = import.meta.env.BASE_URL.replace(/\/$/, '');
@@ -20,6 +20,8 @@ export const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 > **数据口径**：官方 1.0 Wiki 职业页 + 游戏客户端技能数据（`skill_json`，P20250820），含 6 个官方职业 + 2 个**待确认职业**（Stormherald / Plaguebringer）。
 >
 > **2026-10-16 复核**：官方 1.0 Wiki 的**技能定义未变**（六个职业页与技能书页的技能 tooltip 与 10-15 完全一致），但**技能等级上限已确认**——官方 1.0 Wiki 六个职业页把全部 **170** 个技能都标为 `skill-level=10`（以 Lv.10 口径展示），1.0 客户端 `skillbook.min.js` 的加点逻辑硬编码上限为 `0xa`（=10）。因此模拟器**技能上限为 10**。详见[官方 1.0 Wiki 更新对照（2026-10-16）](/norr-wiki/reference/official-wiki-2026-10-16/)。
+>
+> **2026-10-21 复核**：官方 1.0 Wiki 再次更新（新增公会地牢页、90 页补中文、城镇 14→16、Boss 16→23），但**六个职业页与技能书页的技能定义仍未变化**（技能名 / id / 上限 10 / 解锁等级逐条一致），模拟器**数值口径不变**；职业页与模拟器已按官方**中文技能分组名**展示。详见[官方 1.0 Wiki 更新对照（2026-10-21）](/norr-wiki/reference/official-wiki-2026-10-21/)。
 >
 > **注意**：1.0 是否仍保留 EA 的「技能等级 ≤ 角色等级 − 1」限制**待游戏内确认**；Stormherald / Plaguebringer 官方 Wiki 未收录，Plaguebringer 客户端数据不完整。
 >

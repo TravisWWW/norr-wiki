@@ -2,13 +2,13 @@
 title: 任务板与日志
 description: 三种任务板、任务日志与任务详情（以官方 1.0 Wiki 为准）。
 gameVersion: "1.0"
-verifiedDate: 2026-10-16
+verifiedDate: 2026-10-21
 versionStatus: "1.0-official"
 sources:
   - type: official
     reference: 官方 1.0 Wiki Quest Board（p/131）、Quest Journal（p/81）、Quest Details（p/167）、Quest Lore（p/207）
     url: https://wiki.norroth.com/p/131/
-    date: "2026-10-16"
+    date: "2026-10-21"
 ---
 
 ## 三种任务板【1.0 官方 Wiki】
@@ -25,6 +25,7 @@ sources:
 
 - 显示**所有已接、未完成**的任务，以及**已完成任务的概览**。
 - 任务分 **Main Storyline（红）** 与 **Side Quests（蓝）**：主线引导你走完游戏剧情，支线作为教学逐步加入。
+- **当前主线最新任务**：**“Valdor’s Offering”**（官方 2026-10-21 更新）。
 
 ## 任务详情 Quest Details【1.0 官方 Wiki】
 
@@ -39,6 +40,8 @@ sources:
 ## 任务背景 Quest Lore【1.0 官方 Wiki】
 
 任务界面可打开 **Quest Lore** 画面，**重读当前任务的故事与背景信息**。
+
+> 官方 2026-10-21 复核：“Quest Lore”（p/207）已**移出官方 Wiki 导航**（页面仍可访问）。
 
 ## 接 / 交任务口径
 
@@ -65,4 +68,4 @@ sources:
 
 ## 资料来源
 
-- 官方 1.0 Wiki：Quest Board（/p/131）、Quest Journal（/p/81）、Quest Details（/p/167）、Quest Lore（/p/207），2026-10-16 抓取。
+- 官方 1.0 Wiki：Quest Board（/p/131）、Quest Journal（/p/81）、Quest Details（/p/167）、Quest Lore（/p/207），2026-10-21 抓取。
