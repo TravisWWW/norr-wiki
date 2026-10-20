@@ -774,21 +774,21 @@
  {
   "name": "Orc Hunter",
   "type": "Humanoid",
-  "levelRange": "21 - 40",
+  "levelRange": "21 - 50",
   "biome": "Shrubland,Red Desert",
   "scavenging": []
  },
  {
   "name": "Orc Warlock",
   "type": "Humanoid",
-  "levelRange": "18 - 40",
+  "levelRange": "18 - 50",
   "biome": "Shrubland,Red Desert",
   "scavenging": []
  },
  {
   "name": "Orc Warrior",
   "type": "Humanoid",
-  "levelRange": "18 - 40",
+  "levelRange": "18 - 50",
   "biome": "Shrubland,Red Desert",
   "scavenging": []
  },
@@ -1104,7 +1104,7 @@
  {
   "name": "Terastodon",
   "type": "Creature",
-  "levelRange": "14 - 40",
+  "levelRange": "14 - 50",
   "biome": "Savanna,Shrubland",
   "scavenging": [
    "Meat",
