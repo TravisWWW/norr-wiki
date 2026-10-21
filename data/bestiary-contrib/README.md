@@ -4,7 +4,7 @@
 
 数据来源有两条：
 
-1. **主渠道**：图鉴专用数据仓库 `TravisWWW/norr-bestiary` 的 `contrib/char-<角色ID>.json`
+1. **主渠道**：图鉴专用数据仓库 `TravisWWW/nor-database` 的 `contrib/char-<角色ID>.json`
    （「小伴侣」用内置社区令牌自动上传）。`bestiary-merge.yml` 会拉取它们。
 2. **本地手动投递**：直接往本目录放 `char-<id>.json`（调试 / 补数据用）。
 

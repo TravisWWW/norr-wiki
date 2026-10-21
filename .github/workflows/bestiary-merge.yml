@@ -1,10 +1,10 @@
 name: 合并图鉴贡献
 
 # 图鉴数据的唯一权威文档是 src/data/bestiary-live.json。
-# 数据来源：图鉴专用仓库 TravisWWW/norr-bestiary 的 contrib/*.json（小伴侣上传）。
+# 数据来源：图鉴专用仓库 TravisWWW/nor-database 的 contrib/*.json（小伴侣上传）。
 #
 # 触发方式：
-#   · repository_dispatch（norr-bestiary 收到新数据后通知，近实时）
+#   · workflow_dispatch / repository_dispatch（小伴侣上传后立刻通知，近实时）
 #   · schedule（每 5 分钟兜底，防止通知丢失）
 #   · push 到 data/bestiary-contrib/**（本地手动投递 / 调试）
 #
@@ -42,14 +42,14 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: 拉取图鉴收件箱（norr-bestiary）
+      - name: 拉取图鉴收件箱（nor-database）
         run: |
           mkdir -p data/bestiary-contrib
-          if git clone --depth 1 https://github.com/TravisWWW/norr-bestiary.git /tmp/inbox 2>/dev/null; then
+          if git clone --depth 1 https://github.com/TravisWWW/nor-database.git /tmp/inbox 2>/dev/null; then
             cp -f /tmp/inbox/contrib/*.json data/bestiary-contrib/ 2>/dev/null || true
             echo "收件箱文件："; ls -1 data/bestiary-contrib/ || true
           else
-            echo "未能拉取 norr-bestiary（可能尚未创建），仅使用本地 data/bestiary-contrib/"
+            echo "未能拉取 nor-database（可能尚未创建），仅使用本地 data/bestiary-contrib/"
           fi
       - name: 合并贡献 → 权威图鉴文档
         run: node tools/merge-bestiary-contrib.mjs
