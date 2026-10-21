@@ -26,8 +26,8 @@ permissions:
   id-token: write
 
 concurrency:
-  group: pages
-  # 定时兜底每 5 分钟跑一次，绝不能把正在进行的部署掐掉
+  # 用独立分组：绝不能和 deploy.yml 的 pages 组互相取消（deploy.yml 是 cancel-in-progress: true）
+  group: bestiary-merge
   cancel-in-progress: false
 
 jobs:
@@ -72,6 +72,9 @@ jobs:
     needs: merge
     if: needs.merge.outputs.changed == 'true'
     runs-on: ubuntu-latest
+    concurrency:
+      group: pages
+      cancel-in-progress: false
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
