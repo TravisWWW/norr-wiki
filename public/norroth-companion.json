@@ -1,8 +1,8 @@
 {
-  "version": "2.6.92",
+  "version": "2.6.93",
   "date": "2026-10-22",
-  "notes": "v2.6.92：维修/清包城镇「没步行路线但有传送点」也能选（下拉不再误灰、行程不再提前报错）；爬塔城镇同样兜底",
+  "notes": "v2.6.93：图鉴同步改为完全静默——去掉令牌输入框、不再下载文件/打开网页；扫描进度显示完后自动后台上传（令牌由 Pages 上的 norroth-gh-token.txt 提供）。",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 709961,
-  "sha256": "be4db56ea817e22a6305c60f18566ddb044145e0da53cb2e667ae118bbc43a57"
+  "size": 707722,
+  "sha256": "f80c27275e50917fb0b4c0908306f70002ffeadea596f9b4a4be5f3580012c28"
 }

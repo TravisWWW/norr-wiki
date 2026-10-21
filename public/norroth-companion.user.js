@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.92
+// @version      2.6.93
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -184,7 +184,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.92';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
+  const SCRIPT_VER = '2.6.93';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -7412,16 +7412,11 @@
 
           <div class="divblock_dark" style="margin-top:4px">
             <div class="nr-srow">
-              <span class="nr-sl" style="flex:none" title="把你的图鉴记录上传到公共图鉴数据仓库（TravisWWW/nor-database），norr-wiki 会自动拉取并并入唯一一份权威图鉴文档，所有用小伴侣的人共享同一份数据。内置了社区令牌，正常情况下无需填写任何东西。">图鉴同步</span>
-              <button class="mini" id="nr-bestsync" type="button" style="flex:1" title="扫描并上传到公共图鉴">同步到公共图鉴</button>
+              <span class="nr-sl" style="flex:none" title="扫描本账号的图鉴记录，然后【静默上传】到公共图鉴数据仓库（TravisWWW/nor-database）；norr-wiki 会自动拉取并并入唯一一份权威图鉴文档，所有用小伴侣的人共享同一份数据。全程不需要填令牌、不会打开任何网页。">图鉴同步</span>
+              <button class="mini" id="nr-bestsync" type="button" style="flex:1" title="扫描并静默上传到公共图鉴">同步到公共图鉴</button>
             </div>
             <div class="nr-srow" style="margin-top:4px">
-              <span id="nr-bestsyncstate" style="flex:1;color:#9aa4b2;font-size:10.5px">点「同步到公共图鉴」</span>
-            </div>
-            <div class="nr-srow" style="margin-top:4px">
-              <span class="nr-sl" style="flex:none" title="可选。脚本已内置社区令牌，正常情况下不用填。填了会改用你自己的令牌（以你的账号身份上传）。只存在你本机浏览器，不写进配置、不随导出泄漏。">GitHub 令牌</span>
-              <input type="password" id="nr-ghtoken" placeholder="github_pat_…（可留空）" autocomplete="off" spellcheck="false" style="flex:1;min-width:0;padding:2px 4px;font-size:10.5px;height:auto;line-height:1.3">
-              <button class="mini" id="nr-ghtokensave" type="button" title="保存到本机浏览器">保存</button>
+              <span id="nr-bestsyncstate" style="flex:1;color:#9aa4b2;font-size:10.5px">点「同步到公共图鉴」（静默上传，无需令牌）</span>
             </div>
           </div>
 
@@ -7887,24 +7882,7 @@
     if (bestCancelEl) bestCancelEl.addEventListener('click', function () { _bestCancel = true; });
     const bestSyncEl = panel.querySelector('#nr-bestsync');
     if (bestSyncEl) bestSyncEl.addEventListener('click', function () { syncBestiary(); });
-    const ghTokEl = panel.querySelector('#nr-ghtoken');
-    if (ghTokEl) ghTokEl.value = ghUserToken();
-    (function () {
-      const s0 = panel.querySelector('#nr-bestsyncstate');
-      if (!s0) return;
-      s0.textContent = '点「同步到公共图鉴」';
-      loadCommunityToken().then(function () {
-        if (!s0.isConnected) return;
-        s0.textContent = GH_COMMUNITY_TOKEN ? '点「同步到公共图鉴」即可（无需填令牌）' : '未配置社区令牌：可填自己的令牌，或点按钮手动上传';
-      });
-    })();
-    const ghTokSaveEl = panel.querySelector('#nr-ghtokensave');
-    if (ghTokSaveEl) ghTokSaveEl.addEventListener('click', function () {
-      const v = ((ghTokEl && ghTokEl.value) || '').trim();
-      setGhToken(v);
-      const s = panel.querySelector('#nr-bestsyncstate');
-      if (s) s.textContent = v ? '已保存令牌（仅本机，将覆盖社区令牌）' : (GH_COMMUNITY_TOKEN ? '已清除，改用社区令牌' : '已清除令牌');
-    });
+    /* 图鉴同步：静默 —— 令牌由 Pages 上的 norroth-gh-token.txt 提供，界面不暴露任何令牌输入 */
     // 详细统计：点标题栏展开/收起，点「清空」清零
     const detbar = panel.querySelector('#nr-detbar');
     if (detbar) detbar.addEventListener('click', e => {
@@ -10607,7 +10585,8 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
       const fpath = GH_CONTRIB_DIR + '/' + fname;
       const text = JSON.stringify(payload, null, 1);
       const token = await ghToken();
-      if (token) {
+      if (!token) { say('未配置社区令牌，已跳过上传'); setStatus('图鉴同步：未配置令牌'); return; }
+      {
         say('上传中… ' + fname);
         let sha = null;
         try {
@@ -10627,18 +10606,6 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
         say('已上传 ' + fname + '（已记录 ' + payload.meta.recorded + '），' + (notified ? '服务器正在合并…' : '服务器将在几分钟内合并'));
         setStatus('图鉴已同步：' + payload.meta.char + '（' + payload.meta.recorded + '/' + payload.meta.count + '，' + secs + 's）');
         logEvent('图鉴同步上传 ' + fname + ' / 已记录 ' + payload.meta.recorded + ' / ' + secs + 's');
-      } else {
-        const blob = new Blob([text], { type: 'application/json;charset=utf-8' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url; a.download = fname;
-        document.body.appendChild(a); a.click(); a.remove();
-        setTimeout(function () { try { URL.revokeObjectURL(url); } catch (e) { /* ignore */ } }, 60000);
-        const upUrl = 'https://github.com/' + GH_REPO + '/upload/' + GH_BRANCH + '/' + GH_CONTRIB_DIR;
-        try { window.open(upUrl, '_blank', 'noopener'); } catch (e) { /* ignore */ }
-        say('已下载 ' + fname + '，请拖到刚打开的 GitHub 上传页');
-        setStatus('图鉴同步：已下载 ' + fname + '，请拖到 GitHub 上传页');
-        logEvent('图鉴同步（无令牌）：已下载 ' + fname);
       }
     } catch (e) {
       let msg = (e && e.message) ? e.message : String(e);
