@@ -1,6 +1,6 @@
 {
  "meta": {
-  "source": "游戏内 Inspect（/modal/inspect_enemy）· 小伴侣导出 · 1 位贡献者合并",
+  "source": "游戏内 Inspect（/modal/inspect_enemy）· 小伴侣导出 · 2 位贡献者合并",
   "fetched": "2026-10-21",
   "version": "1.0",
   "contributors": [
@@ -12,13 +12,22 @@
     "count": 193,
     "recorded": 102,
     "mergedAt": "2026-10-21"
+   },
+   {
+    "file": "char-1151.json",
+    "char": "#1151",
+    "level": 41,
+    "time": "2026-10-21T19:41:35.344Z",
+    "count": 193,
+    "recorded": 98,
+    "mergedAt": "2026-10-21"
    }
   ],
   "count": 199,
-  "recordedCount": 102,
+  "recordedCount": 120,
   "withLore": 198,
-  "withStats": 28,
-  "withSkills": 42,
+  "withStats": 64,
+  "withSkills": 78,
   "withBg": 183,
   "tabs": {
    "normal": 163,
@@ -105,7 +114,43 @@
      "id": 10009,
      "level": 1
     }
-   ]
+   ],
+   "stats": {
+    "Base Damage": 10,
+    "Physical Damage": 3,
+    "Blunt Damage": 0,
+    "Spell Damage": 3,
+    "Bleed Damage": 0,
+    "Arcane Damage": 0,
+    "Cold Damage": 0,
+    "Dark Damage": 0,
+    "Fire Damage": 0,
+    "Light Damage": 0,
+    "Lightning Damage": 0,
+    "Poison Damage": 5,
+    "Thorn Damage": 0,
+    "Defense": 20,
+    "Block Chance": 0,
+    "Block Rating": 0,
+    "Arcane Resist": 5,
+    "Cold Resist": 5,
+    "Dark Resist": 5,
+    "Fire Resist": 5,
+    "Light Resist": 5,
+    "Lightning Resist": 5,
+    "Poison Resist": 5,
+    "Evasion": 8,
+    "Critical Chance": 2,
+    "Critical Strike": 2,
+    "Hit Rating": 30,
+    "Attack Speed": 10,
+    "Armor Penetration": 1,
+    "Life Steal": 0,
+    "Mana Steal": 0,
+    "Life Regeneration": 0,
+    "Mana Regeneration": 0,
+    "Maximum Life": 60
+   }
   },
   {
    "id": 3,
@@ -169,7 +214,60 @@
      "res": "mucky_tail",
      "pct": "3%"
     }
-   ]
+   ],
+   "skills": [
+    {
+     "name": "headbutt",
+     "id": 10011,
+     "level": 1
+    },
+    {
+     "name": "kick",
+     "id": 10082,
+     "level": 1
+    },
+    {
+     "name": "trample",
+     "id": 10136,
+     "level": 1
+    }
+   ],
+   "stats": {
+    "Base Damage": 10,
+    "Physical Damage": 3,
+    "Blunt Damage": 0,
+    "Spell Damage": 0,
+    "Bleed Damage": 0,
+    "Arcane Damage": 0,
+    "Cold Damage": 0,
+    "Dark Damage": 0,
+    "Fire Damage": 0,
+    "Light Damage": 0,
+    "Lightning Damage": 0,
+    "Poison Damage": 0,
+    "Thorn Damage": 0,
+    "Defense": 20,
+    "Block Chance": 0,
+    "Block Rating": 0,
+    "Arcane Resist": 5,
+    "Cold Resist": 5,
+    "Dark Resist": 5,
+    "Fire Resist": 5,
+    "Light Resist": 5,
+    "Lightning Resist": 5,
+    "Poison Resist": 5,
+    "Evasion": 5,
+    "Critical Chance": 0,
+    "Critical Strike": 0,
+    "Hit Rating": 20,
+    "Attack Speed": 6,
+    "Armor Penetration": 1,
+    "Life Steal": 0,
+    "Mana Steal": 0,
+    "Life Regeneration": 0,
+    "Mana Regeneration": 0,
+    "Maximum Life": 90
+   }
   },
   {
    "id": 4,
@@ -203,7 +301,34 @@
      "res": "mucky_eye",
      "pct": "25%"
     }
-   ]
+   ],
+   "skills": [
+    {
+     "name": "leap",
+     "id": 9,
+     "level": 1
+    },
+    {
+     "name": "spit",
+     "id": 10083,
+     "level": 1
+    }
+   ],
+   "stats": {
+    "Base Damage": 5,
+    "Physical Damage": 3,
+    "Blunt Damage": 0,
+    "Spell Damage": 0,
+    "Bleed Damage": 0,
+    "Arcane Damage": 0,
+    "Cold Damage": 0,
+    "Dark Damage": 0,
+    "Fire Damage": 0,
+    "Light Damage": 0,
+    "Lightning Damage": 0,
+    "Poison Damage": 0,
+    "Thorn Damage": 0
+   }
   },
   {
    "id": 5,
@@ -274,7 +399,43 @@
      "id": 10009,
      "level": 1
     }
-   ]
+   ],
+   "stats": {
+    "Base Damage": 5,
+    "Physical Damage": 3,
+    "Blunt Damage": 0,
+    "Spell Damage": 0,
+    "Bleed Damage": 0,
+    "Arcane Damage": 0,
+    "Cold Damage": 0,
+    "Dark Damage": 0,
+    "Fire Damage": 0,
+    "Light Damage": 0,
+    "Lightning Damage": 0,
+    "Poison Damage": 0,
+    "Thorn Damage": 0,
+    "Defense": 10,
+    "Block Chance": 0,
+    "Block Rating": 0,
+    "Arcane Resist": 5,
+    "Cold Resist": 5,
+    "Dark Resist": 5,
+    "Fire Resist": 5,
+    "Light Resist": 5,
+    "Lightning Resist": 5,
+    "Poison Resist": 5,
+    "Evasion": 8,
+    "Critical Chance": 0,
+    "Critical Strike": 0,
+    "Hit Rating": 20,
+    "Attack Speed": 10,
+    "Armor Penetration": 1,
+    "Life Steal": 0,
+    "Mana Steal": 0,
+    "Life Regeneration": 0,
+    "Mana Regeneration": 0,
+    "Maximum Life": 60
+   }
   },
   {
    "id": 6,
@@ -355,7 +516,22 @@
      "id": 10112,
      "level": 1
     }
-   ]
+   ],
+   "stats": {
+    "Base Damage": 5,
+    "Physical Damage": 3,
+    "Blunt Damage": 0,
+    "Spell Damage": 0,
+    "Bleed Damage": 0,
+    "Arcane Damage": 0,
+    "Cold Damage": 0,
+    "Dark Damage": 0,
+    "Fire Damage": 0,
+    "Light Damage": 0,
+    "Lightning Damage": 0,
+    "Poison Damage": 0,
+    "Thorn Damage": 0
+   }
   },
   {
    "id": 8,
@@ -419,7 +595,39 @@
      "res": "mucky_tail",
      "pct": "4%"
     }
-   ]
+   ],
+   "skills": [
+    {
+     "name": "bite",
+     "id": 10009,
+     "level": 1
+    },
+    {
+     "name": "lethal_bite",
+     "id": 10019,
+     "level": 1
+    },
+    {
+     "name": "scratch",
+     "id": 10008,
+     "level": 1
+    }
+   ],
+   "stats": {
+    "Base Damage": 15,
+    "Physical Damage": 3,
+    "Blunt Damage": 0,
+    "Spell Damage": 0,
+    "Bleed Damage": 0,
+    "Arcane Damage": 0,
+    "Cold Damage": 0,
+    "Dark Damage": 0,
+    "Fire Damage": 0,
+    "Light Damage": 0,
+    "Lightning Damage": 0,
+    "Poison Damage": 0,
+    "Thorn Damage": 0
+   }
   },
   {
    "id": 10,
@@ -473,7 +681,65 @@
      "res": "cotton_fleece",
      "pct": "6%"
     }
-   ]
+   ],
+   "skills": [
+    {
+     "name": "bite",
+     "id": 10009,
+     "level": 1
+    },
+    {
+     "name": "impale",
+     "id": 10049,
+     "level": 1
+    },
+    {
+     "name": "tail_sweep",
+     "id": 10149,
+     "level": 1
+    },
+    {
+     "name": "slash",
+     "id": 10024,
+     "level": 1
+    }
+   ],
+   "stats": {
+    "Base Damage": 10,
+    "Physical Damage": 3,
+    "Blunt Damage": 0,
+    "Spell Damage": 0,
+    "Bleed Damage": 0,
+    "Arcane Damage": 0,
+    "Cold Damage": 0,
+    "Dark Damage": 0,
+    "Fire Damage": 0,
+    "Light Damage": 0,
+    "Lightning Damage": 0,
+    "Poison Damage": 0,
+    "Thorn Damage": 0,
+    "Defense": 20,
+    "Block Chance": 0,
+    "Block Rating": 0,
+    "Arcane Resist": 5,
+    "Cold Resist": 0,
+    "Dark Resist": 5,
+    "Fire Resist": 5,
+    "Light Resist": 5,
+    "Lightning Resist": 5,
+    "Poison Resist": 5,
+    "Evasion": 2,
+    "Critical Chance": 0,
+    "Critical Strike": 0,
+    "Hit Rating": 20,
+    "Attack Speed": 2,
+    "Armor Penetration": 1,
+    "Life Steal": 0,
+    "Mana Steal": 0,
+    "Life Regeneration": 2,
+    "Mana Regeneration": 0,
+    "Maximum Life": 90
+   }
   },
   {
    "id": 11,
@@ -575,6 +841,18 @@
      "name": "Mucky Fruits",
      "res": "mucky_fruits",
      "pct": "15%"
+    }
+   ],
+   "skills": [
+    {
+     "name": "stab",
+     "id": 10012,
+     "level": 1
+    },
+    {
+     "name": "impale",
+     "id": 10049,
+     "level": 1
     }
    ]
   },
@@ -873,7 +1151,54 @@
      "res": "mucky_tail",
      "pct": "3%"
     }
-   ]
+   ],
+   "skills": [
+    {
+     "name": "headbutt",
+     "id": 10011,
+     "level": 1
+    },
+    {
+     "name": "charge",
+     "id": 10016,
+     "level": 1
+    },
+    {
+     "name": "horn_stab",
+     "id": 10017,
+     "level": 1
+    },
+    {
+     "name": "trample",
+     "id": 10136,
+     "level": 1
+    }
+   ],
+   "stats": {
+    "Base Damage": 10,
+    "Physical Damage": 3,
+    "Blunt Damage": 0,
+    "Spell Damage": 0,
+    "Bleed Damage": 0,
+    "Arcane Damage": 0,
+    "Cold Damage": 0,
+    "Dark Damage": 0,
+    "Fire Damage": 0,
+    "Light Damage": 0,
+    "Lightning Damage": 0,
+    "Poison Damage": 0,
+    "Thorn Damage": 0,
+    "Defense": 10,
+    "Block Chance": 0,
+    "Block Rating": 0,
+    "Arcane Resist": 5,
+    "Cold Resist": 5,
+    "Dark Resist": 5,
+    "Fire Resist": 5,
+    "Light Resist": 5,
+    "Lightning Resist": 5,
+    "Poison Resist": 5
+   }
   },
   {
    "id": 21,
@@ -924,7 +1249,32 @@
      "id": 10078,
      "level": 1
     }
-   ]
+   ],
+   "stats": {
+    "Base Damage": 10,
+    "Physical Damage": 3,
+    "Blunt Damage": 0,
+    "Spell Damage": 0,
+    "Bleed Damage": 0,
+    "Arcane Damage": 0,
+    "Cold Damage": 0,
+    "Dark Damage": 0,
+    "Fire Damage": 0,
+    "Light Damage": 0,
+    "Lightning Damage": 0,
+    "Poison Damage": 5,
+    "Thorn Damage": 0,
+    "Defense": 20,
+    "Block Chance": 0,
+    "Block Rating": 0,
+    "Arcane Resist": 5,
+    "Cold Resist": 5,
+    "Dark Resist": 5,
+    "Fire Resist": 5,
+    "Light Resist": 5,
+    "Lightning Resist": 0,
+    "Poison Resist": 5
+   }
   },
   {
    "id": 22,
@@ -993,7 +1343,34 @@
      "res": "mucky_tail",
      "pct": "3%"
     }
-   ]
+   ],
+   "skills": [
+    {
+     "name": "bite",
+     "id": 10009,
+     "level": 1
+    },
+    {
+     "name": "lethal_bite",
+     "id": 10019,
+     "level": 1
+    }
+   ],
+   "stats": {
+    "Base Damage": 15,
+    "Physical Damage": 3,
+    "Blunt Damage": 0,
+    "Spell Damage": 0,
+    "Bleed Damage": 0,
+    "Arcane Damage": 0,
+    "Cold Damage": 0,
+    "Dark Damage": 0,
+    "Fire Damage": 0,
+    "Light Damage": 0,
+    "Lightning Damage": 0,
+    "Poison Damage": 0,
+    "Thorn Damage": 0
+   }
   },
   {
    "id": 23,
@@ -1041,7 +1418,49 @@
      "res": "mucky_tail",
      "pct": "7%"
     }
-   ]
+   ],
+   "skills": [
+    {
+     "name": "resilient_shell",
+     "id": 10018,
+     "level": 1
+    },
+    {
+     "name": "lethal_bite",
+     "id": 10019,
+     "level": 1
+    },
+    {
+     "name": "bite",
+     "id": 10009,
+     "level": 1
+    }
+   ],
+   "stats": {
+    "Base Damage": 10,
+    "Physical Damage": 3,
+    "Blunt Damage": 0,
+    "Spell Damage": 0,
+    "Bleed Damage": 0,
+    "Arcane Damage": 0,
+    "Cold Damage": 0,
+    "Dark Damage": 0,
+    "Fire Damage": 0,
+    "Light Damage": 0,
+    "Lightning Damage": 0,
+    "Poison Damage": 0,
+    "Thorn Damage": 2,
+    "Defense": 20,
+    "Block Chance": 10,
+    "Block Rating": 1,
+    "Arcane Resist": 5,
+    "Cold Resist": 5,
+    "Dark Resist": 5,
+    "Fire Resist": 5,
+    "Light Resist": 5,
+    "Lightning Resist": 5,
+    "Poison Resist": 5
+   }
   },
   {
    "id": 24,
@@ -1276,7 +1695,122 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_30.gif",
    "bg": "taiga.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "25 - 50",
+   "alignment": "Neutral",
+   "health": "Low",
+   "defense": "High",
+   "resistance": "Low",
+   "scavenging": [
+    {
+     "name": "Low Quality Meat",
+     "res": "low_quality_meat",
+     "pct": "17%"
+    },
+    {
+     "name": "Low Quality Hide",
+     "res": "low_quality_hide",
+     "pct": "30%"
+    },
+    {
+     "name": "Low Quality Fang",
+     "res": "low_quality_fang",
+     "pct": "7%"
+    },
+    {
+     "name": "Low Quality Bone",
+     "res": "low_quality_bone",
+     "pct": "10%"
+    },
+    {
+     "name": "Low Quality Tendon",
+     "res": "low_quality_tendon",
+     "pct": "10%"
+    },
+    {
+     "name": "Low Quality Skull",
+     "res": "low_quality_skull",
+     "pct": "3%"
+    },
+    {
+     "name": "Low Quality Claw",
+     "res": "low_quality_claw",
+     "pct": "13%"
+    },
+    {
+     "name": "Low Quality Eye",
+     "res": "low_quality_eye",
+     "pct": "7%"
+    },
+    {
+     "name": "Low Quality Tail",
+     "res": "low_quality_tail",
+     "pct": "3%"
+    }
+   ],
+   "skills": [
+    {
+     "name": "leap",
+     "id": 9,
+     "level": 5
+    },
+    {
+     "name": "bite",
+     "id": 10009,
+     "level": 5
+    },
+    {
+     "name": "maul",
+     "id": 10015,
+     "level": 5
+    },
+    {
+     "name": "scratch",
+     "id": 10008,
+     "level": 5
+    },
+    {
+     "name": "pounce",
+     "id": 10162,
+     "level": 5
+    }
+   ],
+   "stats": {
+    "Base Damage": 20,
+    "Physical Damage": 3,
+    "Blunt Damage": 0,
+    "Spell Damage": 0,
+    "Bleed Damage": 0,
+    "Arcane Damage": 0,
+    "Cold Damage": 0,
+    "Dark Damage": 0,
+    "Fire Damage": 0,
+    "Light Damage": 0,
+    "Lightning Damage": 0,
+    "Poison Damage": 0,
+    "Thorn Damage": 0,
+    "Defense": 20,
+    "Block Chance": 0,
+    "Block Rating": 0,
+    "Arcane Resist": 5,
+    "Cold Resist": 5,
+    "Dark Resist": 5,
+    "Fire Resist": 5,
+    "Light Resist": 5,
+    "Lightning Resist": 5,
+    "Poison Resist": 5,
+    "Evasion": 5,
+    "Critical Chance": 8,
+    "Critical Strike": 25,
+    "Hit Rating": 30,
+    "Attack Speed": 6,
+    "Armor Penetration": 1,
+    "Life Steal": 0,
+    "Mana Steal": 0,
+    "Life Regeneration": 0,
+    "Mana Regeneration": 0,
+    "Maximum Life": 60
+   }
   },
   {
    "id": 32,
@@ -1357,7 +1891,48 @@
    "specials": "-",
    "health": "Low",
    "defense": "High",
-   "resistance": "Low"
+   "resistance": "Low",
+   "scavenging": [
+    {
+     "name": "Mucky Fang",
+     "res": "mucky_fang",
+     "pct": "67%"
+    },
+    {
+     "name": "Mucky Chitin",
+     "res": "mucky_chitin",
+     "pct": "33%"
+    }
+   ],
+   "drops": [
+    {
+     "name": "Woodland Spider Pet Egg",
+     "res": "woodland_spider_pet_egg",
+     "pct": "4.5%"
+    }
+   ],
+   "skills": [
+    {
+     "name": "leap",
+     "id": 9,
+     "level": 1
+    },
+    {
+     "name": "bite",
+     "id": 10009,
+     "level": 1
+    },
+    {
+     "name": "web_spray",
+     "id": 10141,
+     "level": 1
+    },
+    {
+     "name": "spawn_spiderling",
+     "id": 10142,
+     "level": 1
+    }
+   ]
   },
   {
    "id": 37,
@@ -1543,7 +2118,98 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_43.gif",
    "bg": "taiga.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "25 - 50",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "Medium",
+   "defense": "Medium",
+   "resistance": "High",
+   "drops": [
+    {
+     "name": "Bronze Sestertii",
+     "res": "coin_bronze",
+     "pct": "100%"
+    },
+    {
+     "name": "Medium Mana Potion",
+     "res": "medium_mana_potion",
+     "pct": "6%"
+    },
+    {
+     "name": "Bronze Axe Blade",
+     "res": "bronze_axe_blade",
+     "pct": "6%"
+    },
+    {
+     "name": "Spruce Handle",
+     "res": "spruce_handle",
+     "pct": "10%"
+    },
+    {
+     "name": "Low Quality Leather Shoe Base",
+     "res": "low_quality_leather_shoe_base",
+     "pct": "8%"
+    },
+    {
+     "name": "Jute Fleece",
+     "res": "jute_fleece",
+     "pct": "8%"
+    }
+   ],
+   "skills": [
+    {
+     "name": "barbaric_cleave",
+     "id": 7,
+     "level": 5
+    },
+    {
+     "name": "cold_snap",
+     "id": 164,
+     "level": 5
+    },
+    {
+     "name": "frost_ball",
+     "id": 10076,
+     "level": 5
+    }
+   ],
+   "stats": {
+    "Base Damage": 20,
+    "Physical Damage": 3,
+    "Blunt Damage": 0,
+    "Spell Damage": 3,
+    "Bleed Damage": 0,
+    "Arcane Damage": 0,
+    "Cold Damage": 5,
+    "Dark Damage": 0,
+    "Fire Damage": 0,
+    "Light Damage": 0,
+    "Lightning Damage": 0,
+    "Poison Damage": 0,
+    "Thorn Damage": 0,
+    "Defense": 10,
+    "Block Chance": 0,
+    "Block Rating": 0,
+    "Arcane Resist": 50,
+    "Cold Resist": 55,
+    "Dark Resist": 50,
+    "Fire Resist": 50,
+    "Light Resist": 50,
+    "Lightning Resist": 50,
+    "Poison Resist": 50,
+    "Evasion": 5,
+    "Critical Chance": 8,
+    "Critical Strike": 15,
+    "Hit Rating": 30,
+    "Attack Speed": 6,
+    "Armor Penetration": 1,
+    "Life Steal": 0,
+    "Mana Steal": 0,
+    "Life Regeneration": 0,
+    "Mana Regeneration": 0,
+    "Maximum Life": 90
+   }
   },
   {
    "id": 45,
@@ -1669,7 +2335,43 @@
      "id": 10148,
      "level": 2
     }
-   ]
+   ],
+   "stats": {
+    "Base Damage": 15,
+    "Physical Damage": 3,
+    "Blunt Damage": 0,
+    "Spell Damage": 0,
+    "Bleed Damage": 0,
+    "Arcane Damage": 0,
+    "Cold Damage": 0,
+    "Dark Damage": 0,
+    "Fire Damage": 0,
+    "Light Damage": 0,
+    "Lightning Damage": 0,
+    "Poison Damage": 0,
+    "Thorn Damage": 0,
+    "Defense": 40,
+    "Block Chance": 10,
+    "Block Rating": 1,
+    "Arcane Resist": 10,
+    "Cold Resist": 10,
+    "Dark Resist": 10,
+    "Fire Resist": 10,
+    "Light Resist": 10,
+    "Lightning Resist": 10,
+    "Poison Resist": 10,
+    "Evasion": 8,
+    "Critical Chance": 1,
+    "Critical Strike": 1,
+    "Hit Rating": 20,
+    "Attack Speed": 10,
+    "Armor Penetration": 1,
+    "Life Steal": 0,
+    "Mana Steal": 0,
+    "Life Regeneration": 0,
+    "Mana Regeneration": 0,
+    "Maximum Life": 60
+   }
   },
   {
    "id": 52,
@@ -2107,7 +2809,92 @@
    "specials": "-",
    "health": "Medium",
    "defense": "High",
-   "resistance": "High"
+   "resistance": "High",
+   "drops": [
+    {
+     "name": "Bronze Sestertii",
+     "res": "coin_bronze",
+     "pct": "100%"
+    },
+    {
+     "name": "Mithril Blade",
+     "res": "mithril_blade",
+     "pct": "10%"
+    },
+    {
+     "name": "Mithril Plating",
+     "res": "mithril_plating",
+     "pct": "12%"
+    },
+    {
+     "name": "Mithril Hilt",
+     "res": "mithril_hilt",
+     "pct": "8%"
+    }
+   ],
+   "skills": [
+    {
+     "name": "slash",
+     "id": 10024,
+     "level": 8
+    },
+    {
+     "name": "lethal_stab",
+     "id": 10046,
+     "level": 8
+    },
+    {
+     "name": "light_ball",
+     "id": 10074,
+     "level": 8
+    },
+    {
+     "name": "arcana_ball",
+     "id": 10075,
+     "level": 8
+    },
+    {
+     "name": "stab",
+     "id": 10012,
+     "level": 8
+    }
+   ],
+   "stats": {
+    "Base Damage": 20,
+    "Physical Damage": 3,
+    "Blunt Damage": 0,
+    "Spell Damage": 3,
+    "Bleed Damage": 0,
+    "Arcane Damage": 5,
+    "Cold Damage": 0,
+    "Dark Damage": 0,
+    "Fire Damage": 0,
+    "Light Damage": 5,
+    "Lightning Damage": 0,
+    "Poison Damage": 0,
+    "Thorn Damage": 0,
+    "Defense": 20,
+    "Block Chance": 30,
+    "Block Rating": 6,
+    "Arcane Resist": 20,
+    "Cold Resist": 20,
+    "Dark Resist": 20,
+    "Fire Resist": 20,
+    "Light Resist": 20,
+    "Lightning Resist": 20,
+    "Poison Resist": 0,
+    "Evasion": 5,
+    "Critical Chance": 2,
+    "Critical Strike": 2,
+    "Hit Rating": 30,
+    "Attack Speed": 6,
+    "Armor Penetration": 1,
+    "Life Steal": 0,
+    "Mana Steal": 0,
+    "Life Regeneration": 2,
+    "Mana Regeneration": 0,
+    "Maximum Life": 90
+   }
   },
   {
    "id": 69,
@@ -2534,7 +3321,65 @@
      "res": "scrap_tail",
      "pct": "3%"
     }
-   ]
+   ],
+   "skills": [
+    {
+     "name": "lethal_bite",
+     "id": 10019,
+     "level": 2
+    },
+    {
+     "name": "slash",
+     "id": 10024,
+     "level": 2
+    },
+    {
+     "name": "rampage",
+     "id": 10064,
+     "level": 2
+    },
+    {
+     "name": "scratch",
+     "id": 10008,
+     "level": 2
+    },
+    {
+     "name": "war_howl",
+     "id": 10112,
+     "level": 2
+    }
+   ],
+   "stats": {
+    "Base Damage": 20,
+    "Physical Damage": 3,
+    "Blunt Damage": 0,
+    "Spell Damage": 0,
+    "Bleed Damage": 5,
+    "Arcane Damage": 0,
+    "Cold Damage": 0,
+    "Dark Damage": 0,
+    "Fire Damage": 0,
+    "Light Damage": 0,
+    "Lightning Damage": 0,
+    "Poison Damage": 0,
+    "Thorn Damage": 0,
+    "Defense": 20,
+    "Block Chance": 0,
+    "Block Rating": 0,
+    "Arcane Resist": 0,
+    "Cold Resist": 10,
+    "Dark Resist": 9,
+    "Fire Resist": 5,
+    "Light Resist": 5,
+    "Lightning Resist": 5,
+    "Poison Resist": 5,
+    "Evasion": 5,
+    "Critical Chance": 4,
+    "Critical Strike": 5,
+    "Hit Rating": 40,
+    "Attack Speed": 6,
+    "Armor Penetration": 1
+   }
   },
   {
    "id": 96,
@@ -2624,7 +3469,13 @@
     "Fire Resist": 5,
     "Light Resist": 5,
     "Lightning Resist": 5,
-    "Poison Resist": 5
+    "Poison Resist": 5,
+    "Evasion": 5,
+    "Critical Chance": 4,
+    "Critical Strike": 5,
+    "Hit Rating": 40,
+    "Attack Speed": 6,
+    "Armor Penetration": 1
    }
   },
   {
@@ -2636,7 +3487,88 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_97.gif",
    "bg": "deep_forest.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "11 - 15",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "Medium",
+   "defense": "Medium",
+   "resistance": "Medium",
+   "drops": [
+    {
+     "name": "Bronze Sestertii",
+     "res": "coin_bronze",
+     "pct": "100%"
+    },
+    {
+     "name": "Elm Rod",
+     "res": "elm_rod",
+     "pct": "9%"
+    },
+    {
+     "name": "Elm Gall",
+     "res": "elm_gall",
+     "pct": "8%"
+    },
+    {
+     "name": "Scrap Fruits",
+     "res": "scrap_fruits",
+     "pct": "10%"
+    },
+    {
+     "name": "Silk Fleece",
+     "res": "silk_fleece",
+     "pct": "12%"
+    }
+   ],
+   "skills": [
+    {
+     "name": "natures_mend",
+     "id": 233,
+     "level": 2
+    },
+    {
+     "name": "fire_ball",
+     "id": 10052,
+     "level": 2
+    },
+    {
+     "name": "lightning_bolt",
+     "id": 69,
+     "level": 2
+    }
+   ],
+   "stats": {
+    "Base Damage": 10,
+    "Physical Damage": 0,
+    "Blunt Damage": 0,
+    "Spell Damage": 3,
+    "Bleed Damage": 0,
+    "Arcane Damage": 0,
+    "Cold Damage": 0,
+    "Dark Damage": 0,
+    "Fire Damage": 1,
+    "Light Damage": 0,
+    "Lightning Damage": 1,
+    "Poison Damage": 0,
+    "Thorn Damage": 5,
+    "Defense": 10,
+    "Block Chance": 0,
+    "Block Rating": 0,
+    "Arcane Resist": 10,
+    "Cold Resist": 15,
+    "Dark Resist": 15,
+    "Fire Resist": 10,
+    "Light Resist": 10,
+    "Lightning Resist": 10,
+    "Poison Resist": 0,
+    "Evasion": 5,
+    "Critical Chance": 4,
+    "Critical Strike": 5,
+    "Hit Rating": 40,
+    "Attack Speed": 6,
+    "Armor Penetration": 1
+   }
   },
   {
    "id": 98,
@@ -2670,7 +3602,49 @@
      "res": "spirit_log",
      "pct": "29%"
     }
-   ]
+   ],
+   "skills": [
+    {
+     "name": "deadly_aroma",
+     "id": 10047,
+     "level": 2
+    },
+    {
+     "name": "sharp_leaf_strike",
+     "id": 10048,
+     "level": 2
+    },
+    {
+     "name": "stump",
+     "id": 10133,
+     "level": 2
+    }
+   ],
+   "stats": {
+    "Base Damage": 20,
+    "Physical Damage": 3,
+    "Blunt Damage": 0,
+    "Spell Damage": 0,
+    "Bleed Damage": 0,
+    "Arcane Damage": 0,
+    "Cold Damage": 0,
+    "Dark Damage": 0,
+    "Fire Damage": 0,
+    "Light Damage": 0,
+    "Lightning Damage": 0,
+    "Poison Damage": 5,
+    "Thorn Damage": 0,
+    "Defense": 40,
+    "Block Chance": 10,
+    "Block Rating": 1,
+    "Arcane Resist": 10,
+    "Cold Resist": 10,
+    "Dark Resist": 0,
+    "Fire Resist": 0,
+    "Light Resist": 10,
+    "Lightning Resist": 10,
+    "Poison Resist": 20
+   }
   },
   {
    "id": 99,
@@ -2967,7 +3941,28 @@
     "Light Damage": 0,
     "Lightning Damage": 0,
     "Poison Damage": 0,
-    "Thorn Damage": 0
+    "Thorn Damage": 0,
+    "Defense": 20,
+    "Block Chance": 0,
+    "Block Rating": 0,
+    "Arcane Resist": 5,
+    "Cold Resist": 5,
+    "Dark Resist": 5,
+    "Fire Resist": 5,
+    "Light Resist": 5,
+    "Lightning Resist": 5,
+    "Poison Resist": 5,
+    "Evasion": 5,
+    "Critical Chance": 4,
+    "Critical Strike": 4,
+    "Hit Rating": 30,
+    "Attack Speed": 6,
+    "Armor Penetration": 1,
+    "Life Steal": 0,
+    "Mana Steal": 0,
+    "Life Regeneration": 0,
+    "Mana Regeneration": 0,
+    "Maximum Life": 60
    }
   },
   {
@@ -3017,7 +4012,65 @@
      "res": "scrap_tail",
      "pct": "5%"
     }
-   ]
+   ],
+   "skills": [
+    {
+     "name": "resilient_shell",
+     "id": 10018,
+     "level": 2
+    },
+    {
+     "name": "tail_sweep",
+     "id": 10149,
+     "level": 2
+    },
+    {
+     "name": "razor_glide",
+     "id": 10154,
+     "level": 2
+    },
+    {
+     "name": "sand_shroud",
+     "id": 10153,
+     "level": 2
+    }
+   ],
+   "stats": {
+    "Base Damage": 20,
+    "Physical Damage": 3,
+    "Blunt Damage": 0,
+    "Spell Damage": 0,
+    "Bleed Damage": 5,
+    "Arcane Damage": 0,
+    "Cold Damage": 0,
+    "Dark Damage": 0,
+    "Fire Damage": 0,
+    "Light Damage": 0,
+    "Lightning Damage": 0,
+    "Poison Damage": 0,
+    "Thorn Damage": 0,
+    "Defense": 20,
+    "Block Chance": 10,
+    "Block Rating": 1,
+    "Arcane Resist": 5,
+    "Cold Resist": 5,
+    "Dark Resist": 5,
+    "Fire Resist": 5,
+    "Light Resist": 5,
+    "Lightning Resist": 5,
+    "Poison Resist": 5,
+    "Evasion": 2,
+    "Critical Chance": 2,
+    "Critical Strike": 2,
+    "Hit Rating": 30,
+    "Attack Speed": 2,
+    "Armor Penetration": 1,
+    "Life Steal": 0,
+    "Mana Steal": 0,
+    "Life Regeneration": 0,
+    "Mana Regeneration": 0,
+    "Maximum Life": 60
+   }
   },
   {
    "id": 106,
@@ -3028,7 +4081,107 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_106.gif",
    "bg": "deep_forest.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "11 - 15",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "High",
+   "defense": "High",
+   "resistance": "Medium",
+   "scavenging": [
+    {
+     "name": "Scrap Meat",
+     "res": "scrap_meat",
+     "pct": "18%"
+    },
+    {
+     "name": "Scrap Hide",
+     "res": "scrap_hide",
+     "pct": "30%"
+    },
+    {
+     "name": "Scrap Tooth",
+     "res": "scrap_tooth",
+     "pct": "6%"
+    },
+    {
+     "name": "Scrap Bone",
+     "res": "scrap_bone",
+     "pct": "9%"
+    },
+    {
+     "name": "Scrap Tendon",
+     "res": "scrap_tendon",
+     "pct": "12%"
+    },
+    {
+     "name": "Scrap Skull",
+     "res": "scrap_skull",
+     "pct": "3%"
+    },
+    {
+     "name": "Scrap Claw",
+     "res": "scrap_claw",
+     "pct": "12%"
+    },
+    {
+     "name": "Scrap Eye",
+     "res": "scrap_eye",
+     "pct": "6%"
+    },
+    {
+     "name": "Scrap Tail",
+     "res": "scrap_tail",
+     "pct": "3%"
+    }
+   ],
+   "skills": [
+    {
+     "name": "bite",
+     "id": 10009,
+     "level": 2
+    },
+    {
+     "name": "maul",
+     "id": 10015,
+     "level": 2
+    },
+    {
+     "name": "rampage",
+     "id": 10064,
+     "level": 2
+    },
+    {
+     "name": "scratch",
+     "id": 10008,
+     "level": 2
+    }
+   ],
+   "stats": {
+    "Base Damage": 15,
+    "Physical Damage": 3,
+    "Blunt Damage": 0,
+    "Spell Damage": 0,
+    "Bleed Damage": 0,
+    "Arcane Damage": 0,
+    "Cold Damage": 0,
+    "Dark Damage": 0,
+    "Fire Damage": 0,
+    "Light Damage": 0,
+    "Lightning Damage": 0,
+    "Poison Damage": 0,
+    "Thorn Damage": 0,
+    "Defense": 40,
+    "Block Chance": 10,
+    "Block Rating": 1,
+    "Arcane Resist": 10,
+    "Cold Resist": 10,
+    "Dark Resist": 10,
+    "Fire Resist": 10,
+    "Light Resist": 10,
+    "Lightning Resist": 10,
+    "Poison Resist": 10
+   }
   },
   {
    "id": 107,
@@ -3397,7 +4550,12 @@
     "Critical Strike": 25,
     "Hit Rating": 30,
     "Attack Speed": 2,
-    "Armor Penetration": 4
+    "Armor Penetration": 4,
+    "Life Steal": 0,
+    "Mana Steal": 0,
+    "Life Regeneration": 0,
+    "Mana Regeneration": 0,
+    "Maximum Life": 110
    }
   },
   {
@@ -3494,7 +4652,12 @@
     "Critical Strike": 25,
     "Hit Rating": 40,
     "Attack Speed": 6,
-    "Armor Penetration": 1
+    "Armor Penetration": 1,
+    "Life Steal": 4,
+    "Mana Steal": 0,
+    "Life Regeneration": 2,
+    "Mana Regeneration": 0,
+    "Maximum Life": 90
    }
   },
   {
@@ -3684,7 +4847,65 @@
      "res": "scrap_eye",
      "pct": "7%"
     }
-   ]
+   ],
+   "skills": [
+    {
+     "name": "aerial_claw_assault",
+     "id": 10062,
+     "level": 2
+    },
+    {
+     "name": "dust_veil",
+     "id": 10178,
+     "level": 2
+    },
+    {
+     "name": "feather_throw",
+     "id": 222,
+     "level": 2
+    },
+    {
+     "name": "spectral_fear",
+     "id": 10077,
+     "level": 2
+    }
+   ],
+   "stats": {
+    "Base Damage": 20,
+    "Physical Damage": 3,
+    "Blunt Damage": 0,
+    "Spell Damage": 3,
+    "Bleed Damage": 5,
+    "Arcane Damage": 0,
+    "Cold Damage": 0,
+    "Dark Damage": 5,
+    "Fire Damage": 0,
+    "Light Damage": 0,
+    "Lightning Damage": 0,
+    "Poison Damage": 0,
+    "Thorn Damage": 0,
+    "Defense": 20,
+    "Block Chance": 0,
+    "Block Rating": 0,
+    "Arcane Resist": 5,
+    "Cold Resist": 5,
+    "Dark Resist": 5,
+    "Fire Resist": 5,
+    "Light Resist": 0,
+    "Lightning Resist": 5,
+    "Poison Resist": 10,
+    "Evasion": 5,
+    "Critical Chance": 3,
+    "Critical Strike": 2,
+    "Hit Rating": 30,
+    "Attack Speed": 6,
+    "Armor Penetration": 1,
+    "Life Steal": 0,
+    "Mana Steal": 0,
+    "Life Regeneration": 2,
+    "Mana Regeneration": 0,
+    "Maximum Life": 90
+   }
   },
   {
    "id": 115,
@@ -3828,7 +5049,65 @@
      "res": "scrap_tail",
      "pct": "3%"
     }
-   ]
+   ],
+   "skills": [
+    {
+     "name": "charge",
+     "id": 10016,
+     "level": 2
+    },
+    {
+     "name": "horn_stab",
+     "id": 10017,
+     "level": 2
+    },
+    {
+     "name": "rampage",
+     "id": 10064,
+     "level": 2
+    },
+    {
+     "name": "impale",
+     "id": 10049,
+     "level": 2
+    }
+   ],
+   "stats": {
+    "Base Damage": 20,
+    "Physical Damage": 3,
+    "Blunt Damage": 0,
+    "Spell Damage": 0,
+    "Bleed Damage": 0,
+    "Arcane Damage": 0,
+    "Cold Damage": 0,
+    "Dark Damage": 0,
+    "Fire Damage": 0,
+    "Light Damage": 0,
+    "Lightning Damage": 0,
+    "Poison Damage": 0,
+    "Thorn Damage": 0,
+    "Defense": 20,
+    "Block Chance": 0,
+    "Block Rating": 0,
+    "Arcane Resist": 5,
+    "Cold Resist": 5,
+    "Dark Resist": 5,
+    "Fire Resist": 5,
+    "Light Resist": 5,
+    "Lightning Resist": 5,
+    "Poison Resist": 10,
+    "Evasion": 5,
+    "Critical Chance": 4,
+    "Critical Strike": 2,
+    "Hit Rating": 40,
+    "Attack Speed": 6,
+    "Armor Penetration": 4,
+    "Life Steal": 0,
+    "Mana Steal": 0,
+    "Life Regeneration": 0,
+    "Mana Regeneration": 0,
+    "Maximum Life": 60
+   }
   },
   {
    "id": 118,
@@ -3891,7 +5170,22 @@
      "id": 10016,
      "level": 3
     }
-   ]
+   ],
+   "stats": {
+    "Base Damage": 20,
+    "Physical Damage": 3,
+    "Blunt Damage": 0,
+    "Spell Damage": 0,
+    "Bleed Damage": 0,
+    "Arcane Damage": 0,
+    "Cold Damage": 0,
+    "Dark Damage": 0,
+    "Fire Damage": 0,
+    "Light Damage": 0,
+    "Lightning Damage": 0,
+    "Poison Damage": 0,
+    "Thorn Damage": 5
+   }
   },
   {
    "id": 119,
@@ -4018,7 +5312,43 @@
      "id": 10009,
      "level": 3
     }
-   ]
+   ],
+   "stats": {
+    "Base Damage": 20,
+    "Physical Damage": 3,
+    "Blunt Damage": 0,
+    "Spell Damage": 0,
+    "Bleed Damage": 0,
+    "Arcane Damage": 0,
+    "Cold Damage": 0,
+    "Dark Damage": 0,
+    "Fire Damage": 0,
+    "Light Damage": 0,
+    "Lightning Damage": 0,
+    "Poison Damage": 0,
+    "Thorn Damage": 0,
+    "Defense": 10,
+    "Block Chance": 0,
+    "Block Rating": 0,
+    "Arcane Resist": 10,
+    "Cold Resist": 10,
+    "Dark Resist": 10,
+    "Fire Resist": 10,
+    "Light Resist": 10,
+    "Lightning Resist": 10,
+    "Poison Resist": 15,
+    "Evasion": 5,
+    "Critical Chance": 3,
+    "Critical Strike": 2,
+    "Hit Rating": 30,
+    "Attack Speed": 10,
+    "Armor Penetration": 1,
+    "Life Steal": 0,
+    "Mana Steal": 0,
+    "Life Regeneration": 5,
+    "Mana Regeneration": 0,
+    "Maximum Life": 90
+   }
   },
   {
    "id": 121,
@@ -4059,7 +5389,60 @@
      "res": "blood_queen_pet_egg",
      "pct": "2.5%"
     }
-   ]
+   ],
+   "skills": [
+    {
+     "name": "lethal_bite",
+     "id": 10019,
+     "level": 4
+    },
+    {
+     "name": "vampiric_bite",
+     "id": 10021,
+     "level": 4
+    },
+    {
+     "name": "blood_hunger",
+     "id": 10155,
+     "level": 4
+    }
+   ],
+   "stats": {
+    "Base Damage": 20,
+    "Physical Damage": 3,
+    "Blunt Damage": 0,
+    "Spell Damage": 0,
+    "Bleed Damage": 0,
+    "Arcane Damage": 0,
+    "Cold Damage": 0,
+    "Dark Damage": 0,
+    "Fire Damage": 0,
+    "Light Damage": 0,
+    "Lightning Damage": 0,
+    "Poison Damage": 0,
+    "Thorn Damage": 0,
+    "Defense": 20,
+    "Block Chance": 0,
+    "Block Rating": 0,
+    "Arcane Resist": 5,
+    "Cold Resist": 5,
+    "Dark Resist": 5,
+    "Fire Resist": 5,
+    "Light Resist": 5,
+    "Lightning Resist": 5,
+    "Poison Resist": 5,
+    "Evasion": 8,
+    "Critical Chance": 4,
+    "Critical Strike": 2,
+    "Hit Rating": 40,
+    "Attack Speed": 10,
+    "Armor Penetration": 3,
+    "Life Steal": 10,
+    "Mana Steal": 0,
+    "Life Regeneration": 0,
+    "Mana Regeneration": 0,
+    "Maximum Life": 90
+   }
   },
   {
    "id": 122,
@@ -4117,6 +5500,23 @@
      "name": "Scrap Tail",
      "res": "scrap_tail",
      "pct": "5%"
+    }
+   ],
+   "skills": [
+    {
+     "name": "scratch",
+     "id": 10008,
+     "level": 3
+    },
+    {
+     "name": "lethal_bite",
+     "id": 10019,
+     "level": 3
+    },
+    {
+     "name": "slash",
+     "id": 10024,
+     "level": 3
     }
    ]
   },
@@ -4658,7 +6058,19 @@
    "tab": "boss",
    "icon": "https://www.norroth.com/images/maps/items/enemy_133.gif",
    "bg": "underground.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "25 - 25",
+   "alignment": "Neutral",
+   "health": "High",
+   "defense": "High",
+   "resistance": "Medium",
+   "drops": [
+    {
+     "name": "Bronze Sestertii",
+     "res": "coin_bronze",
+     "pct": "100%"
+    }
+   ]
   },
   {
    "id": 134,
@@ -4801,7 +6213,18 @@
     "Fire Resist": 10,
     "Light Resist": 15,
     "Lightning Resist": 0,
-    "Poison Resist": 10
+    "Poison Resist": 10,
+    "Evasion": 5,
+    "Critical Chance": 4,
+    "Critical Strike": 5,
+    "Hit Rating": 40,
+    "Attack Speed": 6,
+    "Armor Penetration": 1,
+    "Life Steal": 0,
+    "Mana Steal": 0,
+    "Life Regeneration": 2,
+    "Mana Regeneration": 0,
+    "Maximum Life": 110
    }
   },
   {
@@ -4995,7 +6418,67 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_148.gif",
    "bg": "haunted_forest.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "21 - 30",
+   "alignment": "Dark",
+   "specials": "-",
+   "health": "Medium",
+   "defense": "High",
+   "resistance": "Low",
+   "drops": [
+    {
+     "name": "Bronze Sestertii",
+     "res": "coin_bronze",
+     "pct": "100%"
+    },
+    {
+     "name": "Low Quality Tooth",
+     "res": "low_quality_tooth",
+     "pct": "10%"
+    },
+    {
+     "name": "Low Quality Bone",
+     "res": "low_quality_bone",
+     "pct": "20%"
+    },
+    {
+     "name": "Low Quality Skull",
+     "res": "low_quality_skull",
+     "pct": "5%"
+    },
+    {
+     "name": "Bronze Point",
+     "res": "bronze_point",
+     "pct": "5%"
+    },
+    {
+     "name": "Low Quality Leather Glove Base",
+     "res": "low_quality_leather_glove_base",
+     "pct": "8%"
+    },
+    {
+     "name": "Low Quality Leather Shoe Base",
+     "res": "low_quality_leather_shoe_base",
+     "pct": "8%"
+    }
+   ],
+   "skills": [
+    {
+     "name": "rapid_fire",
+     "id": 112,
+     "level": 4
+    },
+    {
+     "name": "critical_shot",
+     "id": 10029,
+     "level": 4
+    },
+    {
+     "name": "basic_arrow",
+     "id": 3,
+     "level": 4
+    }
+   ]
   },
   {
    "id": 149,
@@ -5006,7 +6489,87 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_149.gif",
    "bg": "haunted_forest.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "21 - 30",
+   "alignment": "Dark",
+   "specials": "-",
+   "health": "Medium",
+   "defense": "Medium",
+   "resistance": "High",
+   "drops": [
+    {
+     "name": "Bronze Sestertii",
+     "res": "coin_bronze",
+     "pct": "100%"
+    },
+    {
+     "name": "Low Quality Tooth",
+     "res": "low_quality_tooth",
+     "pct": "10%"
+    },
+    {
+     "name": "Low Quality Bone",
+     "res": "low_quality_bone",
+     "pct": "20%"
+    },
+    {
+     "name": "Low Quality Skull",
+     "res": "low_quality_skull",
+     "pct": "5%"
+    },
+    {
+     "name": "Jute Fleece",
+     "res": "jute_fleece",
+     "pct": "1%"
+    },
+    {
+     "name": "Spruce Rod",
+     "res": "spruce_rod",
+     "pct": "6%"
+    },
+    {
+     "name": "Princess Sapphire",
+     "res": "princess_sapphire",
+     "pct": "5%"
+    }
+   ],
+   "skills": [
+    {
+     "name": "arcane_beam",
+     "id": 88,
+     "level": 4
+    },
+    {
+     "name": "lightning_orb",
+     "id": 10051,
+     "level": 4
+    },
+    {
+     "name": "fire_ball",
+     "id": 10052,
+     "level": 4
+    },
+    {
+     "name": "basic_spell",
+     "id": 2,
+     "level": 4
+    }
+   ],
+   "stats": {
+    "Base Damage": 10,
+    "Physical Damage": 0,
+    "Blunt Damage": 0,
+    "Spell Damage": 3,
+    "Bleed Damage": 0,
+    "Arcane Damage": 5,
+    "Cold Damage": 0,
+    "Dark Damage": 0,
+    "Fire Damage": 5,
+    "Light Damage": 0,
+    "Lightning Damage": 5,
+    "Poison Damage": 0,
+    "Thorn Damage": 0
+   }
   },
   {
    "id": 150,
@@ -5017,7 +6580,62 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_150.gif",
    "bg": "haunted_forest.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "21 - 30",
+   "alignment": "Dark",
+   "specials": "-",
+   "health": "Medium",
+   "defense": "High",
+   "resistance": "Low",
+   "drops": [
+    {
+     "name": "Bronze Sestertii",
+     "res": "coin_bronze",
+     "pct": "100%"
+    },
+    {
+     "name": "Low Quality Tooth",
+     "res": "low_quality_tooth",
+     "pct": "10%"
+    },
+    {
+     "name": "Low Quality Bone",
+     "res": "low_quality_bone",
+     "pct": "20%"
+    },
+    {
+     "name": "Low Quality Skull",
+     "res": "low_quality_skull",
+     "pct": "5%"
+    },
+    {
+     "name": "Bronze Blade",
+     "res": "bronze_blade",
+     "pct": "8%"
+    },
+    {
+     "name": "Bronze Plating",
+     "res": "bronze_plating",
+     "pct": "8%"
+    }
+   ],
+   "skills": [
+    {
+     "name": "double_swing",
+     "id": 6,
+     "level": 4
+    },
+    {
+     "name": "slash",
+     "id": 10024,
+     "level": 4
+    },
+    {
+     "name": "stab",
+     "id": 10012,
+     "level": 4
+    }
+   ]
   },
   {
    "id": 151,
@@ -5724,7 +7342,81 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_167.gif",
    "bg": "taiga.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "1 - 60",
+   "alignment": "Neutral",
+   "health": "High",
+   "defense": "High",
+   "resistance": "Medium",
+   "scavenging": [
+    {
+     "name": "Mucky Meat",
+     "res": "mucky_meat",
+     "pct": "11%"
+    },
+    {
+     "name": "Mucky Hide",
+     "res": "mucky_hide",
+     "pct": "33%"
+    },
+    {
+     "name": "Mucky Tooth",
+     "res": "mucky_tooth",
+     "pct": "7%"
+    },
+    {
+     "name": "Mucky Bone",
+     "res": "mucky_bone",
+     "pct": "11%"
+    },
+    {
+     "name": "Mucky Tendon",
+     "res": "mucky_tendon",
+     "pct": "11%"
+    },
+    {
+     "name": "Mucky Skull",
+     "res": "mucky_skull",
+     "pct": "4%"
+    },
+    {
+     "name": "Mucky Claw",
+     "res": "mucky_claw",
+     "pct": "15%"
+    },
+    {
+     "name": "Mucky Eye",
+     "res": "mucky_eye",
+     "pct": "7%"
+    }
+   ],
+   "skills": [
+    {
+     "name": "maul",
+     "id": 10015,
+     "level": 1
+    },
+    {
+     "name": "rampage",
+     "id": 10064,
+     "level": 1
+    }
+   ],
+   "stats": {
+    "Base Damage": 20,
+    "Physical Damage": 3,
+    "Blunt Damage": 0,
+    "Spell Damage": 0,
+    "Bleed Damage": 0,
+    "Arcane Damage": 0,
+    "Cold Damage": 5,
+    "Dark Damage": 0,
+    "Fire Damage": 0,
+    "Light Damage": 0,
+    "Lightning Damage": 0,
+    "Poison Damage": 0,
+    "Thorn Damage": 0
+   }
   },
   {
    "id": 168,
@@ -5767,7 +7459,34 @@
      "res": "mucky_eye",
      "pct": "18%"
     }
-   ]
+   ],
+   "skills": [
+    {
+     "name": "poison_sting",
+     "id": 10020,
+     "level": 1
+    },
+    {
+     "name": "buzz_aggression",
+     "id": 10135,
+     "level": 1
+    }
+   ],
+   "stats": {
+    "Base Damage": 10,
+    "Physical Damage": 3,
+    "Blunt Damage": 0,
+    "Spell Damage": 0,
+    "Bleed Damage": 0,
+    "Arcane Damage": 0,
+    "Cold Damage": 0,
+    "Dark Damage": 0,
+    "Fire Damage": 0,
+    "Light Damage": 0,
+    "Lightning Damage": 0,
+    "Poison Damage": 5,
+    "Thorn Damage": 0
+   }
   },
   {
    "id": 169,
@@ -5845,7 +7564,43 @@
      "id": 10183,
      "level": 3
     }
-   ]
+   ],
+   "stats": {
+    "Base Damage": 10,
+    "Physical Damage": 0,
+    "Blunt Damage": 0,
+    "Spell Damage": 3,
+    "Bleed Damage": 0,
+    "Arcane Damage": 0,
+    "Cold Damage": 0,
+    "Dark Damage": 0,
+    "Fire Damage": 5,
+    "Light Damage": 0,
+    "Lightning Damage": 0,
+    "Poison Damage": 0,
+    "Thorn Damage": 0,
+    "Defense": 10,
+    "Block Chance": 0,
+    "Block Rating": 0,
+    "Arcane Resist": 20,
+    "Cold Resist": 0,
+    "Dark Resist": 20,
+    "Fire Resist": 30,
+    "Light Resist": 20,
+    "Lightning Resist": 20,
+    "Poison Resist": 20,
+    "Evasion": 8,
+    "Critical Chance": 3,
+    "Critical Strike": 3,
+    "Hit Rating": 40,
+    "Attack Speed": 10,
+    "Armor Penetration": 1,
+    "Life Steal": 0,
+    "Mana Steal": 0,
+    "Life Regeneration": 2,
+    "Mana Regeneration": 2,
+    "Maximum Life": 90
+   }
   },
   {
    "id": 173,
@@ -6084,7 +7839,55 @@
      "res": "scrap_string",
      "pct": "8%"
     }
-   ]
+   ],
+   "skills": [
+    {
+     "name": "light_ball",
+     "id": 10074,
+     "level": 2
+    },
+    {
+     "name": "heal",
+     "id": 10080,
+     "level": 2
+    }
+   ],
+   "stats": {
+    "Base Damage": 6,
+    "Physical Damage": 0,
+    "Blunt Damage": 0,
+    "Spell Damage": 3,
+    "Bleed Damage": 0,
+    "Arcane Damage": 0,
+    "Cold Damage": 0,
+    "Dark Damage": 0,
+    "Fire Damage": 0,
+    "Light Damage": 1,
+    "Lightning Damage": 0,
+    "Poison Damage": 0,
+    "Thorn Damage": 0,
+    "Defense": 10,
+    "Block Chance": 0,
+    "Block Rating": 0,
+    "Arcane Resist": 20,
+    "Cold Resist": 20,
+    "Dark Resist": 20,
+    "Fire Resist": 20,
+    "Light Resist": 30,
+    "Lightning Resist": 20,
+    "Poison Resist": 0,
+    "Evasion": 5,
+    "Critical Chance": 2,
+    "Critical Strike": 2,
+    "Hit Rating": 30,
+    "Attack Speed": 6,
+    "Armor Penetration": 1,
+    "Life Steal": 0,
+    "Mana Steal": 0,
+    "Life Regeneration": 5,
+    "Mana Regeneration": 2,
+    "Maximum Life": 90
+   }
   },
   {
    "id": 176,
@@ -6105,7 +7908,67 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_177.gif",
    "bg": "haunted_forest.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "21 - 30",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "High",
+   "defense": "High",
+   "resistance": "Low",
+   "scavenging": [
+    {
+     "name": "Low Quality Tendon",
+     "res": "low_quality_tendon",
+     "pct": "7%"
+    },
+    {
+     "name": "Low Quality Tooth",
+     "res": "low_quality_tooth",
+     "pct": "14%"
+    },
+    {
+     "name": "Low Quality Bone",
+     "res": "low_quality_bone",
+     "pct": "29%"
+    },
+    {
+     "name": "Low Quality Skull",
+     "res": "low_quality_skull",
+     "pct": "7%"
+    },
+    {
+     "name": "Low Quality Hoof",
+     "res": "low_quality_hoof",
+     "pct": "29%"
+    },
+    {
+     "name": "Low Quality Eye",
+     "res": "low_quality_eye",
+     "pct": "14%"
+    }
+   ],
+   "skills": [
+    {
+     "name": "headbutt",
+     "id": 10011,
+     "level": 4
+    },
+    {
+     "name": "lethal_kick",
+     "id": 10059,
+     "level": 4
+    },
+    {
+     "name": "necrotic_bite",
+     "id": 10035,
+     "level": 4
+    },
+    {
+     "name": "disease",
+     "id": 10078,
+     "level": 4
+    }
+   ]
   },
   {
    "id": 178,
@@ -6134,7 +7997,54 @@
      "res": "spirit_essence",
      "pct": "100%"
     }
-   ]
+   ],
+   "skills": [
+    {
+     "name": "frozen_strike",
+     "id": 10043,
+     "level": 4
+    },
+    {
+     "name": "frost_ball",
+     "id": 10076,
+     "level": 4
+    }
+   ],
+   "stats": {
+    "Base Damage": 10,
+    "Physical Damage": 0,
+    "Blunt Damage": 0,
+    "Spell Damage": 3,
+    "Bleed Damage": 0,
+    "Arcane Damage": 0,
+    "Cold Damage": 5,
+    "Dark Damage": 0,
+    "Fire Damage": 0,
+    "Light Damage": 0,
+    "Lightning Damage": 0,
+    "Poison Damage": 0,
+    "Thorn Damage": 5,
+    "Defense": 10,
+    "Block Chance": 10,
+    "Block Rating": 1,
+    "Arcane Resist": 20,
+    "Dark Resist": 20,
+    "Fire Resist": 0,
+    "Light Resist": 20,
+    "Lightning Resist": 20,
+    "Poison Resist": 20,
+    "Evasion": 2,
+    "Critical Chance": 8,
+    "Critical Strike": 25,
+    "Hit Rating": 20,
+    "Attack Speed": 2,
+    "Armor Penetration": 1,
+    "Life Steal": 0,
+    "Mana Steal": 0,
+    "Life Regeneration": 2,
+    "Mana Regeneration": 2,
+    "Maximum Life": 90
+   }
   },
   {
    "id": 179,
@@ -6163,7 +8073,64 @@
      "res": "spirit_essence",
      "pct": "100%"
     }
-   ]
+   ],
+   "skills": [
+    {
+     "name": "lightning_beam",
+     "id": 89,
+     "level": 4
+    },
+    {
+     "name": "lightning_orb",
+     "id": 10051,
+     "level": 4
+    },
+    {
+     "name": "lightning_bolt",
+     "id": 69,
+     "level": 4
+    },
+    {
+     "name": "electric_surge",
+     "id": 10103,
+     "level": 4
+    }
+   ],
+   "stats": {
+    "Base Damage": 10,
+    "Physical Damage": 0,
+    "Blunt Damage": 0,
+    "Spell Damage": 3,
+    "Bleed Damage": 0,
+    "Arcane Damage": 0,
+    "Cold Damage": 0,
+    "Dark Damage": 0,
+    "Fire Damage": 0,
+    "Light Damage": 0,
+    "Lightning Damage": 5,
+    "Poison Damage": 0,
+    "Thorn Damage": 0,
+    "Defense": 10,
+    "Block Chance": 0,
+    "Block Rating": 0,
+    "Arcane Resist": 10,
+    "Cold Resist": 10,
+    "Dark Resist": 10,
+    "Fire Resist": 10,
+    "Light Resist": 10,
+    "Poison Resist": 10,
+    "Evasion": 8,
+    "Critical Chance": 8,
+    "Critical Strike": 25,
+    "Hit Rating": 20,
+    "Attack Speed": 10,
+    "Armor Penetration": 1,
+    "Life Steal": 0,
+    "Mana Steal": 0,
+    "Life Regeneration": 2,
+    "Mana Regeneration": 2,
+    "Maximum Life": 90
+   }
   },
   {
    "id": 181,
@@ -6207,7 +8174,65 @@
      "res": "silk_fleece",
      "pct": "9%"
     }
-   ]
+   ],
+   "skills": [
+    {
+     "name": "lightning_orb",
+     "id": 10051,
+     "level": 4
+    },
+    {
+     "name": "dark_ball",
+     "id": 10073,
+     "level": 4
+    },
+    {
+     "name": "frost_ball",
+     "id": 10076,
+     "level": 4
+    },
+    {
+     "name": "lightning_bolt",
+     "id": 69,
+     "level": 4
+    }
+   ],
+   "stats": {
+    "Base Damage": 10,
+    "Physical Damage": 0,
+    "Blunt Damage": 0,
+    "Spell Damage": 3,
+    "Bleed Damage": 0,
+    "Arcane Damage": 0,
+    "Cold Damage": 5,
+    "Dark Damage": 5,
+    "Fire Damage": 0,
+    "Light Damage": 0,
+    "Lightning Damage": 5,
+    "Poison Damage": 0,
+    "Thorn Damage": 0,
+    "Defense": 10,
+    "Block Chance": 0,
+    "Block Rating": 0,
+    "Arcane Resist": 20,
+    "Cold Resist": 20,
+    "Dark Resist": 25,
+    "Fire Resist": 20,
+    "Light Resist": 20,
+    "Lightning Resist": 20,
+    "Poison Resist": 0,
+    "Evasion": 5,
+    "Critical Chance": 8,
+    "Critical Strike": 25,
+    "Hit Rating": 20,
+    "Attack Speed": 6,
+    "Armor Penetration": 1,
+    "Life Steal": 0,
+    "Mana Steal": 2,
+    "Life Regeneration": 2,
+    "Mana Regeneration": 2,
+    "Maximum Life": 90
+   }
   },
   {
    "id": 182,
@@ -6265,7 +8290,60 @@
      "res": "scrap_eye",
      "pct": "8%"
     }
-   ]
+   ],
+   "skills": [
+    {
+     "name": "arcane_thrust",
+     "id": 73,
+     "level": 4
+    },
+    {
+     "name": "dark_ball",
+     "id": 10073,
+     "level": 4
+    },
+    {
+     "name": "arcane_bolt",
+     "id": 68,
+     "level": 4
+    }
+   ],
+   "stats": {
+    "Base Damage": 10,
+    "Physical Damage": 0,
+    "Blunt Damage": 0,
+    "Spell Damage": 3,
+    "Bleed Damage": 0,
+    "Arcane Damage": 5,
+    "Cold Damage": 0,
+    "Dark Damage": 5,
+    "Fire Damage": 0,
+    "Light Damage": 0,
+    "Lightning Damage": 0,
+    "Poison Damage": 0,
+    "Thorn Damage": 0,
+    "Defense": 10,
+    "Block Chance": 0,
+    "Block Rating": 0,
+    "Arcane Resist": 30,
+    "Cold Resist": 20,
+    "Dark Resist": 20,
+    "Fire Resist": 25,
+    "Light Resist": 0,
+    "Lightning Resist": 20,
+    "Poison Resist": 30,
+    "Evasion": 8,
+    "Critical Chance": 8,
+    "Critical Strike": 25,
+    "Hit Rating": 20,
+    "Attack Speed": 10,
+    "Armor Penetration": 1,
+    "Life Steal": 0,
+    "Mana Steal": 0,
+    "Life Regeneration": 2,
+    "Mana Regeneration": 2,
+    "Maximum Life": 60
+   }
   },
   {
    "id": 183,
@@ -6308,7 +8386,60 @@
      "res": "silk_padding",
      "pct": "6%"
     }
-   ]
+   ],
+   "skills": [
+    {
+     "name": "lightning_orb",
+     "id": 10051,
+     "level": 4
+    },
+    {
+     "name": "arcana_ball",
+     "id": 10075,
+     "level": 4
+    },
+    {
+     "name": "basic_spell",
+     "id": 2,
+     "level": 4
+    }
+   ],
+   "stats": {
+    "Base Damage": 10,
+    "Physical Damage": 0,
+    "Blunt Damage": 0,
+    "Spell Damage": 3,
+    "Bleed Damage": 0,
+    "Arcane Damage": 5,
+    "Cold Damage": 0,
+    "Dark Damage": 0,
+    "Fire Damage": 0,
+    "Light Damage": 0,
+    "Lightning Damage": 5,
+    "Poison Damage": 0,
+    "Thorn Damage": 0,
+    "Defense": 10,
+    "Block Chance": 0,
+    "Block Rating": 0,
+    "Arcane Resist": 0,
+    "Cold Resist": 20,
+    "Dark Resist": 0,
+    "Fire Resist": 20,
+    "Light Resist": 20,
+    "Lightning Resist": 20,
+    "Poison Resist": 20,
+    "Evasion": 2,
+    "Critical Chance": 8,
+    "Critical Strike": 25,
+    "Hit Rating": 30,
+    "Attack Speed": 2,
+    "Armor Penetration": 1,
+    "Life Steal": 0,
+    "Mana Steal": 2,
+    "Life Regeneration": 2,
+    "Mana Regeneration": 2,
+    "Maximum Life": 110
+   }
   },
   {
    "id": 184,
@@ -6436,7 +8567,112 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_186.gif",
    "bg": "taiga.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "25 - 50",
+   "alignment": "Neutral",
+   "health": "Medium",
+   "defense": "High",
+   "resistance": "Low",
+   "drops": [
+    {
+     "name": "Bronze Sestertii",
+     "res": "coin_bronze",
+     "pct": "100%"
+    },
+    {
+     "name": "Bronze Axe Blade",
+     "res": "bronze_axe_blade",
+     "pct": "8%"
+    },
+    {
+     "name": "Bronze Plating",
+     "res": "bronze_plating",
+     "pct": "7%"
+    },
+    {
+     "name": "Low Quality Sharpened Tooth",
+     "res": "low_quality_sharpened_tooth",
+     "pct": "8%"
+    },
+    {
+     "name": "Spruce Rod",
+     "res": "spruce_rod",
+     "pct": "6%"
+    },
+    {
+     "name": "Jute Fleece",
+     "res": "jute_fleece",
+     "pct": "6%"
+    }
+   ],
+   "skills": [
+    {
+     "name": "jump",
+     "id": 10010,
+     "level": 5
+    },
+    {
+     "name": "frozen_strike",
+     "id": 10043,
+     "level": 5
+    },
+    {
+     "name": "rampage",
+     "id": 10064,
+     "level": 5
+    },
+    {
+     "name": "kick",
+     "id": 10082,
+     "level": 5
+    },
+    {
+     "name": "slash",
+     "id": 10024,
+     "level": 5
+    },
+    {
+     "name": "primal_rage",
+     "id": 27,
+     "level": 5
+    }
+   ],
+   "stats": {
+    "Base Damage": 20,
+    "Physical Damage": 3,
+    "Blunt Damage": 0,
+    "Spell Damage": 0,
+    "Bleed Damage": 0,
+    "Arcane Damage": 0,
+    "Cold Damage": 5,
+    "Dark Damage": 0,
+    "Fire Damage": 0,
+    "Light Damage": 0,
+    "Lightning Damage": 0,
+    "Poison Damage": 0,
+    "Thorn Damage": 0,
+    "Defense": 30,
+    "Block Chance": 20,
+    "Block Rating": 3,
+    "Arcane Resist": 5,
+    "Cold Resist": 10,
+    "Dark Resist": 5,
+    "Fire Resist": 5,
+    "Light Resist": 5,
+    "Lightning Resist": 5,
+    "Poison Resist": 0,
+    "Evasion": 6,
+    "Critical Chance": 8,
+    "Critical Strike": 25,
+    "Hit Rating": 40,
+    "Attack Speed": 6,
+    "Armor Penetration": 1,
+    "Life Steal": 0,
+    "Mana Steal": 0,
+    "Life Regeneration": 2,
+    "Mana Regeneration": 2,
+    "Maximum Life": 90
+   }
   },
   {
    "id": 187,
@@ -6447,7 +8683,61 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_187.gif",
    "bg": "taiga.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "25 - 50",
+   "alignment": "Light",
+   "health": "Medium",
+   "defense": "High",
+   "resistance": "Low",
+   "drops": [
+    {
+     "name": "Bronze Sestertii",
+     "res": "coin_bronze",
+     "pct": "100%"
+    },
+    {
+     "name": "Low Quality Wing",
+     "res": "low_quality_wing",
+     "pct": "20%"
+    },
+    {
+     "name": "Bronze Plating",
+     "res": "bronze_plating",
+     "pct": "9%"
+    },
+    {
+     "name": "Bronze Hilt",
+     "res": "bronze_hilt",
+     "pct": "7%"
+    },
+    {
+     "name": "Bronze Axe Blade",
+     "res": "bronze_axe_blade",
+     "pct": "7%"
+    },
+    {
+     "name": "Princess Sapphire",
+     "res": "princess_sapphire",
+     "pct": "5%"
+    }
+   ],
+   "skills": [
+    {
+     "name": "enchanted_axes",
+     "id": 21,
+     "level": 5
+    },
+    {
+     "name": "electrical_strike",
+     "id": 10041,
+     "level": 5
+    },
+    {
+     "name": "slash",
+     "id": 10024,
+     "level": 5
+    }
+   ]
   },
   {
    "id": 188,
@@ -6458,7 +8748,81 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_188.gif",
    "bg": "taiga.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "30 - 50",
+   "alignment": "Neutral",
+   "health": "High",
+   "defense": "High",
+   "resistance": "Medium",
+   "scavenging": [
+    {
+     "name": "Medium Quality Meat",
+     "res": "medium_quality_meat",
+     "pct": "18%"
+    },
+    {
+     "name": "Medium Quality Hide",
+     "res": "medium_quality_hide",
+     "pct": "30%"
+    },
+    {
+     "name": "Medium Quality Tooth",
+     "res": "medium_quality_tooth",
+     "pct": "6%"
+    },
+    {
+     "name": "Medium Quality Bone",
+     "res": "medium_quality_bone",
+     "pct": "9%"
+    },
+    {
+     "name": "Medium Quality Tendon",
+     "res": "medium_quality_tendon",
+     "pct": "12%"
+    },
+    {
+     "name": "Medium Quality Skull",
+     "res": "medium_quality_skull",
+     "pct": "3%"
+    },
+    {
+     "name": "Medium Quality Hoof",
+     "res": "medium_quality_hoof",
+     "pct": "12%"
+    },
+    {
+     "name": "Medium Quality Eye",
+     "res": "medium_quality_eye",
+     "pct": "6%"
+    },
+    {
+     "name": "Medium Quality Tail",
+     "res": "medium_quality_tail",
+     "pct": "3%"
+    }
+   ],
+   "skills": [
+    {
+     "name": "headbutt",
+     "id": 10011,
+     "level": 6
+    },
+    {
+     "name": "rampage",
+     "id": 10064,
+     "level": 6
+    },
+    {
+     "name": "horn_stab",
+     "id": 10017,
+     "level": 6
+    },
+    {
+     "name": "bash",
+     "id": 10120,
+     "level": 6
+    }
+   ]
   },
   {
    "id": 189,
@@ -6503,7 +8867,34 @@
    "tab": "boss",
    "icon": "https://www.norroth.com/images/maps/items/enemy_190.gif",
    "bg": "urban.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "30 - 30",
+   "alignment": "Neutral",
+   "health": "Medium",
+   "defense": "High",
+   "resistance": "Low",
+   "drops": [
+    {
+     "name": "Bronze Sestertii",
+     "res": "coin_bronze",
+     "pct": "100%"
+    },
+    {
+     "name": "Maple Club",
+     "res": "maple_club",
+     "pct": "10%"
+    },
+    {
+     "name": "Medium Quality Sharpened Tooth",
+     "res": "medium_quality_sharpened_tooth",
+     "pct": "8%"
+    },
+    {
+     "name": "Steel Nails",
+     "res": "steel_nails",
+     "pct": "8%"
+    }
+   ]
   },
   {
    "id": 191,
@@ -6530,7 +8921,14 @@
    "alignment": "Neutral",
    "health": "High",
    "defense": "High",
-   "resistance": "Medium"
+   "resistance": "Medium",
+   "drops": [
+    {
+     "name": "Bronze Sestertii",
+     "res": "coin_bronze",
+     "pct": "100%"
+    }
+   ]
   },
   {
    "id": 193,
@@ -6927,7 +9325,12 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_222.gif",
    "bg": "dark_boreal.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "40 - 52",
+   "alignment": "Neutral",
+   "health": "Low",
+   "defense": "High",
+   "resistance": "Low"
   },
   {
    "id": 223,
@@ -6938,7 +9341,40 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_223.gif",
    "bg": "dark_boreal.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "40 - 52",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "Low",
+   "defense": "High",
+   "resistance": "Medium",
+   "drops": [
+    {
+     "name": "Bronze Sestertii",
+     "res": "coin_bronze",
+     "pct": "100%"
+    },
+    {
+     "name": "Stoneforged Chest",
+     "res": "stoneforged_chest",
+     "pct": "10%"
+    },
+    {
+     "name": "Mithril Point",
+     "res": "mithril_point",
+     "pct": "8%"
+    },
+    {
+     "name": "Mithril Nails",
+     "res": "mithril_nails",
+     "pct": "5%"
+    },
+    {
+     "name": "Beech Rod",
+     "res": "beech_rod",
+     "pct": "8%"
+    }
+   ]
   },
   {
    "id": 224,
@@ -6949,7 +9385,40 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_224.gif",
    "bg": "dark_boreal.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "40 - 52",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "Low",
+   "defense": "Medium",
+   "resistance": "High",
+   "drops": [
+    {
+     "name": "Bronze Sestertii",
+     "res": "coin_bronze",
+     "pct": "100%"
+    },
+    {
+     "name": "Stoneforged Chest",
+     "res": "stoneforged_chest",
+     "pct": "10%"
+    },
+    {
+     "name": "Quality Scroll",
+     "res": "quality_scroll",
+     "pct": "8%"
+    },
+    {
+     "name": "Ramie Fleece",
+     "res": "ramie_fleece",
+     "pct": "6%"
+    },
+    {
+     "name": "Ramie Cord",
+     "res": "ramie_cord",
+     "pct": "7%"
+    }
+   ]
   },
   {
    "id": 225,
@@ -6960,7 +9429,13 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_225.gif",
    "bg": "dark_boreal.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "40 - 52",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "Medium",
+   "defense": "High",
+   "resistance": "Medium"
   },
   {
    "id": 226,
