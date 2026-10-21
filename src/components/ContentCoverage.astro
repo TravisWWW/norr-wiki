@@ -5,7 +5,7 @@ const docs = await getCollection('docs');
 const byId = new Map(docs.map((doc) => [doc.id, doc]));
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const statusLabels: Record<string, string> = {
-  'ea-verified': 'EA 版已验证', '1.0-announced': '1.0 官方已公布',
+  '1.0-verified': '1.0 实测已验证', 'ea-verified': 'EA 版已验证', '1.0-announced': '1.0 官方已公布',
   '1.0-pending': '1.0 待验证', mixed: 'EA / 1.0 混合资料',
 };
 const directoryGroups = [...sections, { label: '资料与维护', landing: null, items: referenceItems }, { label: '全站查询', landing: null, items: [{ slug: 'reference/database' }] }];

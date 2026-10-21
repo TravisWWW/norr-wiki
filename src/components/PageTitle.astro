@@ -6,6 +6,7 @@ const title = data.title as string;
 
 const STATUS_LABELS: Record<string, { text: string; tone: string }> = {
   '1.0-official': { text: '1.0 官方 Wiki 已确认', tone: 'official' },
+  '1.0-verified': { text: '1.0 实测已验证', tone: 'live' },
   'ea-verified': { text: 'EA 版已验证', tone: 'ea' },
   '1.0-announced': { text: '1.0 官方已公布', tone: 'announced' },
   '1.0-pending': { text: '1.0 待验证', tone: 'pending' },
@@ -60,6 +61,12 @@ const showMeta = Boolean(status || gameVersion || verifiedDate || reviewStatus);
     border: 1px solid transparent;
     font-weight: 600;
     line-height: 1.5;
+  }
+
+  .nr-version-live {
+    color: #6fe39a;
+    border-color: #2f7a4a;
+    background: rgba(47, 122, 74, 0.18);
   }
 
   .nr-version-official {

@@ -12,7 +12,7 @@ export const collections = {
 				verifiedDate: z.union([z.string(), z.date()]).optional(),
 				reviewStatus: z.string().optional(),
 				versionStatus: z
-					.enum(['1.0-official', 'ea-verified', '1.0-announced', '1.0-pending', 'mixed'])
+					.enum(['1.0-official', '1.0-verified', 'ea-verified', '1.0-announced', '1.0-pending', 'mixed'])
 					.optional(),
 				sources: z
 					.array(

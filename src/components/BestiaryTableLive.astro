@@ -41,39 +41,57 @@ const cards = monsters.map((m) => {
 const recordedCount = cards.filter((c) => c.recorded).length;
 const withLore = cards.filter((c) => c.lore).length;
 const withStats = cards.filter((c) => c.stats).length;
+const LV_MIN = 1, LV_MAX = 100;
 ---
+<div class="not-content">
 <div class="bl-app">
   <aside class="bl-side" id="bl-side">
     <div class="bl-side-head">
       <span class="bl-side-title">筛选</span>
       <button type="button" class="bl-reset" id="bl-reset">重置</button>
     </div>
+
     <label class="bl-field">
       <span>搜索</span>
       <input id="bl-q" type="search" placeholder="怪物名 / 类型 / 群系 / 掉落…" />
     </label>
+
     <div class="bl-field"><span>类别</span>
       <div class="bl-chips" id="bl-tab">
-        <button type="button" class="bl-chip is-on" data-val="">全部</button>
+        <button type="button" class="bl-chip is-active" data-val="">全部</button>
         <button type="button" class="bl-chip" data-val="normal">普通</button>
         <button type="button" class="bl-chip" data-val="boss">Boss</button>
         <button type="button" class="bl-chip" data-val="overlord">Overlord</button>
         <button type="button" class="bl-chip" data-val="other">其他</button>
       </div>
     </div>
+
     <label class="bl-field"><span>类型</span>
       <select id="bl-type"><option value="">全部类型</option>{types.map((t) => <option value={t}>{t}</option>)}</select>
     </label>
+
     <label class="bl-field"><span>群系</span>
       <select id="bl-biome"><option value="">全部群系</option>{bioList.map((b) => <option value={b}>{b}</option>)}</select>
     </label>
-    <label class="bl-field"><span>等级</span>
-      <select id="bl-lvl">
-        <option value="">全部等级</option><option value="1-9">Lv1–9</option><option value="10-19">Lv10–19</option>
-        <option value="20-29">Lv20–29</option><option value="30-39">Lv30–39</option><option value="40-999">Lv40+</option>
-      </select>
-    </label>
+
+    <div class="bl-field"><span>等级 <em class="bl-range-val"><b id="bl-lv-minv">{LV_MIN}</b> – <b id="bl-lv-maxv">{LV_MAX}</b></em></span>
+      <div class="bl-range">
+        <div class="bl-range-track"><div class="bl-range-fill" id="bl-fill"></div></div>
+        <input type="range" id="bl-lv-min" min={LV_MIN} max={LV_MAX} value={LV_MIN} step="1" aria-label="最低等级" />
+        <input type="range" id="bl-lv-max" min={LV_MIN} max={LV_MAX} value={LV_MAX} step="1" aria-label="最高等级" />
+      </div>
+    </div>
+
+    <div class="bl-field"><span>防护评级</span>
+      <div class="bl-tri">
+        <label class="bl-tri-cell"><span>生命</span><select id="bl-health"><option value="">全部</option><option value="Low">低</option><option value="Medium">中</option><option value="High">高</option></select></label>
+        <label class="bl-tri-cell"><span>防御</span><select id="bl-defense"><option value="">全部</option><option value="Low">低</option><option value="Medium">中</option><option value="High">高</option></select></label>
+        <label class="bl-tri-cell"><span>抗性</span><select id="bl-res"><option value="">全部</option><option value="Low">低</option><option value="Medium">中</option><option value="High">高</option></select></label>
+      </div>
+    </div>
+
     <label class="bl-switch"><input type="checkbox" id="bl-rec" /><span>只看已记录</span></label>
+
     <label class="bl-field"><span>排序</span>
       <select id="bl-sort">
         <option value="id">图鉴编号</option>
@@ -83,6 +101,7 @@ const withStats = cards.filter((c) => c.stats).length;
         <option value="rec">已记录优先</option>
       </select>
     </label>
+
     <div class="bl-side-foot">
       <div class="bl-stat"><b>{cards.length}</b><span>总条目</span></div>
       <div class="bl-stat"><b>{recordedCount}</b><span>已记录</span></div>
@@ -99,7 +118,7 @@ const withStats = cards.filter((c) => c.stats).length;
     </div>
     <div class="bl-grid" id="bl-grid">
       {cards.map((c) => (
-        <button type="button" class="bl-card" data-id={c.id} data-name={(c.name || '').toLowerCase()} data-type={c.type} data-biome={c.biome} data-tab={c.tab} data-rec={c.recorded ? 1 : 0} data-lo={c.lo} data-hi={c.hi} aria-haspopup="dialog">
+        <button type="button" class="bl-card" data-id={c.id} data-name={(c.name || '').toLowerCase()} data-type={c.type} data-biome={c.biome} data-tab={c.tab} data-rec={c.recorded ? 1 : 0} data-lo={c.lo} data-hi={c.hi} data-health={c.health} data-defense={c.defense} data-resistance={c.resistance} aria-haspopup="dialog">
           <span class="bl-thumb">
             {c.hasIcon ? <img src={c.icon} alt={c.name} loading="lazy" width="64" height="64" /> : <span class="bl-noimg">?</span>}
             {c.tab === 'boss' ? <span class="bl-badge bl-badge-boss">BOSS</span> : null}
@@ -129,16 +148,16 @@ const withStats = cards.filter((c) => c.stats).length;
       <button type="button" class="bl-close" id="bl-close" aria-label="关闭">✕</button>
     </div>
     <div class="bl-tabs" id="bl-tabs">
-      <button type="button" class="bl-tab is-on" data-tab="profile">图鉴</button>
+      <button type="button" class="bl-tab is-active" data-tab="profile">图鉴</button>
       <button type="button" class="bl-tab" data-tab="skills">技能</button>
       <button type="button" class="bl-tab" data-tab="stats">属性</button>
     </div>
     <div class="bl-dialog-body" id="bl-body"></div>
   </div>
 </div>
+</div>
 
 <script type="application/json" id="bl-data" set:html={JSON.stringify({ base, cards })} />
-
 <script>
   const payload = JSON.parse(document.getElementById('bl-data').textContent);
   const data = payload.cards, base2 = payload.base;
@@ -150,31 +169,53 @@ const withStats = cards.filter((c) => c.stats).length;
   const q = document.getElementById('bl-q');
   const type = document.getElementById('bl-type');
   const biome = document.getElementById('bl-biome');
-  const lvl = document.getElementById('bl-lvl');
+  const health = document.getElementById('bl-health');
+  const defense = document.getElementById('bl-defense');
+  const resistance = document.getElementById('bl-res');
   const rec = document.getElementById('bl-rec');
   const sortSel = document.getElementById('bl-sort');
   const tabWrap = document.getElementById('bl-tab');
+  const lvMin = document.getElementById('bl-lv-min');
+  const lvMax = document.getElementById('bl-lv-max');
+  const fill = document.getElementById('bl-fill');
+  const lvMinV = document.getElementById('bl-lv-minv');
+  const lvMaxV = document.getElementById('bl-lv-maxv');
+  const LV_MIN = +lvMin.min, LV_MAX = +lvMax.max;
   let curTab = '';
+
+  function syncRange() {
+    const a = +lvMin.value, b = +lvMax.value;
+    const span = LV_MAX - LV_MIN;
+    fill.style.left = ((a - LV_MIN) / span * 100) + '%';
+    fill.style.width = ((b - a) / span * 100) + '%';
+    lvMinV.textContent = a; lvMaxV.textContent = b;
+  }
 
   tabWrap.addEventListener('click', (e) => {
     const b = e.target.closest('.bl-chip'); if (!b) return;
-    [...tabWrap.children].forEach((x) => x.classList.toggle('is-on', x === b));
+    [...tabWrap.children].forEach((x) => x.classList.toggle('is-active', x === b));
     curTab = b.dataset.val; apply();
   });
 
-  function overlap(lo, hi, range) { if (!range) return true; if (lo === '' || hi === '') return false; const [a, b] = range.split('-').map(Number); return +lo <= b && +hi >= a; }
-
   function apply() {
     const s = (q.value || '').toLowerCase().trim();
-    const t = type.value, b = biome.value, l = lvl.value;
+    const t = type.value, b = biome.value;
+    const h = health.value, d = defense.value, rr = resistance.value;
+    const a = +lvMin.value, b2 = +lvMax.value;
+    const fullRange = (a === LV_MIN && b2 === LV_MAX);
     let n = 0;
     for (const r of cards) {
+      const lo = r.dataset.lo, hi = r.dataset.hi;
+      const lvlOk = (lo === '' || hi === '') ? fullRange : (+lo <= b2 && +hi >= a);
       const ok = (!s || r.textContent.toLowerCase().includes(s))
         && (!t || r.dataset.type === t)
         && (!b || (r.dataset.biome || '').includes(b))
         && (!curTab || r.dataset.tab === curTab)
+        && (!h || r.dataset.health === h)
+        && (!d || r.dataset.defense === d)
+        && (!rr || r.dataset.resistance === rr)
         && (!rec.checked || r.dataset.rec === '1')
-        && overlap(r.dataset.lo, r.dataset.hi, l);
+        && lvlOk;
       r.hidden = !ok;
       if (ok) n++;
     }
@@ -199,14 +240,19 @@ const withStats = cards.filter((c) => c.stats).length;
   q.addEventListener('input', apply);
   type.addEventListener('change', apply);
   biome.addEventListener('change', apply);
-  lvl.addEventListener('change', apply);
+  health.addEventListener('change', apply);
+  defense.addEventListener('change', apply);
+  resistance.addEventListener('change', apply);
   rec.addEventListener('change', apply);
   sortSel.addEventListener('change', () => { sort(); });
+  lvMin.addEventListener('input', () => { if (+lvMin.value > +lvMax.value) lvMin.value = lvMax.value; syncRange(); apply(); });
+  lvMax.addEventListener('input', () => { if (+lvMax.value < +lvMin.value) lvMax.value = lvMin.value; syncRange(); apply(); });
 
   document.getElementById('bl-reset').addEventListener('click', () => {
-    q.value = ''; type.value = ''; biome.value = ''; lvl.value = ''; rec.checked = false; sortSel.value = 'id';
-    curTab = ''; [...tabWrap.children].forEach((x) => x.classList.toggle('is-on', x.dataset.val === ''));
-    sort(); apply();
+    q.value = ''; type.value = ''; biome.value = ''; health.value = ''; defense.value = ''; resistance.value = '';
+    rec.checked = false; sortSel.value = 'id'; lvMin.value = LV_MIN; lvMax.value = LV_MAX;
+    curTab = ''; [...tabWrap.children].forEach((x) => x.classList.toggle('is-active', x.dataset.val === ''));
+    syncRange(); sort(); apply();
   });
 
   const modal = document.getElementById('bl-modal');
@@ -223,7 +269,7 @@ const withStats = cards.filter((c) => c.stats).length;
   function lootHtml(arr, src) {
     if (!arr.length) return '<p class="bl-muted">未记录。</p>';
     const items = arr.map((x) => {
-      const img = x.res ? `<img src="${base2}img/items/res_${esc(x.res)}.gif" alt="" width="24" height="24" loading="lazy" />` : '<span class="bl-itemicon bl-itemicon-empty"></span>';
+      const img = x.res ? `<img src="${base2}img/items/res_${esc(x.res)}.gif" alt="" width="26" height="26" loading="lazy" />` : '<span class="bl-itemicon-empty"></span>';
       return `<span class="bl-item" title="${esc(x.name)}">${img}<span class="bl-itemname">${esc(x.name)}</span>${x.pct ? `<em>${esc(x.pct)}</em>` : ''}</span>`;
     }).join('');
     const note = src === 'fallback' ? '<p class="bl-muted">拾荒类别来自官方 1.0 Wiki / EA 清单（无概率）。</p>' : '';
@@ -283,7 +329,7 @@ const withStats = cards.filter((c) => c.stats).length;
   function open(id) {
     const c = byId.get(String(id)); if (!c) return;
     cur = c; curTabName = 'profile';
-    [...tabs.children].forEach((t) => t.classList.toggle('is-on', t.dataset.tab === 'profile'));
+    [...tabs.children].forEach((t) => t.classList.toggle('is-active', t.dataset.tab === 'profile'));
     dname.innerHTML = `${esc(c.name)}${c.tab === 'boss' ? ' <span class="bl-badge bl-badge-boss">BOSS</span>' : ''}${c.tab === 'overlord' ? ' <span class="bl-badge bl-badge-over">OVERLORD</span>' : ''}`;
     renderTab();
     modal.hidden = false;
@@ -295,7 +341,7 @@ const withStats = cards.filter((c) => c.stats).length;
   tabs.addEventListener('click', (e) => {
     const t = e.target.closest('.bl-tab'); if (!t) return;
     curTabName = t.dataset.tab;
-    [...tabs.children].forEach((x) => x.classList.toggle('is-on', x === t));
+    [...tabs.children].forEach((x) => x.classList.toggle('is-active', x === t));
     renderTab();
   });
   grid.addEventListener('click', (e) => { const c = e.target.closest('.bl-card'); if (c) open(c.dataset.id); });
@@ -315,54 +361,76 @@ const withStats = cards.filter((c) => c.stats).length;
   if (params.get('mon')) q.value = params.get('mon');
   if (params.get('type')) type.value = params.get('type');
   if (params.get('biome')) biome.value = params.get('biome');
-  if (params.get('tab')) { curTab = params.get('tab'); [...tabWrap.children].forEach((x) => x.classList.toggle('is-on', x.dataset.val === curTab)); }
+  if (params.get('tab')) { curTab = params.get('tab'); [...tabWrap.children].forEach((x) => x.classList.toggle('is-active', x.dataset.val === curTab)); }
+  syncRange();
   apply();
   if (params.get('mon')) {
     const hit = cards.find((r) => r.dataset.name === params.get('mon').toLowerCase());
     if (hit) open(hit.dataset.id);
   }
 </script>
-
 <style is:global>
   /* hidden 属性优先：显式 display 会覆盖 [hidden]，需显式复位 */
   .bl-card[hidden], .bl-modal[hidden], .bl-empty[hidden] { display: none !important; }
-  .bl-app { display: grid; grid-template-columns: 230px minmax(0, 1fr); gap: 1.1rem; align-items: start; margin: 1rem 0 1.5rem; }
-  .bl-side { position: sticky; top: 4.5rem; border: 1px solid var(--nr-line); border-radius: 10px; background: linear-gradient(180deg, var(--nr-panel-2), var(--nr-panel)); padding: .85rem; display: flex; flex-direction: column; gap: .7rem; box-shadow: inset 0 1px 0 rgba(238,187,102,.05); }
+  /* 组件内元素归零外边距，避免被 Starlight 正文样式干扰（.not-content 已排除，这里再兜底） */
+  .bl-app, .bl-app *, .bl-modal, .bl-modal * { margin-top: 0; margin-bottom: 0; }
+  .bl-app { display: grid; grid-template-columns: 236px minmax(0, 1fr); gap: 1.1rem; align-items: start; margin: 1rem 0 1.5rem; }
+
+  /* ---------- 侧栏 ---------- */
+  .bl-side { position: sticky; top: 4.5rem; border: 1px solid var(--nr-line); border-radius: 10px; background: linear-gradient(180deg, var(--nr-panel-2), var(--nr-panel)); padding: .85rem; display: flex; flex-direction: column; gap: .75rem; box-shadow: inset 0 1px 0 rgba(238,187,102,.05); }
   .bl-side-head { display: flex; align-items: center; justify-content: space-between; }
   .bl-side-title { font-family: var(--nr-serif); color: var(--nr-text); font-weight: 600; letter-spacing: .5px; }
-  .bl-reset { background: none; border: 1px solid var(--nr-hair); color: var(--nr-dim); border-radius: 5px; font-size: .72rem; padding: .12rem .45rem; cursor: pointer; }
+  .bl-reset { background: none; border: 1px solid var(--nr-hair); color: var(--nr-dim); border-radius: 5px; font-size: .72rem; padding: .12rem .45rem; cursor: pointer; line-height: 1.6; }
   .bl-reset:hover { color: var(--nr-gold); border-color: var(--nr-gold-dim); }
-  .bl-field { display: flex; flex-direction: column; gap: .3rem; font-size: .78rem; color: var(--nr-dim); }
-  .bl-field input, .bl-field select { width: 100%; padding: .38rem .5rem; border-radius: 6px; border: 1px solid var(--nr-hair); background: #17171c; color: var(--nr-text-soft); font-size: .84rem; }
-  .bl-field input:focus, .bl-field select:focus { outline: none; border-color: var(--nr-gold-dim); }
+  .bl-field { display: flex; flex-direction: column; gap: .32rem; font-size: .78rem; color: var(--nr-dim); }
+  .bl-field > span { display: flex; align-items: baseline; justify-content: space-between; }
+  .bl-range-val { font-style: normal; color: var(--nr-gold); font-size: .74rem; }
+  .bl-range-val b { font-weight: 600; }
+  .bl-field input[type=search], .bl-field select { width: 100%; height: 30px; padding: 0 .5rem; border-radius: 6px; border: 1px solid var(--nr-hair); background: #17171c; color: var(--nr-text-soft); font-size: .84rem; }
+  .bl-field input[type=search]:focus, .bl-field select:focus { outline: none; border-color: var(--nr-gold-dim); }
   .bl-chips { display: flex; flex-wrap: wrap; gap: .3rem; }
-  .bl-chip { border: 1px solid var(--nr-hair); background: #17171c; color: var(--nr-text-soft); border-radius: 999px; font-size: .74rem; padding: .18rem .55rem; cursor: pointer; }
+  .bl-chip { border: 1px solid var(--nr-hair); background: #17171c; color: var(--nr-text-soft); border-radius: 999px; font-size: .74rem; padding: 0 .55rem; height: 24px; line-height: 22px; cursor: pointer; }
   .bl-chip:hover { border-color: var(--nr-gold-dim); color: var(--nr-gold); }
-  .bl-chip.is-on { background: linear-gradient(180deg, var(--nr-gold-2), var(--nr-gold)); color: #14151a; border-color: #8a6a2f; font-weight: 600; }
+  .bl-chip.is-active { background: linear-gradient(180deg, var(--nr-gold-2), var(--nr-gold)); color: #14151a; border-color: #8a6a2f; font-weight: 600; }
+  .bl-range { position: relative; height: 26px; }
+  .bl-range-track { position: absolute; top: 50%; left: 0; right: 0; height: 4px; transform: translateY(-50%); background: #101014; border: 1px solid var(--nr-hair); border-radius: 3px; }
+  .bl-range-fill { position: absolute; top: 0; bottom: 0; background: linear-gradient(90deg, var(--nr-gold-dim), var(--nr-gold)); border-radius: 3px; }
+  .bl-range input[type=range] { position: absolute; top: 0; left: 0; width: 100%; height: 26px; margin: 0; background: none; pointer-events: none; -webkit-appearance: none; appearance: none; }
+  .bl-range input[type=range]:focus { outline: none; }
+  .bl-range input[type=range]::-webkit-slider-runnable-track { height: 26px; background: transparent; border: 0; }
+  .bl-range input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; pointer-events: auto; width: 15px; height: 15px; margin-top: 5.5px; border-radius: 50%; background: linear-gradient(180deg, var(--nr-gold-2), var(--nr-gold)); border: 2px solid #14151a; box-shadow: 0 1px 4px rgba(0,0,0,.7); cursor: pointer; }
+  .bl-range input[type=range]::-moz-range-track { height: 4px; background: transparent; border: 0; }
+  .bl-range input[type=range]::-moz-range-thumb { pointer-events: auto; width: 13px; height: 13px; border-radius: 50%; background: var(--nr-gold); border: 2px solid #14151a; cursor: pointer; }
+  .bl-tri { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .3rem; }
+  .bl-tri-cell { display: flex; flex-direction: column; gap: .2rem; }
+  .bl-tri-cell > span { font-size: .7rem; color: var(--nr-dim); text-align: center; }
+  .bl-tri-cell select { width: 100%; height: 28px; padding: 0 .25rem; font-size: .78rem; text-align: center; }
   .bl-switch { display: flex; align-items: center; gap: .45rem; font-size: .82rem; color: var(--nr-text-soft); cursor: pointer; }
   .bl-side-foot { display: grid; grid-template-columns: 1fr 1fr; gap: .4rem; border-top: 1px solid var(--nr-hair); padding-top: .6rem; }
   .bl-stat { display: flex; flex-direction: column; align-items: center; background: #17171c; border: 1px solid var(--nr-hair); border-radius: 6px; padding: .3rem; }
-  .bl-stat b { color: var(--nr-gold); font-size: 1.05rem; }
+  .bl-stat b { color: var(--nr-gold); font-size: 1.05rem; line-height: 1.2; }
   .bl-stat span { color: var(--nr-dim); font-size: .68rem; }
+
+  /* ---------- 主区 ---------- */
   .bl-topbar { display: flex; align-items: center; gap: .7rem; margin-bottom: .7rem; }
   .bl-filter-toggle { display: none; border: 1px solid var(--nr-hair); background: #17171c; color: var(--nr-text-soft); border-radius: 6px; padding: .35rem .7rem; font-size: .84rem; cursor: pointer; }
   .bl-count { color: var(--nr-gold); font-weight: 600; font-size: .9rem; }
   .bl-hint { color: var(--nr-dim); font-size: .78rem; margin-inline-start: auto; }
-  .bl-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(132px, 1fr)); gap: .6rem; }
-  .bl-card { display: flex; flex-direction: column; align-items: center; gap: .25rem; padding: .6rem .5rem .5rem; border: 1px solid var(--nr-line); border-bottom-width: 2px; border-radius: 8px; background: linear-gradient(180deg, var(--nr-panel-2), var(--nr-panel)); color: var(--nr-text-soft); cursor: pointer; text-align: center; transition: transform .12s ease, border-color .12s ease, box-shadow .12s ease; }
+  .bl-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(136px, 1fr)); gap: .6rem; }
+  .bl-card { display: flex; flex-direction: column; align-items: center; height: 176px; padding: .6rem .5rem .5rem; border: 1px solid var(--nr-line); border-bottom-width: 2px; border-radius: 8px; background: linear-gradient(180deg, var(--nr-panel-2), var(--nr-panel)); color: var(--nr-text-soft); cursor: pointer; text-align: center; transition: transform .12s ease, border-color .12s ease, box-shadow .12s ease; }
   .bl-card:hover { transform: translateY(-3px); border-color: var(--nr-gold-dim); box-shadow: 0 10px 24px rgba(0,0,0,.5); }
   .bl-card:focus-visible { outline: 2px solid var(--nr-gold); outline-offset: 2px; }
-  .bl-thumb { position: relative; width: 100%; height: 74px; display: flex; align-items: center; justify-content: center; border-radius: 6px; background: radial-gradient(circle at 50% 42%, rgba(238,187,102,.13), rgba(0,0,0,0) 68%), #17171c; border: 1px solid var(--nr-hair); }
+  .bl-thumb { position: relative; flex: 0 0 auto; width: 100%; height: 74px; display: flex; align-items: center; justify-content: center; border-radius: 6px; background: radial-gradient(circle at 50% 42%, rgba(238,187,102,.13), rgba(0,0,0,0) 68%), #17171c; border: 1px solid var(--nr-hair); }
   .bl-thumb img { max-width: 62px; max-height: 62px; width: auto; height: auto; image-rendering: pixelated; filter: drop-shadow(0 3px 6px rgba(0,0,0,.6)); }
-  .bl-noimg { color: var(--nr-dim); font-size: 1.6rem; }
+  .bl-noimg { color: var(--nr-dim); font-size: 1.5rem; line-height: 1; }
   .bl-badge { font-size: .58rem; font-weight: 700; letter-spacing: .3px; border-radius: 3px; padding: 0 .28rem; line-height: 1.5; vertical-align: middle; }
   .bl-thumb .bl-badge { position: absolute; top: 3px; left: 3px; }
   .bl-badge-boss { color: #e9c6ff; background: rgba(120,60,160,.75); border: 1px solid #8b5cc0; }
   .bl-badge-over { color: #14151a; background: linear-gradient(180deg, var(--nr-gold-2), var(--nr-gold)); border: 1px solid #8a6a2f; }
   .bl-badge-other { color: var(--nr-text-soft); background: rgba(255,255,255,.08); border: 1px solid var(--nr-hair); }
-  .bl-cname { font-family: var(--nr-serif); color: var(--nr-text); font-weight: 600; font-size: .92rem; line-height: 1.25; }
-  .bl-cmeta { color: var(--nr-dim); font-size: .7rem; }
-  .bl-cfoot { display: flex; gap: .25rem; flex-wrap: wrap; justify-content: center; margin-top: .1rem; min-height: 1rem; }
+  .bl-cname { flex: 0 0 auto; width: 100%; height: 2.5em; margin-top: .3rem; font-family: var(--nr-serif); color: var(--nr-text); font-weight: 600; font-size: .92rem; line-height: 1.25; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .bl-cmeta { flex: 0 0 auto; width: 100%; height: 1.1em; color: var(--nr-dim); font-size: .7rem; line-height: 1.1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .bl-cfoot { flex: 1 1 auto; display: flex; gap: .25rem; flex-wrap: wrap; justify-content: center; align-items: flex-end; padding-top: .15rem; }
   .bl-dot { font-size: .62rem; color: var(--nr-dim); }
   .bl-dot-on { color: var(--nr-ascended); }
   .bl-mini { font-size: .6rem; color: var(--nr-gold); border: 1px solid var(--nr-gold-dim); border-radius: 3px; padding: 0 .22rem; }
@@ -370,58 +438,56 @@ const withStats = cards.filter((c) => c.stats).length;
   .bl-note { color: var(--nr-dim); font-size: .78rem; margin-top: .8rem; }
   .bl-src { color: var(--nr-gold); font-size: .72rem; }
   .bl-muted { color: var(--nr-dim); }
-  /* ---- 弹窗 ---- */
+
+  /* ---------- 弹窗 ---------- */
   .bl-modal { position: fixed; inset: 0; z-index: 999; display: flex; align-items: center; justify-content: center; padding: 1rem; }
   .bl-backdrop { position: absolute; inset: 0; background: rgba(6,6,9,.78); backdrop-filter: blur(2px); }
   .bl-dialog { position: relative; width: min(720px, 100%); max-height: 88vh; display: flex; flex-direction: column; border: 1px solid var(--nr-gold-dim); border-radius: 12px; background: linear-gradient(180deg, #22222a, #1a1a20); box-shadow: 0 24px 70px rgba(0,0,0,.7), inset 0 1px 0 rgba(238,187,102,.08); overflow: hidden; }
   .bl-dialog-head { display: flex; align-items: center; justify-content: space-between; gap: .8rem; padding: .7rem 1rem; border-bottom: 1px solid var(--nr-hair); background: linear-gradient(180deg, rgba(238,187,102,.08), transparent); }
-  .bl-dialog-head h3 { margin: 0; font-family: var(--nr-serif); color: var(--nr-text); font-size: 1.2rem; }
-  .bl-close { flex: 0 0 auto; background: none; border: 1px solid var(--nr-hair); color: var(--nr-dim); border-radius: 6px; width: 30px; height: 30px; cursor: pointer; font-size: .9rem; }
+  .bl-dialog-head h3 { margin: 0; font-family: var(--nr-serif); color: var(--nr-text); font-size: 1.2rem; line-height: 1.4; }
+  .bl-close { flex: 0 0 auto; background: none; border: 1px solid var(--nr-hair); color: var(--nr-dim); border-radius: 6px; width: 30px; height: 30px; cursor: pointer; font-size: .9rem; line-height: 1; }
   .bl-close:hover { color: var(--nr-gold); border-color: var(--nr-gold-dim); }
   .bl-tabs { display: flex; gap: .3rem; padding: .5rem 1rem 0; border-bottom: 1px solid var(--nr-hair); }
-  .bl-tab { border: 1px solid var(--nr-hair); border-bottom: none; background: #17171c; color: var(--nr-dim); border-radius: 6px 6px 0 0; padding: .35rem .9rem; font-size: .84rem; cursor: pointer; margin-bottom: -1px; }
-  .bl-tab.is-on { color: var(--nr-text); background: linear-gradient(180deg, rgba(238,187,102,.14), transparent); border-color: var(--nr-gold-dim); border-bottom-color: #1a1a20; font-weight: 600; }
+  .bl-tab { border: 1px solid var(--nr-hair); border-bottom: none; background: #17171c; color: var(--nr-dim); border-radius: 6px 6px 0 0; padding: .35rem .9rem; font-size: .84rem; line-height: 1.5; cursor: pointer; margin-bottom: -1px; }
+  .bl-tab.is-active { color: var(--nr-text); background: linear-gradient(180deg, rgba(238,187,102,.14), transparent); border-color: var(--nr-gold-dim); border-bottom-color: #1a1a20; font-weight: 600; }
   .bl-dialog-body { padding: 1rem; overflow-y: auto; }
-  /* 图鉴：lore 块（还原游戏：左图右文 + 战斗背景） */
-  .bl-lore { display: grid; grid-template-columns: 132px 1fr; gap: 1rem; align-items: start; padding: 1rem; border: 1px solid var(--nr-hair); border-radius: 8px; background-color: #16161b; background-size: cover; background-position: center; margin-bottom: 1rem; }
-  .bl-lore-art { display: flex; align-items: center; justify-content: center; min-height: 110px; }
+  .bl-lore { display: grid; grid-template-columns: 132px 1fr; gap: 1rem; align-items: center; padding: 1rem; border: 1px solid var(--nr-hair); border-radius: 8px; background-color: #16161b; background-size: cover; background-position: center; margin-bottom: 1rem; }
+  .bl-lore-art { display: flex; align-items: center; justify-content: center; }
   .bl-lore-art img { max-width: 110px; max-height: 110px; width: auto; height: auto; image-rendering: pixelated; filter: drop-shadow(0 6px 14px rgba(0,0,0,.75)); }
-  .bl-lore-name { margin: 0; font-family: var(--nr-serif); color: var(--nr-text); font-size: 1.3rem; }
+  .bl-lore-name { margin: 0; font-family: var(--nr-serif); color: var(--nr-text); font-size: 1.3rem; line-height: 1.3; }
   .bl-lore-type { color: var(--nr-text-soft); font-size: .86rem; margin-top: .15rem; }
   .bl-lore-biome { color: var(--nr-dim); font-size: .8rem; margin-top: .1rem; }
   .bl-lore-hr { border: 0; border-top: 1px solid var(--nr-hair); margin: .6rem 0; }
   .bl-lore-text { margin: 0; color: var(--nr-text-soft); font-style: italic; font-size: .88rem; line-height: 1.7; }
-  /* 图鉴：信息块（两列，行对齐） */
-  .bl-info { display: grid; grid-template-columns: 1fr 1fr; gap: .2rem 1.2rem; margin-bottom: .9rem; }
+  .bl-info { display: grid; grid-template-columns: 1fr 1fr; gap: 0 1.4rem; margin-bottom: .9rem; }
   .bl-info-col { display: flex; flex-direction: column; }
-  .bl-info-row { display: grid; grid-template-columns: 96px 1fr; align-items: center; gap: .5rem; padding: .3rem 0; border-bottom: 1px dashed var(--nr-hair); font-size: .86rem; }
-  .bl-info-row:last-child { border-bottom: 0; }
+  .bl-info-row { display: grid; grid-template-columns: 104px 1fr; align-items: center; gap: .5rem; padding: .3rem 0; border-bottom: 1px dashed var(--nr-hair); font-size: .86rem; line-height: 1.5; }
+  .bl-info-col > .bl-info-row:last-child { border-bottom: 0; }
   .bl-info-k { color: var(--nr-dim); }
   .bl-info-v { color: var(--nr-text-soft); }
-  .bl-lbl { display: inline-block; min-width: 3.4rem; text-align: center; padding: .1rem .5rem; border-radius: 3px; font-size: .74rem; font-weight: 700; color: #101014; }
+  .bl-lbl { display: inline-block; min-width: 3.4rem; text-align: center; padding: .1rem .5rem; border-radius: 3px; font-size: .74rem; font-weight: 700; color: #101014; line-height: 1.5; }
   .bl-lbl-set { background: #1fbe00; }
   .bl-lbl-mystical { background: #ffa405; }
   .bl-lbl-relic { background: #c30000; color: #fff; }
   .bl-lbl-normal { background: #a2a09d; }
-  /* 图鉴：掉落行（还原游戏：左标签 + 右图标列表） */
-  .bl-lootrow { display: grid; grid-template-columns: 110px 1fr; gap: .8rem; align-items: start; padding: .6rem 0; border-top: 1px solid var(--nr-hair); }
-  .bl-loothead { color: var(--nr-text); font-size: .86rem; font-weight: 600; padding-top: .15rem; }
+  .bl-lootrow { display: grid; grid-template-columns: 104px 1fr; gap: .8rem; align-items: start; padding: .6rem 0; border-top: 1px solid var(--nr-hair); }
+  .bl-loothead { color: var(--nr-text); font-size: .86rem; font-weight: 600; line-height: 1.9; }
   .bl-items { display: flex; flex-wrap: wrap; gap: .4rem; }
   .bl-item { display: inline-flex; align-items: center; gap: .4rem; border: 1px solid var(--nr-hair); background: #1b1b21; border-radius: 6px; padding: .2rem .55rem .2rem .25rem; font-size: .8rem; color: var(--nr-text-soft); }
   .bl-item img { width: 26px; height: 26px; image-rendering: pixelated; border-radius: 4px; background: #101014; }
   .bl-itemicon-empty { width: 26px; height: 26px; border-radius: 4px; background: #101014; border: 1px solid var(--nr-hair); }
-  .bl-itemname { color: var(--nr-text-soft); }
   .bl-item em { color: var(--nr-gold); font-style: normal; font-size: .76rem; }
   .bl-tiernote { font-size: .78rem; line-height: 1.6; margin-top: .7rem; }
   .bl-skillgrid { display: flex; flex-wrap: wrap; gap: .4rem; }
   .bl-skill { border: 1px solid var(--nr-hair); background: var(--nr-panel-2); border-radius: 6px; padding: .3rem .6rem; font-size: .85rem; color: var(--nr-text-soft); }
   .bl-skill em { color: var(--nr-gold); font-style: normal; font-size: .76rem; margin-left: .3rem; }
   .bl-statgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(158px, 1fr)); gap: .3rem; margin-top: .5rem; }
-  .bl-stat-chip { display: flex; justify-content: space-between; gap: .5rem; border: 1px solid var(--nr-hair); background: var(--nr-panel-2); border-radius: 5px; padding: .22rem .5rem; font-size: .78rem; }
+  .bl-stat-chip { display: flex; justify-content: space-between; gap: .5rem; border: 1px solid var(--nr-hair); background: var(--nr-panel-2); border-radius: 5px; padding: .22rem .5rem; font-size: .78rem; line-height: 1.5; }
   .bl-stat-chip span { color: var(--nr-dim); }
   .bl-stat-chip b { color: var(--nr-text); }
   .bl-locked { color: var(--nr-dim); font-size: .88rem; padding: 1.2rem 0; text-align: center; }
   .bl-locked b { color: var(--nr-gold); }
+
   @media (max-width: 60rem) {
     .bl-app { grid-template-columns: 1fr; }
     .bl-side { position: static; display: none; }
