@@ -1,8 +1,8 @@
 {
-  "version": "2.6.85",
+  "version": "2.6.86",
   "date": "2026-10-22",
-  "notes": "v2.6.85：自动存仓时把「品质 ≥ 阈值」的装备也逐件存进银行装备格（每件只试一次，存不进去就跳过）；材料存仓不变",
+  "notes": "v2.6.86：高级页新增「图鉴导出」——读取游戏内 Inspect 记录（199 种，按击杀数分层解锁），导出 Markdown 文档 / JSON 数据 / CSV 表格；只读，不改动游戏数据；带进度与取消。",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 687007,
-  "sha256": "938ce7ec47ea86cb2f59a96500c3a8aadda79ad866fb420b6aa267c874177408"
+  "size": 699653,
+  "sha256": "0afeb28beceafb6d93f2b4b2a4c5f44790523184848a90b8a8384a20936ec15e"
 }
