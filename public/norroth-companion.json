@@ -1,8 +1,8 @@
 {
-  "version": "2.6.83",
+  "version": "2.6.84",
   "date": "2026-10-21",
-  "notes": "v2.6.83：地图信息懒加载自愈（点开 Map Details 顺手收下，零额外请求）+ 高级页新增「更新地图数据」按钮（后台重扫 id 1..2100，可取消、可断点续扫、结果与内嵌表合并）",
+  "notes": "v2.6.84：撤掉运行时的地图信息更新（「更新地图数据」按钮 + 懒加载自愈），地图数据改为随版本发布更新；保留 v2.6.82 的 POI 实时读取（采集点/敌人）",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 691247,
-  "sha256": "a42d9ba4aa3e00a1a9d5f22339ed885c27fa77b6bf75077e7ba516754c969d4a"
+  "size": 681868,
+  "sha256": "80cb3c617ad26ae4130677607e1756736b08dbc0184d2e9234557fe9f29ccbad"
 }
