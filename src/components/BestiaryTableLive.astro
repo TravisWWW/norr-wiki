@@ -7,10 +7,9 @@ const base = (import.meta.env.BASE_URL || '/').replace(/\/$/, '') + '/';
 const off10ByName = new Map(off10.filter((m) => m && m.name).map((m) => [m.name, m]));
 const eaById = new Map(ea.filter((m) => m && m.name).map((m) => [String(m.id), m]));
 
-const tabLabel = { normal: '普通', boss: 'Boss', overlord: 'Overlord', other: '其他' };
 const monsters = live.enemies.filter((m) => m && m.name);
 const types = [...new Set(monsters.map((m) => m.type).filter(Boolean))].sort();
-const biomes = [...new Set(monsters.flatMap((m) => (m.biome || '').split(',').map((s) => s.trim())).filter(Boolean))].sort();
+const bioList = [...new Set(monsters.flatMap((m) => (m.biome || '').split(',').map((s) => s.trim())).filter(Boolean))].sort();
 
 function parseRange(s) { const m = String(s || '').match(/(\d+)\s*-\s*(\d+)/); return m ? [+m[1], +m[2]] : [null, null]; }
 
@@ -19,11 +18,11 @@ const cards = monsters.map((m) => {
   const e = eaById.get(String(m.id));
   const levelRange = m.levelRange || (o && o.levelRange) || (e && e.levelRange) || '';
   const levelSource = m.levelRange ? 'live' : (o && o.levelRange) ? 'official' : (e && e.levelRange) ? 'ea' : '';
-  const scavLive = (m.scavenging || []).map((s) => ({ name: s.name, pct: s.pct }));
-  const scavFallback = ((o && o.scavenging) || (e && e.scavenging) || []).map((n) => ({ name: n, pct: '' }));
+  const scavLive = (m.scavenging || []).map((s) => ({ name: s.name, res: s.res, pct: s.pct }));
+  const scavFallback = ((o && o.scavenging) || (e && e.scavenging) || []).map((n) => ({ name: n, res: '', pct: '' }));
   const scav = scavLive.length ? scavLive : scavFallback;
   const scavSource = scavLive.length ? 'live' : scavFallback.length ? 'fallback' : '';
-  const drops = (m.drops || []).map((s) => ({ name: s.name, pct: s.pct }));
+  const drops = (m.drops || []).map((s) => ({ name: s.name, res: s.res, pct: s.pct }));
   const [lo, hi] = parseRange(levelRange);
   return {
     id: m.id, name: m.name, type: m.type || '', biome: m.biome || '', tab: m.tab || 'other',
@@ -35,14 +34,13 @@ const cards = monsters.map((m) => {
     skills: (m.skills || []).map((s) => ({ name: s.name, level: s.level })),
     stats: m.stats || null,
     icon: `${base}img/enemies/enemy_${m.id}.gif`,
+    bg: m.bg ? `${base}img/battlemaps/${m.bg}` : '',
     hasIcon: ![155, 253].includes(m.id),
   };
 });
 const recordedCount = cards.filter((c) => c.recorded).length;
 const withLore = cards.filter((c) => c.lore).length;
 const withStats = cards.filter((c) => c.stats).length;
-const withSkills = cards.filter((c) => c.skills.length).length;
-const bioList = [...new Set(cards.flatMap((c) => c.biome.split(',').map((s) => s.trim())).filter(Boolean))].sort();
 ---
 <div class="bl-app">
   <aside class="bl-side" id="bl-side">
@@ -127,17 +125,11 @@ const bioList = [...new Set(cards.flatMap((c) => c.biome.split(',').map((s) => s
   <div class="bl-backdrop" data-close></div>
   <div class="bl-dialog" role="dialog" aria-modal="true" aria-labelledby="bl-dname">
     <div class="bl-dialog-head">
-      <div class="bl-dhead-left">
-        <span class="bl-dhead-thumb" id="bl-dthumb"></span>
-        <div>
-          <h3 id="bl-dname">—</h3>
-          <div class="bl-dsub" id="bl-dsub"></div>
-        </div>
-      </div>
+      <h3 id="bl-dname">—</h3>
       <button type="button" class="bl-close" id="bl-close" aria-label="关闭">✕</button>
     </div>
     <div class="bl-tabs" id="bl-tabs">
-      <button type="button" class="bl-tab is-on" data-tab="profile">档案</button>
+      <button type="button" class="bl-tab is-on" data-tab="profile">图鉴</button>
       <button type="button" class="bl-tab" data-tab="skills">技能</button>
       <button type="button" class="bl-tab" data-tab="stats">属性</button>
     </div>
@@ -145,10 +137,11 @@ const bioList = [...new Set(cards.flatMap((c) => c.biome.split(',').map((s) => s
   </div>
 </div>
 
-<script type="application/json" id="bl-data" set:html={JSON.stringify(cards)} />
+<script type="application/json" id="bl-data" set:html={JSON.stringify({ base, cards })} />
 
 <script>
-  const data = JSON.parse(document.getElementById('bl-data').textContent);
+  const payload = JSON.parse(document.getElementById('bl-data').textContent);
+  const data = payload.cards, base2 = payload.base;
   const byId = new Map(data.map((c) => [String(c.id), c]));
   const grid = document.getElementById('bl-grid');
   const cards = [...grid.querySelectorAll('.bl-card')];
@@ -216,16 +209,26 @@ const bioList = [...new Set(cards.flatMap((c) => c.biome.split(',').map((s) => s
     sort(); apply();
   });
 
-  // ---- modal ----
   const modal = document.getElementById('bl-modal');
   const body = document.getElementById('bl-body');
   const dname = document.getElementById('bl-dname');
-  const dsub = document.getElementById('bl-dsub');
-  const dthumb = document.getElementById('bl-dthumb');
   const tabs = document.getElementById('bl-tabs');
   let cur = null, curTabName = 'profile';
   const esc = (s) => String(s == null ? '' : s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const lvlMark = (src) => src === 'official' ? '<span class="bl-src" title="来自官方 1.0 Wiki">†</span>' : src === 'ea' ? '<span class="bl-src" title="来自 EA 清单">‡</span>' : '';
+  const labelCls = (v) => v === 'Low' ? 'set' : v === 'Medium' ? 'mystical' : v === 'High' ? 'relic' : 'normal';
+  const labelZh = (v) => ({ Low: '低', Medium: '中', High: '高' }[v] || v);
+  const labelHtml = (v) => v ? `<span class="bl-lbl bl-lbl-${labelCls(v)}">${esc(labelZh(v))}</span>` : '<span class="bl-muted">未记录</span>';
+
+  function lootHtml(arr, src) {
+    if (!arr.length) return '<p class="bl-muted">未记录。</p>';
+    const items = arr.map((x) => {
+      const img = x.res ? `<img src="${base2}img/items/res_${esc(x.res)}.gif" alt="" width="24" height="24" loading="lazy" />` : '<span class="bl-itemicon bl-itemicon-empty"></span>';
+      return `<span class="bl-item" title="${esc(x.name)}">${img}<span class="bl-itemname">${esc(x.name)}</span>${x.pct ? `<em>${esc(x.pct)}</em>` : ''}</span>`;
+    }).join('');
+    const note = src === 'fallback' ? '<p class="bl-muted">拾荒类别来自官方 1.0 Wiki / EA 清单（无概率）。</p>' : '';
+    return `<div class="bl-items">${items}</div>${note}`;
+  }
 
   function renderTab() {
     const c = cur; if (!c) return;
@@ -237,35 +240,51 @@ const bioList = [...new Set(cards.flatMap((c) => c.biome.split(',').map((s) => s
     }
     if (curTabName === 'stats') {
       body.innerHTML = c.stats
-        ? `<p class="bl-locked-note">基础值；遭遇等级 2–10 按游戏内公式换算。</p><div class="bl-statgrid">${Object.entries(c.stats).map(([k, v]) => `<span class="bl-stat-chip"><span>${esc(k)}</span><b>${v}</b></span>`).join('')}</div>`
+        ? `<p class="bl-muted">基础值；遭遇等级 2–10 按游戏内公式换算。</p><div class="bl-statgrid">${Object.entries(c.stats).map(([k, v]) => `<span class="bl-stat-chip"><span>${esc(k)}</span><b>${v}</b></span>`).join('')}</div>`
         : `<p class="bl-locked">数值属性未解锁 —— 击杀 <b>20 次</b>后显示。</p>`;
       return;
     }
-    const rows = [];
-    rows.push(`<div class="bl-kv"><span>类型</span><b>${esc(c.type || '未收录')}</b></div>`);
-    rows.push(`<div class="bl-kv"><span>群系</span><b>${esc(c.biome || '未收录')}</b></div>`);
-    rows.push(`<div class="bl-kv"><span>等级范围</span><b>${esc(c.levelRange || '未记录')}${lvlMark(c.levelSource)}</b></div>`);
-    rows.push(`<div class="bl-kv"><span>阵营</span><b>${esc(c.alignment || '未记录')}</b></div>`);
-    rows.push(`<div class="bl-kv"><span>特殊能力</span><b>${c.specials ? esc(c.specials === '-' ? 'Inspect 未列出' : c.specials) : '未记录'}</b></div>`);
-    rows.push(`<div class="bl-kv"><span>生命 / 防御 / 抗性</span><b>${c.recorded ? `${esc(c.health || '—')} / ${esc(c.defense || '—')} / ${esc(c.resistance || '—')}` : '未记录'}</b></div>`);
-    const loot = (arr, src) => arr.length
-      ? `<div class="bl-loot">${arr.map((x) => `<span class="bl-loot-item">${esc(x.name)}${x.pct ? `<em>${esc(x.pct)}</em>` : ''}</span>`).join('')}</div>${src === 'fallback' ? '<p class="bl-locked-note">拾荒类别来自官方 1.0 Wiki / EA 清单（无概率）。</p>' : ''}`
-      : '<p class="bl-locked-note">未记录。</p>';
+    const loreBg = c.bg ? ` style="background-image:linear-gradient(90deg, rgba(10,10,12,.92) 0%, rgba(10,10,12,.72) 55%, rgba(10,10,12,.45) 100%), url('${c.bg}')"` : '';
     body.innerHTML = `
-      <div class="bl-kvlist">${rows.join('')}</div>
-      ${c.lore ? `<blockquote class="bl-lore">${esc(c.lore)}</blockquote>` : '<p class="bl-locked-note">该条目暂无背景故事文本。</p>'}
-      <h4>拾荒掉落</h4>${loot(c.scav, c.scavSource)}
-      <h4>掉落</h4>${loot(c.drops, 'live')}
-      <p class="bl-locked-note">${c.recorded ? '已记录：等级、防护与掉落已解锁。' : '未记录：击杀 1 次后解锁等级、防护与掉落。'}</p>`;
+      <div class="bl-lore${c.bg ? ' has-bg' : ''}"${loreBg}>
+        <div class="bl-lore-art">${c.hasIcon ? `<img src="${c.icon}" alt="${esc(c.name)}" width="96" height="96" />` : '<span class="bl-noimg">?</span>'}</div>
+        <div class="bl-lore-body">
+          <h2 class="bl-lore-name">${esc(c.name)}</h2>
+          <div class="bl-lore-type">${esc(c.type || '未知类型')}</div>
+          <div class="bl-lore-biome">${esc(c.biome || '未知群系')}</div>
+          <hr class="bl-lore-hr" />
+          <p class="bl-lore-text">${c.lore ? esc(c.lore) : '该条目暂无背景故事文本。'}</p>
+        </div>
+      </div>
+      <div class="bl-info">
+        <div class="bl-info-col">
+          <div class="bl-info-row"><span class="bl-info-k">🎖️ 等级</span><span class="bl-info-v">${c.levelRange ? esc(c.levelRange) : '<span class="bl-muted">未记录</span>'}${lvlMark(c.levelSource)}</span></div>
+          <div class="bl-info-row"><span class="bl-info-k">🌗 阵营</span><span class="bl-info-v">${c.alignment ? esc(c.alignment) : '<span class="bl-muted">未记录</span>'}</span></div>
+          <div class="bl-info-row"><span class="bl-info-k">✨ 特殊能力</span><span class="bl-info-v">${c.specials ? esc(c.specials === '-' ? '—' : c.specials) : '<span class="bl-muted">未记录</span>'}</span></div>
+        </div>
+        <div class="bl-info-col">
+          <div class="bl-info-row"><span class="bl-info-k">❤️ 生命</span><span class="bl-info-v">${labelHtml(c.health)}</span></div>
+          <div class="bl-info-row"><span class="bl-info-k">🛡️ 防御</span><span class="bl-info-v">${labelHtml(c.defense)}</span></div>
+          <div class="bl-info-row"><span class="bl-info-k">🌀 抗性</span><span class="bl-info-v">${labelHtml(c.resistance)}</span></div>
+        </div>
+      </div>
+      <div class="bl-lootrow">
+        <div class="bl-loothead">🔪 拾荒掉落</div>
+        <div class="bl-lootbody">${lootHtml(c.scav, c.scavSource)}</div>
+      </div>
+      <div class="bl-lootrow">
+        <div class="bl-loothead">📦 掉落</div>
+        <div class="bl-lootbody">${lootHtml(c.drops, 'live')}</div>
+      </div>
+      <p class="bl-muted bl-tiernote">ℹ️ 拾荒材料与掉落的品质 / 阶级会随敌人等级在 Tier 1–2 之间变化。</p>
+      <p class="bl-muted">${c.recorded ? '已记录：等级、防护与掉落已解锁。' : '未记录：击杀 1 次后解锁等级、防护与掉落。'}</p>`;
   }
 
   function open(id) {
     const c = byId.get(String(id)); if (!c) return;
     cur = c; curTabName = 'profile';
     [...tabs.children].forEach((t) => t.classList.toggle('is-on', t.dataset.tab === 'profile'));
-    dname.textContent = c.name;
-    dsub.innerHTML = `${esc(c.type || '未知')} · ${esc(c.biome || '未知群系')}${c.levelRange ? ' · Lv' + esc(c.levelRange) : ''}${c.tab === 'boss' ? ' · <span class="bl-badge bl-badge-boss">BOSS</span>' : ''}${c.tab === 'overlord' ? ' · <span class="bl-badge bl-badge-over">OVERLORD</span>' : ''}`;
-    dthumb.innerHTML = c.hasIcon ? `<img src="${c.icon}" alt="${esc(c.name)}" width="72" height="72" />` : '<span class="bl-noimg">?</span>';
+    dname.innerHTML = `${esc(c.name)}${c.tab === 'boss' ? ' <span class="bl-badge bl-badge-boss">BOSS</span>' : ''}${c.tab === 'overlord' ? ' <span class="bl-badge bl-badge-over">OVERLORD</span>' : ''}`;
     renderTab();
     modal.hidden = false;
     document.body.style.overflow = 'hidden';
@@ -308,7 +327,6 @@ const bioList = [...new Set(cards.flatMap((c) => c.biome.split(',').map((s) => s
   /* hidden 属性优先：显式 display 会覆盖 [hidden]，需显式复位 */
   .bl-card[hidden], .bl-modal[hidden], .bl-empty[hidden] { display: none !important; }
   .bl-app { display: grid; grid-template-columns: 230px minmax(0, 1fr); gap: 1.1rem; align-items: start; margin: 1rem 0 1.5rem; }
-  /* ---- 侧栏 ---- */
   .bl-side { position: sticky; top: 4.5rem; border: 1px solid var(--nr-line); border-radius: 10px; background: linear-gradient(180deg, var(--nr-panel-2), var(--nr-panel)); padding: .85rem; display: flex; flex-direction: column; gap: .7rem; box-shadow: inset 0 1px 0 rgba(238,187,102,.05); }
   .bl-side-head { display: flex; align-items: center; justify-content: space-between; }
   .bl-side-title { font-family: var(--nr-serif); color: var(--nr-text); font-weight: 600; letter-spacing: .5px; }
@@ -326,7 +344,6 @@ const bioList = [...new Set(cards.flatMap((c) => c.biome.split(',').map((s) => s
   .bl-stat { display: flex; flex-direction: column; align-items: center; background: #17171c; border: 1px solid var(--nr-hair); border-radius: 6px; padding: .3rem; }
   .bl-stat b { color: var(--nr-gold); font-size: 1.05rem; }
   .bl-stat span { color: var(--nr-dim); font-size: .68rem; }
-  /* ---- 主区 ---- */
   .bl-topbar { display: flex; align-items: center; gap: .7rem; margin-bottom: .7rem; }
   .bl-filter-toggle { display: none; border: 1px solid var(--nr-hair); background: #17171c; color: var(--nr-text-soft); border-radius: 6px; padding: .35rem .7rem; font-size: .84rem; cursor: pointer; }
   .bl-count { color: var(--nr-gold); font-weight: 600; font-size: .9rem; }
@@ -338,7 +355,8 @@ const bioList = [...new Set(cards.flatMap((c) => c.biome.split(',').map((s) => s
   .bl-thumb { position: relative; width: 100%; height: 74px; display: flex; align-items: center; justify-content: center; border-radius: 6px; background: radial-gradient(circle at 50% 42%, rgba(238,187,102,.13), rgba(0,0,0,0) 68%), #17171c; border: 1px solid var(--nr-hair); }
   .bl-thumb img { max-width: 62px; max-height: 62px; width: auto; height: auto; image-rendering: pixelated; filter: drop-shadow(0 3px 6px rgba(0,0,0,.6)); }
   .bl-noimg { color: var(--nr-dim); font-size: 1.6rem; }
-  .bl-badge { position: absolute; top: 3px; left: 3px; font-size: .58rem; font-weight: 700; letter-spacing: .3px; border-radius: 3px; padding: 0 .28rem; line-height: 1.5; }
+  .bl-badge { font-size: .58rem; font-weight: 700; letter-spacing: .3px; border-radius: 3px; padding: 0 .28rem; line-height: 1.5; vertical-align: middle; }
+  .bl-thumb .bl-badge { position: absolute; top: 3px; left: 3px; }
   .bl-badge-boss { color: #e9c6ff; background: rgba(120,60,160,.75); border: 1px solid #8b5cc0; }
   .bl-badge-over { color: #14151a; background: linear-gradient(180deg, var(--nr-gold-2), var(--nr-gold)); border: 1px solid #8a6a2f; }
   .bl-badge-other { color: var(--nr-text-soft); background: rgba(255,255,255,.08); border: 1px solid var(--nr-hair); }
@@ -351,46 +369,66 @@ const bioList = [...new Set(cards.flatMap((c) => c.biome.split(',').map((s) => s
   .bl-empty { text-align: center; color: var(--nr-dim); padding: 2rem 0; }
   .bl-note { color: var(--nr-dim); font-size: .78rem; margin-top: .8rem; }
   .bl-src { color: var(--nr-gold); font-size: .72rem; }
+  .bl-muted { color: var(--nr-dim); }
   /* ---- 弹窗 ---- */
   .bl-modal { position: fixed; inset: 0; z-index: 999; display: flex; align-items: center; justify-content: center; padding: 1rem; }
   .bl-backdrop { position: absolute; inset: 0; background: rgba(6,6,9,.78); backdrop-filter: blur(2px); }
   .bl-dialog { position: relative; width: min(720px, 100%); max-height: 88vh; display: flex; flex-direction: column; border: 1px solid var(--nr-gold-dim); border-radius: 12px; background: linear-gradient(180deg, #22222a, #1a1a20); box-shadow: 0 24px 70px rgba(0,0,0,.7), inset 0 1px 0 rgba(238,187,102,.08); overflow: hidden; }
-  .bl-dialog-head { display: flex; align-items: center; justify-content: space-between; gap: .8rem; padding: .8rem 1rem; border-bottom: 1px solid var(--nr-hair); background: linear-gradient(180deg, rgba(238,187,102,.08), transparent); }
-  .bl-dhead-left { display: flex; align-items: center; gap: .8rem; min-width: 0; }
-  .bl-dhead-thumb { flex: 0 0 auto; width: 62px; height: 62px; display: flex; align-items: center; justify-content: center; border-radius: 8px; background: radial-gradient(circle at 50% 42%, rgba(238,187,102,.16), rgba(0,0,0,0) 70%), #14151a; border: 1px solid var(--nr-hair); }
-  .bl-dhead-thumb img { max-width: 54px; max-height: 54px; image-rendering: pixelated; }
-  .bl-dialog-head h3 { margin: 0; font-family: var(--nr-serif); color: var(--nr-text); font-size: 1.25rem; }
-  .bl-dsub { color: var(--nr-dim); font-size: .8rem; margin-top: .15rem; }
+  .bl-dialog-head { display: flex; align-items: center; justify-content: space-between; gap: .8rem; padding: .7rem 1rem; border-bottom: 1px solid var(--nr-hair); background: linear-gradient(180deg, rgba(238,187,102,.08), transparent); }
+  .bl-dialog-head h3 { margin: 0; font-family: var(--nr-serif); color: var(--nr-text); font-size: 1.2rem; }
   .bl-close { flex: 0 0 auto; background: none; border: 1px solid var(--nr-hair); color: var(--nr-dim); border-radius: 6px; width: 30px; height: 30px; cursor: pointer; font-size: .9rem; }
   .bl-close:hover { color: var(--nr-gold); border-color: var(--nr-gold-dim); }
-  .bl-tabs { display: flex; gap: .3rem; padding: .5rem 1rem 0; }
-  .bl-tab { border: 1px solid var(--nr-hair); border-bottom: none; background: #17171c; color: var(--nr-dim); border-radius: 6px 6px 0 0; padding: .35rem .9rem; font-size: .84rem; cursor: pointer; }
-  .bl-tab.is-on { color: var(--nr-text); background: linear-gradient(180deg, rgba(238,187,102,.12), transparent); border-color: var(--nr-gold-dim); font-weight: 600; }
+  .bl-tabs { display: flex; gap: .3rem; padding: .5rem 1rem 0; border-bottom: 1px solid var(--nr-hair); }
+  .bl-tab { border: 1px solid var(--nr-hair); border-bottom: none; background: #17171c; color: var(--nr-dim); border-radius: 6px 6px 0 0; padding: .35rem .9rem; font-size: .84rem; cursor: pointer; margin-bottom: -1px; }
+  .bl-tab.is-on { color: var(--nr-text); background: linear-gradient(180deg, rgba(238,187,102,.14), transparent); border-color: var(--nr-gold-dim); border-bottom-color: #1a1a20; font-weight: 600; }
   .bl-dialog-body { padding: 1rem; overflow-y: auto; }
-  .bl-kvlist { display: grid; grid-template-columns: 1fr 1fr; gap: .35rem .9rem; margin-bottom: .8rem; }
-  .bl-kv { display: flex; justify-content: space-between; gap: .6rem; border-bottom: 1px dashed var(--nr-hair); padding-bottom: .25rem; font-size: .85rem; }
-  .bl-kv span { color: var(--nr-dim); }
-  .bl-kv b { color: var(--nr-text-soft); font-weight: 600; text-align: right; }
-  .bl-lore { margin: .6rem 0 1rem; border-inline-start: 3px solid var(--nr-gold-dim); background: rgba(238,187,102,.05); border-radius: 0 6px 6px 0; padding: .6rem .8rem; color: var(--nr-text-soft); font-style: italic; font-size: .88rem; }
-  .bl-dialog-body h4 { color: var(--nr-gold); font-family: var(--nr-serif); margin: 1rem 0 .4rem; font-size: .95rem; }
-  .bl-loot { display: flex; flex-wrap: wrap; gap: .35rem; }
-  .bl-loot-item { display: inline-flex; align-items: center; gap: .3rem; border: 1px solid var(--nr-hair); background: var(--nr-panel-2); border-radius: 5px; padding: .15rem .5rem; font-size: .8rem; color: var(--nr-text-soft); }
-  .bl-loot-item em { color: var(--nr-gold); font-style: normal; font-size: .74rem; }
+  /* 图鉴：lore 块（还原游戏：左图右文 + 战斗背景） */
+  .bl-lore { display: grid; grid-template-columns: 132px 1fr; gap: 1rem; align-items: start; padding: 1rem; border: 1px solid var(--nr-hair); border-radius: 8px; background-color: #16161b; background-size: cover; background-position: center; margin-bottom: 1rem; }
+  .bl-lore-art { display: flex; align-items: center; justify-content: center; min-height: 110px; }
+  .bl-lore-art img { max-width: 110px; max-height: 110px; width: auto; height: auto; image-rendering: pixelated; filter: drop-shadow(0 6px 14px rgba(0,0,0,.75)); }
+  .bl-lore-name { margin: 0; font-family: var(--nr-serif); color: var(--nr-text); font-size: 1.3rem; }
+  .bl-lore-type { color: var(--nr-text-soft); font-size: .86rem; margin-top: .15rem; }
+  .bl-lore-biome { color: var(--nr-dim); font-size: .8rem; margin-top: .1rem; }
+  .bl-lore-hr { border: 0; border-top: 1px solid var(--nr-hair); margin: .6rem 0; }
+  .bl-lore-text { margin: 0; color: var(--nr-text-soft); font-style: italic; font-size: .88rem; line-height: 1.7; }
+  /* 图鉴：信息块（两列，行对齐） */
+  .bl-info { display: grid; grid-template-columns: 1fr 1fr; gap: .2rem 1.2rem; margin-bottom: .9rem; }
+  .bl-info-col { display: flex; flex-direction: column; }
+  .bl-info-row { display: grid; grid-template-columns: 96px 1fr; align-items: center; gap: .5rem; padding: .3rem 0; border-bottom: 1px dashed var(--nr-hair); font-size: .86rem; }
+  .bl-info-row:last-child { border-bottom: 0; }
+  .bl-info-k { color: var(--nr-dim); }
+  .bl-info-v { color: var(--nr-text-soft); }
+  .bl-lbl { display: inline-block; min-width: 3.4rem; text-align: center; padding: .1rem .5rem; border-radius: 3px; font-size: .74rem; font-weight: 700; color: #101014; }
+  .bl-lbl-set { background: #1fbe00; }
+  .bl-lbl-mystical { background: #ffa405; }
+  .bl-lbl-relic { background: #c30000; color: #fff; }
+  .bl-lbl-normal { background: #a2a09d; }
+  /* 图鉴：掉落行（还原游戏：左标签 + 右图标列表） */
+  .bl-lootrow { display: grid; grid-template-columns: 110px 1fr; gap: .8rem; align-items: start; padding: .6rem 0; border-top: 1px solid var(--nr-hair); }
+  .bl-loothead { color: var(--nr-text); font-size: .86rem; font-weight: 600; padding-top: .15rem; }
+  .bl-items { display: flex; flex-wrap: wrap; gap: .4rem; }
+  .bl-item { display: inline-flex; align-items: center; gap: .4rem; border: 1px solid var(--nr-hair); background: #1b1b21; border-radius: 6px; padding: .2rem .55rem .2rem .25rem; font-size: .8rem; color: var(--nr-text-soft); }
+  .bl-item img { width: 26px; height: 26px; image-rendering: pixelated; border-radius: 4px; background: #101014; }
+  .bl-itemicon-empty { width: 26px; height: 26px; border-radius: 4px; background: #101014; border: 1px solid var(--nr-hair); }
+  .bl-itemname { color: var(--nr-text-soft); }
+  .bl-item em { color: var(--nr-gold); font-style: normal; font-size: .76rem; }
+  .bl-tiernote { font-size: .78rem; line-height: 1.6; margin-top: .7rem; }
   .bl-skillgrid { display: flex; flex-wrap: wrap; gap: .4rem; }
   .bl-skill { border: 1px solid var(--nr-hair); background: var(--nr-panel-2); border-radius: 6px; padding: .3rem .6rem; font-size: .85rem; color: var(--nr-text-soft); }
   .bl-skill em { color: var(--nr-gold); font-style: normal; font-size: .76rem; margin-left: .3rem; }
-  .bl-statgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: .3rem; }
-  .bl-stat-chip { display: flex; justify-content: space-between; gap: .5rem; border: 1px solid var(--nr-hair); background: var(--nr-panel-2); border-radius: 5px; padding: .2rem .5rem; font-size: .78rem; }
+  .bl-statgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(158px, 1fr)); gap: .3rem; margin-top: .5rem; }
+  .bl-stat-chip { display: flex; justify-content: space-between; gap: .5rem; border: 1px solid var(--nr-hair); background: var(--nr-panel-2); border-radius: 5px; padding: .22rem .5rem; font-size: .78rem; }
   .bl-stat-chip span { color: var(--nr-dim); }
   .bl-stat-chip b { color: var(--nr-text); }
   .bl-locked { color: var(--nr-dim); font-size: .88rem; padding: 1.2rem 0; text-align: center; }
   .bl-locked b { color: var(--nr-gold); }
-  .bl-locked-note { color: var(--nr-dim); font-size: .78rem; margin: .3rem 0; }
   @media (max-width: 60rem) {
     .bl-app { grid-template-columns: 1fr; }
     .bl-side { position: static; display: none; }
     .bl-side.is-open { display: flex; }
     .bl-filter-toggle { display: inline-block; }
-    .bl-kvlist { grid-template-columns: 1fr; }
+    .bl-info { grid-template-columns: 1fr; }
+    .bl-lore { grid-template-columns: 100px 1fr; }
+    .bl-lootrow { grid-template-columns: 1fr; gap: .3rem; }
   }
 </style>
