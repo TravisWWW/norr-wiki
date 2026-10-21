@@ -23,3 +23,4 @@ node tools/merge-bestiary-contrib.mjs --keep   # 合并 + 写入，保留收件�
 node tools/merge-bestiary-contrib.mjs --check  # 只校验，不写不删
 ```
 
+
