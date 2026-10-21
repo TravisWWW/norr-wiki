@@ -1,8 +1,19 @@
 {
  "meta": {
-  "source": "游戏内 Inspect（/modal/inspect_enemy）· 小伴侣导出",
-  "fetched": "2026-10-22",
+  "source": "游戏内 Inspect（/modal/inspect_enemy）· 小伴侣导出 · 1 位贡献者合并",
+  "fetched": "2026-10-21",
   "version": "1.0",
+  "contributors": [
+   {
+    "file": "char-1330.json",
+    "char": "#1330",
+    "level": 36,
+    "time": "2026-10-21T17:57:29.978Z",
+    "count": 199,
+    "recorded": 98,
+    "mergedAt": "2026-10-21"
+   }
+  ],
   "count": 199,
   "recordedCount": 98,
   "withLore": 198,
