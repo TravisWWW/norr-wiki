@@ -1,8 +1,8 @@
 {
-  "version": "2.6.80",
+  "version": "2.6.81",
   "date": "2026-10-21",
-  "notes": "v2.6.80：新增「解锁世界地图」——补齐全部 380 张地图点（含未访问）+ 去掉战争迷雾，整幅世界地图可见可点；点开的仍是游戏真实的 Map Details",
+  "notes": "v2.6.81：世界地图 tooltip 补全 —— 未探索的图也能显示资源点（专业+层级+等级）、怪物（图鉴群系+等级推算，99.5% 精确）、地标（副本/世界BOSS/图腾/商队/码头/邮箱/传送站）",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 654511,
-  "sha256": "8a91f5774df83f1f18ef06bda165ea301bbf2dcebf61bc709ac6b90b34e24730"
+  "size": 674503,
+  "sha256": "72cc7de2e1e50c59f029c996aa46c086b43e1cbcef9be9df8bd38aa3ba7fc1a0"
 }

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.80
+// @version      2.6.81
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -184,7 +184,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.80';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
+  const SCRIPT_VER = '2.6.81';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
   /* ★ v2.6.77：在线更新。
      脚本托管在 GitHub Pages（和中文 Wiki 同一个仓库 / 同一次部署），元数据块里的
      @updateURL / @downloadURL 都指向下面这个地址 —— Tampermonkey 会按自己的周期
@@ -6978,6 +6978,8 @@
   .ui-tooltip-content .nr-wm-chip img{height:20px;width:20px;object-fit:contain;border-radius:4px;flex:none;margin-right:5px}
   .ui-tooltip-content .nr-wm-chip.g{border-color:rgba(53,196,106,.45)}
   .ui-tooltip-content .nr-wm-chip.m{border-color:rgba(255,192,97,.35)}
+.ui-tooltip-content .nr-wm-h.s{color:#7fb6ff}
+.ui-tooltip-content .nr-wm-chip.s{border-color:rgba(127,182,255,.35)}
   /* 只有被我们装饰过的 tooltip 才把游戏那行 40px 图标缩小，避免和 chip 重复抢版面 */
   .ui-tooltip-content:has(.nr-wm) h2 img.rounded{height:22px;opacity:.75}
   `;
@@ -9554,47 +9556,82 @@
    * （原来这些信息是点开「Map Details」才显示的，现在改成悬浮即见。） */
   const WM_BASE_ATTR = 'data-nr-wm-base';      /* 记下游戏原始 content，之后都从它重建，避免叠加 */
 
+  /* ---- 世界地图 tooltip 的「全图数据」（v2.6.81）----
+   * 以前只有「去过的图」才有资源点 / 怪物（MapDB 靠踩图学），未探索的图 tooltip 是空的。
+   * 这里补一份**不依赖探索**的静态数据：
+   *   · 采集点：官方 Wiki「采集点」页 141 条（专业 + 层级 + 等级），按世界坐标匹配到地图 → 覆盖 86 张图；
+   *     条目总数正好等于 map_info 里采集图标的数量（fishing37+mining21+quarrying18+chopping27+farming19+foraging19=141），两边互相印证。
+   *   · 怪物：官方 Wiki「敌人」页的「群系」列表 + 等级区间反推（群系命中 且 等级区间与地图等级有交集）。
+   *     对已探索的 111 张非城镇图校验：**召回 99.2% / 精确 99.5%**（基本等于真值）。城镇（38 张）是安全区，不推怪。
+   *   · 地标：map_info 图标（副本 / 世界BOSS / 召唤图腾 / 商队路线 / 码头 / 邮箱 / 传送站），380/380。
+   * 数据来源：data/wiki_official_1.0/site-data/{gathering,bestiary}.json + data/bestiary.json + data/map_meta_1.0.json。
+   * 有踩图学到的真实数据时优先用真实的（真实点位名 / 真实怪物名单），没有才用这份推算。 */
+const WM_POI_MON=[["Angry Egg",198],["Ankheg",110],["Ape Brute",203],["Arcane Imp",182],["Armored Ram",221],["Arynx",128],["Badger",8],["Basilisk",165],["Bear",19],["Beaver",11],["Berserker",186],["Bison",37],["Blood Queen",121],["Blue Stirge",171],["Bog Worm",118],["Boggard",119],["Bogleech",120],["Bone Scarab",51],["Brute Spider",99],["Carrion Harpy",132],["Cassowary",104],["Catoblepas",130],["Centaur",96],["Cockatrice",109],["Cockroach",47],["Cougar",30],["Crocodile",22],["Decaying Worm",116],["Deer",3],["Drow",111],["Druid",97],["Dryad",113],["Dune Glider",105],["Dwarven Caster",224],["Dwarven Guard",222],["Dwarven Hunter",223],["Eel",52],["Faery",199],["Fire Elemental",205],["Foliage Shaman",24],["Forest Guardian",112],["Frost Elemental",178],["Frostbinder",43],["Ghost Pirate",141],["Giant Vulture",185],["Gnoll Warlock",153],["Gnoll Warrior",129],["Goblin Engineer",217],["Goblin Pyro",54],["Goblin Soldier",55],["Hare",5],["Hydra",173],["Hypnotic Bat",28],["Killer Centipede",49],["Knight",67],["Komodo Basilisk",225],["Leech",45],["Light Elemental",204],["Lightning Elemental",179],["Lizardman",87],["Loot Goblin",230],["Luminous Plant",202],["Mana Webber",101],["Merfolk",88],["Miner",64],["Monstrous Bat",29],["Monstrous Worm",16],["Mothman",114],["Mountain Troll",86],["Mutated Lizardman",152],["Myconid",115],["Nomadic Cleric",175],["Ogre Mage",183],["Ooze",193],["Orc Hunter",159],["Orc Warlock",160],["Orc Warrior",158],["Owlbear",106],["Peasant",13],["Phantom Miner",214],["Phoenix",172],["Pirate",57],["Polar Bear",167],["Purifier",40],["Purple Worm",143],["Raider",103],["Rat",1],["Red Stirge",170],["River Troll",56],["Rust Monster",213],["Salamanderoid",10],["Sasquatch",65],["Scorpion",27],["Skeleton",147],["Skeleton Archer",148],["Skeleton Mage",149],["Skeleton Warrior",150],["Snake",2],["Snapping Turtle",23],["Snow Rabbit",237],["Sphinx",184],["Spitter",100],["Stone Centipede",166],["Stone Hulk",108],["Succubus",176],["Swamp Dragon",151],["Tarn Linnorm",122],["Terastodon",131],["Thorny Vines",62],["Tiger",25],["Toad",4],["Toxic Toad",21],["Troglodyte",14],["Troll Boar",117],["Valkyrie",187],["Vampire Bat",135],["Venomous Viper",195],["Vine Sniper",201],["Wandering Ent",98],["Warg",161],["Wasp",168],["Wendigo",107],["Werebat",216],["Wererat Slinger",71],["Wererat Soldier",70],["Wererat Wizard",72],["Werewolf",95],["Wild Dog",6],["Wild Hog",20],["Wisp Phantom",174],["Wizard",181],["Wolf",32],["Woodland Snake",15],["Woodland Spider",33],["Wraith",200],["Wyvern",138],["Xorn",215],["Yak",188],["Zombie",146],["Zombie Horse",177],["Zombie Pirate",89]];
+const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"m":[50,120,127],"s":["mailbox"]},"5":{"g":[["fishing","1","1"],["foraging","1","1"]],"s":["mailbox","waygate"]},"6":{"g":[["fishing","1","1-3"],["quarrying","1","1-3"]],"m":[28,50,97,120,127]},"7":{"m":[11,28,90,97,120,127,128]},"8":{"g":[["mining","1","4-6"],["quarrying","1","6-9"]],"m":[48,52,64,66,97,112]},"9":{"g":[["mining","1","4-6"],["quarrying","1","6-9"]],"m":[48,52,64,66,97,108,112]},"10":{"g":[["quarrying","1","4-6"]],"m":[11,48,49,131]},"11":{"g":[["farming","1","1-3"]],"m":[28,50,97,120,127]},"12":{"m":[6,9,28,78,132]},"13":{"g":[["fishing","1","5-6"]],"m":[6,8,9,28,78,128,131,132,133]},"14":{"g":[["farming","1","4-6"],["fishing","1","4-6"],["foraging","1","4-6"]],"m":[9,26,88,90,98,110,111]},"15":{"g":[["fishing","2","7-10"]],"m":[26,88,90,98,110,111]},"16":{"g":[["farming","2","10"],["fishing","2","10"]],"s":["dock","mailbox","waygate"]},"17":{"g":[["chopping","1","1-3"],["farming","1","1-3"],["fishing","1","1-3"],["foraging","1","1-3"],["mining","1","1-3"]],"m":[6,9,28,78,132]},"18":{"g":[["chopping","1","4-6"],["fishing","1","4-6"]],"m":[9,26,88,90,98,110,111]},"19":{"g":[["fishing","2","7-10"]],"m":[26,88,90,98,110,111]},"20":{"g":[["chopping","1","1-3"],["farming","1","1-3"],["fishing","1","1-3"]],"m":[28,50,97,120,127]},"21":{"g":[["chopping","1","4-6"]],"m":[6,8,9,28,78,128,131,132,133]},"22":{"g":[["chopping","2","7-10"],["farming","2","7-10"],["fishing","2","7-10"],["foraging","2","7-10"],["mining","2","7-10"]],"m":[6,8,78,128,131,132,133]},"23":{"s":["mailbox","waygate"]},"24":{"m":[11,48,49,131],"s":["dungeon"]},"25":{"m":[11,28,90,97,120,127,128]},"26":{"m":[48,52,64,66,97,108,112],"s":["dungeon"]},"27":{"m":[48,52,66,97,108,112],"s":["dungeon"]},"28":{"m":[27,31,67,70,113]},"29":{"g":[["chopping","2","12-13"],["fishing","2","12-13"]],"m":[27,31,67,70,113]},"30":{"m":[27,31,67,70,113],"s":["dungeon"]},"31":{"m":[26,59,63,68]},"32":{"g":[["fishing","2","14-15"]],"m":[26,59,63,68],"s":["dungeon"]},"33":{"m":[43,81,140],"s":["dungeon"]},"34":{"m":[24,36,56,86],"s":["dungeon"]},"35":{"m":[24,26,36,56,86],"s":["dungeon"]},"36":{"m":[123,124,125],"s":["dungeon"]},"37":{"m":[48,78,112]},"38":{"m":[48,78,112]},"39":{"m":[48,78,112]},"40":{"m":[48,52,64,66,97,112]},"41":{"m":[17,20,32,71,85,92]},"42":{"m":[48,52,66,97,108,112]},"43":{"m":[48,52,66,97,108,112]},"44":{"g":[["chopping","1","1-3"],["farming","1","1-3"],["fishing","1","1-3"],["foraging","1","1-3"],["mining","1","1-3"]],"m":[78]},"45":{"m":[48,52,66,97,112],"s":["dungeon"]},"46":{"m":[8,115]},"47":{"m":[8,115]},"48":{"m":[22,30,48,49,77,118,126]},"49":{"g":[["chopping","2","11-12"]],"m":[22,30,48,49,77,118,126],"s":["dungeon"]},"50":{"m":[22,30,48,49,77,118,126]},"51":{"m":[22,30,48,49,77,118,126]},"52":{"g":[["fishing","2","14-15"]],"m":[22,30,48,49,77,118,126]},"53":{"g":[["chopping","2","14-15"]],"s":["waygate"]},"54":{"m":[22,30,48,49,77,118,126]},"55":{"g":[["quarrying","2","14-15"]],"m":[22,30,48,49,77,118,126]},"56":{"g":[["quarrying","5","41-42"]],"m":[29,47,79,89,122,136]},"57":{"g":[["quarrying","5","41-42"]],"m":[29,47,79,89,122,136]},"58":{"g":[["fishing","5","41-42"],["quarrying","5","41-42"]],"s":["waygate"]},"59":{"g":[["quarrying","5","41-42"]],"m":[29,47,79,89,122,136]},"61":{"m":[17,20,32,71,85,92]},"62":{"m":[17,20,32,71,85,92],"s":["caravan","mailbox"]},"63":{"m":[17,20,32,71,85,92]},"64":{"m":[17,20,32,71,85,92]},"65":{"g":[["mining","2","11-12"],["quarrying","2","11-12"]],"m":[17,20,32,71,85,92]},"66":{"m":[17,20,32,71,85,92]},"67":{"s":["caravan","mailbox","waygate"]},"68":{"g":[["chopping","4","30"],["fishing","4","30"]],"m":[21,74,75,76,107,119],"s":["dungeon"]},"69":{"g":[["chopping","4","30"],["fishing","4","30"]],"m":[94,95,96,103],"s":["dungeon"]},"72":{"m":[17,20,32,71,85,92]},"73":{"m":[17,20,32,71,85,92]},"74":{"m":[17,20,32,71,85,92]},"75":{"s":["caravan","mailbox","waygate"]},"76":{"m":[17,20,32,71,85,92],"s":["caravan","mailbox"]},"77":{"m":[40]},"78":{"m":[40]},"83":{"m":[17,20,32,71,85,92]},"84":{"m":[17,20,32,71,80,85,92]},"85":{"g":[["chopping","2","16-17"],["fishing","2","16-17"]],"m":[15,26,59,63],"s":["caravan","mailbox"]},"87":{"m":[15,26,59,63],"s":["caravan","mailbox"]},"90":{"m":[17,20,32,71,85,92],"s":["caravan","mailbox"]},"91":{"s":["mailbox","waygate"]},"92":{"m":[5,19,45,46,92,107]},"93":{"m":[5,19,45,46,92,107]},"94":{"g":[["mining","2","14-15"]],"m":[17,20,32,71,85,92]},"95":{"g":[["mining","2","16-17"]],"m":[17,20,32,71,80,85,92]},"96":{"m":[17,20,32,71,85,92]},"97":{"s":["totem","waygate"]},"98":{"m":[17,20,32,71,85,92]},"99":{"m":[17,20,32,71,85,92],"s":["caravan","mailbox"]},"100":{"g":[["farming","2","14-15"],["foraging","2","14-15"]],"m":[17,20,32,71,85,92]},"106":{"m":[5,19,45,46,92,107]},"107":{"m":[5,19,45,46,92,107]},"110":{"s":["caravan","mailbox","waygate"]},"111":{"m":[18,62,101]},"112":{"m":[11,48,49,68],"s":["dock"]},"113":{"s":["mailbox","waygate"]},"114":{"m":[14,15,16,53,106]},"115":{"m":[12,14,15,16,106]},"116":{"g":[["chopping","3","19-20"],["farming","3","19-20"],["fishing","3","19-20"]],"m":[12,14,15,16,106]},"117":{"m":[51,69,105,129]},"118":{"m":[51,69,105,129]},"119":{"m":[51,69,105,129]},"120":{"m":[51,69,105,129]},"121":{"s":["totem","waygate"]},"122":{"g":[["fishing","3","19-20"],["foraging","3","19-20"]],"m":[12,14,15,16,106],"s":["dungeon"]},"123":{"g":[["chopping","4","29-30"],["fishing","4","29-30"],["foraging","4","29-30"]],"m":[51,69,105,129]},"124":{"g":[["foraging","3","26-28"]],"m":[51,69,105,129]},"125":{"m":[51,69,105,129]},"126":{"g":[["fishing","3","19-20"]],"m":[12,14,15,16,106]},"127":{"m":[12,14,15,16,106]},"128":{"m":[12,14,15,16,106]},"129":{"m":[12,14,15,16,106]},"130":{"m":[48,52,66,97,108,112],"s":["dungeon"]},"131":{"m":[94,95,96,103],"s":["dungeon"]},"133":{"m":[3,41,58,72,130]},"134":{"s":["mailbox","waygate"]},"135":{"m":[48,52,66,97,112]},"136":{"m":[63],"s":["dungeon"]},"137":{"g":[["fishing","2","17-18"],["foraging","2","17-18"]],"m":[12,14,15,16,106]},"138":{"m":[29,47,79,89,122,136],"s":["dungeon"]},"139":{"m":[29,47,79,89,122,136]},"141":{"m":[29,47,79,89,122,136]},"142":{"m":[29,47,79,89,122,136]},"143":{"s":["dock","mailbox","waygate"]},"169":{"s":["dock","mailbox","waygate"]},"170":{"m":[27,31,67,70,113]},"171":{"m":[27,31,67,70,113]},"172":{"g":[["chopping","2","18-19"],["farming","2","18-19"],["foraging","2","18-19"]],"s":["totem","waygate"]},"179":{"m":[22,30,48,49,77,118,126]},"180":{"g":[["chopping","4","31-33"],["farming","4","31-33"],["foraging","4","31-33"]],"m":[1,23,29,40,121]},"181":{"m":[1,23,29,40,121]},"182":{"m":[1,23,29,40,121]},"183":{"s":["mailbox","waygate"]},"184":{"m":[1,23,29,40,121]},"185":{"g":[["mining","4","34-37"]],"m":[1,23,29,40,121]},"186":{"g":[["chopping","4","38-39"],["fishing","4","38-39"]],"m":[1,23,29,40,121]},"187":{"m":[1,23,29,40,121],"s":["dungeon","totem"]},"188":{"m":[1,23,29,40,121]},"189":{"m":[1,23,29,40,121]},"190":{"m":[5,19,45,46,92,107]},"191":{"m":[5,19,45,46,92,107]},"192":{"m":[5,19,45,46,92,107]},"193":{"m":[5,19,45,46,92,107]},"194":{"m":[5,19,45,46,92,107]},"195":{"g":[["mining","3","19-20"],["quarrying","3","19-20"]],"m":[5,19,45,46,92,107]},"196":{"m":[5,19,45,46,92,107],"s":["caravan","mailbox"]},"197":{"m":[5,19,45,46,92,107]},"198":{"m":[5,19,45,46,92,107]},"199":{"m":[5,19,45,46,92,107]},"200":{"g":[["fishing","3","21-22"]],"m":[94,95,96,139]},"201":{"s":["mailbox","waygate"]},"202":{"m":[94,95,96,139]},"203":{"m":[94,95,96,139]},"204":{"g":[["chopping","3","19-20"],["farming","3","19-20"],["fishing","3","19-20"]]},"209":{"m":[5,19,45,46,92,107],"s":["caravan","mailbox"]},"210":{"m":[20,32,71,85]},"211":{"m":[10,25,42,82,114,137],"s":["caravan","mailbox"]},"212":{"g":[["mining","5","41-42"]],"s":["waygate","worldboss"]},"213":{"g":[["farming","5","43-44"]],"m":[10,25,42,82,114,137]},"214":{"g":[["chopping","5","45-46"]],"m":[10,25,42,82,114,137]},"215":{"m":[10,25,42,82,114,137]},"216":{"m":[10,25,42,82,114,137]},"217":{"m":[10,25,42,82,114,137]},"218":{"g":[["mining","2","14-15"]],"m":[17,20,32,71,85,92]},"219":{"m":[17,20,32,71,85,92]},"220":{"m":[17,20,32,71,80,85,92]},"221":{"m":[48,65,66,84,103],"s":["caravan","mailbox"]},"222":{"g":[["quarrying","2","16-17"]],"m":[17,20,32,71,80,85,92]},"224":{"s":["waygate"]},"225":{"m":[17,20,32,71,80,85,92]},"226":{"m":[17,20,32,71,80,85,92],"s":["caravan","mailbox"]},"227":{"g":[["chopping","3","21-22"]],"m":[19,21,74,75,76,107]},"228":{"g":[["farming","3","21-22"],["fishing","3","21-22"],["foraging","3","21-22"]],"m":[19,21,74,75,76,107]},"229":{"s":["caravan","mailbox","waygate"]},"230":{"m":[7,102]},"231":{"m":[94,95,96,139]},"232":{"m":[94,95,96,103],"s":["worldboss"]},"233":{"m":[94,95,96,103],"s":["worldboss"]},"234":{"m":[48,65,66,84,103],"s":["dungeon"]},"235":{"m":[48,66,84,103],"s":["dungeon"]},"239":{"m":[17,20,32,71,80,85,92],"s":["caravan","mailbox"]},"240":{"m":[19,21,75,76,107]},"241":{"m":[17,20,32,71,80,85,92]},"243":{"m":[17,20,32,71,80,85,92]},"244":{"m":[7,44,75,76,102]},"245":{"m":[7,44,75,76,102]},"246":{"m":[7,44,75,76,102]},"247":{"m":[48,65,66,84,103]},"248":{"g":[["mining","3","20-21"],["quarrying","3","20-21"]],"m":[7,44,74,75,76,102]},"249":{"m":[7,44,74,75,76,102]},"250":{"m":[20,32,71,85]},"251":{"s":["waygate"]},"252":{"m":[94,95,96,139]},"253":{"m":[94,95,96,139]},"254":{"m":[94,95,96,139]},"255":{"m":[94,95,96,139]},"256":{"m":[94,95,96,139]},"257":{"g":[["mining","4","29-30"],["quarrying","4","29-30"]],"s":["waygate"]},"260":{"g":[["fishing","3","19-20"],["foraging","3","19-20"]],"m":[13,87],"s":["dungeon"]},"262":{"m":[20,32,71,85]},"263":{"m":[20,32,71,85]},"264":{"m":[20,32,71,85]},"265":{"s":["totem","waygate"]},"266":{"g":[["mining","3","27-28"]],"m":[10,25,42,82,114]},"267":{"g":[["fishing","3","27-28"]],"m":[10,25,42,82,114]},"268":{"g":[["chopping","4","29-30"]],"m":[10,25,42,82,114,137]},"269":{"g":[["farming","5","40-41"]],"m":[74,75,76,107]},"271":{"g":[["chopping","5","43-44"]],"s":["waygate"]},"275":{"m":[19,21,74,75,76,107]},"276":{"m":[19,21,74,75,76,107],"s":["dungeon"]},"277":{"g":[["chopping","4","31-33"],["farming","4","31-33"],["fishing","4","31-33"],["foraging","4","31-33"]],"s":["waygate"]},"278":{"m":[74,75,76,107,119]},"279":{"g":[["mining","4","34-35"]],"m":[29,103]},"280":{"m":[74,75,76,107,119]},"281":{"g":[["farming","4","30"],["foraging","4","30"]],"s":["mailbox","waygate"]},"282":{"m":[10,25,42,82,114,137]},"283":{"g":[["quarrying","4","31-32"]],"m":[10,25,42,82,114,137]},"284":{"s":["mailbox","waygate"]},"285":{"m":[10,25,42,82,114,137]},"286":{"m":[10,25,42,82,114,137],"s":["dungeon"]},"287":{"m":[25,42,82,137]},"288":{"m":[37,63],"s":["caravan","mailbox"]},"289":{"g":[["fishing","4","34-35"]],"m":[37,63]},"290":{"m":[37,63]},"291":{"g":[["fishing","4","36-37"],["mining","4","36-37"]],"s":["waygate","worldboss"]},"293":{"m":[2,39,61,109,117],"s":["caravan","mailbox"]},"294":{"g":[["chopping","4","31-32"],["fishing","4","31-32"]],"m":[2,39,61,109,117]},"295":{"g":[["mining","4","33-34"]],"m":[2,39,61,109,117]},"296":{"m":[2,39,61,109,117]},"297":{"g":[["chopping","4","35-36"]],"m":[2,39,61,109,117]},"298":{"s":["waygate"]},"301":{"m":[2,39,61,109,117]},"302":{"m":[2,39,61,109,117],"s":["dungeon"]},"304":{"m":[2,39,61,109,117]},"306":{"g":[["fishing","5","39-40"]],"m":[2,39,61,109,117]},"307":{"g":[["chopping","5","41-42"]],"m":[2,39,61,109,117]},"308":{"m":[94,95,96,139]},"309":{"m":[94,95,96,139]},"310":{"g":[["chopping","3","27-28"],["farming","3","27-28"],["fishing","3","27-28"],["foraging","3","27-28"],["mining","3","27-28"]],"s":["totem","waygate"]},"311":{"g":[["chopping","3","27-28"],["farming","3","27-28"],["fishing","3","27-28"],["foraging","3","27-28"],["mining","3","27-28"]],"m":[94,95,96,103]},"316":{"g":[["farming","5","43-45"],["foraging","5","43-45"]],"m":[2,39,61,109,117]},"317":{"s":["mailbox","waygate"]},"318":{"m":[65,83,100],"s":["worldboss"]},"319":{"s":["worldboss"]},"320":{"g":[["mining","5","41-42"]],"m":[25,42,82,137]},"321":{"m":[2,39,61,109,117]},"322":{"m":[2,39,117]},"323":{"g":[["fishing","4","34-35"]],"m":[37,63],"s":["dock"]},"324":{"m":[4,33,34,35,55]},"325":{"g":[["mining","5","41-42"]],"m":[4,33,34,35,55]},"326":{"g":[["fishing","5","43-44"]],"m":[4,33,34,35,55],"s":["dungeon","totem"]},"327":{"g":[["chopping","5","45-46"]],"s":["waygate","worldboss"]},"329":{"m":[4,33,34,35,55]},"330":{"g":[["quarrying","6","49-50"]],"m":[4,33,34,35,55]},"332":{"m":[4,33,34,35,55]},"333":{"g":[["fishing","5","40-42"],["mining","5","40-42"]],"m":[41,54,58,72,130]},"334":{"m":[41,54,58,72,130]},"335":{"m":[41,54,58,72,130]},"336":{"s":["waygate"]},"337":{"g":[["quarrying","6","57-59"]]},"338":{"s":["dungeon"]},"342":{"m":[4,33,34,35,55]},"343":{"m":[4,33,34,35,55]},"344":{"m":[4,33,34,35,55]},"345":{"m":[4,33,34,35,55]},"346":{"g":[["farming","5","47-48"],["foraging","5","47-48"],["quarrying","5","47-48"]],"m":[4,33,34,35,55],"s":["caravan","mailbox"]},"347":{"g":[["chopping","5","48-49"]],"m":[4,33,34,35,55]},"348":{"s":["mailbox","waygate"]},"350":{"g":[["chopping","6","51-52"]]},"351":{"g":[["farming","6","52-53"],["fishing","6","52-53"],["foraging","6","52-53"]]},"352":{"s":["totem","waygate"]},"353":{"g":[["fishing","6","54-55"],["quarrying","6","54-55"]]},"354":{"g":[["mining","6","55-56"]]},"357":{"s":["worldboss"]},"358":{"s":["worldboss"]},"360":{"s":["mailbox","waygate"]},"363":{"g":[["mining","6","51-52"]],"s":["dungeon"]},"901":{"m":[50,120,127]},"903":{"m":[17,20,32,71,80,85,92]},"906":{"m":[10,25,42,82,114,137]},"1000":{"s":["waygate"]},"1001":{"m":[82]},"1002":{"m":[82]},"1003":{"m":[82]},"1004":{"m":[10,25,42,82,114]},"1005":{"m":[10,25,42,82,114,137]},"1006":{"m":[10,25,42,82,114,137]},"1007":{"m":[10,25,42,82,114,137]},"1027":{"m":[104]},"1028":{"m":[104]},"1029":{"m":[104]},"1030":{"m":[104]},"1031":{"m":[104]},"1032":{"m":[104]},"1033":{"m":[104]},"1041":{"m":[11,28,50,90,97,120,127,128]},"1042":{"m":[11,97,120,127,128]},"1066":{"m":[116]},"1067":{"m":[50,116]},"1068":{"m":[71,116]},"1069":{"m":[71,116]},"1070":{"m":[71,116]},"1071":{"m":[116]},"1072":{"m":[116]},"1145":{"m":[11,48,49,131]},"1146":{"m":[11,48,49,68,131]},"1147":{"m":[48,49,68]},"1157":{"m":[43,93]},"1158":{"m":[43,52,93]},"1159":{"m":[43,52,93]},"1160":{"m":[43,93,139]},"1161":{"m":[43,93,139]},"1162":{"m":[43,93]},"1163":{"m":[43,93]},"1183":{"m":[135]},"1184":{"m":[135]},"1185":{"m":[135]},"1186":{"m":[135]},"1187":{"m":[135]},"1188":{"m":[135]},"1189":{"m":[135]},"2001":{"m":[6,132]},"2002":{"m":[6,8,78,128,131,132,133]},"2003":{"m":[6]},"2100":{"m":[6,8,9,28,78,128,131,132,133]}};
+  const WM_PROF_EN = { fishing: 'Fishing', mining: 'Mining', quarrying: 'Quarrying', chopping: 'Chopping', farming: 'Farming', foraging: 'Foraging' };
+  const WM_LAND_EN = { dungeon: 'Dungeon', worldboss: 'World Boss', totem: 'Summoning Totem', caravan: 'Smugglers Route', dock: 'Dock', mailbox: 'Mailbox', waygate: 'Waygate' };
+
   function navWmPoiBlock(mapId) {
     const key = String(mapId);
-    const gs = MapDB.g(key);            /* 内置 + 边玩边学，MapDB 已合并 */
-    const ms = MapDB.m(key);
-    if (!gs.length && !ms.length) return '';
+    const gs = MapDB.g(key);            /* 内置 + 边玩边学，MapDB 已合并（真实点位名） */
+    const ms = MapDB.m(key);            /* 同上（真实怪物名单） */
+    const wp = WM_POI[key] || null;     /* ★ v2.6.81：Wiki 推算的「全图数据」，不依赖探索 */
     const mon = MapDB.monAll();
     const chip = function (cls, icon, name) {
       return '<span class="nr-wm-chip ' + cls + '">' +
              (icon ? '<img src="' + icon + '" alt="">' : '') + escapeHtml(name) + '</span>';
     };
-    const gChips = gs.map(function (nm) { return chip('g', '/images/icons/' + gatherIconOf(nm) + '.gif', nm); }).join('');
-    /* ★ 怪物按「游戏里的怪物 id」排序（MapDB.mon: 名字 → 图鉴图标 id）。
-     *   查不到 id 的（新学的、图鉴里没有的）排到最后，按名字排。 */
-    const monIdOf = function (nm) {
-      const n = parseInt(mon[nm], 10);
-      return isNaN(n) ? null : n;
-    };
-    const msSorted = ms.slice().sort(function (a, b) {
-      const ia = monIdOf(a), ib = monIdOf(b);
-      if (ia != null && ib != null) return (ia - ib) || a.localeCompare(b);
-      if (ia != null) return -1;                 /* 有 id 的在前 */
-      if (ib != null) return 1;
-      return a.localeCompare(b);                 /* 都没 id → 按名字 */
-    });
-    /* ★★ 2026-09-22 修：这里原来写的是 `mon[nm] || monL[nm]`，而 `monL` 是 MapDB 重构前的遗留变量
-       （老代码：`mon = NAV_EMBED.mon, monL = _poiLearn.mon`），现在脚本里根本没有它。
-       于是**只要某张图的怪里有一个不在图鉴里**（例：map64 Droughtlands 的 "Ruin Guard"），
-       这一行就抛 ReferenceError → navDecorateWorldMap 的循环整个中断 →
-       世界地图上「这张图以及排在它后面的所有图」的怪/资源点全部不显示（看起来就像怪被漏掉了）。
-       MapDB.mon 本身已经是「内置图鉴 + 边玩边学」的合并结果，不需要再兜底查 monL。 */
-    const mChips = msSorted.map(function (nm) {
-      const id = mon[nm];
-      return chip('m', id ? '/images/maps/items/enemy_' + id + '.gif' : '', nm);
-    }).join('');
+    /* 资源点：真实点位名优先；没有就用 Wiki 的「专业 + 层级 + 等级」 */
+    let gChips = '';
+    if (gs.length) {
+      gChips = gs.map(function (nm) { return chip('g', '/images/icons/' + gatherIconOf(nm) + '.gif', nm); }).join('');
+    } else if (wp && wp.g) {
+      gChips = wp.g.map(function (g) {
+        const lbl = (WM_PROF_EN[g[0]] || g[0]) + (g[1] ? ' T' + g[1] : '') + (g[2] ? ' · Lv' + g[2] : '');
+        return chip('g', '/images/icons/' + g[0] + '.gif', lbl);
+      }).join('');
+    }
+    /* 怪物：真实名单优先；没有就用图鉴（群系 + 等级）推算 */
+    let mChips = '';
+    if (ms.length) {
+      /* ★★ 2026-09-22 修：这里原来写的是 `mon[nm] || monL[nm]`，而 `monL` 是 MapDB 重构前的遗留变量
+         （老代码：`mon = NAV_EMBED.mon, monL = _poiLearn.mon`），现在脚本里根本没有它。
+         于是**只要某张图的怪里有一个不在图鉴里**（例：map64 Droughtlands 的 "Ruin Guard"），
+         这一行就抛 ReferenceError → navDecorateWorldMap 的循环整个中断 →
+         世界地图上「这张图以及排在它后面的所有图」的怪/资源点全部不显示（看起来就像怪被漏掉了）。
+         MapDB.mon 本身已经是「内置图鉴 + 边玩边学」的合并结果，不需要再兜底查 monL。 */
+      const monIdOf = function (nm) { const n = parseInt(mon[nm], 10); return isNaN(n) ? null : n; };
+      const msSorted = ms.slice().sort(function (a, b) {
+        const ia = monIdOf(a), ib = monIdOf(b);
+        if (ia != null && ib != null) return (ia - ib) || a.localeCompare(b);
+        if (ia != null) return -1;                 /* 有 id 的在前 */
+        if (ib != null) return 1;
+        return a.localeCompare(b);                 /* 都没 id → 按名字 */
+      });
+      mChips = msSorted.map(function (nm) {
+        const id = mon[nm];
+        return chip('m', id ? '/images/maps/items/enemy_' + id + '.gif' : '', nm);
+      }).join('');
+    } else if (wp && wp.m) {
+      mChips = wp.m.map(function (i) {
+        const e = WM_POI_MON[i] || [];
+        return chip('m', e[1] ? '/images/maps/items/enemy_' + e[1] + '.gif' : '', e[0] || '');
+      }).join('');
+    }
+    /* 地标（副本 / 世界BOSS / 召唤图腾 / 商队路线 / 码头 / 邮箱 / 传送站） */
+    let sChips = '';
+    if (wp && wp.s) {
+      sChips = wp.s.map(function (x) { return chip('s', '/images/icons/' + x + '.gif', WM_LAND_EN[x] || x); }).join('');
+    }
+    if (!gChips && !mChips && !sChips) return '';
     const sec = function (label, cls, chips) {
       return '<div class="nr-wm-sec"><span class="nr-wm-h ' + cls + '">' + label + '</span>' +
              '<span class="nr-wm-chips">' + chips + '</span></div>';
     };
     return '<div class="nr-wm"><div class="nr-wm-sep"></div>' +
-           (gs.length ? sec('资源点', 'g', gChips) : '') +
-           (ms.length ? sec('怪物', 'm', mChips) : '') + '</div>';
+           (gChips ? sec('资源点', 'g', gChips) : '') +
+           (mChips ? sec('怪物', 'm', mChips) : '') +
+           (sChips ? sec('地标', 's', sChips) : '') + '</div>';
   }
 
   /* ======================= 19b. 世界地图「解锁未访问地图」(v2.6.80) =======================
