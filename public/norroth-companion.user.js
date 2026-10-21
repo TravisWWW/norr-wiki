@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.86
+// @version      2.6.88
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -184,7 +184,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.86';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
+  const SCRIPT_VER = '2.6.88';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
   /* ★ v2.6.77：在线更新。
      脚本托管在 GitHub Pages（和中文 Wiki 同一个仓库 / 同一次部署），元数据块里的
      @updateURL / @downloadURL 都指向下面这个地址 —— Tampermonkey 会按自己的周期
@@ -7369,16 +7369,11 @@
 
           <div class="divblock_dark" style="margin-top:4px">
             <div class="nr-srow">
-              <span class="nr-sl" style="flex:none" title="读取游戏内图鉴（Inspect）里你这个账号的记录，导出成文档。只读，不改动任何游戏数据。会依次请求 id 1~300，约 1~2 分钟，可随时取消。">图鉴导出</span>
-              <select id="nr-bestfmt" style="flex:1" title="导出格式">
-                <option value="md">Markdown 文档 (.md)</option>
-                <option value="json">JSON 数据 (.json)</option>
-                <option value="csv">CSV 表格 (.csv)</option>
-              </select>
-              <button class="mini" id="nr-bestexp" type="button" title="扫描并导出">导出</button>
+              <span class="nr-sl" style="flex:none" title="读取游戏内图鉴（Inspect）里你这个账号的记录，导出成 JSON。只读，不改动任何游戏数据。并发抓取 id 1~300，约 20 秒，可随时取消。">图鉴导出</span>
+              <button class="mini" id="nr-bestexp" type="button" title="扫描并导出 JSON" style="flex:1">导出 JSON</button>
             </div>
             <div class="nr-srow" style="margin-top:4px">
-              <span id="nr-beststate" style="flex:1;color:#9aa4b2;font-size:10.5px">点「导出」扫描游戏内图鉴记录</span>
+              <span id="nr-beststate" style="flex:1;color:#9aa4b2;font-size:10.5px">点「导出 JSON」扫描游戏内图鉴记录（约 20 秒）</span>
               <button class="mini" id="nr-bestcancel" type="button" style="display:none">取消</button>
             </div>
           </div>
@@ -10290,15 +10285,32 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
   }
 
   /* ============================================================================
-   * 图鉴导出：读取游戏内 Inspect（/modal/inspect_enemy）里本账号的记录，导出成文档
+   * 图鉴导出：读取游戏内 Inspect（/modal/inspect_enemy）里本账号的记录，导出 JSON
    *   数据只读，不改动游戏。解锁层级：
    *     0 次   = 名称 / 类型 / 群系 / 背景故事
    *     ≥1 次  = 等级范围 / 阵营 / 特殊能力 / 生命·防御·抗性 / 拾荒掉落 / 掉落
    *     ≥10 次 = 技能
    *     ≥20 次 = 34 项数值属性
-   *   导出格式：Markdown 文档 / JSON 数据 / CSV 表格
+   *   提速：先向 /modal/bestiary 要 id 清单（1 个请求，193 条），只抓这些；
+   *         并发 6（HTTP/1.1 每域名连接上限，再高无收益），实测约 20 秒。
    * ========================================================================== */
+  const BEST_CONC = 6, BEST_RANGE_MAX = 270;
   let _bestBusy = false, _bestCancel = false;
+
+  /* 取要抓的 id 清单：优先用图鉴界面（准确、少 1/3 请求），失败退回数值区间 */
+  async function bestiaryIds() {
+    try {
+      const r = await fetch('/modal/bestiary', { credentials: 'same-origin', headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+      if (r.ok) {
+        const t = await r.text();
+        const ids = []; const re = /id=codex_(\d+)/g; let m;
+        while ((m = re.exec(t))) ids.push(+m[1]);
+        if (ids.length > 50) return { ids: ids, src: 'codex' };
+      }
+    } catch (e) { /* ignore */ }
+    const ids = []; for (let i = 1; i <= BEST_RANGE_MAX; i++) ids.push(i);
+    return { ids: ids, src: 'range' };
+  }
 
   function parseInspectEnemy(t) {
     const g = function (re) { const m = t.match(re); return m ? m[1] : ''; };
@@ -10348,138 +10360,85 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
     return o;
   }
 
+  /* 并发 worker 池：BEST_CONC 个 worker 抢 id，无人工间隔（实测 0 个 403） */
   async function bestiaryScan(onProgress) {
+    const src = await bestiaryIds();
+    const ids = src.ids, total = ids.length;
     const out = [];
-    let miss = 0;
-    for (let id = 1; id <= 300; id++) {
-      if (_bestCancel) break;
-      let text = null, tries = 0;
-      while (tries < 4) {
-        tries++;
-        try {
-          const r = await fetch('/modal/inspect_enemy?id=' + id, { credentials: 'same-origin', headers: { 'X-Requested-With': 'XMLHttpRequest' } });
-          if (r.status === 403) { await sleep(2500 * tries); continue; }
-          if (!r.ok) break;
-          text = await r.text(); break;
-        } catch (e) { await sleep(1200); }
+    let idx = 0, done = 0;
+    const worker = async function () {
+      while (true) {
+        if (_bestCancel) return;
+        const id = ids[idx++];
+        if (id === undefined) return;
+        let text = null, tries = 0;
+        while (tries < 4) {
+          tries++;
+          try {
+            const r = await fetch('/modal/inspect_enemy?id=' + id, { credentials: 'same-origin', headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+            if (r.status === 403) { await sleep(1500 * tries); continue; }
+            if (!r.ok) break;
+            text = await r.text(); break;
+          } catch (e) { await sleep(800); }
+        }
+        if (text && text.length > 1000 && !/Unable to load/.test(text)) {
+          const m = parseInspectEnemy(text);
+          if (m) { m.id = id; out.push(m); }
+        }
+        done++;
+        if (onProgress && (done % 10 === 0 || done === total)) onProgress(done, out.length, total);
       }
-      if (text && text.length > 1000 && !/Unable to load/.test(text)) {
-        const m = parseInspectEnemy(text);
-        if (m) { m.id = id; out.push(m); miss = 0; } else miss++;
-      } else miss++;
-      if (onProgress) onProgress(id, out.length);
-      if (id > 200 && miss >= 30) break;
-      await sleep(180);
-    }
-    return out;
-  }
-
-  const BEST_ZH = { Low: '低', Medium: '中', High: '高', Neutral: '中立' };
-  const bestZh = function (v) { return BEST_ZH[v] || v || ''; };
-  const bestLoot = function (arr) { return (arr || []).map(function (x) { return x.name + (x.pct ? ' ' + x.pct : ''); }).join('、'); };
-
-  function bestiaryToMarkdown(list, meta) {
-    const rec = list.filter(function (m) { return m.recorded; });
-    const withSkills = list.filter(function (m) { return m.skills.length; });
-    const withStats = list.filter(function (m) { return Object.keys(m.stats).length; });
-    const L = [];
-    L.push('# Norroth 怪物图鉴导出');
-    L.push('');
-    L.push('- 角色：' + meta.char + '（Lv' + meta.level + '）');
-    L.push('- 导出时间：' + meta.time);
-    L.push('- 脚本版本：' + SCRIPT_VER);
-    L.push('- 数据来源：游戏内 Inspect（/modal/inspect_enemy），只读导出');
-    L.push('- 统计：共 **' + list.length + '** 种 ｜ 已记录 **' + rec.length + '** ｜ 有技能 **' + withSkills.length + '** ｜ 有数值属性 **' + withStats.length + '**');
-    L.push('');
-    L.push('> 解锁层级：击杀 0 次 = 名称 / 类型 / 群系 / 背景故事；≥1 次 = 等级 / 阵营 / 防护 / 掉落；≥10 次 = 技能；≥20 次 = 数值属性。');
-    L.push('');
-    L.push('## 一览表');
-    L.push('');
-    L.push('| # | 名称 | 类型 | 等级 | 群系 | 生命 | 防御 | 抗性 | 拾荒 | 掉落 |');
-    L.push('|---|---|---|---|---|---|---|---|---|---|');
-    list.forEach(function (m) {
-      L.push('| ' + m.id + ' | ' + m.name + ' | ' + (m.type || '—') + ' | ' + (m.levelRange || '—') + ' | ' + (m.biome || '—') +
-        ' | ' + (m.recorded ? (bestZh(m.health) || '—') : '未记录') +
-        ' | ' + (m.recorded ? (bestZh(m.defense) || '—') : '未记录') +
-        ' | ' + (m.recorded ? (bestZh(m.resistance) || '—') : '未记录') +
-        ' | ' + (bestLoot(m.scavenging) || '—') + ' | ' + (bestLoot(m.drops) || '—') + ' |');
-    });
-    L.push('');
-    L.push('## 已记录详情（' + rec.length + '）');
-    L.push('');
-    if (!rec.length) L.push('（暂无已记录怪物）');
-    rec.forEach(function (m) {
-      L.push('### #' + m.id + ' ' + m.name);
-      L.push('');
-      L.push('- 类型：' + (m.type || '—'));
-      L.push('- 群系：' + (m.biome || '—'));
-      L.push('- 等级：' + (m.levelRange || '—'));
-      L.push('- 阵营：' + (bestZh(m.alignment) || '—'));
-      L.push('- 特殊能力：' + (m.specials && m.specials !== '-' ? m.specials : '—'));
-      L.push('- 生命 / 防御 / 抗性：' + (bestZh(m.health) || '—') + ' / ' + (bestZh(m.defense) || '—') + ' / ' + (bestZh(m.resistance) || '—'));
-      if (m.scavenging.length) L.push('- 拾荒掉落：' + bestLoot(m.scavenging));
-      if (m.drops.length) L.push('- 掉落：' + bestLoot(m.drops));
-      L.push('- 技能：' + (m.skills.length ? m.skills.map(function (s) { return s.name + ' (Lv' + s.level + ')'; }).join('、') : '未解锁（击杀 10 次）'));
-      const sk = Object.keys(m.stats);
-      L.push('- 数值属性：' + (sk.length ? sk.map(function (k) { return k + ' ' + m.stats[k]; }).join('、') : '未解锁（击杀 20 次）'));
-      if (m.lore) L.push('- 背景故事：' + m.lore);
-      L.push('');
-    });
-    return L.join('\n');
-  }
-
-  function bestiaryToCsv(list) {
-    const esc = function (v) { const t = String(v == null ? '' : v); return /[",\n]/.test(t) ? '"' + t.replace(/"/g, '""') + '"' : t; };
-    const head = ['id', '名称', '类型', '群系', '等级', '阵营', '生命', '防御', '抗性', '拾荒掉落', '掉落', '技能', '数值属性', '已记录', '背景故事'];
-    const rows = [head.join(',')];
-    list.forEach(function (m) {
-      rows.push([m.id, m.name, m.type, m.biome, m.levelRange, m.alignment, m.health, m.defense, m.resistance,
-        bestLoot(m.scavenging), bestLoot(m.drops),
-        m.skills.map(function (s) { return s.name + ' Lv' + s.level; }).join(' | '),
-        Object.keys(m.stats).map(function (k) { return k + '=' + m.stats[k]; }).join(' | '),
-        m.recorded ? '是' : '否', (m.lore || '').replace(/\s+/g, ' ')].map(esc).join(','));
-    });
-    return rows.join('\n');
+    };
+    await Promise.all(Array.from({ length: BEST_CONC }, worker));
+    out.sort(function (a, b) { return a.id - b.id; });
+    return { list: out, src: src.src, total: total };
   }
 
   async function exportBestiary() {
     if (_bestBusy) return;
     const panel = els.panel;
-    const fmtEl = panel && panel.querySelector('#nr-bestfmt');
     const stEl = panel && panel.querySelector('#nr-beststate');
     const cancelBtn = panel && panel.querySelector('#nr-bestcancel');
     const expBtn = panel && panel.querySelector('#nr-bestexp');
-    const fmt = (fmtEl && fmtEl.value) || 'md';
     _bestBusy = true; _bestCancel = false;
     if (cancelBtn) cancelBtn.style.display = '';
     if (expBtn) { expBtn.disabled = true; expBtn.textContent = '导出中…'; }
+    const t0 = Date.now();
     try {
-      const list = await bestiaryScan(function (id, n) { if (stEl) stEl.textContent = '扫描中… id ' + id + '/300，已找到 ' + n + ' 种'; });
+      const res = await bestiaryScan(function (n, found, total) {
+        if (stEl) stEl.textContent = '扫描中… ' + n + '/' + total + '，已找到 ' + found + ' 种';
+      });
+      const list = res.list;
       if (!list.length) { setStatus('图鉴导出：没取到数据（未登录或接口被限流）'); if (stEl) stEl.textContent = '未取到数据'; return; }
       const c = (typeof character === 'object' && character) || {};
-      const meta = { char: c.name || ('#' + (c.id || '?')), level: c.level || '?', time: new Date().toISOString(),
-        count: list.length, recorded: list.filter(function (m) { return m.recorded; }).length };
-      let text, mime, ext, payload;
-      if (fmt === 'json') { text = JSON.stringify({ meta: meta, monsters: list }, null, 1); mime = 'application/json;charset=utf-8'; ext = 'json'; payload = text; }
-      else if (fmt === 'csv') { text = bestiaryToCsv(list); mime = 'text/csv;charset=utf-8'; ext = 'csv'; payload = '\uFEFF' + text; }
-      else { text = bestiaryToMarkdown(list, meta); mime = 'text/markdown;charset=utf-8'; ext = 'md'; payload = '\uFEFF' + text; }
-      const blob = new Blob([payload], { type: mime });
+      const rec = list.filter(function (m) { return m.recorded; }).length;
+      const payload = {
+        meta: {
+          char: c.name || ('#' + (c.id || '?')), level: c.level || '?', time: new Date().toISOString(),
+          count: list.length, recorded: rec, idSource: res.src, scriptVersion: SCRIPT_VER,
+          source: 'game Inspect /modal/inspect_enemy',
+          unlock: { recorded: 1, skills: 10, stats: 20 }
+        },
+        monsters: list
+      };
+      const blob = new Blob([JSON.stringify(payload, null, 1)], { type: 'application/json;charset=utf-8' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'norroth_bestiary_' + new Date().toISOString().slice(0, 10) + '.' + ext;
+      a.download = 'norroth_bestiary_' + new Date().toISOString().slice(0, 10) + '.json';
       document.body.appendChild(a); a.click(); a.remove();
       setTimeout(function () { try { URL.revokeObjectURL(url); } catch (e) { /* ignore */ } }, 60000);
-      setStatus('已导出图鉴：' + list.length + ' 种（已记录 ' + meta.recorded + '）');
-      logEvent('导出图鉴 ' + list.length + ' 种 / 已记录 ' + meta.recorded);
-      if (stEl) stEl.textContent = '已导出 ' + list.length + ' 种（已记录 ' + meta.recorded + '）';
+      const secs = Math.round((Date.now() - t0) / 1000);
+      setStatus('已导出图鉴：' + list.length + ' 种（已记录 ' + rec + '，耗时 ' + secs + 's）');
+      logEvent('导出图鉴 ' + list.length + ' 种 / 已记录 ' + rec + ' / ' + secs + 's');
+      if (stEl) stEl.textContent = '已导出 ' + list.length + ' 种（已记录 ' + rec + '，耗时 ' + secs + 's）';
     } catch (e) {
       setStatus('图鉴导出失败：' + (e && e.message ? e.message : String(e)));
       if (stEl) stEl.textContent = '导出失败';
     } finally {
       _bestBusy = false;
       if (cancelBtn) cancelBtn.style.display = 'none';
-      if (expBtn) { expBtn.disabled = false; expBtn.textContent = '导出'; }
+      if (expBtn) { expBtn.disabled = false; expBtn.textContent = '导出 JSON'; }
     }
   }
 
@@ -10488,7 +10447,7 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
     mc: { toggle: mcToggle, togglePause: mcTogglePause, syncBtns: syncMcBtns, queue: mcQueue, profLevels: mcProfLevels, profLevelsCached: mcProfLevelsCached, idleInfo: mcIdleInfo, startIdle: mcStartIdle, switch: mcSwitch, readChars: mcReadChars, setOn: mcSetOn, startAll: mcStartAll, stopAll: mcStopAll, validateAll: mcValidateAll, canGather: mcCanGather, render: mcRender, tick: mcTick, fillCurrent: mcFillCurrent, runTrip: mcRunTrip, beginTrip: mcBeginTrip, runRepairAndDeposit: runRepairAndDeposit, nearestGatherTile: nearestGatherTile, idleRaw: function () { return _mcGatherRaw; }, loadRot: mcLoadRot, saveRot: mcSaveRot, rot: function () { return rot; }, due: mcDue, chars: function () { return cfg.mcChars; }, queueCache: function () { return _mcQueueCache; }, claimIdleRewards: claimIdleRewards, closeIdleDialog: closeIdleResultDialog, refreshStatus: mcRefreshStatus, applyQueue: mcApplyQueue },
     start: () => beginRun('battle'), stop: stop, cfg: cfg, st: st, step: step,
     startTower: () => beginRun('tower'), stepTower: stepTower, isTowerMap: isTowerMap, towerTiles: towerTiles, towerNextGate: towerNextGate, towerGateCandidates: towerGateCandidates, towerAdjacentTile: towerAdjacentTile, openTower: openTower, nearestTowerTown: nearestTowerTown,
-    bestiary: { scan: bestiaryScan, toMarkdown: bestiaryToMarkdown, toCsv: bestiaryToCsv, export: exportBestiary, cancel: function(){ _bestCancel = true; } },
+    bestiary: { scan: bestiaryScan, ids: bestiaryIds, export: exportBestiary, cancel: function(){ _bestCancel = true; } },
     scanEnemies: scanEnemies, attackableEnemies: attackableEnemies, pickTarget: pickTarget,
     rankWeight: rankWeight, nameWeight: nameWeight, detectRank: detectRank, whyText: whyText,
     targetKey: targetKey, nameAllowed: nameAllowed,   /* ★ v2.6.74：便于验证索敌模式 */

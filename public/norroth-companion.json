@@ -1,8 +1,8 @@
 {
-  "version": "2.6.86",
+  "version": "2.6.88",
   "date": "2026-10-22",
-  "notes": "v2.6.86：高级页新增「图鉴导出」——读取游戏内 Inspect 记录（199 种，按击杀数分层解锁），导出 Markdown 文档 / JSON 数据 / CSV 表格；只读，不改动游戏数据；带进度与取消。",
+  "notes": "v2.6.88：图鉴导出简化为 JSON，并大幅提速（先取图鉴 id 清单只抓 193 条 + 并发 6，150 秒 → 10~16 秒）。",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 699653,
-  "sha256": "0afeb28beceafb6d93f2b4b2a4c5f44790523184848a90b8a8384a20936ec15e"
+  "size": 696326,
+  "sha256": "43b3e09d9ad9be095441101ea0f41b7b4d3acc3a7b2f69b2ce357b036eae656c"
 }
