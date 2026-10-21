@@ -1,11 +1,20 @@
 name: 合并图鉴贡献
 
-# 收件箱（data/bestiary-contrib/）收到新贡献时，自动并入唯一一份权威图鉴文档
-# src/data/bestiary-live.json，清空收件箱，并重新构建发布。
+# 图鉴数据的唯一权威文档是 src/data/bestiary-live.json。
+# 数据来源：图鉴专用仓库 TravisWWW/norr-bestiary 的 contrib/*.json（小伴侣上传）。
 #
-# 注意：机器人用 GITHUB_TOKEN 推送的提交【不会】再触发 deploy.yml（GitHub 的防递归规则），
+# 触发方式：
+#   · repository_dispatch（norr-bestiary 收到新数据后通知，近实时）
+#   · schedule（每 5 分钟兜底，防止通知丢失）
+#   · push 到 data/bestiary-contrib/**（本地手动投递 / 调试）
+#
+# 注意：机器人用 GITHUB_TOKEN 推送的提交【不会】再触发 deploy.yml（GitHub 防递归规则），
 # 所以这里必须自己把 Pages 部署跑一遍。
 on:
+  repository_dispatch:
+    types: [bestiary-contrib]
+  schedule:
+    - cron: '*/5 * * * *'
   push:
     paths:
       - 'data/bestiary-contrib/**'
@@ -22,8 +31,8 @@ concurrency:
 
 jobs:
   merge:
-    # 机器人自己提交（清空收件箱）时不再触发，避免空跑
-    if: github.actor != 'github-actions[bot]'
+    # 机器人自己提交（清空收件箱）时不再触发，避免空跑；定时 / dispatch 不受影响
+    if: github.event_name != 'push' || github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     outputs:
       changed: ${{ steps.commit.outputs.changed }}
@@ -32,6 +41,15 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - name: 拉取图鉴收件箱（norr-bestiary）
+        run: |
+          mkdir -p data/bestiary-contrib
+          if git clone --depth 1 https://github.com/TravisWWW/norr-bestiary.git /tmp/inbox 2>/dev/null; then
+            cp -f /tmp/inbox/contrib/*.json data/bestiary-contrib/ 2>/dev/null || true
+            echo "收件箱文件："; ls -1 data/bestiary-contrib/ || true
+          else
+            echo "未能拉取 norr-bestiary（可能尚未创建），仅使用本地 data/bestiary-contrib/"
+          fi
       - name: 合并贡献 → 权威图鉴文档
         run: node tools/merge-bestiary-contrib.mjs
       - name: 提交合并结果
@@ -57,7 +75,6 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      # 取最新的 main（含机器人刚推的合并提交）
       - uses: actions/checkout@v4
         with:
           ref: main
