@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.78
+// @version      2.6.79
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -183,7 +183,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.78';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
+  const SCRIPT_VER = '2.6.79';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
   /* ★ v2.6.77：在线更新。
      脚本托管在 GitHub Pages（和中文 Wiki 同一个仓库 / 同一次部署），元数据块里的
      @updateURL / @downloadURL 都指向下面这个地址 —— Tampermonkey 会按自己的周期
@@ -5685,6 +5685,7 @@
     if (!o.fail || typeof o.fail !== 'object') o.fail = {};
     if (!('mainRun' in o)) o.mainRun = null;   /* ★ 离开主角色前的挂机状态，切回来自动恢复 */
     if (!('switching' in o)) o.switching = null;   /* ★ 正在切号：页面跳转期间不重复触发行程 */
+    if (typeof o.paused !== 'boolean') o.paused = false;   /* ★ v2.6.79：暂停轮转（保留队列/记录，不切号不跑行程） */
     rot = o;
     return rot;
   }
@@ -5896,8 +5897,14 @@
           logEvent('多角色：切回主角色，恢复「' + (m === 'gather' ? '采集' : (m === 'auto' ? '一键挂机' : '战斗')) + '」');
         }
       }
-      mcWatchQueue(); return false;
+      /* ★ v2.6.79：暂停中不读队列 —— mcWatchQueue() 会 mcBeginTrip() → mcSwitch() 切号，
+         实测把守卫只放在下面（副角色分支）根本挡不住：主角色页每 20s 读一次队列就把号切走了。
+         注意上面的 rot.mainRun 自动恢复**不受暂停影响** —— 暂停只冻结「轮转」，不冻结主角色挂机。 */
+      if (!rot.paused) mcWatchQueue();
+      return false;
     }
+    /* ★ v2.6.79：暂停中 —— 不启动副角色行程、也不切号（人在副角色页时由这里兜底） */
+    if (rot.paused) return false;
     const alt = mcAltById(character.id);
     if (!alt) return false;
     if (!st.mcBusy) {
@@ -6345,6 +6352,7 @@
     cfg.multiChar = !!on;
     if (!rot) mcLoadRot();
     rot.on = !!on;
+    if (!on) rot.paused = false;          /* ★ v2.6.79：关掉多角色时一并清掉暂停态 */
     if (on) {
       const main = mcMain();
       rot.mainId = main ? main.id : (inGame() ? character.id : rot.mainId);
@@ -6385,17 +6393,69 @@
   function mcStartAll() {
     if (!rot) mcLoadRot();
     rot.idle = {}; rot.fail = {}; rot.phase = 'MAIN'; rot.tripAlt = null; rot.step = null; rot.switching = null; rot.rotWaitUntil = 0;
-    rot.on = true; cfg.multiChar = true;
+    rot.on = true; rot.paused = false; cfg.multiChar = true;
     saveCfg(); mcSaveRot(); syncUI(); mcRender();
     mcValidateAll();
     setStatus('多角色：开始逐个启动副角色 idle…');
+  }
+  /* ★ v2.6.79：「启动全部 / 停止」合并成一个按钮 —— 按当前状态切换文案与动作 */
+  function mcToggle() {
+    if (!rot) mcLoadRot();
+    if (rot.on) mcStopAll(); else mcStartAll();
+  }
+  /* ★ v2.6.79：暂停 / 继续。
+     和「停止」的区别：停止 = 关掉多角色（cfg.multiChar=false）并切回主角色；
+     暂停 = 保留多角色的一切状态（队列、idle 记录、主角色挂机标记），只是不再切号、不再跑副角色行程。
+     暂停时若人在副角色页，先切回主角色 —— 否则那个副角色页会按普通挂机逻辑自己乱跑。 */
+  function mcTogglePause() {
+    if (!rot) mcLoadRot();
+    rot.paused = !rot.paused;
+    mcSaveRot();
+    if (rot.paused) {
+      const main = mcMain();
+      logEvent('多角色：已暂停轮转（保留队列与记录，主角色照常挂机）');
+      setStatus('多角色：已暂停（主角色照常挂机；点「继续」恢复轮转）');
+      if (main && inGame() && String(character.id) !== String(main.id)) mcSwitch(main.id);
+    } else {
+      logEvent('多角色：已继续轮转');
+      setStatus('多角色：已继续轮转');
+    }
+    syncUI(); mcRender();
+  }
+  /* 同步两个按钮的文案 / 状态（syncUI 会调） */
+  function syncMcBtns() {
+    const on = !!(rot && rot.on);
+    const paused = !!(rot && rot.paused);
+    const tg = document.getElementById('nr-mc-toggle');
+    if (tg) {
+      tg.textContent = on ? '■ 停止' : '▶ 启动全部';
+      tg.title = on
+        ? '停止多角色轮转（= 关闭「多角色离线」）；若当前在副角色页会先切回主角色'
+        : '启动全部：清空记录，逐个启动每个副角色的 idle';
+      tg.classList.toggle('on', on);
+    }
+    const ps = document.getElementById('nr-mc-pause');
+    if (ps) {
+      ps.textContent = paused ? '▶ 继续' : '⏸ 暂停';
+      ps.title = paused
+        ? '继续多角色轮转（接着原来的队列与记录跑）'
+        : '暂停多角色轮转：保留队列与记录，不再切号 / 跑副角色行程；主角色照常挂机。再点一次继续。';
+      ps.classList.toggle('on', paused);
+      ps.disabled = !on;
+    }
+    const hint = document.getElementById('nr-mc-hint');
+    if (hint) {
+      if (paused) { hint.textContent = '⏸ 轮转已暂停：不再切号 / 跑副角色行程，主角色照常挂机。点「▶ 继续」恢复。'; hint.style.color = '#ffd76e'; }
+      else if (on) { hint.textContent = '轮转进行中：副角色 idle 到期会自动切号 → 维修 / 存仓 → 重启 idle → 切回主角色。'; hint.style.color = '#7ee081'; }
+      else { hint.textContent = ''; }
+    }
   }
   /* ★ 停止：关闭轮转；若当前在副角色页 → 切回主角色（并把主角色的挂机标记补上，切回去自动续挂） */
   function mcStopAll() {
     if (!rot) mcLoadRot();
     const main = mcMain();
     const resume = rot.mainRun ? rot.mainRun.mode : null;
-    rot.on = false; rot.phase = 'MAIN'; rot.tripAlt = null; rot.step = null; rot.switching = null; rot.rotWaitUntil = 0;
+    rot.on = false; rot.paused = false; rot.phase = 'MAIN'; rot.tripAlt = null; rot.step = null; rot.switching = null; rot.rotWaitUntil = 0;
     cfg.multiChar = false;
     if (resume && main) { try { localStorage.setItem(RUN_KEY, JSON.stringify({ mode: resume, at: now(), charId: main.id, charName: main.name || '' })); } catch (e) { /* ignore */ } }
     rot.mainRun = null;
@@ -6793,6 +6853,9 @@
   #nr-panel button.dan:hover{background:linear-gradient(180deg,#ea6565,#c44545)}
   #nr-panel button.dan:disabled{background:#3f2429;border-color:#4a2b31}
   #nr-panel button.mini{padding:5px 8px;font-size:10.5px}
+  /* ★ v2.6.79：多角色的「启动全部/停止」「暂停/继续」是同一个按钮的两种状态，用 .on 标出当前生效的那个 */
+  #nr-panel button.mini.on{background:linear-gradient(180deg,#3d5170,#31415a);border-color:#4d6a8f;color:#eaf1ff}
+  #nr-panel button.mini[disabled]{opacity:.45;cursor:default}
   /* ★ v2.6.55：怪物名单标签可点（切优先名单 / 黑名单） */
   #nr-panel #nr-mobmode:hover{color:#dfe4f0}
   #nr-panel #nr-mobmode.nr-mobblack{color:#ff8a8a !important;border-bottom:1px dashed #e05555}
@@ -7062,9 +7125,10 @@
             <div id="nr-mc-list" style="margin-top:3px"></div>
             <div class="row" style="margin-top:3px">
               <button class="mini" id="nr-mc-read" title="选角页 = 读取角色名单；游戏中 = 刷新采集队列与状态。">刷新</button>
-              <button class="mini" id="nr-mc-startall" title="清空记录，逐个启动每个副角色的 idle">启动全部</button>
-              <button class="mini" id="nr-mc-stopall" title="停止多角色轮转；若当前在副角色页会先切回主角色">停止</button>
+              <button class="mini" id="nr-mc-toggle" title="启动全部：清空记录，逐个启动每个副角色的 idle">▶ 启动全部</button>
+              <button class="mini" id="nr-mc-pause" title="暂停多角色轮转：保留队列与记录，不再切号 / 跑副角色行程；主角色照常挂机。再点一次继续。">⏸ 暂停</button>
             </div>
+            <div id="nr-mc-hint" class="pathmsg" style="margin-top:2px"></div>
           </div>
         </div>
 
@@ -7367,8 +7431,8 @@
         if (inGame()) { setStatus('多角色：刷新采集队列 / 状态…'); mcRefreshStatus(); }   /* ★ v2.6.21：真的更新状态 */
         else { mcReadChars(); }
       });
-      const mcSA = panel.querySelector('#nr-mc-startall'); if (mcSA) mcSA.addEventListener('click', function () { mcStartAll(); });
-      const mcSO = panel.querySelector('#nr-mc-stopall'); if (mcSO) mcSO.addEventListener('click', function () { mcStopAll(); });
+      const mcTG = panel.querySelector('#nr-mc-toggle'); if (mcTG) mcTG.addEventListener('click', function () { mcToggle(); });
+      const mcPS = panel.querySelector('#nr-mc-pause'); if (mcPS) mcPS.addEventListener('click', function () { mcTogglePause(); });
       const mcList = panel.querySelector('#nr-mc-list');
       if (mcList) {
         mcList.addEventListener('change', function (e) {
@@ -7844,7 +7908,7 @@
     set('nr-gscrap', cfg.gatherScrap); set('nr-autoevent', cfg.autoEvent);
     try { const _er = document.getElementById('nr-eventres'); if (_er) _er.value = cfg.eventRes || ''; } catch (e) { /* ignore */ }
     set('nr-gatherflee', cfg.gatherFlee);
-    set('nr-mc', cfg.multiChar); try { mcRender(); } catch (e) { /* ignore */ }
+    set('nr-mc', cfg.multiChar); try { mcRender(); } catch (e) { /* ignore */ } try { syncMcBtns(); } catch (e) { /* ignore */ }
     set('nr-highlight', cfg.highlightSelf);
     set('nr-usewaygatecity', cfg.useWaygateCity);
     set('nr-usewaygatewild', cfg.useWaygateWild);
@@ -8459,6 +8523,7 @@
     applyWinScale(cfg.winScale);                         // ★ 高级：套用弹窗缩放
     startSpeedMeter();
     mcLoadRot();                                         // ★ 多角色轮转状态（落盘）
+    try { syncMcBtns(); } catch (e) { /* ignore */ }      // ★ v2.6.79：按落盘状态刷「启动全部/停止」「暂停/继续」
     tryResumeAfterReload();
     /* ★ v2.6.77：在线更新 —— 版本号角标可点 + 每次进游戏查一次远端版本 */
     const vEl = document.getElementById('nr-ver');
@@ -9843,7 +9908,7 @@
 
   window.__norrothFarm = {
     event: { tick: eventTick, reset: eventReset, activitiesHasJoin: eventActivitiesHasJoin, enterGate: eventEnterGate, pickPoint: eventPickPoint, typeOf: eventTypeOf, res: function () { return st.event; }, mapId: EVENT_MAP_ID },
-    mc: { queue: mcQueue, profLevels: mcProfLevels, profLevelsCached: mcProfLevelsCached, idleInfo: mcIdleInfo, startIdle: mcStartIdle, switch: mcSwitch, readChars: mcReadChars, setOn: mcSetOn, startAll: mcStartAll, stopAll: mcStopAll, validateAll: mcValidateAll, canGather: mcCanGather, render: mcRender, tick: mcTick, fillCurrent: mcFillCurrent, runTrip: mcRunTrip, beginTrip: mcBeginTrip, runRepairAndDeposit: runRepairAndDeposit, nearestGatherTile: nearestGatherTile, idleRaw: function () { return _mcGatherRaw; }, loadRot: mcLoadRot, saveRot: mcSaveRot, rot: function () { return rot; }, due: mcDue, chars: function () { return cfg.mcChars; }, queueCache: function () { return _mcQueueCache; }, claimIdleRewards: claimIdleRewards, closeIdleDialog: closeIdleResultDialog, refreshStatus: mcRefreshStatus, applyQueue: mcApplyQueue },
+    mc: { toggle: mcToggle, togglePause: mcTogglePause, syncBtns: syncMcBtns, queue: mcQueue, profLevels: mcProfLevels, profLevelsCached: mcProfLevelsCached, idleInfo: mcIdleInfo, startIdle: mcStartIdle, switch: mcSwitch, readChars: mcReadChars, setOn: mcSetOn, startAll: mcStartAll, stopAll: mcStopAll, validateAll: mcValidateAll, canGather: mcCanGather, render: mcRender, tick: mcTick, fillCurrent: mcFillCurrent, runTrip: mcRunTrip, beginTrip: mcBeginTrip, runRepairAndDeposit: runRepairAndDeposit, nearestGatherTile: nearestGatherTile, idleRaw: function () { return _mcGatherRaw; }, loadRot: mcLoadRot, saveRot: mcSaveRot, rot: function () { return rot; }, due: mcDue, chars: function () { return cfg.mcChars; }, queueCache: function () { return _mcQueueCache; }, claimIdleRewards: claimIdleRewards, closeIdleDialog: closeIdleResultDialog, refreshStatus: mcRefreshStatus, applyQueue: mcApplyQueue },
     start: () => beginRun('battle'), stop: stop, cfg: cfg, st: st, step: step,
     startTower: () => beginRun('tower'), stepTower: stepTower, isTowerMap: isTowerMap, towerTiles: towerTiles, towerNextGate: towerNextGate, towerGateCandidates: towerGateCandidates, towerAdjacentTile: towerAdjacentTile, openTower: openTower, nearestTowerTown: nearestTowerTown,
     scanEnemies: scanEnemies, attackableEnemies: attackableEnemies, pickTarget: pickTarget,

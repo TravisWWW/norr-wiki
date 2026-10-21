@@ -1,8 +1,8 @@
 {
-  "version": "2.6.78",
+  "version": "2.6.79",
   "date": "2026-10-21",
-  "notes": "修「灰色装备清不掉」：斧类武器被当成采集工具跳过(出售路径)；触发阈值两次独立抖动导致空跑；拆解列表选择器纠正为真实 DOM；子页无法互相跳转时强制重开",
+  "notes": "多角色：「启动全部/停止」合并成一个切换按钮，新增「暂停/继续」（保留队列与记录，不切号不跑副角色行程，主角色照常挂机）",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 623805,
-  "sha256": "5fd2356b0f96dc03dcba7e06d097133143fd5aece24d4a37aaae6831c2219491"
+  "size": 628106,
+  "sha256": "ec0dc7057c0b07fbf3a60434b428b556a4fbaad9bb1d3f4061ad8fffa4501f07"
 }
