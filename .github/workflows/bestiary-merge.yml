@@ -27,7 +27,8 @@ permissions:
 
 concurrency:
   group: pages
-  cancel-in-progress: true
+  # 定时兜底每 5 分钟跑一次，绝不能把正在进行的部署掐掉
+  cancel-in-progress: false
 
 jobs:
   merge:
