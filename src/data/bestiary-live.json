@@ -1,0 +1,2820 @@
+{
+ "meta": {
+  "source": "https://www.norroth.com/ 游戏内 Inspect（/modal/inspect_enemy）",
+  "fetched": "2026-10-22",
+  "version": "1.0",
+  "count": 199,
+  "recordedCount": 15,
+  "withLore": 198,
+  "withStats": 5,
+  "withSkills": 7,
+  "tabs": {
+   "normal": 163,
+   "boss": 22,
+   "overlord": 8,
+   "other": 6
+  }
+ },
+ "enemies": [
+  {
+   "id": 1,
+   "name": "Rat",
+   "type": "Animal",
+   "biome": "Sewers",
+   "lore": "In the reeking bowels of ancient cities, these bloated vermin fester and thrive. No longer mere scavengers, sewer rats have grown bold on rot and ruin, their crimson eyes gleaming with unnatural awareness. They carry plague between their yellowed fangs, and whisper-songs say they follow the scent of dying kings.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_1.gif",
+   "recorded": false
+  },
+  {
+   "id": 2,
+   "name": "Snake",
+   "type": "Animal",
+   "biome": "Underground, Grassland",
+   "lore": "Slick and silent, the common Snake slithers through the cracks of both field and tomb. Though unassuming, its bite heralds delirium and fever. In certain circles, its venom is distilled into potent truths, a drop on the tongue, and a man may see the face of fate.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_2.gif",
+   "recorded": true,
+   "levelRange": "2 - 10",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "Low",
+   "defense": "High",
+   "resistance": "Low",
+   "scavenging": [
+    {
+     "name": "Mucky Scale",
+     "pct": "15%"
+    },
+    {
+     "name": "Mucky Meat",
+     "pct": "23%"
+    },
+    {
+     "name": "Mucky Fang",
+     "pct": "15%"
+    },
+    {
+     "name": "Mucky Tendon",
+     "pct": "23%"
+    },
+    {
+     "name": "Mucky Eye",
+     "pct": "15%"
+    },
+    {
+     "name": "Mucky Tail",
+     "pct": "8%"
+    }
+   ],
+   "drops": [
+    {
+     "name": "Snake Pet Egg",
+     "pct": "5%"
+    }
+   ],
+   "skills": [
+    {
+     "name": "poison_bite",
+     "id": 10007,
+     "level": 1
+    },
+    {
+     "name": "bite",
+     "id": 10009,
+     "level": 1
+    }
+   ],
+   "stats": {
+    "Base Damage": 10,
+    "Physical Damage": 3,
+    "Blunt Damage": 0,
+    "Spell Damage": 3,
+    "Bleed Damage": 0,
+    "Arcane Damage": 0,
+    "Cold Damage": 0,
+    "Dark Damage": 0,
+    "Fire Damage": 0,
+    "Light Damage": 0,
+    "Lightning Damage": 0,
+    "Poison Damage": 5,
+    "Thorn Damage": 0,
+    "Defense": 20,
+    "Block Chance": 0,
+    "Block Rating": 0,
+    "Arcane Resist": 5,
+    "Cold Resist": 5,
+    "Dark Resist": 5,
+    "Fire Resist": 5,
+    "Light Resist": 5,
+    "Lightning Resist": 5,
+    "Poison Resist": 5,
+    "Evasion": 8,
+    "Critical Chance": 2,
+    "Critical Strike": 2,
+    "Hit Rating": 30,
+    "Attack Speed": 10,
+    "Armor Penetration": 1,
+    "Life Steal": 0,
+    "Mana Steal": 0,
+    "Life Regeneration": 0,
+    "Mana Regeneration": 0,
+    "Maximum Life": 60
+   }
+  },
+  {
+   "id": 3,
+   "name": "Deer",
+   "type": "Animal",
+   "biome": "Grassland, Temperate Forest",
+   "lore": "The forest`s most graceful sentinel, the Deer walks between light and shadow. It is said to sense death hours before it comes, and its eyes reflect worlds untouched by man. Though peaceful, its spirit is bound to the old gods, and wounding one brings curses on the bloodline.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_3.gif",
+   "recorded": true,
+   "levelRange": "4 - 6",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "Medium",
+   "defense": "High",
+   "resistance": "Low",
+   "scavenging": [
+    {
+     "name": "Mucky Meat",
+     "pct": "19%"
+    },
+    {
+     "name": "Mucky Hide",
+     "pct": "31%"
+    },
+    {
+     "name": "Mucky Tooth",
+     "pct": "6%"
+    },
+    {
+     "name": "Mucky Bone",
+     "pct": "9%"
+    },
+    {
+     "name": "Mucky Tendon",
+     "pct": "9%"
+    },
+    {
+     "name": "Mucky Skull",
+     "pct": "3%"
+    },
+    {
+     "name": "Mucky Hoof",
+     "pct": "13%"
+    },
+    {
+     "name": "Mucky Eye",
+     "pct": "6%"
+    },
+    {
+     "name": "Mucky Tail",
+     "pct": "3%"
+    }
+   ],
+   "skills": [
+    {
+     "name": "headbutt",
+     "id": 10011,
+     "level": 1
+    },
+    {
+     "name": "kick",
+     "id": 10082,
+     "level": 1
+    },
+    {
+     "name": "trample",
+     "id": 10136,
+     "level": 1
+    }
+   ],
+   "stats": {
+    "Base Damage": 10,
+    "Physical Damage": 3,
+    "Blunt Damage": 0,
+    "Spell Damage": 0,
+    "Bleed Damage": 0,
+    "Arcane Damage": 0,
+    "Cold Damage": 0,
+    "Dark Damage": 0,
+    "Fire Damage": 0,
+    "Light Damage": 0,
+    "Lightning Damage": 0,
+    "Poison Damage": 0,
+    "Thorn Damage": 0
+   }
+  },
+  {
+   "id": 4,
+   "name": "Toad",
+   "type": "Animal",
+   "biome": "Coastal",
+   "lore": "Swollen with swampwater and secrets, the coastal toad squats in shadowed pools, its bulging eyes unblinking. Though slow, it leaps with startling violence when threatened. Alchemists prize its glands, believing the creature drinks the dreams of drowned sailors.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_4.gif",
+   "recorded": false
+  },
+  {
+   "id": 5,
+   "name": "Hare",
+   "type": "Animal",
+   "biome": "Grassland, Love Island, Bunny Remote",
+   "lore": "Do not be fooled by its gentle hops, this creature knows where blood once soaked the soil. Born of love-turned-madness on cursed isles, the hare is a prey-beast that watches too closely, still as stone, before vanishing like a phantom in tall grass. Folk say its bones ring when held near betrayal.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_5.gif",
+   "recorded": true,
+   "levelRange": "1 - 3",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "Low",
+   "defense": "Medium",
+   "resistance": "Low",
+   "scavenging": [
+    {
+     "name": "Mucky Meat",
+     "pct": "17%"
+    },
+    {
+     "name": "Mucky Hide",
+     "pct": "35%"
+    },
+    {
+     "name": "Mucky Tooth",
+     "pct": "9%"
+    },
+    {
+     "name": "Mucky Bone",
+     "pct": "9%"
+    },
+    {
+     "name": "Mucky Tendon",
+     "pct": "13%"
+    },
+    {
+     "name": "Mucky Skull",
+     "pct": "4%"
+    },
+    {
+     "name": "Mucky Eye",
+     "pct": "9%"
+    },
+    {
+     "name": "Mucky Tail",
+     "pct": "4%"
+    }
+   ],
+   "skills": [
+    {
+     "name": "scratch",
+     "id": 10008,
+     "level": 1
+    },
+    {
+     "name": "bite",
+     "id": 10009,
+     "level": 1
+    }
+   ],
+   "stats": {
+    "Base Damage": 5,
+    "Physical Damage": 3,
+    "Blunt Damage": 0,
+    "Spell Damage": 0,
+    "Bleed Damage": 0,
+    "Arcane Damage": 0,
+    "Cold Damage": 0,
+    "Dark Damage": 0,
+    "Fire Damage": 0,
+    "Light Damage": 0,
+    "Lightning Damage": 0,
+    "Poison Damage": 0,
+    "Thorn Damage": 0,
+    "Defense": 10,
+    "Block Chance": 0,
+    "Block Rating": 0,
+    "Arcane Resist": 5,
+    "Cold Resist": 5,
+    "Dark Resist": 5,
+    "Fire Resist": 5,
+    "Light Resist": 5,
+    "Lightning Resist": 5,
+    "Poison Resist": 5,
+    "Evasion": 8,
+    "Critical Chance": 0,
+    "Critical Strike": 0,
+    "Hit Rating": 20,
+    "Attack Speed": 10,
+    "Armor Penetration": 1,
+    "Life Steal": 0,
+    "Mana Steal": 0,
+    "Life Regeneration": 0,
+    "Mana Regeneration": 0,
+    "Maximum Life": 60
+   }
+  },
+  {
+   "id": 6,
+   "name": "Wild Dog",
+   "type": "Animal",
+   "biome": "Grassland",
+   "lore": "Once loyal to man, these beasts now run free beneath blackened moons, hunting not for food but for the thrill of the chase. Their howls echo with ancestral sorrow, and their bite spreads a fever that burns with the heat of ancient packs long dead.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_6.gif",
+   "recorded": true,
+   "levelRange": "1 - 10",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "Low",
+   "defense": "High",
+   "resistance": "Low",
+   "scavenging": [
+    {
+     "name": "Mucky Meat",
+     "pct": "17%"
+    },
+    {
+     "name": "Mucky Hide",
+     "pct": "30%"
+    },
+    {
+     "name": "Mucky Fang",
+     "pct": "7%"
+    },
+    {
+     "name": "Mucky Bone",
+     "pct": "10%"
+    },
+    {
+     "name": "Mucky Tendon",
+     "pct": "10%"
+    },
+    {
+     "name": "Mucky Skull",
+     "pct": "3%"
+    },
+    {
+     "name": "Mucky Claw",
+     "pct": "13%"
+    },
+    {
+     "name": "Mucky Eye",
+     "pct": "7%"
+    },
+    {
+     "name": "Mucky Tail",
+     "pct": "3%"
+    }
+   ],
+   "skills": [
+    {
+     "name": "scratch",
+     "id": 10008,
+     "level": 1
+    },
+    {
+     "name": "bite",
+     "id": 10009,
+     "level": 1
+    },
+    {
+     "name": "war_howl",
+     "id": 10112,
+     "level": 1
+    }
+   ],
+   "stats": {
+    "Base Damage": 5,
+    "Physical Damage": 3,
+    "Blunt Damage": 0,
+    "Spell Damage": 0,
+    "Bleed Damage": 0,
+    "Arcane Damage": 0,
+    "Cold Damage": 0,
+    "Dark Damage": 0,
+    "Fire Damage": 0,
+    "Light Damage": 0,
+    "Lightning Damage": 0,
+    "Poison Damage": 0,
+    "Thorn Damage": 0,
+    "Defense": 20,
+    "Block Chance": 0,
+    "Block Rating": 0,
+    "Arcane Resist": 5,
+    "Cold Resist": 5,
+    "Dark Resist": 5,
+    "Fire Resist": 5,
+    "Light Resist": 5,
+    "Lightning Resist": 5,
+    "Poison Resist": 5,
+    "Evasion": 5,
+    "Critical Chance": 0,
+    "Critical Strike": 0,
+    "Hit Rating": 30,
+    "Attack Speed": 6,
+    "Armor Penetration": 1,
+    "Life Steal": 0,
+    "Mana Steal": 0,
+    "Life Regeneration": 0,
+    "Mana Regeneration": 0,
+    "Maximum Life": 60
+   }
+  },
+  {
+   "id": 8,
+   "name": "Badger",
+   "type": "Animal",
+   "biome": "Temperate Forest",
+   "lore": "From the tangled roots of forest graves, the badger digs with tireless claws and unmatched fury. Many a careless traveler has met a savage end beneath its gnashing teeth. It fears nothing, some say not even death, and its pelt is rumored to resist all but silver.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_8.gif",
+   "recorded": true,
+   "levelRange": "1 - 10",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "Low",
+   "defense": "Medium",
+   "resistance": "Medium",
+   "scavenging": [
+    {
+     "name": "Mucky Meat",
+     "pct": "11%"
+    },
+    {
+     "name": "Mucky Hide",
+     "pct": "33%"
+    },
+    {
+     "name": "Mucky Tooth",
+     "pct": "7%"
+    },
+    {
+     "name": "Mucky Bone",
+     "pct": "7%"
+    },
+    {
+     "name": "Mucky Tendon",
+     "pct": "11%"
+    },
+    {
+     "name": "Mucky Skull",
+     "pct": "4%"
+    },
+    {
+     "name": "Mucky Claw",
+     "pct": "15%"
+    },
+    {
+     "name": "Mucky Eye",
+     "pct": "7%"
+    },
+    {
+     "name": "Mucky Tail",
+     "pct": "4%"
+    }
+   ]
+  },
+  {
+   "id": 10,
+   "name": "Salamanderoid",
+   "type": "Humanoid",
+   "biome": "Coastal, Grassland",
+   "lore": "A scaled, manlike predator born of coastal storms and primal fire, the Salamanderoid is neither beast nor man. With cold cunning and molten eyes, it stalks the fringes of civilization. It is believed to be a relic of some draconic lineage, diluted but no less dangerous.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_10.gif",
+   "recorded": true,
+   "levelRange": "4 - 9",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "Medium",
+   "defense": "High",
+   "resistance": "Low",
+   "drops": [
+    {
+     "name": "Bronze Sestertii",
+     "pct": "100%"
+    },
+    {
+     "name": "Copper Point",
+     "pct": "5%"
+    },
+    {
+     "name": "Copper Buckle",
+     "pct": "5%"
+    },
+    {
+     "name": "Mucky Leather Belt Base",
+     "pct": "5%"
+    },
+    {
+     "name": "Aspen Rod",
+     "pct": "8%"
+    },
+    {
+     "name": "Mucky Leather",
+     "pct": "10%"
+    },
+    {
+     "name": "Cotton Fleece",
+     "pct": "6%"
+    }
+   ]
+  },
+  {
+   "id": 11,
+   "name": "Beaver",
+   "type": "Animal",
+   "biome": "Temperate Forest, Coastal",
+   "lore": "More than mere builders, these creatures shape riverlands with ancient instinct and unnatural precision. Their dams redirect flows like the plans of gods. Some druids whisper that the Beaver communes with the spirits of water.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_11.gif",
+   "recorded": false
+  },
+  {
+   "id": 13,
+   "name": "Peasant",
+   "type": "Humanoid",
+   "biome": "Temperate Forest, Urban",
+   "lore": "Simple folk of soil and sun, peasants till the land with backs bowed by generational sorrow. Though humble, they carry silent resilience and deep roots in the old ways. In times of desperation, even the meek can become monsters, and tales speak of pitchforks lifted in rage.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_13.gif",
+   "recorded": true,
+   "levelRange": "2 - 10",
+   "alignment": "Light",
+   "specials": "-",
+   "health": "Medium",
+   "defense": "High",
+   "resistance": "Low",
+   "drops": [
+    {
+     "name": "Bronze Sestertii",
+     "pct": "100%"
+    },
+    {
+     "name": "Harvest Satchel",
+     "pct": "35%"
+    },
+    {
+     "name": "Mucky Vegetables",
+     "pct": "15%"
+    },
+    {
+     "name": "Mucky Fruits",
+     "pct": "15%"
+    }
+   ]
+  },
+  {
+   "id": 14,
+   "name": "Troglodyte",
+   "type": "Humanoid",
+   "biome": "Underground, Urban",
+   "lore": "Bred in the blackness of forgotten tunnels, Troglodytes are hunched, foul-smelling humanoids with sunless eyes. They feed on rot, dream of darkness, and worship stones that bleed. Cities fall when their numbers swell unseen beneath the cobbles.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_14.gif",
+   "recorded": false
+  },
+  {
+   "id": 15,
+   "name": "Woodland Snake",
+   "type": "Animal",
+   "biome": "Temperate Forest",
+   "lore": "Silent as a sigh, the woodland snake coils through the underbrush, its tongue tasting both air and fear. Venom runs cold in its fangs, a gift from the forest`s oldest curses. Some druids believe it is the forest`s executioner, sent to punish oathbreakers.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_15.gif",
+   "recorded": true,
+   "levelRange": "4 - 10",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "Low",
+   "defense": "High",
+   "resistance": "Low",
+   "scavenging": [
+    {
+     "name": "Mucky Meat",
+     "pct": "24%"
+    },
+    {
+     "name": "Mucky Fang",
+     "pct": "12%"
+    },
+    {
+     "name": "Mucky Scale",
+     "pct": "12%"
+    },
+    {
+     "name": "Mucky Tendon",
+     "pct": "35%"
+    },
+    {
+     "name": "Mucky Eye",
+     "pct": "12%"
+    },
+    {
+     "name": "Mucky Tail",
+     "pct": "6%"
+    }
+   ]
+  },
+  {
+   "id": 16,
+   "name": "Monstrous Worm",
+   "type": "Insect",
+   "biome": "Underground, Crypt, Catacombs",
+   "lore": "...",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_16.gif",
+   "recorded": false
+  },
+  {
+   "id": 19,
+   "name": "Bear",
+   "type": "Animal",
+   "biome": "Temperate Forest, Bear Den, Den Of Devourer",
+   "lore": "A powerful force of nature, the Bear roams forests and dens with unmatched ferocity. Its sheer strength and vicious mauls have made it a feared guardian of the wilderness.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_19.gif",
+   "recorded": true,
+   "levelRange": "6 - 15",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "High",
+   "defense": "High",
+   "resistance": "Medium",
+   "scavenging": [
+    {
+     "name": "Mucky Meat",
+     "pct": "18%"
+    },
+    {
+     "name": "Mucky Hide",
+     "pct": "30%"
+    },
+    {
+     "name": "Mucky Tooth",
+     "pct": "6%"
+    },
+    {
+     "name": "Mucky Bone",
+     "pct": "9%"
+    },
+    {
+     "name": "Mucky Tendon",
+     "pct": "12%"
+    },
+    {
+     "name": "Mucky Skull",
+     "pct": "3%"
+    },
+    {
+     "name": "Mucky Claw",
+     "pct": "12%"
+    },
+    {
+     "name": "Mucky Eye",
+     "pct": "6%"
+    },
+    {
+     "name": "Mucky Tail",
+     "pct": "3%"
+    }
+   ]
+  },
+  {
+   "id": 20,
+   "name": "Wild Hog",
+   "type": "Animal",
+   "biome": "Grassland, Temperate Forest",
+   "lore": "Snorting and restless, the Wild Hog charges through grasslands and forests without warning. Armed with tusks and a stubborn will, it can trample even seasoned adventurers who let their guard down.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_20.gif",
+   "recorded": true,
+   "levelRange": "6 - 10",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "Medium",
+   "defense": "Medium",
+   "resistance": "Low",
+   "scavenging": [
+    {
+     "name": "Mucky Meat",
+     "pct": "17%"
+    },
+    {
+     "name": "Mucky Hide",
+     "pct": "30%"
+    },
+    {
+     "name": "Mucky Fang",
+     "pct": "7%"
+    },
+    {
+     "name": "Mucky Bone",
+     "pct": "10%"
+    },
+    {
+     "name": "Mucky Tendon",
+     "pct": "10%"
+    },
+    {
+     "name": "Mucky Skull",
+     "pct": "3%"
+    },
+    {
+     "name": "Mucky Hoof",
+     "pct": "13%"
+    },
+    {
+     "name": "Mucky Eye",
+     "pct": "7%"
+    },
+    {
+     "name": "Mucky Tail",
+     "pct": "3%"
+    }
+   ],
+   "skills": [
+    {
+     "name": "headbutt",
+     "id": 10011,
+     "level": 1
+    },
+    {
+     "name": "charge",
+     "id": 10016,
+     "level": 1
+    },
+    {
+     "name": "horn_stab",
+     "id": 10017,
+     "level": 1
+    },
+    {
+     "name": "trample",
+     "id": 10136,
+     "level": 1
+    }
+   ]
+  },
+  {
+   "id": 21,
+   "name": "Toxic Toad",
+   "type": "Animal",
+   "biome": "Coastal, Venom Isle",
+   "lore": "Snorting and restless, the Wild Hog charges through grasslands and forests without warning. Armed with tusks and a stubborn will, it can trample even seasoned adventurers who let their guard down.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_21.gif",
+   "recorded": false
+  },
+  {
+   "id": 22,
+   "name": "Crocodile",
+   "type": "Animal",
+   "biome": "Coastal, Sewers, Oasis",
+   "lore": "A relic of the primordial age, the Crocodile is a living nightmare clad in scale and patience. It waits in murky silence, then strikes with monstrous force. Many temples honor it as a keeper of judgment, dragging the unworthy to the black depths where no gods listen.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_22.gif",
+   "recorded": false
+  },
+  {
+   "id": 23,
+   "name": "Snapping Turtle",
+   "type": "Animal",
+   "biome": "Coastal",
+   "lore": "Fortified by a natural shell and a crushing bite, the Snapping Turtle guards the shallows of coastal waters. Slow to anger, but even slower to forgive, it strikes with shocking speed and power.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_23.gif",
+   "recorded": false
+  },
+  {
+   "id": 24,
+   "name": "Foliage Shaman",
+   "type": "Humanoid",
+   "biome": "Rainforest, Ape Temple",
+   "lore": "Cloaked in moss and draped in vines, the Foliage Shaman channels the will of the rainforest itself. Its roots twist like limbs, its chants stir the undergrowth. Where it walks, trees tremble, and obey.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_24.gif",
+   "recorded": false
+  },
+  {
+   "id": 25,
+   "name": "Tiger",
+   "type": "Animal",
+   "biome": "Rainforest",
+   "lore": "Graceful, silent, and soaked in instinct, the Tiger rules the rainforest with fang and claw. It strikes from nowhere, kills without sound, and leaves only blood and awe behind. It does not roar, it ends.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_25.gif",
+   "recorded": false
+  },
+  {
+   "id": 27,
+   "name": "Scorpion",
+   "type": "Animal",
+   "biome": "Dry Desert, Savanna",
+   "lore": "Under blistering desert suns, the Scorpion waits in silence. Its sting is a needle of death, swift and venomous. Travelers who ignore the warning click of claws are soon paralyzed, then buried by sand and time.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_27.gif",
+   "recorded": false
+  },
+  {
+   "id": 28,
+   "name": "Hypnotic Bat",
+   "type": "Animal",
+   "biome": "Underground, Hollow Forest, Pumpkin Skerry",
+   "lore": "From the caves and haunted woods, the Hypnotic Bat emerges in darkness. Its echoing scream bewilders the mind, leaving prey vulnerable to its piercing fangs and flurry of wings.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_28.gif",
+   "recorded": false
+  },
+  {
+   "id": 29,
+   "name": "Monstrous Bat",
+   "type": "Animal",
+   "biome": "Underground, Temple, Sinister Isle",
+   "lore": "A shadow with wings, the Monstrous Bat glides silently through temple and cave, feeding on life and fear alike. Its fangs spread darkness into the veins, and its screech unravels sanity. The wise light no torches near its roost, for sound alone invites the hunt.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_29.gif",
+   "recorded": false
+  },
+  {
+   "id": 30,
+   "name": "Cougar",
+   "type": "Animal",
+   "biome": "Taiga, Frost Cave",
+   "lore": "Cold wind follows the Cougar through frozen forests. Lean and relentless, it leaps from ledges and snowbanks with predatory elegance. A ghost in white, it watches, waits, and finishes what hunger starts.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_30.gif",
+   "recorded": false
+  },
+  {
+   "id": 32,
+   "name": "Wolf",
+   "type": "Animal",
+   "biome": "Temperate Forest, Mountain",
+   "lore": "Stalking through forests and mountain trails, the Wolf hunts in packs or alone, guided by instinct. Its speed, teeth, and cunning make it a relentless foe under moonlit skies.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_32.gif",
+   "recorded": true,
+   "levelRange": "6 - 10",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "Medium",
+   "defense": "High",
+   "resistance": "Low",
+   "scavenging": [
+    {
+     "name": "Mucky Meat",
+     "pct": "17%"
+    },
+    {
+     "name": "Mucky Hide",
+     "pct": "30%"
+    },
+    {
+     "name": "Mucky Fang",
+     "pct": "7%"
+    },
+    {
+     "name": "Mucky Bone",
+     "pct": "10%"
+    },
+    {
+     "name": "Mucky Tendon",
+     "pct": "10%"
+    },
+    {
+     "name": "Mucky Skull",
+     "pct": "3%"
+    },
+    {
+     "name": "Mucky Claw",
+     "pct": "13%"
+    },
+    {
+     "name": "Mucky Eye",
+     "pct": "7%"
+    },
+    {
+     "name": "Mucky Tail",
+     "pct": "3%"
+    }
+   ]
+  },
+  {
+   "id": 33,
+   "name": "Woodland Spider",
+   "type": "Insect",
+   "biome": "Temperate Forest",
+   "lore": "Lurking in bark hollows and dew-soaked webs, the Woodland Spider ambushes with sharp instinct and leaping ferocity. Its fangs pierce deep, not to poison, but to silence.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_33.gif",
+   "recorded": true,
+   "levelRange": "6 - 10",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "Low",
+   "defense": "High",
+   "resistance": "Low",
+   "scavenging": [
+    {
+     "name": "Mucky Fang",
+     "pct": "67%"
+    },
+    {
+     "name": "Mucky Chitin",
+     "pct": "33%"
+    }
+   ],
+   "drops": [
+    {
+     "name": "Woodland Spider Pet Egg",
+     "pct": "4.5%"
+    }
+   ]
+  },
+  {
+   "id": 37,
+   "name": "Bison",
+   "type": "Animal",
+   "biome": "Grassland, Mountain",
+   "lore": "A large, sturdy beast that roams the grasslands and mountains. Usually passive, but it will become aggressive if provoked or approached too closely. Its thick hide offers decent protection, and it can charge with surprising speed using its heavy horns.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_37.gif",
+   "recorded": true,
+   "levelRange": "5 - 15",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "High",
+   "defense": "High",
+   "resistance": "Medium",
+   "scavenging": [
+    {
+     "name": "Mucky Meat",
+     "pct": "22%"
+    },
+    {
+     "name": "Mucky Hide",
+     "pct": "32%"
+    },
+    {
+     "name": "Mucky Bone",
+     "pct": "11%"
+    },
+    {
+     "name": "Mucky Tendon",
+     "pct": "14%"
+    },
+    {
+     "name": "Mucky Skull",
+     "pct": "3%"
+    },
+    {
+     "name": "Mucky Hoof",
+     "pct": "11%"
+    },
+    {
+     "name": "Mucky Eye",
+     "pct": "5%"
+    },
+    {
+     "name": "Mucky Tail",
+     "pct": "3%"
+    }
+   ],
+   "skills": [
+    {
+     "name": "headbutt",
+     "id": 10011,
+     "level": 1
+    },
+    {
+     "name": "horn_stab",
+     "id": 10017,
+     "level": 1
+    },
+    {
+     "name": "kick",
+     "id": 10082,
+     "level": 1
+    },
+    {
+     "name": "trample",
+     "id": 10136,
+     "level": 1
+    }
+   ]
+  },
+  {
+   "id": 39,
+   "name": "Muskox",
+   "type": "Animal",
+   "lore": "Heavy-coated and heavy-headed, the Muskox endures the harshest climates with quiet strength. But provoke it, and you'll meet a horned fury capable of shattering bone and will alike.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_39.gif",
+   "recorded": false
+  },
+  {
+   "id": 40,
+   "name": "Purifier",
+   "type": "Humanoid",
+   "biome": "Temple, Elysian Isle",
+   "lore": "Clad in radiant vestments, the Purifier brings cleansing fire to what it deems impure. With chants like bells and eyes glowing white, it smites shadow and sinner alike. To some, they are saviors. To others, tyrants wearing light like armor.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_40.gif",
+   "recorded": false
+  },
+  {
+   "id": 43,
+   "name": "Frostbinder",
+   "type": "Humanoid",
+   "biome": "Taiga, Frost Cave, Frostvault Isle",
+   "lore": "From the depths of the frost caves comes the Frostbinder, a warrior-mage who bends ice like iron. With each swing, he leaves trails of cold flame, and his enemies fall frozen, eyes wide and cracking.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_43.gif",
+   "recorded": false
+  },
+  {
+   "id": 45,
+   "name": "Leech",
+   "type": "Insect",
+   "biome": "Sewers",
+   "lore": "Blind and bloated, the sewer leech writhes through filth and forgotten alchemy, pulsing with the blood of those who dared wade too deep. It senses heat through wet stone and latches with unnatural strength, draining more than flesh, stealing warmth, will, and sometimes memories.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_45.gif",
+   "recorded": false
+  },
+  {
+   "id": 47,
+   "name": "Cockroach",
+   "type": "Insect",
+   "biome": "Sewers",
+   "lore": "Where light dies, cockroaches gather. Resistant to flame, poison, and even reason, these ancient insects are messengers of decay. In the damp silence of the sewers, they thrive unseen, drawn to filth and rot.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_47.gif",
+   "recorded": false
+  },
+  {
+   "id": 49,
+   "name": "Killer Centipede",
+   "type": "Insect",
+   "biome": "Marsh, Bear Den, Den Of Devourer",
+   "lore": "In the swamp`s steaming rot, the Killer Centipede tunnels silently, its blind head twitching at every vibration. Its bite is fast and final, its many legs whispering across stone like a funeral procession. Death follows where it coils.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_49.gif",
+   "recorded": false
+  },
+  {
+   "id": 50,
+   "name": "Death Beetle",
+   "type": "Insect",
+   "biome": "Sunken Ruins",
+   "lore": "From the crypts of drowned ruins crawls the Death Beetle, silent, armored, and inexorable. Its mandibles glint with decay, and its shell has deflected steel for centuries. You hear it too late, and then you don`t hear at all.",
+   "tab": "other",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_50.gif",
+   "recorded": false
+  },
+  {
+   "id": 51,
+   "name": "Bone Scarab",
+   "type": "Insect",
+   "biome": "Dry Desert, Sunken Ruins",
+   "lore": "Crawling beneath desert sands and shattered ruins, the Bone Scarab feasts on decay. Its shell is as hard as ancient armor, and its mandibles rend with brutal precision. When the dunes churn and clatter, it is already too late.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_51.gif",
+   "recorded": false
+  },
+  {
+   "id": 52,
+   "name": "Eel",
+   "type": "Animal",
+   "biome": "Sewers, Static Isle",
+   "lore": "Twisting through black water like a curse given flesh, the sewer eel glows faintly with stolen lightning. It strikes faster than thought, and those it shocks often awaken days later, muttering nonsense or not at all. Scholars wonder if it remembers the drowning faces it consumes.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_52.gif",
+   "recorded": false
+  },
+  {
+   "id": 54,
+   "name": "Goblin Pyro",
+   "type": "Humanoid",
+   "biome": "Mountain, Underground, Deep Forest, Urban, Ruins",
+   "lore": "Pyromaniacs driven by frenzy and fumes, Goblin Pyros laugh as they torch forest and flesh alike. Their flames burn erratic and wild, gifts from crude totems and whispered rites. Many die by their own hand, smiling as the fire takes them.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_54.gif",
+   "recorded": false
+  },
+  {
+   "id": 55,
+   "name": "Goblin Soldier",
+   "type": "Humanoid",
+   "biome": "Mountain, Deep Forest",
+   "lore": "Brutal and disciplined by goblin standards, these soldiers march with cruel glee and rusted blades. Forged in smoke and filth, they thrive in ambushes, overwhelming prey with numbers and shrieks. Their blood carries the stench of sulfur, and their hearts beat only for plunder.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_55.gif",
+   "recorded": false
+  },
+  {
+   "id": 56,
+   "name": "River Troll",
+   "type": "Humanoid",
+   "biome": "Coastal, Oasis",
+   "lore": "Born in brackish waters and riverbanks, the River Troll lumbers with a club in one hand and a rock in the other. Its brute strength and erratic attacks make it a hazard to all who draw near.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_56.gif",
+   "recorded": false
+  },
+  {
+   "id": 57,
+   "name": "Pirate",
+   "type": "Humanoid",
+   "biome": "Shipwreck, Pirate Ship",
+   "lore": "Drifting between wreckage and myth, the Pirate lives and dies by the blade. Hardened by salt and blood, these cutthroats prowl sunken ships and cursed coastlines, stabbing quick and looting quicker. Even in death, their greed lingers like the reek of rum and rust.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_57.gif",
+   "recorded": false
+  },
+  {
+   "id": 62,
+   "name": "Thorny Vines",
+   "type": "Plant",
+   "biome": "Underground, Roots Isle",
+   "lore": "In the damp dark of forgotten tunnels, Thorny Vines slither unseen, drawn to breath and warmth. Blind and unthinking, they constrict and tear with ruthless instinct. Their barbs drink deeply of blood, and no bone resists their grasp for long.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_62.gif",
+   "recorded": false
+  },
+  {
+   "id": 63,
+   "name": "Tree of Life",
+   "type": "Plant",
+   "biome": "Underground",
+   "lore": "Majestic and unmoving, the Tree of Life pulses with ancient strength, its roots tangled through bone and stone. Though serene in appearance, it defends itself with crushing limbs and a will older than mankind. Those who strike it often find themselves buried in the roots of rebirth.",
+   "tab": "boss",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_63.gif",
+   "recorded": false
+  },
+  {
+   "id": 64,
+   "name": "Miner",
+   "type": "Humanoid",
+   "biome": "Underground",
+   "lore": "Once men of humble craft, Miners who linger too long below forget the sun and the surface. Pale-eyed and ever digging, they speak in a low drone, following veins of ore into cursed depths. Some say they mine not for gold, but for something buried and best left sleeping.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_64.gif",
+   "recorded": false
+  },
+  {
+   "id": 65,
+   "name": "Sasquatch",
+   "type": "Humanoid",
+   "biome": "Underground",
+   "lore": "In the deepest caverns where sunlight has never touched stone, the Sasquatch lumbers in silence. Cloaked in matted fur and reeking of damp earth, it watches intruders with haunting intelligence. Legends claim it was once a man who fled too deep, now cursed to wander, alone and forgotten, with strength enough to crush bone to dust.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_65.gif",
+   "recorded": true,
+   "levelRange": "1 - 1",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "Low",
+   "defense": "Low",
+   "resistance": "Low",
+   "drops": [
+    {
+     "name": "Bronze Sestertii",
+     "pct": "100%"
+    },
+    {
+     "name": "Mucky Vegetables",
+     "pct": "25%"
+    }
+   ],
+   "skills": [
+    {
+     "name": "bite",
+     "id": 10009,
+     "level": 1
+    },
+    {
+     "name": "maul",
+     "id": 10015,
+     "level": 1
+    },
+    {
+     "name": "stench",
+     "id": 10026,
+     "level": 1
+    },
+    {
+     "name": "throw_rock",
+     "id": 10138,
+     "level": 1
+    }
+   ],
+   "stats": {
+    "Base Damage": 2,
+    "Physical Damage": 3,
+    "Blunt Damage": 0,
+    "Spell Damage": 0,
+    "Bleed Damage": 0,
+    "Arcane Damage": 0,
+    "Cold Damage": 0,
+    "Dark Damage": 0,
+    "Fire Damage": 0,
+    "Light Damage": 0,
+    "Lightning Damage": 0,
+    "Poison Damage": 0,
+    "Thorn Damage": 0,
+    "Defense": 2,
+    "Block Chance": 0,
+    "Block Rating": 0,
+    "Arcane Resist": 2,
+    "Cold Resist": 2,
+    "Dark Resist": 2,
+    "Fire Resist": 2,
+    "Light Resist": 2,
+    "Lightning Resist": 2,
+    "Poison Resist": 2,
+    "Evasion": 1,
+    "Critical Chance": 0,
+    "Critical Strike": 0,
+    "Hit Rating": 200,
+    "Attack Speed": 30,
+    "Armor Penetration": 1,
+    "Life Steal": 0,
+    "Mana Steal": 0,
+    "Life Regeneration": 0,
+    "Mana Regeneration": 0,
+    "Maximum Life": 60
+   }
+  },
+  {
+   "id": 67,
+   "name": "Knight",
+   "type": "Humanoid",
+   "biome": "Magic Plains, Frostvault Isle",
+   "lore": "Sworn to ancient light and long-dead kings, the Knight fights with divine purpose and holy steel. Magic flares in each strike, and his armor gleams with old enchantments. Mercy is not part of his creed, only judgment.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_67.gif",
+   "recorded": false
+  },
+  {
+   "id": 69,
+   "name": "Lord Marious",
+   "type": "Humanoid",
+   "biome": "Ratdom",
+   "lore": "Once a noble general, Lord Marious descended into the underworld in search of power. Now, a giant cloaked in rot and pride, he rules Ratdom with an iron claw and a gaze that sees through lies. Whispers call him a man no longer, only a title worn by something darker.",
+   "tab": "boss",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_69.gif",
+   "recorded": false
+  },
+  {
+   "id": 70,
+   "name": "Wererat Soldier",
+   "type": "Humanoid",
+   "biome": "Ratdom",
+   "lore": "Half-man, half-plague, the Wererat Soldier fights in filth and fear. They swarm like vermin, coordinated by instinct and disease. Beneath their snarls lies a cruel cunning, and every wound they inflict festers long after the battle ends.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_70.gif",
+   "recorded": false
+  },
+  {
+   "id": 71,
+   "name": "Wererat Slinger",
+   "type": "Humanoid",
+   "biome": "Ratdom",
+   "lore": "Quick-footed and twitching, the Wererat Slinger pelts enemies from shadows with poison-dipped stones. Their aim is unerring, guided by senses tuned to the vibration of blood. They fight not to win, but to weaken, taint, and torment.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_71.gif",
+   "recorded": false
+  },
+  {
+   "id": 72,
+   "name": "Wererat Wizard",
+   "type": "Humanoid",
+   "biome": "Ratdom",
+   "lore": "A twisted blend of sorcery and sickness, the Wererat Wizard scurries through tunnels with arcane sparks crackling in its claws. It speaks in plague-tongue and casts spells like curses. Even other wererats fear it, for it serves no god but chaos.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_72.gif",
+   "recorded": false
+  },
+  {
+   "id": 86,
+   "name": "Mountain Troll",
+   "type": "Humanoid",
+   "biome": "Mountain, Coastal",
+   "lore": "Forged from boulder and brute instinct, the Mountain Troll guards high passes and coastal cliffs with thunderous wrath. It hurls stones the size of oxen, and its stance alone can crack a shield wall. Only the foolish face it head-on.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_86.gif",
+   "recorded": false
+  },
+  {
+   "id": 87,
+   "name": "Lizardman",
+   "type": "Humanoid",
+   "biome": "Coastal, Oasis",
+   "lore": "Bred in heat and hardship, the Lizardmen stalk the marshes with disciplined savagery. Their scaly hides deflect arrows, and their ambushes are swift and precise. They serve no king, only the survival laws carved into their bones.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_87.gif",
+   "recorded": false
+  },
+  {
+   "id": 88,
+   "name": "Merfolk",
+   "type": "Humanoid",
+   "biome": "Coastal, Marine, Oasis",
+   "lore": "Beneath moonlit waves, the Merfolk glide with eerie grace. Though beautiful, they wield arcane power like a tide, striking from the depths with currents of force. Sailors speak of their songs, not with awe, but with dread.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_88.gif",
+   "recorded": false
+  },
+  {
+   "id": 89,
+   "name": "Zombie Pirate",
+   "type": "Undead",
+   "biome": "Shipwreck, Pirate Ship",
+   "lore": "A drowned husk cursed to sail forever, the Zombie Pirate reeks of seaweed, rot, and gunpowder. Clutching rusted blades and memories of slaughter, it obeys no captain but the call of undeath. When it boards, mercy goes overboard.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_89.gif",
+   "recorded": false
+  },
+  {
+   "id": 95,
+   "name": "Werewolf",
+   "type": "Magical Creature",
+   "biome": "Deep Forest",
+   "lore": "Under cursed moons and deep forest shadows, the Werewolf hunts with primal rage. Once man, now monster, it tears through flesh with claws and fangs driven by bloodlust. Dark magic clings to its fur, and its howl promises pain to all who hear it.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_95.gif",
+   "recorded": false
+  },
+  {
+   "id": 96,
+   "name": "Centaur",
+   "type": "Humanoid",
+   "biome": "Deep Forest",
+   "lore": "With the wisdom of men and the fury of beasts, the Centaur roams forest paths as a guardian of balance. Arrows fly with deadly speed from its bow, and hooves crush bone beneath ancient oaths. It fights not for glory, but for the silence of the grove.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_96.gif",
+   "recorded": false
+  },
+  {
+   "id": 97,
+   "name": "Druid",
+   "type": "Humanoid",
+   "biome": "Deep Forest, Bunny Remote",
+   "lore": "Rooted in the old tongues and stormborn rites, the Druid bends nature`s fury to its will. Fire, lightning, and healing flow alike from its hands, guided by purpose, not mercy. Those who burn the forest find themselves judged by its most faithful servant.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_97.gif",
+   "recorded": false
+  },
+  {
+   "id": 98,
+   "name": "Wandering Ent",
+   "type": "Plant",
+   "biome": "Deep Forest, Roots Isle",
+   "lore": "Towering and slow, the Wandering Ent carries the weight of lost seasons and forest grief. Cold seeps from its sap, and its thorned limbs lash with ancient wrath. Wherever it walks, roots split stone and time bends to stillness.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_98.gif",
+   "recorded": false
+  },
+  {
+   "id": 99,
+   "name": "Brute Spider",
+   "type": "Insect",
+   "biome": "Spider Den, Pumpkin Skerry",
+   "lore": "From the depths of web-choked dens crawls the Brute Spider, a hulking arachnid whose every step cracks bone. It strikes not with subtlety, but with overwhelming force, smashing prey beneath its spiked limbs before cocooning the remains.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_99.gif",
+   "recorded": false
+  },
+  {
+   "id": 100,
+   "name": "Spitter",
+   "type": "Insect",
+   "biome": "Spider Den",
+   "lore": "This vile insect launches globs of acidic silk from the safety of shadows. Its venom burns through armor and flesh alike, leaving its victims squirming in sticky, searing webs. Many adventurers hear it before they see it, and by then, it`s far too late.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_100.gif",
+   "recorded": false
+  },
+  {
+   "id": 101,
+   "name": "Mana Webber",
+   "type": "Insect",
+   "biome": "Spider Den",
+   "lore": "A strange mutation of spiderkind, the Mana Webber weaves threads infused with arcane essence. Its webs shimmer with unstable magic, igniting in bursts of flame or locking its prey in magical paralysis. Spellcasters fear it, for it drinks magic like blood.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_101.gif",
+   "recorded": false
+  },
+  {
+   "id": 102,
+   "name": "Spider Queen",
+   "type": "Insect",
+   "biome": "Spider Den",
+   "lore": "Enthroned in webs and surrounded by legions, the Spider Queen is both mother and monarch. Her strikes are devastating, her venom ancient. With a single leap she can crush champions, and her domain pulses with the rhythm of a thousand skittering feet.",
+   "tab": "boss",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_102.gif",
+   "recorded": false
+  },
+  {
+   "id": 103,
+   "name": "Raider",
+   "type": "Humanoid",
+   "biome": "Dry Desert, Ruins",
+   "lore": "Sun-scarred and desperate, the Raider strikes from dust and ruin. Fast blades, dirty tricks, and lawless hunger mark their path. To them, blood is coin and cruelty a trade, only fire and fear can match their hunger.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_103.gif",
+   "recorded": false
+  },
+  {
+   "id": 104,
+   "name": "Cassowary",
+   "type": "Animal",
+   "biome": "Dry Desert",
+   "lore": "A relic of feathered fury, the Cassowary charges with sudden violence. Its talons split armor, its kick snaps ribs, and its eyes gleam with a territorial wrath no man can tame. Step too close, and you`ll know why it`s worshipped in silence.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_104.gif",
+   "recorded": false
+  },
+  {
+   "id": 105,
+   "name": "Dune Glider",
+   "type": "Creature",
+   "biome": "Dry Desert, Sunken Ruins",
+   "lore": "Skimming through shifting sands, the Dune Glider moves like the wind, silent, swift, and always hungry. Its speed stir dust, its jaw draw blood, and no prey outruns it once marked. It leaves no tracks, only bones.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_105.gif",
+   "recorded": false
+  },
+  {
+   "id": 106,
+   "name": "Owlbear",
+   "type": "Creature",
+   "biome": "Deep Forest",
+   "lore": "A nightmare of nature`s excess, the Owlbear stalks the forest with brutal cunning and untamed strength. Its beak rends like a sword, its claws crush like malice given form. Though magical in origin, its savagery is primal and pure.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_106.gif",
+   "recorded": false
+  },
+  {
+   "id": 107,
+   "name": "Wendigo",
+   "type": "Creature",
+   "biome": "Dark Forest",
+   "lore": "Born of starvation and eternal winter, the Wendigo is a haunting silhouette of what once was man. Its howl freezes bone, its eyes mirror despair. It hungers always, for flesh, for fear, for warmth it cannot feel.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_107.gif",
+   "recorded": false
+  },
+  {
+   "id": 108,
+   "name": "Stone Hulk",
+   "type": "Creature",
+   "biome": "Underground, Rocky Ridge",
+   "lore": "Forged in the womb of the earth, the Stone Hulk is less creature than avalanche given thought. It moves with slow, crushing inevitability, wielding boulders like toys. Arrows shatter on its skin, and its roar echoes like a collapsing mountain.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_108.gif",
+   "recorded": false
+  },
+  {
+   "id": 109,
+   "name": "Cockatrice",
+   "type": "Creature",
+   "biome": "Dark Forest",
+   "lore": "Half bird, half horror, the Cockatrice struts with rage and pride. Its gaze curdles blood, and its kick snaps bone. It does not crow, it curses, leaving only silence and stone.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_109.gif",
+   "recorded": false
+  },
+  {
+   "id": 110,
+   "name": "Ankheg",
+   "type": "Creature",
+   "biome": "Dark Forest",
+   "lore": "Burrowing beneath the forest floor, the Ankheg erupts with horrifying speed, all mandibles and acid. Its armor is harder than steel, its bite fouler than rot. When the earth moves, it`s already too late.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_110.gif",
+   "recorded": false
+  },
+  {
+   "id": 111,
+   "name": "Drow",
+   "type": "Humanoid",
+   "biome": "Dark Forest, Sinister Isle, Underground",
+   "lore": "Shadows whisper the Drow`s name, and arrows follow. These subterranean killers serve no master but their own ambition. Their cruelty is art, and their aim, flawless. Where they walk, the surface world dims.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_111.gif",
+   "recorded": false
+  },
+  {
+   "id": 112,
+   "name": "Forest Guardian",
+   "type": "Creature",
+   "biome": "Dark Forest, Guardian Queen Hive, Roots Isle",
+   "lore": "Towering and tranquil until provoked, the Forest Guardian defends the green with primal might. Its charge uproots trees, its roots crush armor. It does not hate, it protects. And it will not stop.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_112.gif",
+   "recorded": false
+  },
+  {
+   "id": 113,
+   "name": "Dryad",
+   "type": "Humanoid",
+   "biome": "Dying Forest",
+   "lore": "Born of dying woods and sorrowed groves, the Dryad defends her realm with venomous grace. Thorns bloom at her whim, and her scent can lull or kill. Many approach her in awe; few leave untouched by her grief.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_113.gif",
+   "recorded": false
+  },
+  {
+   "id": 114,
+   "name": "Mothman",
+   "type": "Creature",
+   "biome": "Dying Forest",
+   "lore": "Drifting through withered trees like a phantom, the Mothman is a herald of doom. Its wings shimmer with whispered omens, and its claws fall with surgical cruelty. Where it watches, calamity soon follows, and the wise never look back.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_114.gif",
+   "recorded": false
+  },
+  {
+   "id": 115,
+   "name": "Myconid",
+   "type": "Plant",
+   "biome": "Dying Forest",
+   "lore": "Birthed from rot and damp sorrow, the Myconid is a walking fungus that spreads disease with each spore-laden breath. It shuns sunlight, thriving in the decay of dying forests. Those it slays are not buried, they bloom.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_115.gif",
+   "recorded": false
+  },
+  {
+   "id": 116,
+   "name": "Decaying Worm",
+   "type": "Insect",
+   "biome": "Dying Forest",
+   "lore": "Massive, sightless, and stinking of death, the Decaying Worm slithers through forest soil like a forgotten vein. Its body sheds chunks of fetid flesh, poisoning the ground, while its maw consumes anything warm and moving.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_116.gif",
+   "recorded": false
+  },
+  {
+   "id": 117,
+   "name": "Troll Boar",
+   "type": "Magical Creature",
+   "biome": "Dying Forest",
+   "lore": "This malformed beast charges through underbrush with tusks like daggers and a hide thick as bark. Some say it was shaped by corrupted forest magic, others believe it to be nature`s revenge. Either way, it tramples all in its path.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_117.gif",
+   "recorded": false
+  },
+  {
+   "id": 118,
+   "name": "Bog Worm",
+   "type": "Insect",
+   "biome": "Marsh",
+   "lore": "A bloated terror of the mire, the Bog Worm burrows through wet soil like a living tunnel. It erupts with a roar, striking from beneath to drag prey into choking sludge. Locals leave offerings at its pits, better tribute than becoming one.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_118.gif",
+   "recorded": false
+  },
+  {
+   "id": 119,
+   "name": "Boggard",
+   "type": "Humanoid",
+   "biome": "Marsh, Oasis",
+   "lore": "Humanoid yet grotesque, the Boggard slinks through swampwater with a cudgel in hand and filth in its soul. Its flesh is slimy, its tongue forked, and its humor cruel. Many mistake it for a simple creature, until the first boink spills red.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_119.gif",
+   "recorded": false
+  },
+  {
+   "id": 120,
+   "name": "Bogleech",
+   "type": "Insect",
+   "biome": "Marsh",
+   "lore": "Round, pulsing, and perpetually hungry, the Bogleech attaches to prey with revolting glee. Its bite drains not only blood, but memory. Victims are often found wandering, mumbling nonsense, with two neat holes in their necks.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_120.gif",
+   "recorded": false
+  },
+  {
+   "id": 121,
+   "name": "Blood Queen",
+   "type": "Insect",
+   "biome": "Marsh",
+   "lore": "The marsh bows before the Blood Queen. Scaled and glistening with crimson ichor, she leads swarms of vermin with a hiss. Her bite is intoxicating, both a curse and a command. Those who kneel may live. Briefly.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_121.gif",
+   "recorded": false
+  },
+  {
+   "id": 122,
+   "name": "Tarn Linnorm",
+   "type": "Creature",
+   "biome": "Marsh",
+   "lore": "This scaled beast slithers through fog-choked bogs, silent as breath. The Tarn Linnorm is older than the forest and crueler than its stillness. Its bite carries sickness of the soul, and its roar drives birds from the sky.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_122.gif",
+   "recorded": false
+  },
+  {
+   "id": 123,
+   "name": "Sandworm",
+   "type": "Insect",
+   "biome": "Red Desert",
+   "lore": "...",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_123.gif",
+   "recorded": false
+  },
+  {
+   "id": 124,
+   "name": "Sand Golem",
+   "type": "Construct",
+   "biome": "Red Desert, Rocky Ridge",
+   "lore": "In the reeking bowels of ancient cities, these bloated vermin fester and thrive. No longer mere scavengers, sewer rats have grown bold on rot and ruin, their crimson eyes gleaming with unnatural awareness. They carry plague between their yellowed fangs, and whisper-songs say they follow the scent of dying kings.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_124.gif",
+   "recorded": false
+  },
+  {
+   "id": 125,
+   "name": "Girtablilu",
+   "type": "Humanoid",
+   "biome": "Red Desert",
+   "lore": "...",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_125.gif",
+   "recorded": false
+  },
+  {
+   "id": 126,
+   "name": "Roc",
+   "type": "Creature",
+   "biome": "Red Desert",
+   "lore": "Across the burning skies of the red desert, the Roc reigns as an untouchable predator. Its colossal wings stir storms of sand as it circles high above the dunes. When its shadow falls across the land, even the fiercest beasts know to flee.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_126.gif",
+   "recorded": false
+  },
+  {
+   "id": 128,
+   "name": "Arynx",
+   "type": "Creature",
+   "biome": "Savanna",
+   "lore": "A feline predator twisted by wild magic, the Arynx moves like lightning and strikes with unnatural savagery. Its claws tear through steel, and its howl shatters courage. Hunters say its eyes burn with the memory of older, crueler gods.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_128.gif",
+   "recorded": false
+  },
+  {
+   "id": 129,
+   "name": "Gnoll Warrior",
+   "type": "Humanoid",
+   "biome": "Savanna",
+   "lore": "Driven by bloodlust and pack loyalty, the Gnoll Warrior hunts in packs through the sun-scorched savannas. With jagged blades and guttural chants, they feast on fear before flesh. Mercy is a concept they`ve long forgotten.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_129.gif",
+   "recorded": false
+  },
+  {
+   "id": 130,
+   "name": "Catoblepas",
+   "type": "Creature",
+   "biome": "Shrubland",
+   "lore": "Lumbering and cursed, the Catoblepas leaves rot in its wake. Its gaze saps strength, and its horns impale with unnatural weight. Even the ground where it sleeps grows black with disease, and few survive an encounter with its stinking breath.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_130.gif",
+   "recorded": false
+  },
+  {
+   "id": 131,
+   "name": "Terastodon",
+   "type": "Creature",
+   "biome": "Savanna, Shrubland",
+   "lore": "This ancient behemoth crushes trees and warriors alike beneath its thunderous bulk. Its tusks are like towers, and its charge like an avalanche. It walks the border between legend and extinction, and every tremor might be its return.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_131.gif",
+   "recorded": false
+  },
+  {
+   "id": 132,
+   "name": "Carrion Harpy",
+   "type": "Creature",
+   "biome": "Savanna, Shrubland",
+   "lore": "Once winged maidens, now flesh-hungry scavengers, Carrion Harpies descend upon the weak with feral grace. Their fangs thirst for blood, their claws flay flesh with surgical cruelty. Where they circle, death already festers.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_132.gif",
+   "recorded": false
+  },
+  {
+   "id": 133,
+   "name": "Kraken Mother",
+   "type": "Creature",
+   "biome": "Underground",
+   "lore": "A nightmare birthed in the darkest trenches, the Kraken Mother commands the black seas and the beasts within. Her limbs can crush ships, her ink blinds gods, and her shriek summons storms. She is not worshipped, only appeased.",
+   "tab": "boss",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_133.gif",
+   "recorded": false
+  },
+  {
+   "id": 134,
+   "name": "Devourer",
+   "type": "Animal",
+   "biome": "Den Of Devourer",
+   "lore": "A living calamity of fang and muscle, the Devourer burrows beneath its domain, erupting with savage hunger. Its bite rots spirit and sinew alike, and its rampage leaves only bones. None tame it, none survive it.",
+   "tab": "boss",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_134.gif",
+   "recorded": false
+  },
+  {
+   "id": 135,
+   "name": "Vampire Bat",
+   "type": "Animal",
+   "biome": "Bear Den, Den Of Devourer",
+   "lore": "By night`s grace and blood`s lure, the Vampire Bat emerges from its den, silent and swift. It drains not only life, but will, leaving its victims pale, cold, and dreaming of wings in the dark.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_135.gif",
+   "recorded": false
+  },
+  {
+   "id": 137,
+   "name": "Drake Boss",
+   "type": "Dragon",
+   "biome": "Wyvern Forest",
+   "lore": "A tyrant of flame and sky, the Drake is no mere beast, it is a cataclysm with wings. Forged in volcanic storms and tempered in ancient war, it guards the skies like a wrathful god. Its breath chars hope, and its roar shakes the resolve of even seasoned dragon-slayers.",
+   "tab": "boss",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_137.gif",
+   "recorded": false
+  },
+  {
+   "id": 138,
+   "name": "Wyvern",
+   "type": "Creature",
+   "biome": "Wyvern Forest, Vulcanic Isle",
+   "lore": "Sleeker than dragons and twice as cruel, Wyverns stalk the scorched isles and shadowed treetops. Their barbed tails drip with venom, and their fire burns with spite. They are cunning hunters who take pleasure in torment, often toying with prey before the final strike.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_138.gif",
+   "recorded": false
+  },
+  {
+   "id": 140,
+   "name": "Oculus",
+   "type": "Creature",
+   "biome": "Void",
+   "lore": "A towering horror of flesh and vision, the Oculus floats with eerie stillness. It sees not with eyes, but with minds, casting rays of madness and protection in equal measure. To gaze upon it is to question reality.",
+   "tab": "boss",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_140.gif",
+   "recorded": false
+  },
+  {
+   "id": 141,
+   "name": "Ghost Pirate",
+   "type": "Undead",
+   "biome": "Shipwreck, Hollow Forest, Pirate Ship",
+   "lore": "Cursed to sail the mists beyond death, the Ghost Pirate drifts between shipwreck and shore. Once men, now bound by betrayal and drowned gold, they swing spectral cutlasses that wound the soul. Their laughter is hollow, echoing from jaws no longer flesh-bound.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_141.gif",
+   "recorded": false
+  },
+  {
+   "id": 142,
+   "name": "Arcelia",
+   "type": "Undead",
+   "biome": "Marine",
+   "lore": "Once a siren, now a specter, Arcelia haunts the waves where she was betrayed. Her form floats between sea mist and sorrow, and her magic flays the minds of the living. Sailors weep at her song, though they do not know why.",
+   "tab": "boss",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_142.gif",
+   "recorded": false
+  },
+  {
+   "id": 143,
+   "name": "Purple Worm",
+   "type": "Insect",
+   "biome": "Underground",
+   "lore": "Massive, blind, and unstoppable, the Purple Worm tunnels with ruinous force. Entire caverns collapse as it twists through earth and stone, hunting by tremor and scent. To be swallowed whole is considered a mercy.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_143.gif",
+   "recorded": false
+  },
+  {
+   "id": 144,
+   "name": "Real Medusa",
+   "type": "Humanoid",
+   "biome": "Underground",
+   "lore": "Once a beauty, now a nightmare, Medusa stalks the underworld with eyes that turn flesh to stone. Her serpents hiss secrets older than kings, and her touch rots the brave. She is not hunted, she is remembered by statues.",
+   "tab": "other",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_144.gif",
+   "recorded": false
+  },
+  {
+   "id": 145,
+   "name": "Mummy",
+   "type": "Undead",
+   "biome": "Temple",
+   "lore": "Wrapped in curse-soaked linens and long-dead glory, the Mummy rises from dust to reclaim a forgotten past. Its touch is brittle but blighted, its gaze hollow yet hungering. Death did not end its pride, only paused it.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_145.gif",
+   "recorded": false
+  },
+  {
+   "id": 146,
+   "name": "Zombie",
+   "type": "Undead",
+   "biome": "Pumpkin Skerry",
+   "lore": "From cursed soil and forbidden rites, the dead rise with bloated limbs and vacant eyes. These shambling horrors remember little of life, save hunger. On Pumpkin Skerry, they gather like lost memories, drawn by ancient rituals that refuse to die.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_146.gif",
+   "recorded": false
+  },
+  {
+   "id": 147,
+   "name": "Skeleton",
+   "type": "Undead",
+   "biome": "Hollow Forest",
+   "lore": "When flesh falls away and only hatred remains, a skeleton is born. Driven by necromantic will or the echoes of old vengeance, these brittle warriors march on with rusted weapons and grinning skulls. Do not underestimate their silence, it is full of purpose.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_147.gif",
+   "recorded": false
+  },
+  {
+   "id": 148,
+   "name": "Skeleton Archer",
+   "type": "Undead",
+   "biome": "Haunted Forest, Underground",
+   "lore": "Risen from forgotten graves, the Skeleton Archer looses arrows without breath or mercy. Its shots strike with undead precision, and its gaze is empty of anything but command. It does not miss, and it never stops.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_148.gif",
+   "recorded": false
+  },
+  {
+   "id": 149,
+   "name": "Skeleton Mage",
+   "type": "Undead",
+   "biome": "Haunted Forest, Underground, Pumpkin Skerry",
+   "lore": "Arcane flames flicker in empty sockets as the Skeleton Mage weaves death from bones and silence. It once served kings; now it serves entropy. Fire, lightning, and arcane wrath rise at its command, and nothing living is sacred.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_149.gif",
+   "recorded": false
+  },
+  {
+   "id": 150,
+   "name": "Skeleton Warrior",
+   "type": "Undead",
+   "biome": "Haunted Forest, Underground",
+   "lore": "Clad in rusted armor and bound by hate, the Skeleton Warrior fights as it did in life, only colder. It knows no fear, no retreat. Its sword is dull but steady, and its loyalty belongs to death itself.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_150.gif",
+   "recorded": false
+  },
+  {
+   "id": 151,
+   "name": "Swamp Dragon",
+   "type": "Creature",
+   "biome": "Swamp",
+   "lore": "This sluggish, scaled beast drags its wings through murky water and lurches from reeds with a hiss. Its claws rend like swamp roots, and its breath is thick with decay. Few live to see it take flight.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_151.gif",
+   "recorded": false
+  },
+  {
+   "id": 152,
+   "name": "Mutated Lizardman",
+   "type": "Humanoid",
+   "biome": "Swamp",
+   "lore": "Corrupted by bog magic and breeding gone wrong, the Mutated Lizardman shambles through the swamp with jerky ferocity. Its scales shimmer with disease, and its blade strikes with unnatural timing, as if the mire itself is watching.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_152.gif",
+   "recorded": false
+  },
+  {
+   "id": 153,
+   "name": "Gnoll Warlock",
+   "type": "Humanoid",
+   "biome": "Savanna, Static Isle",
+   "lore": "Not all gnolls rely on tooth and steel, some wield storms. The Gnoll Warlock calls down lightning with a twisted grin, crackling with savage glee. Its eyes burn with madness, and its chants are stolen from gods best left forgotten.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_153.gif",
+   "recorded": false
+  },
+  {
+   "id": 155,
+   "name": "Goblin King",
+   "type": "Humanoid",
+   "lore": "Crowned in bone and madness, the Goblin King rules with raw fury and twisted strength. Larger than any of his kin, he leads by terror, and his claws rend both armor and loyalty alike. His court is chaos, his law is pain.",
+   "tab": "other",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_155.gif",
+   "recorded": false
+  },
+  {
+   "id": 156,
+   "name": "Hollow Phantom",
+   "type": "Undead",
+   "biome": "Hollow Forest",
+   "lore": "A whisper given form, the Hollow Phantom drifts through walls and minds alike. Towering and incorporeal, it lashes out with blades of darkness and memories of torment. Some say it is what remains when a soul is consumed by grief so deep, even death cannot contain it.",
+   "tab": "boss",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_156.gif",
+   "recorded": false
+  },
+  {
+   "id": 157,
+   "name": "The Abomination",
+   "type": "Construct",
+   "biome": "Underground",
+   "lore": "A grotesque fusion of corpse and curse, the Abomination drips filth and breathes pestilence. It lumbers with relentless purpose, spreading decay with each blow. Nothing within it lives, and nothing around it survives.",
+   "tab": "overlord",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_157.gif",
+   "recorded": false
+  },
+  {
+   "id": 158,
+   "name": "Orc Warrior",
+   "type": "Humanoid",
+   "biome": "Shrubland, Red Desert",
+   "lore": "Built like siege engines, the Orc Warriors smash through lines with brute force and brute will. Their blades drip with the spoils of war, and their roars shake the air. Diplomacy ends where their footsteps begin.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_158.gif",
+   "recorded": false
+  },
+  {
+   "id": 159,
+   "name": "Orc Hunter",
+   "type": "Humanoid",
+   "biome": "Shrubland, Red Desert",
+   "lore": "In the scrublands and red deserts, the Orc Hunter stalks with grim focus. His arrows are jagged, his aim merciless. Cloaked in dust and shadow, he strikes before his prey knows it`s hunted, then vanishes like smoke.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_159.gif",
+   "recorded": false
+  },
+  {
+   "id": 160,
+   "name": "Orc Warlock",
+   "type": "Humanoid",
+   "biome": "Shrubland, Red Desert",
+   "lore": "Marked by arcane scars and wielding corrupted power, the Orc Warlock commands lightning with tribal fury. His spells strike like thunderbolts, his words ignite rage. He is both shaman and executioner, feared even by his own kin.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_160.gif",
+   "recorded": false
+  },
+  {
+   "id": 161,
+   "name": "Warg",
+   "type": "Creature",
+   "biome": "Shrubland, Red Desert",
+   "lore": "Twice the size of a wolf and ten times as cruel, the Warg is bred for war and bred by hate. Eyes like smoldering coals, its breath reeks of blood and fear. It doesn`t just hunt, it stalks, remembers, and returns.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_161.gif",
+   "recorded": false
+  },
+  {
+   "id": 164,
+   "name": "Angry Snowman",
+   "type": "Construct",
+   "biome": "Taiga",
+   "lore": "What mockery of creation birthed this frozen abomination is lost to time. Shaped by hateful magic and filled with malevolent glee, the Angry Snowman pelts intruders with icy death. Its carrot nose rots black, and its eyes burn like coals from the hells below the snow.",
+   "tab": "boss",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_164.gif",
+   "recorded": false
+  },
+  {
+   "id": 165,
+   "name": "Basilisk",
+   "type": "Creature",
+   "biome": "Red Desert",
+   "lore": "With eyes like death and a bite soaked in poison, the Basilisk slithers through sand and ruin. Its scales shimmer like stone, and its stare has turned legions to dust. Where it walks, nothing grows. Where it feeds, nothing rises again.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_165.gif",
+   "recorded": false
+  },
+  {
+   "id": 166,
+   "name": "Stone Centipede",
+   "type": "Insect",
+   "biome": "Red Desert",
+   "lore": "Carved from ancient rock and sealed in the desert depths, the Stone Centipede awakens only when disturbed. Its limbs grind like blades, and its bite pierces steel. Travelers vanish in its wake, leaving only gouged stone and silence.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_166.gif",
+   "recorded": false
+  },
+  {
+   "id": 167,
+   "name": "Polar Bear",
+   "type": "Animal",
+   "biome": "Taiga, Arctic Isle, Frost Cave, Frozen Float",
+   "lore": "Within the frigid wastes, the Polar Bear stalks the ice with regal ferocity. Its pelt is thick as plate, its rage colder than the wind. These beasts are ancient, drawn to sacred glacial grounds where gods once wept, and they kill without hesitation to keep it pure.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_167.gif",
+   "recorded": false
+  },
+  {
+   "id": 168,
+   "name": "Wasp",
+   "type": "Insect",
+   "biome": "Grassland",
+   "lore": "A blur of wings and venom, the Wasp is a furious guardian of its hive. In swarms they come, each sting a lance of searing agony. They build their nests in old bones and hollow logs, and some villagers swear they carry the souls of the cruel, reborn as buzzing torment.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_168.gif",
+   "recorded": true,
+   "levelRange": "4 - 6",
+   "alignment": "Neutral",
+   "health": "Low",
+   "defense": "Medium",
+   "resistance": "Low",
+   "scavenging": [
+    {
+     "name": "Mucky Chitin",
+     "pct": "27%"
+    },
+    {
+     "name": "Mucky Wing",
+     "pct": "18%"
+    },
+    {
+     "name": "Mucky Tendon",
+     "pct": "27%"
+    },
+    {
+     "name": "Mucky Fang",
+     "pct": "9%"
+    },
+    {
+     "name": "Mucky Eye",
+     "pct": "18%"
+    }
+   ]
+  },
+  {
+   "id": 169,
+   "name": "Leech Demon",
+   "type": "Creature",
+   "biome": "Stirge Lair",
+   "lore": "A bloated mass of wings and writhing hunger, the Leech Demon drips corruption with every beat of its putrid form. Blind, but not unknowing, it senses blood like a song and drains the soul with a kiss darker than death.",
+   "tab": "boss",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_169.gif",
+   "recorded": false
+  },
+  {
+   "id": 170,
+   "name": "Red Stirge",
+   "type": "Creature",
+   "biome": "Stirge Lair",
+   "lore": "The Red Stirge dives with needle-like precision, driven by instinct and insatiable thirst. Its sting is swift, its escape swifter. Even a single drop of blood draws the swarm. In their wake, only husks remain.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_170.gif",
+   "recorded": false
+  },
+  {
+   "id": 171,
+   "name": "Blue Stirge",
+   "type": "Creature",
+   "biome": "Stirge Lair",
+   "lore": "Cool as dusk and twice as silent, the Blue Stirge glides through the shadows, hungering for mana and marrow. Unlike its crimson kin, it feeds with eerie calm, its victims often don`t scream until it`s too late.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_171.gif",
+   "recorded": false
+  },
+  {
+   "id": 172,
+   "name": "Phoenix",
+   "type": "Creature",
+   "biome": "Dry Desert, Vulcanic Isle",
+   "lore": "Reborn in flame and song, the Phoenix arcs across the skies of ash and fire. Its burning feathers trail hope and annihilation alike. To witness its rebirth is a blessing. To fight it is a funeral.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_172.gif",
+   "recorded": false
+  },
+  {
+   "id": 173,
+   "name": "Hydra",
+   "type": "Creature",
+   "biome": "Swamp",
+   "lore": "Each head of the Hydra snarls with hunger, each bite festers with filth. Its swamp-born flesh resists blade and flame alike, and when one head falls, another grows. To fight it is to drown in jaws.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_173.gif",
+   "recorded": false
+  },
+  {
+   "id": 174,
+   "name": "Wisp Phantom",
+   "type": "Undead",
+   "biome": "Swamp",
+   "lore": "Flickering between worlds like a half-formed thought, the Wisp Phantom hums with spectral lightning. It does not speak, it stings, burns, and vanishes. Drawn to life, it drains it slowly, like a dream slipping into nightmare.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_174.gif",
+   "recorded": false
+  },
+  {
+   "id": 175,
+   "name": "Nomadic Cleric",
+   "type": "Humanoid",
+   "biome": "Dry Desert",
+   "lore": "Crossing endless sands under burning skies, the Nomadic Cleric heals the weary and curses the wicked. Light bends at her touch, and her steps leave behind hope, or holy judgment. Some say she speaks with angels. Others, with vengeance.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_175.gif",
+   "recorded": false
+  },
+  {
+   "id": 176,
+   "name": "Succubus",
+   "type": "Humanoid",
+   "biome": "Loveland, Love Island",
+   "lore": "From the perfumed ruins of Loveland rises the Succubus, a creature of temptation, wings, and wickedness. Cloaked in sensuality and sharpened claws, she whispers promises sweeter than salvation and feeds on longing turned to madness. Many follow her into the dark, none return whole.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_176.gif",
+   "recorded": false
+  },
+  {
+   "id": 177,
+   "name": "Zombie Horse",
+   "type": "Undead",
+   "biome": "Haunted Forest, Hollow Forest",
+   "lore": "What once carried knights now drags decay across haunted paths. Its hooves strike like hammers, its flesh peels with each movement. The Zombie Horse rides no one, but it tramples all.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_177.gif",
+   "recorded": false
+  },
+  {
+   "id": 178,
+   "name": "Frost Elemental",
+   "type": "Elemental",
+   "biome": "Magic Plains, Arctic Isle",
+   "lore": "A shard of winter`s will, the Frost Elemental dances through blizzards unseen. It strikes like sleet and drifts like snow, leaving frostbitten corpses behind. Though wordless, its presence whispers of stillness, of silence, of the end.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_178.gif",
+   "recorded": false
+  },
+  {
+   "id": 179,
+   "name": "Lightning Elemental",
+   "type": "Elemental",
+   "biome": "Magic Plains, Static Isle",
+   "lore": "A crackling embodiment of the storm, the Lightning Elemental dances across battlefields with blinding speed. Its form hums with power, and its strikes leave the scent of scorched hair and silence. It does not think, it discharges.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_179.gif",
+   "recorded": false
+  },
+  {
+   "id": 181,
+   "name": "Wizard",
+   "type": "Humanoid",
+   "biome": "Magic Plains, Arcane Isle",
+   "lore": "A scholar of destruction and secrets, the Wizard draws upon fire, frost, and lightning with unholy ease. Behind calm eyes lies centuries of forbidden knowledge, each spell a blade carved in arcane geometry. He speaks, and reality flinches.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_181.gif",
+   "recorded": false
+  },
+  {
+   "id": 182,
+   "name": "Arcane Imp",
+   "type": "Creature",
+   "biome": "Magic Plains, Arcane Isle",
+   "lore": "Born of residual magic and mischief, the Arcane Imp is a fluttering menace that toys with minds and mana. Though small, its arcane bolts hit like curses, and its laughter echoes long after the pain fades.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_182.gif",
+   "recorded": false
+  },
+  {
+   "id": 183,
+   "name": "Ogre Mage",
+   "type": "Humanoid",
+   "biome": "Magic Plains, Arcane Isle",
+   "lore": "An unholy blend of brawn and brilliance, the Ogre Mage levitates with surprising grace. Its arcane strikes are crude yet devastating, and its mind, though clouded, is honed by years of magical torment. Fear it for both its spells and its fists.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_183.gif",
+   "recorded": false
+  },
+  {
+   "id": 184,
+   "name": "Sphinx",
+   "type": "Creature",
+   "biome": "Temple, Elysian Isle",
+   "lore": "Guardian of riddles and judgment, the Sphinx perches atop forgotten temples, radiant and terrible. Her light blinds liars, and her claws punish the proud. Answer her truthfully, or be unmade by wisdom older than sin.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_184.gif",
+   "recorded": false
+  },
+  {
+   "id": 185,
+   "name": "Giant Vulture",
+   "type": "Animal",
+   "biome": "Red Desert",
+   "lore": "Drawn to death like a prophet to prophecy, the Giant Vulture circles battlefields and broken men. It feeds on the weak, the wounded, the forgotten. Its wings block out the sun, and its cry heralds defeat before the first blade falls.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_185.gif",
+   "recorded": false
+  },
+  {
+   "id": 186,
+   "name": "Berserker",
+   "type": "Humanoid",
+   "biome": "Taiga, Arctic Isle, Frostvault Isle",
+   "lore": "Howling across icy cliffs, the Berserker fights with frostbitten fury and burning wrath. Cold only fuels her rage, and her axe cracks both bone and stone. She feels no pain, only the joy of battle.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_186.gif",
+   "recorded": false
+  },
+  {
+   "id": 187,
+   "name": "Valkyrie",
+   "type": "Humanoid",
+   "biome": "Taiga",
+   "lore": "Wings of silver, heart of storm, the Valkyrie descends from mountain skies to judge the worthy. With enchanted axes and strikes of lightning, she carves her path through the unworthy. She does not die, she ascends.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_187.gif",
+   "recorded": false
+  },
+  {
+   "id": 188,
+   "name": "Yak",
+   "type": "Animal",
+   "biome": "Taiga, Frost Cave",
+   "lore": "Massive and unmoving as the mountain, the Yak shrugs off arrows like snowflakes. When angered, it charges with the weight of winter, horns low and heart wild. It feeds clans, crushes foes, and fears nothing.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_188.gif",
+   "recorded": false
+  },
+  {
+   "id": 189,
+   "name": "Baron, Manor Lord",
+   "type": "Humanoid",
+   "biome": "Urban",
+   "lore": "Refined in word and ruthless in deed, the Baron drinks not wine but blood. Cloaked in velvet shadows, he drains life with elegance, commanding the undead with a whisper. Titles mean little to him, only power endures.",
+   "tab": "boss",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_189.gif",
+   "recorded": false
+  },
+  {
+   "id": 190,
+   "name": "Yurk",
+   "type": "Humanoid",
+   "biome": "Urban",
+   "lore": "Massive and maddened, Yurk charges with the fury of a dozen doomed battles. He is blunt force incarnate, smashing through stone and soul alike. His laugh is a roar, and his mercy is extinction.",
+   "tab": "boss",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_190.gif",
+   "recorded": false
+  },
+  {
+   "id": 191,
+   "name": "Amosh, the Yeti",
+   "type": "Humanoid",
+   "biome": "Frost Cave",
+   "lore": "Frozen legend and snowy nightmare, Amosh commands the storms as much as the mountains. His strikes summon avalanches, his breath chokes the wind. He is winter made flesh, and winter always comes.",
+   "tab": "boss",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_191.gif",
+   "recorded": false
+  },
+  {
+   "id": 192,
+   "name": "Queen Acasia",
+   "type": "Plant",
+   "biome": "Dark Forest",
+   "lore": "Rooted in ruin and blooming with spite, Queen Acasia commands nature`s deadliest gifts. Her thorns pierce lies, her aroma kills kings. She does not grow, she conquers, one seedling at a time.",
+   "tab": "boss",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_192.gif",
+   "recorded": false
+  },
+  {
+   "id": 193,
+   "name": "Ooze",
+   "type": "Creature",
+   "biome": "Venom Isle",
+   "lore": "A pulsing mass of hunger and bile, the Ooze seeps through jungle ruins and poisoned swamps. It digests all in its path, flesh and metal alike, leaving only bones slick with acid. None know its origin, some say it was born from the tears of a forgotten god, weeping for the sins of alchemy.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_193.gif",
+   "recorded": false
+  },
+  {
+   "id": 195,
+   "name": "Venomous Viper",
+   "type": "Animal",
+   "biome": "Venom Isle, Spring Fields",
+   "lore": "Fangs curved like daggers and eyes as cold as night, the Venomous Viper coils through underbrush and shadow. One bite is death, two is suffering beyond the veil. It is worshiped in old cults as a symbol of divine punishment, striking not from anger, but from balance long broken.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_195.gif",
+   "recorded": false
+  },
+  {
+   "id": 197,
+   "name": "Ruin Guard",
+   "type": "Humanoid",
+   "biome": "Dry Desert",
+   "lore": "An ancient sentinel buried in shifting sands, the Ruin Guard was built to protect a kingdom that no longer exists. It knows no rest, no compromise. Its blades strike with the weight of history, and sorrow.",
+   "tab": "boss",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_197.gif",
+   "recorded": false
+  },
+  {
+   "id": 198,
+   "name": "Angry Egg",
+   "type": "Creature",
+   "biome": "Bunny Remote",
+   "lore": "Spawned from seasonal chaos, the Angry Egg is a yolky terror. Despite its comical form, it spits acidic yolk and claws with surprising rage. Those who laugh rarely laugh twice.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_198.gif",
+   "recorded": false
+  },
+  {
+   "id": 199,
+   "name": "Faery",
+   "type": "Creature",
+   "biome": "Coastal, Frozen Float",
+   "lore": "Wings aglow and eyes aglint with mischief, the Faery is both healer and hazard. It weaves light and shadow into curses, and charms the foolish into oblivion. Don`t follow the light, it dances on your grave.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_199.gif",
+   "recorded": false
+  },
+  {
+   "id": 200,
+   "name": "Wraith",
+   "type": "Undead",
+   "biome": "Sinister Isle",
+   "lore": "More absence than presence, the Wraith whispers through walls and dreams. Its touch chills the soul, and its cry steals courage. It is not death, it is what follows.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_200.gif",
+   "recorded": false
+  },
+  {
+   "id": 201,
+   "name": "Vine Sniper",
+   "type": "Humanoid",
+   "biome": "Rainforest, Ape Temple",
+   "lore": "Hidden among thick leaves, the Vine Sniper takes aim with venomous precision. Its shots pin the strong and paralyze the weak. Few notice it until the vines themselves begin to bleed.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_201.gif",
+   "recorded": false
+  },
+  {
+   "id": 202,
+   "name": "Luminous Plant",
+   "type": "Plant",
+   "biome": "Rainforest, Roots Isle",
+   "lore": "Glowing softly in the darkest underbrush, the Luminous Plant is no passive flora. It roots the unwary, blinds with radiant bursts, and feeds on panic. Not all that glows should be touched.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_202.gif",
+   "recorded": false
+  },
+  {
+   "id": 203,
+   "name": "Ape Brute",
+   "type": "Humanoid",
+   "biome": "Rainforest, Ape Temple",
+   "lore": "A primal force of muscle and instinct, the Ape Brute pounds the jungle into submission. It does not think, it reacts, smashing foes with wild rage and terrifying strength. It is fury unshaped.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_203.gif",
+   "recorded": false
+  },
+  {
+   "id": 204,
+   "name": "Light Elemental",
+   "type": "Elemental",
+   "biome": "Elysian Isle",
+   "lore": "Born from divine brilliance, the Light Elemental floats like a celestial flame. Its beams burn lies and shadows alike, and its touch is pure judgment. Few gaze upon it without trembling.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_204.gif",
+   "recorded": false
+  },
+  {
+   "id": 205,
+   "name": "Fire Elemental",
+   "type": "Elemental",
+   "biome": "Vulcanic Isle,  Vulcanic Underground",
+   "lore": "Blazing and uncontained, the Fire Elemental crackles with volatile fury. It dances through flame and ash, leaving ruin in its wake. To it, all things are fuel, especially fear.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_205.gif",
+   "recorded": false
+  },
+  {
+   "id": 206,
+   "name": "Valdor, Lord of Dawn",
+   "type": "Humanoid",
+   "biome": "Temple",
+   "lore": "A radiant titan forged of dawnlight and steel, Valdor leads with divine wrath. His hammer sanctifies through ruin, and his presence inspires awe, or annihilation. The sun rises where he walks, and never gently.",
+   "tab": "overlord",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_206.gif",
+   "recorded": false
+  },
+  {
+   "id": 207,
+   "name": "Thornweaver Itham",
+   "type": "Plant",
+   "biome": "Itham’s Heart",
+   "lore": "Twisting roots and whispers converge in Itham, a mind buried deep in soil and secrets. It binds light, thought, and flesh alike with vines sharpened by hatred. The forest does not forgive, and neither does he.",
+   "tab": "overlord",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_207.gif",
+   "recorded": false
+  },
+  {
+   "id": 208,
+   "name": "Thalassor, the Krakenlord",
+   "type": "Creature",
+   "biome": "Ghost Shore",
+   "lore": "Thalassor, born in the depths where no sun dares shine, commands the sea`s darkest secrets. Tentacles crush, curses drown, and his eyes glimmer with ancient malevolence. The ocean is not empty, it listens.",
+   "tab": "overlord",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_208.gif",
+   "recorded": false
+  },
+  {
+   "id": 209,
+   "name": "Zehrak, Herald of Storms",
+   "type": "Humanoid",
+   "biome": "Urban",
+   "lore": "Zehrak, Herald of Storms, lives in the House of Zehrak in World’s Guard. He was once a powerful guardian of the skies, but was cast down after defying the Stormfather. Now bound by lightning, he controls the storms with unstoppable force. His voice sounds like thunder, and his anger can tear the sky apart. Many come to the Stormspire seeking power but instead, they face his judgment.",
+   "tab": "overlord",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_209.gif",
+   "recorded": false
+  },
+  {
+   "id": 210,
+   "name": "Vulkaron, the Scorchbound",
+   "type": "Humanoid",
+   "biome": "Vulcanic Underground",
+   "lore": "Deep within the Red Desert lies the Dragons Eye, a mountain pulsing with ancient heat. From its heart rises Vulkaron the Scorchbound, a half-drake warlord cursed to burn for eternity by the flames that gave him life. Once a mortal tyrant, he merged with dragonfire in a desperate ritual to conquer death. Now, his molten breath scorches the dunes.",
+   "tab": "overlord",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_210.gif",
+   "recorded": false
+  },
+  {
+   "id": 211,
+   "name": "Glacierbane, the Icelord",
+   "type": "Creature",
+   "biome": "Frost Cave",
+   "lore": "This winged monolith descends from frozen peaks, bringing eternal winter in its wake. With hail, frost, and bone-chilling aura, Glacierbane freezes the battlefield into still death. You don`t fight Glacierbane, you endure it, if lucky.",
+   "tab": "overlord",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_211.gif",
+   "recorded": false
+  },
+  {
+   "id": 213,
+   "name": "Rust Monster",
+   "type": "Creature",
+   "biome": "Underground",
+   "lore": "A nightmare for blacksmiths and warriors alike, the Rust Monster`s claws corrode iron on contact. It thrives in the deep, gnawing away the past, one blade at a time.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_213.gif",
+   "recorded": false
+  },
+  {
+   "id": 214,
+   "name": "Phantom Miner",
+   "type": "Undead",
+   "biome": "Underground",
+   "lore": "Once a hearty soul of the mines, now a cursed phantom who haunts the tunnels with ghostly tools and endless thirst for ale. Don`t follow the sound of picks, you won`t return.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_214.gif",
+   "recorded": false
+  },
+  {
+   "id": 215,
+   "name": "Xorn",
+   "type": "Elemental",
+   "biome": "Underground",
+   "lore": "With stony hide and a hunger for metal, the Xorn slips through rock like fish through water. It doesn`t care what you`re holding, as long as it shines.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_215.gif",
+   "recorded": false
+  },
+  {
+   "id": 216,
+   "name": "Werebat",
+   "type": "Creature",
+   "biome": "Underground",
+   "lore": "A twisted fusion of rodent and horror, the Werebat stalks the shadows of the deep. Its screech heralds panic, and its wings slice the silence before the attack.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_216.gif",
+   "recorded": false
+  },
+  {
+   "id": 217,
+   "name": "Goblin Engineer",
+   "type": "Humanoid",
+   "biome": "Underground",
+   "lore": "Madness and metal meet in the Goblin Engineer. From unstable grenades to arcane fuses, it lives for explosions, especially yours.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_217.gif",
+   "recorded": false
+  },
+  {
+   "id": 218,
+   "name": "Ape King Goliathor",
+   "type": "Humanoid",
+   "biome": "Ape Temple",
+   "lore": "Crowned in thunder and fury, Goliathor is the jungle`s towering tyrant. Lightning crackles around his fists, and few survive to challenge his rule twice.",
+   "tab": "boss",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_218.gif",
+   "recorded": false
+  },
+  {
+   "id": 221,
+   "name": "Armored Ram",
+   "type": "Animal",
+   "biome": "Dark Boreal",
+   "lore": "Forged by nature and bred for battle, the Armored Ram shatters shields with brutal precision. Its headbutt isn`t just a strike, it`s a declaration.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_221.gif",
+   "recorded": false
+  },
+  {
+   "id": 222,
+   "name": "Dwarven Guard",
+   "type": "Humanoid",
+   "biome": "Dark Boreal",
+   "lore": "Stout as the mountains, the Dwarven Guard defends their dark strongholds with grim resolve. Their silent vigil ends only with steel, or stonefall.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_222.gif",
+   "recorded": false
+  },
+  {
+   "id": 223,
+   "name": "Dwarven Hunter",
+   "type": "Humanoid",
+   "biome": "Dark Boreal",
+   "lore": "Eyes sharp as obsidian and bolts swifter than thought, the Dwarven Hunter moves through shadow with deadly aim. Few hear the shot that ends them.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_223.gif",
+   "recorded": false
+  },
+  {
+   "id": 224,
+   "name": "Dwarven Caster",
+   "type": "Humanoid",
+   "biome": "Dark Boreal",
+   "lore": "Wielding runic fire from ancient lore, the Dwarven Caster sears enemies with a fury born in stone halls. Magic is not their gift, it is their legacy.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_224.gif",
+   "recorded": false
+  },
+  {
+   "id": 225,
+   "name": "Komodo Basilisk",
+   "type": "Creature",
+   "biome": "Dark Boreal",
+   "lore": "A venomous beast with ancient eyes, the Komodo Basilisk paralyzes with gaze and bite alike. Its scales glisten with silent menace.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_225.gif",
+   "recorded": false
+  },
+  {
+   "id": 226,
+   "name": "Warrior Dummy",
+   "type": "Humanoid",
+   "lore": "...",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_226.gif",
+   "recorded": false
+  },
+  {
+   "id": 227,
+   "name": "Caster Dummy",
+   "type": "Humanoid",
+   "lore": "...",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_227.gif",
+   "recorded": false
+  },
+  {
+   "id": 228,
+   "name": "Tank Dummy",
+   "type": "Humanoid",
+   "lore": "...",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_228.gif",
+   "recorded": false
+  },
+  {
+   "id": 229,
+   "name": "Grimble",
+   "type": "Humanoid",
+   "biome": "Grimble`s Camp",
+   "lore": "Grimble is not a myth, but a madness made flesh. Shadow pulses from its hide, and silence follows its tread. Its voice? A memory best forgotten.",
+   "tab": "boss",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_229.gif",
+   "recorded": false
+  },
+  {
+   "id": 230,
+   "name": "Loot Goblin",
+   "type": "Humanoid",
+   "biome": "Loot Bay",
+   "lore": "Quick hands, quicker feet, and a sack full of stolen dreams. The Loot Goblin runs from danger, unless treasure is involved.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_230.gif",
+   "recorded": false
+  },
+  {
+   "id": 231,
+   "name": "Ghrorak",
+   "type": "Construct",
+   "biome": "Underground",
+   "lore": "A juggernaut of stone and hate, Ghrorak was built for destruction. Its steps crack earth, and its fists make mountains tremble.",
+   "tab": "boss",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_231.gif",
+   "recorded": false
+  },
+  {
+   "id": 235,
+   "name": "Jacked-o-Lantern",
+   "type": "Undead",
+   "lore": "A blazing specter of autumn wrath, Jacked-o-Lantern stalks the night with flames in its skull and vengeance in its steps. Its lanterns burn more than flesh, they ignite fear itself. It is Halloween made manifest.",
+   "tab": "overlord",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_235.gif",
+   "recorded": false
+  },
+  {
+   "id": 237,
+   "name": "Snow Rabbit",
+   "type": "Animal",
+   "biome": "Frozen Float",
+   "lore": "Gentle as falling snow, yet swift and sharp when cornered, the Snow Rabbit bounds through frost with uncanny awareness. A wintery whisper in the woods.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_237.gif",
+   "recorded": false
+  },
+  {
+   "id": 238,
+   "name": "Jack",
+   "type": "Humanoid",
+   "lore": "Wielding blades forged in folklore and a grin carved from nightmares, Jack slashes through reality with festive violence. He always comes back.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_238.gif",
+   "recorded": false
+  },
+  {
+   "id": 239,
+   "name": "Cute Bunny",
+   "type": "Animal",
+   "biome": "Frozen Float, Bunny Remote",
+   "lore": "With twitching nose and twinkling eyes, the Cute Bunny deceives with innocence. But its bite is real, and its loyalty fierce, for those it chooses.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_239.gif",
+   "recorded": false
+  },
+  {
+   "id": 240,
+   "name": "Tiny Spider",
+   "type": "Insect",
+   "lore": "Lurking in bark hollows and dew-soaked webs, the Woodland Spider ambushes with sharp instinct and leaping ferocity. Its fangs pierce deep, not to poison, but to silence.",
+   "tab": "other",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_240.gif",
+   "recorded": false
+  },
+  {
+   "id": 241,
+   "name": "Hydraling",
+   "type": "Creature",
+   "lore": "Reborn from a head of the Hydra, festered with filth. Its swamp-born flesh resists blade and flame alike, and when one head falls, another grows. To fight it is to drown in jaws.",
+   "tab": "other",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_241.gif",
+   "recorded": false
+  },
+  {
+   "id": 242,
+   "name": "Ashborn",
+   "type": "Creature",
+   "lore": "Reborn in flame and song, the Phoenix arcs across the skies of ash and fire. Its burning feathers trail hope and annihilation alike. To witness its rebirth is a blessing. To fight it is a funeral.",
+   "tab": "other",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_242.gif",
+   "recorded": false
+  },
+  {
+   "id": 243,
+   "name": "Medusa",
+   "type": "Humanoid",
+   "biome": "Underground",
+   "lore": "Once a beauty, now a nightmare, Medusa stalks the underworld with eyes that turn flesh to stone. Her serpents hiss secrets older than kings, and her touch rots the brave. She is not hunted, she is remembered by statues.",
+   "tab": "boss",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_243.gif",
+   "recorded": false
+  },
+  {
+   "id": 244,
+   "name": "Seafallen Reaver",
+   "type": "Humanoid",
+   "biome": "Coastal",
+   "lore": "A guardian of the reefs turned savage by the creeping corruption of Chaos. His trident once defended the shoals of Shandor, now it hunts the living with relentless fury. Barnacles cling to his armor, and dark tides follow his charge. Where he walks, the surf runs red.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_244.gif",
+   "recorded": false
+  },
+  {
+   "id": 245,
+   "name": "Seafallen Stalker",
+   "type": "Humanoid",
+   "biome": "Coastal",
+   "lore": "Silent among the jagged rocks and mist-covered shores, the Stalker watches with eyes clouded by Chaos. Once a patient hunter of the sea’s bounty, now he looses arrows dipped in abyssal rot. Many sailors swear the waves themselves guide his aim. Few live long enough to swear it twice.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_245.gif",
+   "recorded": false
+  },
+  {
+   "id": 246,
+   "name": "Seafallen Oracle",
+   "type": "Humanoid",
+   "biome": "Coastal",
+   "lore": "Once a tide-whisperer who read the will of the ocean in moonlit currents. Now the Chaos coils through her mind like a storm beneath the waves. She chants to drowned gods and conjures tides that should not exist. Listen too long to her whispers, and the sea may begin whispering back.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_246.gif",
+   "recorded": false
+  },
+  {
+   "id": 247,
+   "name": "Grell",
+   "type": "Creature",
+   "biome": "Underground",
+   "lore": "...",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_247.gif",
+   "recorded": false
+  },
+  {
+   "id": 248,
+   "name": "Stone Dragon",
+   "type": "Creature",
+   "biome": "Mountain, Rocky Ridge",
+   "lore": "...",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_248.gif",
+   "recorded": false
+  },
+  {
+   "id": 250,
+   "name": "Mountain Giant",
+   "type": "Humanoid",
+   "biome": "Mountain, Vulcanic Underground, Rocky Ridge",
+   "lore": "...",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_250.gif",
+   "recorded": false
+  },
+  {
+   "id": 251,
+   "name": "Terramancer",
+   "type": "Humanoid",
+   "biome": "Mountain, Vulcanic Underground",
+   "lore": "...",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_251.gif",
+   "recorded": false
+  },
+  {
+   "id": 252,
+   "name": "Drazhul, The Demon Smith",
+   "type": "Humanoid",
+   "biome": "Vulcanic Underground",
+   "lore": "...",
+   "tab": "boss",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_252.gif",
+   "recorded": false
+  },
+  {
+   "id": 253,
+   "name": "Piñata",
+   "type": "Construct",
+   "lore": "A wandering bundle of color and rattling treasures, stitched together by forgotten festival magic. It does not attack, nor does it flee, simply swaying as if waiting for the blow that will break it open. Those who shatter its brittle shell are often rewarded with a rain of curious prizes.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_253.gif",
+   "recorded": false
+  },
+  {
+   "id": 255,
+   "name": "Derro Miner",
+   "type": "Humanoid",
+   "biome": "Underground",
+   "lore": "Once proud dwarven prospectors of the Ruahnia mountain range, the Derro Miner followed veins of precious ore into the Moldrir Depths and never truly returned. Years beneath the earth twisted their bodies and minds, leaving them obsessed with digging ever deeper for treasures no sane dwarf would seek. Their picks now strike stone, bone, and flesh with the same tireless hunger.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_255.gif",
+   "recorded": false
+  },
+  {
+   "id": 256,
+   "name": "Derro Stalker",
+   "type": "Humanoid",
+   "biome": "Underground",
+   "lore": "Born from the darkness between forgotten tunnels, the Derro Stalker has learned that silence is a weapon. It moves through the Moldrir Depths unseen, watching intruders for hours before striking from the shadows. To a Stalker, every traveler is either prey, a threat, or a source of something worth taking.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_256.gif",
+   "recorded": false
+  },
+  {
+   "id": 257,
+   "name": "Derro Pitwarden",
+   "type": "Humanoid",
+   "biome": "Underground",
+   "lore": "The Pitwarden stands guard over the deepest mines and forbidden passages of the Derro. Once responsible for protecting the miners from cave-ins and predators, these brutal wardens now serve something far more sinister beneath Moldrir. Clad in scavenged armor and driven by madness, they ensure that few enter the depths and fewer ever leave them.",
+   "tab": "normal",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_257.gif",
+   "recorded": false
+  },
+  {
+   "id": 261,
+   "name": "Mutant Plant",
+   "type": "Plant",
+   "biome": "Arcane Isle",
+   "tab": "boss",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_261.gif",
+   "recorded": false
+  }
+ ]
+}

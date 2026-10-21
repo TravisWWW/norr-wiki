@@ -1,28 +1,53 @@
 ---
 title: 怪物图鉴
-description: 官方 1.0 Wiki 敌人清单（132 种）：类型、等级、生物群系与拾荒掉落。
+description: 游戏内 Inspect 实测的 1.0 敌人清单（199 种）：类型、等级、群系、防护、拾荒与掉落，含背景故事。
 gameVersion: "1.0"
-verifiedDate: 2026-10-16
-versionStatus: "1.0-official"
+verifiedDate: 2026-10-22
+versionStatus: "mixed"
 sources:
+  - type: live
+    reference: 游戏内 Inspect（/modal/inspect_enemy）
+    url: https://www.norroth.com/
+    date: "2026-10-22"
+    nature: 实测
   - type: official
     reference: 官方 1.0 Wiki Enemies（p/53）
     url: https://wiki.norroth.com/p/53/enemies
     date: "2026-10-16"
 ---
 
+import BestiaryTableLive from '../../../components/BestiaryTableLive.astro';
 import BestiaryTable10 from '../../../components/BestiaryTable10.astro';
 
-数据来自**官方 1.0 Wiki 的 Enemies 页**（`wiki.norroth.com/p/53/enemies`，2026-10-16 抓取），共 **132** 种敌人，含 **类型 / 等级范围 / 生物群系 / 拾荒掉落**。可按名称、类型、生物群系、等级筛选。
+本表在 **2026-10-22** 直接从 **1.0 正式服游戏内 Inspect**（`/modal/inspect_enemy?id=N`）逐条读取，共 **199** 种敌人，比官方 1.0 Wiki（132 种）与 EA 版清单（141 种）都更完整。每条含 **类型 / 群系 / 背景故事**，已记录的敌人另有 **等级范围 / 阵营 / 生命·防御·抗性 / 拾荒掉落 / 掉落**。
+
+<BestiaryTableLive />
+
+## Inspect 的分层解锁机制
+
+游戏内的说明信息按**击杀次数**分层解锁，本表如实反映当前账号的记录状态：
+
+| 击杀次数 | 解锁内容 |
+|---|---|
+| **0 次**（未记录） | 名称、类型、群系、背景故事 |
+| **≥1 次**（已记录） | 等级范围、阵营、特殊能力、生命 / 防御 / 抗性（**定性评级** Low / Medium / High）、拾荒掉落（带百分比）、掉落（带百分比） |
+| **≥10 次** | 技能列表 |
+| **≥20 次** | 34 项**数值属性**（基础伤害、各系抗性、最大生命等） |
+
+> 生命 / 防御 / 抗性 是游戏给出的**定性标签**，不是伤害数值或击杀胜率；数值属性需击杀 20 次后才在 Stats 页给出，并可按遭遇等级（2–10）用公式换算。
+
+## 与官方 1.0 Wiki / EA 版的差异
+
+- 游戏内实测 **199** 种；官方 1.0 Wiki 收录 **132** 种，EA 版清单 **141** 种。
+- 实测包含 **163 普通 / 22 Boss / 8 Overlord**，另有 **6** 个未出现在图鉴界面的条目（如 Death Beetle、Real Medusa、Goblin King 等，可能是未启用或特殊敌人）。
+- 官方 1.0 Wiki 的等级、拾荒类别在游戏内尚未记录的敌人上仍可参考，本表以 **†** 标注这些回退字段。
+- 背景故事（lore）为游戏内文本，官方 1.0 Wiki 与 EA 清单均未收录。
+
+## 官方 1.0 Wiki 原始清单（132 种）
+
+以下为官方 1.0 Wiki Enemies 页（`wiki.norroth.com/p/53/enemies`，2026-10-16 抓取）的原始口径，仅含 **类型 / 等级范围 / 生物群系 / 拾荒掉落**，供与上表交叉核对。
 
 <BestiaryTable10 />
-
-## 与 EA 版的差异（1.0 官方口径）
-
-- 官方 1.0 共 **132** 种敌人；EA 版为 **141** 种。
-- **新增 16 种**：Cute Bunny、Derro Miner / Pitwarden / Stalker、Girtablilu、Grell、Mountain Giant、Mummy、Roc、Sand Golem、Sandworm、Seafallen Oracle / Reaver / Stalker、Stone Dragon、Terramancer。
-- **移除 25 种**：Cockatrice、Drow、Forest Guardian、Ghost Pirate、Goblin Engineer / Pyro / Soldier、Knight、Light Elemental、Lizardman、Miner、Mutated Lizardman、Nomadic Cleric、Peasant、Phantom Miner、Phoenix、Purifier、Skeleton Archer / Mage / Warrior、Sphinx、Troglodyte、Valkyrie、Wraith、Zombie Pirate。
-- 另有 **30** 种等级区间发生变化。
 
 ## 精英前缀与 Boss
 
@@ -34,7 +59,10 @@ import BestiaryTable10 from '../../../components/BestiaryTable10.astro';
 - [地图清单](/norr-wiki/world/maps/)
 - [副本与 Boss](/norr-wiki/quests/dungeons/)
 - [战斗机制](/norr-wiki/combat/mechanics/)
+- [图鉴 Codex](/norr-wiki/quests/codices/)
 
 ## 资料来源
 
+- 游戏内 Inspect（`/modal/inspect_enemy`），2026-10-22 实测，199 种。
 - 官方 1.0 Wiki：Enemies（/p/53）、Elite Prefixes（/p/174）、Bosses（/p/56），2026-10-16 抓取。
+- 等级与拾荒的回退字段来自官方 1.0 Wiki 与既有 EA 版清单，已在上表标注。

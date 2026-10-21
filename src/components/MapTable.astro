@@ -1,9 +1,13 @@
 ---
 import mapdb from '../data/maps.json';
 import bestiary from '../data/bestiary.json';
+import liveBestiary from '../data/bestiary-live.json';
 import { entityPath } from '../lib/database.mjs';
 const maps = Object.values(mapdb.maps).filter((m) => m && m.name);
-const bestiaryNames = new Set(bestiary.filter((b) => b && b.name).map((b) => b.name));
+const bestiaryNames = new Set([
+  ...bestiary.filter((b) => b && b.name).map((b) => b.name),
+  ...liveBestiary.enemies.filter((b) => b && b.name).map((b) => b.name),
+]);
 const biomes = [...new Set(maps.map((m) => m.biome).filter(Boolean))].sort();
 const types = [...new Set(maps.map((m) => m.type).filter(Boolean))].sort();
 const levels = [

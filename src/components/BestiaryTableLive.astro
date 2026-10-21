@@ -1,0 +1,166 @@
+---
+import live from '../data/bestiary-live.json';
+import off10 from '../data/bestiary-1.0.json';
+import ea from '../data/bestiary.json';
+
+const off10ByName = new Map(off10.filter((m) => m && m.name).map((m) => [m.name, m]));
+const eaById = new Map(ea.filter((m) => m && m.name).map((m) => [String(m.id), m]));
+
+const tabLabel = { normal: '', boss: 'Boss', overlord: 'Overlord', other: '其他' };
+const monsters = live.enemies.filter((m) => m && m.name);
+const types = [...new Set(monsters.map((m) => m.type).filter(Boolean))].sort();
+const biomes = [...new Set(monsters.flatMap((m) => (m.biome || '').split(',').map((s) => s.trim())).filter(Boolean))].sort();
+
+function parseRange(s) { const m = String(s || '').match(/(\d+)\s*-\s*(\d+)/); return m ? [+m[1], +m[2]] : [null, null]; }
+
+const rows = monsters.map((m) => {
+  const o = off10ByName.get(m.name);
+  const e = eaById.get(String(m.id));
+  const levelRange = m.levelRange || (o && o.levelRange) || (e && e.levelRange) || '';
+  const levelSource = m.levelRange ? 'live' : (o && o.levelRange) ? 'official' : (e && e.levelRange) ? 'ea' : '';
+  const scavLive = (m.scavenging || []).map((s) => `${s.name} ${s.pct}`);
+  const scavFallback = (o && o.scavenging) || (e && e.scavenging) || [];
+  const scav = scavLive.length ? scavLive : scavFallback;
+  const scavSource = scavLive.length ? 'live' : scavFallback.length ? 'fallback' : '';
+  const drops = (m.drops || []).map((s) => `${s.name} ${s.pct}`);
+  const [lo, hi] = parseRange(levelRange);
+  return {
+    id: m.id, name: m.name, type: m.type || '', biome: m.biome || '', tab: m.tab || 'other',
+    levelRange, levelSource, lo: lo == null ? '' : lo, hi: hi == null ? '' : hi,
+    health: m.health || '', defense: m.defense || '', resistance: m.resistance || '',
+    alignment: m.alignment || '', specials: m.specials || '',
+    recorded: !!m.recorded, lore: m.lore || '',
+    scav, scavSource, drops,
+    skills: (m.skills || []).map((s) => `${s.name} (Lv${s.level})`),
+    stats: m.stats || null,
+    icon: m.icon || '',
+  };
+});
+const recordedCount = rows.filter((r) => r.recorded).length;
+const withLore = rows.filter((r) => r.lore).length;
+const withStats = rows.filter((r) => r.stats).length;
+---
+<div class="nr-toolbar">
+  <input id="bl-q" type="search" placeholder="搜索：怪物名 / 类型 / 群系 / 拾荒 / 掉落…" />
+  <select id="bl-type"><option value="">全部类型</option>{types.map((t) => <option value={t}>{t}</option>)}</select>
+  <select id="bl-biome"><option value="">全部群系</option>{biomes.map((b) => <option value={b}>{b}</option>)}</select>
+  <select id="bl-tab"><option value="">全部类别</option><option value="normal">普通</option><option value="boss">Boss</option><option value="overlord">Overlord</option><option value="other">其他</option></select>
+  <select id="bl-lvl"><option value="">全部等级</option><option value="1-9">Lv1–9</option><option value="10-19">Lv10–19</option><option value="20-29">Lv20–29</option><option value="30-39">Lv30–39</option><option value="40-999">Lv40+</option></select>
+  <label class="nr-check"><input type="checkbox" id="bl-rec" /> 只看已记录</label>
+  <span class="nr-count" id="bl-count"></span>
+</div>
+<table id="bl-table">
+  <thead>
+    <tr><th>名称</th><th>类型</th><th>等级</th><th>群系</th><th>生命/防御/抗性</th><th>拾荒</th><th>掉落</th></tr>
+  </thead>
+  <tbody>
+    {rows.map((m) => (
+      <>
+        <tr class="bl-row" data-name={(m.name || '').toLowerCase()} data-type={m.type} data-biome={m.biome} data-tab={m.tab} data-rec={m.recorded ? 1 : 0} data-lo={m.lo} data-hi={m.hi}>
+          <td>
+            <button type="button" class="bl-name" aria-expanded="false">{m.name}</button>
+            {m.tab === 'boss' ? <span class="bl-tag bl-tag-boss">Boss</span> : null}
+            {m.tab === 'overlord' ? <span class="bl-tag bl-tag-over">Overlord</span> : null}
+            {m.tab === 'other' ? <span class="bl-tag bl-tag-other">其他</span> : null}
+          </td>
+          <td>{m.type || '—'}</td>
+          <td>{m.levelRange || '—'}{m.levelSource === 'official' ? <span class="bl-src" title="等级来自官方 1.0 Wiki（游戏内尚未记录）">†</span> : null}{m.levelSource === 'ea' ? <span class="bl-src" title="等级来自 EA 版清单（游戏内尚未记录）">‡</span> : null}</td>
+          <td>{m.biome || '—'}</td>
+          <td>{m.recorded ? <>{m.health || '—'} / {m.defense || '—'} / {m.resistance || '—'}</> : <span class="bl-plain">未记录</span>}</td>
+          <td>{m.scav.length ? m.scav.join('、') : '—'}{m.scavSource === 'fallback' ? <span class="bl-src" title="拾荒类别来自官方 1.0 Wiki / EA 清单，无概率">†</span> : null}</td>
+          <td>{m.drops.length ? m.drops.join('、') : '—'}</td>
+        </tr>
+        <tr class="bl-detail" hidden>
+          <td colspan="7">
+            <div class="bl-dgrid">
+              <div><b>类别</b>：{m.tab === 'normal' ? '普通' : tabLabel[m.tab]}</div>
+              <div><b>阵营</b>：{m.alignment || '未记录'}</div>
+              <div><b>特殊能力</b>：{m.specials ? (m.specials === '-' ? 'Inspect 未列出' : m.specials) : '未记录'}</div>
+              <div><b>解锁状态</b>：{m.recorded ? '已记录（等级 / 防护 / 掉落已解锁）' : '未记录（击杀 1 次解锁等级、防护与掉落）'}</div>
+            </div>
+            {m.lore ? <p class="bl-lore">{m.lore}</p> : <p class="bl-plain">该条目暂无背景故事文本。</p>}
+            {m.skills.length ? <p><b>技能</b>：{m.skills.join('、')}</p> : <p class="bl-plain">技能未解锁（击杀 10 次解锁）。</p>}
+            {m.stats ? <div class="bl-stats"><b>基础属性</b>（遭遇等级 2–10 按公式换算）<div class="bl-statgrid">{Object.entries(m.stats).map(([k, v]) => <span class="bl-chip">{k} {v}</span>)}</div></div> : <p class="bl-plain">数值属性未解锁（击杀 20 次解锁）。</p>}
+            <p class="bl-links"><a href={`${(import.meta.env.BASE_URL || '/').replace(/\/$/, '')}/world/maps/?q=${encodeURIComponent(m.name)}`}>在地图清单中查它出现的地图 →</a></p>
+          </td>
+        </tr>
+      </>
+    ))}
+  </tbody>
+</table>
+<p class="nr-note">共 <b>{rows.length}</b> 种（游戏内 Inspect 实测）。其中 <b>{recordedCount}</b> 种已记录、<b>{withLore}</b> 种有背景故事、<b>{withStats}</b> 种解锁了数值属性。<span class="bl-src">†</span> 表示该字段来自官方 1.0 Wiki / EA 清单（游戏内尚未记录）。点怪物名展开详情。</p>
+
+<script>
+  const q = document.getElementById('bl-q');
+  const type = document.getElementById('bl-type');
+  const biome = document.getElementById('bl-biome');
+  const tab = document.getElementById('bl-tab');
+  const lvl = document.getElementById('bl-lvl');
+  const rec = document.getElementById('bl-rec');
+  const tbody = document.querySelector('#bl-table tbody');
+  const rows = [...tbody.querySelectorAll('.bl-row')];
+  const count = document.getElementById('bl-count');
+  function overlap(lo, hi, range) { if (!range) return true; if (lo === '' || hi === '') return false; const [a, b] = range.split('-').map(Number); return +lo <= b && +hi >= a; }
+  function apply() {
+    const s = (q.value || '').toLowerCase().trim();
+    const t = type.value, b = biome.value, tb = tab.value, l = lvl.value;
+    let n = 0;
+    for (const r of rows) {
+      const ok = (!s || r.textContent.toLowerCase().includes(s))
+        && (!t || r.dataset.type === t)
+        && (!b || (r.dataset.biome || '').includes(b))
+        && (!tb || r.dataset.tab === tb)
+        && (!rec.checked || r.dataset.rec === '1')
+        && overlap(r.dataset.lo, r.dataset.hi, l);
+      r.style.display = ok ? '' : 'none';
+      const d = r.nextElementSibling;
+      if (d && d.classList.contains('bl-detail') && !ok) d.hidden = true;
+      if (ok) n++;
+    }
+    count.textContent = n + ' 种';
+  }
+  tbody.addEventListener('click', (e) => {
+    const btn = e.target.closest('.bl-name');
+    if (!btn) return;
+    const row = btn.closest('.bl-row');
+    const d = row.nextElementSibling;
+    if (!d || !d.classList.contains('bl-detail')) return;
+    d.hidden = !d.hidden;
+    btn.setAttribute('aria-expanded', d.hidden ? 'false' : 'true');
+  });
+  q.addEventListener('input', apply);
+  type.addEventListener('change', apply);
+  biome.addEventListener('change', apply);
+  tab.addEventListener('change', apply);
+  lvl.addEventListener('change', apply);
+  rec.addEventListener('change', apply);
+  const params = new URLSearchParams(location.search);
+  if (params.get('q')) q.value = params.get('q');
+  if (params.get('mon')) q.value = params.get('mon');
+  if (params.get('type')) type.value = params.get('type');
+  if (params.get('biome')) biome.value = params.get('biome');
+  if (params.get('tab')) tab.value = params.get('tab');
+  apply();
+  if (params.get('mon')) {
+    const target = params.get('mon').toLowerCase();
+    const hit = rows.find((r) => r.dataset.name === target);
+    if (hit) { const d = hit.nextElementSibling; if (d && d.classList.contains('bl-detail')) { d.hidden = false; const b2 = hit.querySelector('.bl-name'); if (b2) b2.setAttribute('aria-expanded', 'true'); } }
+  }
+</script>
+
+<style>
+  .bl-tag { font-size: .68rem; border-radius: 3px; padding: 0 .3rem; margin-left: .3rem; border: 1px solid var(--nr-hair); color: var(--nr-text-soft); }
+  .bl-tag-boss { color: #c58bff; border-color: #6b4a99; }
+  .bl-tag-over { color: var(--nr-gold); border-color: var(--nr-gold-dim); }
+  .bl-src { color: var(--nr-gold); font-size: .72rem; margin-left: .15rem; }
+  .nr-note { color: var(--nr-dim); font-size: .8rem; margin-top: .5rem; }
+  .bl-plain { color: var(--nr-dim); }
+  .bl-name { background: none; border: 0; color: var(--nr-text); font: inherit; font-weight: 600; cursor: pointer; padding: 0; text-align: left; }
+  .bl-name:hover { color: var(--nr-gold); }
+  .bl-detail td { background: var(--nr-bg); }
+  .bl-dgrid { display: grid; gap: .3rem; font-size: .86rem; margin-bottom: .5rem; }
+  .bl-lore { font-style: italic; color: var(--nr-text-soft); border-left: 2px solid var(--nr-hair); padding-left: .7rem; }
+  .bl-statgrid { display: flex; flex-wrap: wrap; gap: .25rem; margin-top: .3rem; }
+  .bl-chip { border: 1px solid var(--nr-hair); background: var(--nr-panel-2); color: var(--nr-text-soft); border-radius: 4px; padding: .05rem .4rem; font-size: .76rem; }
+  .bl-links { font-size: .85rem; }
+</style>
