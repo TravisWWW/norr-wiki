@@ -1,3 +1,6 @@
+# 临时文件
+tmp/
+
 # build output
 dist/
 # generated types
@@ -19,6 +22,9 @@ pnpm-debug.log*
 
 # macOS-specific files
 .DS_Store
+
+# 社区令牌（由 CI 从 Secret 生成，绝不入库 —— GitHub 会拦/吊销公开仓库里的 PAT）
+public/norroth-gh-token.txt
 
 # 本地未发布存档（个人研究日志，不入库）
 _archive/

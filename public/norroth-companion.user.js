@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.90
+// @version      2.6.91
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -184,20 +184,28 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.90';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
+  const SCRIPT_VER = '2.6.91';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
      唯一可靠的做法就是让它只够得着一个纯数据仓库 —— 这样它碰不到 norr-wiki，
      也碰不到 TravisWWW 下任何其它项目（尤其是共用 traviswww.github.io 同源域名的 Pages）。 */
-  var GH_REPO = 'TravisWWW/norr-bestiary';
+  var GH_REPO = 'TravisWWW/nor-database';
   var GH_BRANCH = 'main';
   var GH_CONTRIB_DIR = 'contrib';
   var GH_TOKEN_KEY = 'norroth_gh_token';
-  /* ★ 内置「社区令牌」：细粒度 PAT，只对上面这个数据仓库有 Contents: Read and write。
-     因为够不到其它任何东西，所以可以随脚本公开分发 —— 用户什么都不用填。
-     留空则退回「用户自填令牌 / 手动下载上传」。 */
+  /* ★ 社区令牌【不写进脚本】—— GitHub 会拦截（push protection）甚至吊销提交进公开仓库的 PAT。
+     改由 CI 从仓库 Secret 生成一个纯文本文件放到 Pages 上，脚本运行时拉取（带缓存）。
+     好处：令牌不进 git、不会被 secret scanning 拦；轮换只要改 Secret 重新部署，不用发新版脚本。 */
   var GH_COMMUNITY_TOKEN = '';
+  var GH_TOKEN_URL = '';
+  var _ghTokLoaded = false;
+
+  /* 通知 norr-wiki 立刻合并（尽力而为；需要该令牌对 norr-wiki 有 Actions: write。
+     没有也不影响 —— norr-wiki 每 5 分钟会自己拉一次兜底）。 */
+  var GH_WIKI_REPO = 'TravisWWW/norr-wiki';
+  var GH_WIKI_BRANCH = 'main';
+  var GH_WIKI_MERGE_WF = 'bestiary-merge.yml';
   /* ★ v2.6.77：在线更新。
      脚本托管在 GitHub Pages（和中文 Wiki 同一个仓库 / 同一次部署），元数据块里的
      @updateURL / @downloadURL 都指向下面这个地址 —— Tampermonkey 会按自己的周期
@@ -7393,7 +7401,7 @@
 
           <div class="divblock_dark" style="margin-top:4px">
             <div class="nr-srow">
-              <span class="nr-sl" style="flex:none" title="把你的图鉴记录上传到公共图鉴数据仓库（TravisWWW/norr-bestiary），norr-wiki 会自动拉取并并入唯一一份权威图鉴文档，所有用小伴侣的人共享同一份数据。内置了社区令牌，正常情况下无需填写任何东西。">图鉴同步</span>
+              <span class="nr-sl" style="flex:none" title="把你的图鉴记录上传到公共图鉴数据仓库（TravisWWW/nor-database），norr-wiki 会自动拉取并并入唯一一份权威图鉴文档，所有用小伴侣的人共享同一份数据。内置了社区令牌，正常情况下无需填写任何东西。">图鉴同步</span>
               <button class="mini" id="nr-bestsync" type="button" style="flex:1" title="扫描并上传到公共图鉴">同步到公共图鉴</button>
             </div>
             <div class="nr-srow" style="margin-top:4px">
@@ -7872,14 +7880,19 @@
     if (ghTokEl) ghTokEl.value = ghUserToken();
     (function () {
       const s0 = panel.querySelector('#nr-bestsyncstate');
-      if (s0) s0.textContent = GH_COMMUNITY_TOKEN ? '点「同步到公共图鉴」即可（无需填令牌）' : '未内置令牌：可填自己的令牌，或点按钮手动上传';
+      if (!s0) return;
+      s0.textContent = '点「同步到公共图鉴」';
+      loadCommunityToken().then(function () {
+        if (!s0.isConnected) return;
+        s0.textContent = GH_COMMUNITY_TOKEN ? '点「同步到公共图鉴」即可（无需填令牌）' : '未配置社区令牌：可填自己的令牌，或点按钮手动上传';
+      });
     })();
     const ghTokSaveEl = panel.querySelector('#nr-ghtokensave');
     if (ghTokSaveEl) ghTokSaveEl.addEventListener('click', function () {
       const v = ((ghTokEl && ghTokEl.value) || '').trim();
       setGhToken(v);
       const s = panel.querySelector('#nr-bestsyncstate');
-      if (s) s.textContent = v ? '已保存令牌（仅本机，将覆盖内置令牌）' : (GH_COMMUNITY_TOKEN ? '已清除，改用内置社区令牌' : '已清除令牌');
+      if (s) s.textContent = v ? '已保存令牌（仅本机，将覆盖社区令牌）' : (GH_COMMUNITY_TOKEN ? '已清除，改用社区令牌' : '已清除令牌');
     });
     // 详细统计：点标题栏展开/收起，点「清空」清零
     const detbar = panel.querySelector('#nr-detbar');
@@ -10494,7 +10507,18 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
      令牌只存本机 localStorage，不进配置、不随导出泄漏。 */
 
   function ghUserToken() { try { return localStorage.getItem(GH_TOKEN_KEY) || ''; } catch (e) { return ''; } }
-  function ghToken() { return ghUserToken() || GH_COMMUNITY_TOKEN; }
+  function ghCommunityToken() { return GH_COMMUNITY_TOKEN; }
+  async function loadCommunityToken() {
+    if (_ghTokLoaded) return GH_COMMUNITY_TOKEN;
+    _ghTokLoaded = true;
+    try {
+      if (!GH_TOKEN_URL) GH_TOKEN_URL = UPD_BASE + 'norroth-gh-token.txt';
+      const r = await fetch(GH_TOKEN_URL, { cache: 'no-store' });
+      if (r.ok) GH_COMMUNITY_TOKEN = (await r.text()).trim();
+    } catch (e) { /* ignore */ }
+    return GH_COMMUNITY_TOKEN;
+  }
+  async function ghToken() { return ghUserToken() || await loadCommunityToken(); }
   function setGhToken(v) { try { if (v) localStorage.setItem(GH_TOKEN_KEY, v); else localStorage.removeItem(GH_TOKEN_KEY); } catch (e) { /* ignore */ } }
 
   function b64utf8(str) {
@@ -10553,7 +10577,7 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
       const fname = 'char-' + (payload.meta.charId || 'unknown') + '.json';
       const fpath = GH_CONTRIB_DIR + '/' + fname;
       const text = JSON.stringify(payload, null, 1);
-      const token = ghToken();
+      const token = await ghToken();
       if (token) {
         say('上传中… ' + fname);
         let sha = null;
@@ -10564,8 +10588,14 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
         const body = { message: '图鉴贡献：' + payload.meta.char + '（' + payload.meta.recorded + '/' + payload.meta.count + '）', content: b64utf8(text), branch: GH_BRANCH };
         if (sha) body.sha = sha;
         await ghApi('PUT', '/repos/' + GH_REPO + '/contents/' + fpath, body, token);
+        /* 尽力通知 norr-wiki 立刻合并；失败就等它的 5 分钟定时兜底 */
+        let notified = false;
+        try {
+          await ghApi('POST', '/repos/' + GH_WIKI_REPO + '/actions/workflows/' + GH_WIKI_MERGE_WF + '/dispatches', { ref: GH_WIKI_BRANCH }, token);
+          notified = true;
+        } catch (e) { /* ignore */ }
         const secs = Math.round((Date.now() - t0) / 1000);
-        say('已上传 ' + fname + '（已记录 ' + payload.meta.recorded + '），服务器正在合并…');
+        say('已上传 ' + fname + '（已记录 ' + payload.meta.recorded + '），' + (notified ? '服务器正在合并…' : '服务器将在几分钟内合并'));
         setStatus('图鉴已同步：' + payload.meta.char + '（' + payload.meta.recorded + '/' + payload.meta.count + '，' + secs + 's）');
         logEvent('图鉴同步上传 ' + fname + ' / 已记录 ' + payload.meta.recorded + ' / ' + secs + 's');
       } else {
@@ -10600,7 +10630,7 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
     mc: { toggle: mcToggle, togglePause: mcTogglePause, syncBtns: syncMcBtns, queue: mcQueue, profLevels: mcProfLevels, profLevelsCached: mcProfLevelsCached, idleInfo: mcIdleInfo, startIdle: mcStartIdle, switch: mcSwitch, readChars: mcReadChars, setOn: mcSetOn, startAll: mcStartAll, stopAll: mcStopAll, validateAll: mcValidateAll, canGather: mcCanGather, render: mcRender, tick: mcTick, fillCurrent: mcFillCurrent, runTrip: mcRunTrip, beginTrip: mcBeginTrip, runRepairAndDeposit: runRepairAndDeposit, nearestGatherTile: nearestGatherTile, idleRaw: function () { return _mcGatherRaw; }, loadRot: mcLoadRot, saveRot: mcSaveRot, rot: function () { return rot; }, due: mcDue, chars: function () { return cfg.mcChars; }, queueCache: function () { return _mcQueueCache; }, claimIdleRewards: claimIdleRewards, closeIdleDialog: closeIdleResultDialog, refreshStatus: mcRefreshStatus, applyQueue: mcApplyQueue },
     start: () => beginRun('battle'), stop: stop, cfg: cfg, st: st, step: step,
     startTower: () => beginRun('tower'), stepTower: stepTower, isTowerMap: isTowerMap, towerTiles: towerTiles, towerNextGate: towerNextGate, towerGateCandidates: towerGateCandidates, towerAdjacentTile: towerAdjacentTile, openTower: openTower, nearestTowerTown: nearestTowerTown,
-    bestiary: { scan: bestiaryScan, ids: bestiaryIds, export: exportBestiary, sync: syncBestiary, token: ghToken, setToken: setGhToken, cancel: function(){ _bestCancel = true; } },
+    bestiary: { scan: bestiaryScan, ids: bestiaryIds, export: exportBestiary, sync: syncBestiary, token: ghUserToken, communityToken: ghCommunityToken, loadToken: loadCommunityToken, setToken: setGhToken, cancel: function(){ _bestCancel = true; } },
     scanEnemies: scanEnemies, attackableEnemies: attackableEnemies, pickTarget: pickTarget,
     rankWeight: rankWeight, nameWeight: nameWeight, detectRank: detectRank, whyText: whyText,
     targetKey: targetKey, nameAllowed: nameAllowed,   /* ★ v2.6.74：便于验证索敌模式 */

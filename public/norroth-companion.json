@@ -1,8 +1,8 @@
 {
-  "version": "2.6.90",
+  "version": "2.6.91",
   "date": "2026-10-22",
-  "notes": "v2.6.90：图鉴同步改为零配置——内置社区令牌（只对纯数据仓库 norr-bestiary 有写权限，碰不到 wiki 和其它项目），用户无需填任何东西；仍可自填令牌覆盖。",
+  "notes": "v2.6.91：图鉴同步接入专用数据仓库 nor-database，社区令牌由 CI 从 Secret 生成（不入库），用户零配置；上传后自动通知服务器立即合并。",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 706098,
-  "sha256": "8dfbfdf9824ed554bb086577b7e00898945d26b1edddb4efd6ce52c88e1c1045"
+  "size": 707661,
+  "sha256": "c6c3a1b8d0e0ac055dd77eed729b2feb0aeae7df2920d8ccf3e9b63927f6048e"
 }
