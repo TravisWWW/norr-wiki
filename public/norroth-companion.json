@@ -1,8 +1,8 @@
 {
-  "version": "2.6.93",
+  "version": "2.6.94",
   "date": "2026-10-22",
-  "notes": "v2.6.93：图鉴同步改为完全静默——去掉令牌输入框、不再下载文件/打开网页；扫描进度显示完后自动后台上传（令牌由 Pages 上的 norroth-gh-token.txt 提供）。",
+  "notes": "v2.6.94：修掉「同步失败：Resource not accessible by personal access token」——旧版面板里手动填过的令牌会存在浏览器里并盖过社区令牌（那把通常没有 nor-database 写权限），现已彻底移除该优先级并在启动时清除；报错信息也带上版本号便于定位。",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 707722,
-  "sha256": "f80c27275e50917fb0b4c0908306f70002ffeadea596f9b4a4be5f3580012c28"
+  "size": 708404,
+  "sha256": "50d3c12f4617a7aa8fab6c16aab7c6a623daf422d14bc83d05d1cd2f1711c5f9"
 }

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.93
+// @version      2.6.94
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -184,7 +184,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.93';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
+  const SCRIPT_VER = '2.6.94';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -10525,8 +10525,13 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
     } catch (e) { /* ignore */ }
     return GH_COMMUNITY_TOKEN;
   }
-  async function ghToken() { return ghUserToken() || await loadCommunityToken(); }
+  /* ★ v2.6.94：只用社区令牌。旧版本面板上的「GitHub 令牌」输入框会把用户填的令牌存进
+     localStorage，并优先于社区令牌 —— 那把令牌往往没有 nor-database 的写权限，
+     于是报 403 Resource not accessible by personal access token。这里直接废掉这条优先级。 */
+  function clearLegacyToken() { try { localStorage.removeItem(GH_TOKEN_KEY); } catch (e) { /* ignore */ } }
+  async function ghToken() { return await loadCommunityToken(); }
   function setGhToken(v) { try { if (v) localStorage.setItem(GH_TOKEN_KEY, v); else localStorage.removeItem(GH_TOKEN_KEY); } catch (e) { /* ignore */ } }
+  clearLegacyToken();   // ★ v2.6.94：清掉旧版遗留的自填令牌，避免它盖过社区令牌
 
   function b64utf8(str) {
     const bytes = new TextEncoder().encode(str);
@@ -10574,6 +10579,7 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
     if (syncBtn) { syncBtn.disabled = true; syncBtn.textContent = '同步中…'; }
     if (expBtn) expBtn.disabled = true;
     const t0 = Date.now();
+    let token = '';
     try {
       const res = await bestiaryScan(function (n, found, total) {
         say('扫描中… ' + n + '/' + total + '，已找到 ' + found + ' 种');
@@ -10584,7 +10590,7 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
       const fname = 'char-' + (payload.meta.charId || 'unknown') + '.json';
       const fpath = GH_CONTRIB_DIR + '/' + fname;
       const text = JSON.stringify(payload, null, 1);
-      const token = await ghToken();
+      token = await ghToken();
       if (!token) { say('未配置社区令牌，已跳过上传'); setStatus('图鉴同步：未配置令牌'); return; }
       {
         say('上传中… ' + fname);
@@ -10612,7 +10618,8 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
       if (e && e.status === 404) msg += '（数据仓库 ' + GH_REPO + ' 不存在，或令牌无权访问）';
       else if (e && (e.status === 401 || e.status === 403)) msg += '（令牌无效或权限不足：需要该仓库的 Contents: Read and write）';
       say('同步失败：' + msg);
-      setStatus('图鉴同步失败：' + msg);
+      setStatus('图鉴同步失败(v' + SCRIPT_VER + ')：' + msg);
+      logEvent('图鉴同步失败 v' + SCRIPT_VER + ' / token=' + (token ? token.slice(0, 16) + '…' : '(空)') + ' / ' + msg);
     } finally {
       _bestBusy = false;
       if (cancelBtn) cancelBtn.style.display = 'none';
@@ -10626,7 +10633,7 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
     mc: { toggle: mcToggle, togglePause: mcTogglePause, syncBtns: syncMcBtns, queue: mcQueue, profLevels: mcProfLevels, profLevelsCached: mcProfLevelsCached, idleInfo: mcIdleInfo, startIdle: mcStartIdle, switch: mcSwitch, readChars: mcReadChars, setOn: mcSetOn, startAll: mcStartAll, stopAll: mcStopAll, validateAll: mcValidateAll, canGather: mcCanGather, render: mcRender, tick: mcTick, fillCurrent: mcFillCurrent, runTrip: mcRunTrip, beginTrip: mcBeginTrip, runRepairAndDeposit: runRepairAndDeposit, nearestGatherTile: nearestGatherTile, idleRaw: function () { return _mcGatherRaw; }, loadRot: mcLoadRot, saveRot: mcSaveRot, rot: function () { return rot; }, due: mcDue, chars: function () { return cfg.mcChars; }, queueCache: function () { return _mcQueueCache; }, claimIdleRewards: claimIdleRewards, closeIdleDialog: closeIdleResultDialog, refreshStatus: mcRefreshStatus, applyQueue: mcApplyQueue },
     start: () => beginRun('battle'), stop: stop, cfg: cfg, st: st, step: step,
     startTower: () => beginRun('tower'), stepTower: stepTower, isTowerMap: isTowerMap, towerTiles: towerTiles, towerNextGate: towerNextGate, towerGateCandidates: towerGateCandidates, towerAdjacentTile: towerAdjacentTile, openTower: openTower, nearestTowerTown: nearestTowerTown,
-    bestiary: { scan: bestiaryScan, ids: bestiaryIds, export: exportBestiary, sync: syncBestiary, token: ghUserToken, communityToken: ghCommunityToken, loadToken: loadCommunityToken, setToken: setGhToken, cancel: function(){ _bestCancel = true; } },
+    bestiary: { scan: bestiaryScan, ids: bestiaryIds, export: exportBestiary, sync: syncBestiary, token: ghCommunityToken, loadToken: loadCommunityToken, clearLegacyToken: clearLegacyToken, cancel: function(){ _bestCancel = true; } },
     scanEnemies: scanEnemies, attackableEnemies: attackableEnemies, pickTarget: pickTarget,
     rankWeight: rankWeight, nameWeight: nameWeight, detectRank: detectRank, whyText: whyText,
     targetKey: targetKey, nameAllowed: nameAllowed,   /* ★ v2.6.74：便于验证索敌模式 */
