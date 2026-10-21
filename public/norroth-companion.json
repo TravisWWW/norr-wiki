@@ -1,8 +1,8 @@
 {
-  "version": "2.6.84",
-  "date": "2026-10-21",
-  "notes": "v2.6.84：撤掉运行时的地图信息更新（「更新地图数据」按钮 + 懒加载自愈），地图数据改为随版本发布更新；保留 v2.6.82 的 POI 实时读取（采集点/敌人）",
+  "version": "2.6.85",
+  "date": "2026-10-22",
+  "notes": "v2.6.85：自动存仓时把「品质 ≥ 阈值」的装备也逐件存进银行装备格（每件只试一次，存不进去就跳过）；材料存仓不变",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 681868,
-  "sha256": "80cb3c617ad26ae4130677607e1756736b08dbc0184d2e9234557fe9f29ccbad"
+  "size": 687007,
+  "sha256": "938ce7ec47ea86cb2f59a96500c3a8aadda79ad866fb420b6aa267c874177408"
 }

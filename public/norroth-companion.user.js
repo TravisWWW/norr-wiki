@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.84
+// @version      2.6.85
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -184,7 +184,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.84';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
+  const SCRIPT_VER = '2.6.85';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
   /* ★ v2.6.77：在线更新。
      脚本托管在 GitHub Pages（和中文 Wiki 同一个仓库 / 同一次部署），元数据块里的
      @updateURL / @downloadURL 都指向下面这个地址 —— Tampermonkey 会按自己的周期
@@ -3990,7 +3990,7 @@
           const r = await doBankDeposit();
           out.deposited = r.deposited;
           B.lastCheck = now();
-          out.depTxt = r.deposited > 0 ? ('存入 ' + r.deposited + ' 件') : '没有可存的东西';
+          out.depTxt = r.deposited > 0 ? ('存入 ' + r.deposited + ' 件' + (r.equip ? '（装备 ' + r.equip + ' 件）' : '')) : '没有可存的东西';
           B.cooldownUntil = now() + (r.deposited > 0 ? REPAIR_OK_COOLDOWN : SELL_FAIL_COOLDOWN);
           logEvent(tag + '存仓：' + out.depTxt);
         } catch (e) { out.depErr = (e && e.message) ? e.message : String(e); logEvent(tag + '存仓失败 ' + out.depErr); }
@@ -4060,12 +4060,95 @@
     setStatus('休整完成（' + restockText(out) + '），回到「' + currentMapName() + '」' + landingNote());
   }
 
-  /* ======================= 12b. 自动存仓（银行「快速存入」） ======================= */
-  /* 到银行后存包：优先走接口 POST /includes/ajax_inventory.php {type:'Stack',value:'stash'}
-     （= 游戏自己的 stackTobank()）；接口不行就打开银行窗口点按钮。
-     按钮文案会本地化（中文「快速存入」），所以按 onclick=stackTobank 找。 */
+  /* ======================= 12b. 自动存仓（银行） ======================= */
+  /* 到银行后存包，分两步：
+     ① 材料：POST /includes/ajax_inventory.php {type:'Stack',value:'stash'}
+        （= 游戏自己的 stackTobank()「快速存入」，只存材料）；接口不行就打开银行窗口点按钮。
+        按钮文案会本地化（中文「快速存入」），所以按 onclick=stackTobank 找。
+     ② 装备（★ v2.6.85 新增）：把「品质 ≥ cfg.sellRarity」的装备逐件存进银行的装备格。
+        游戏机制（实测 2026-10-22，El Caspar 银行）：
+          · 银行装备格 = #bank_equipment_slots 里的 25 个 .inventory_container#bank_slot_1..25
+            （空闲格的 .stash_slot 带 empty_stash）；
+          · 存一件装备 = POST /includes/ajax_inventory.php
+              {type:'BankTransfer', value:'<背包容器id invN>', to:'<银行格 bank_slot_K>'}
+            成功返回 ["BankTransfer",true,{mode:'deposit',...}]；失败 ["BankTransfer",false,"Unable to deposit"]；
+          · 背包里「装备/工具」的判据 = .inv_slot 的 use_name="item"（材料/药水是 ""/Consume/Open）。
+        用户要求：每件符合条件的装备各尝试存一次，存不进去就算了（不重试、不报错中断）。 */
+
+  /** 确保银行窗口开着（读空闲装备格要用）；返回是否拿到 #bank_equipment_slots */
+  async function ensureBankFrame() {
+    if (document.getElementById('bank_equipment_slots')) return true;
+    if (!document.getElementById('frame_Bank')) humanDialog('Bank', '', 'ajax', '/modal/bank', true);
+    const dl = now() + 8000;
+    while (now() < dl) {
+      if (!tripAlive()) return false;
+      if (document.getElementById('bank_equipment_slots')) return true;
+      await sleep(250);
+    }
+    return !!document.getElementById('bank_equipment_slots');
+  }
+
+  /** 银行里空闲的装备格 id 列表（按 #bank_slot_N 顺序） */
+  function bankFreeSlots() {
+    const eq = document.getElementById('bank_equipment_slots');
+    if (!eq) return [];
+    return $$q('.inventory_container', eq).filter(function (c) {
+      const s = c.querySelector('.stash_slot');
+      return !!(s && /\bempty_stash\b/.test(s.className || ''));
+    }).map(function (c) { return c.id; });
+  }
+
+  /** 读背包里的「装备/工具」（.inv_slot[use_name="item"]）：返回 [{ cid, rarity, name }] */
+  async function readBagEquipItems() {
+    const h = await (await fetch('/modal/inventory', { credentials: 'same-origin' })).text();
+    const d = document.createElement('div');
+    d.innerHTML = h;
+    const out = [];
+    $$q('.inventory_container', d).forEach(function (c) {
+      const slot = c.querySelector('.inv_slot');
+      if (!slot) return;
+      if ((slot.getAttribute('use_name') || '') !== 'item') return;   // 装备/工具；材料/药水不是
+      const icon = slot.querySelector('[rarity]') || slot.querySelector('[content]') || slot.querySelector('img');
+      out.push({
+        cid: c.id,
+        rarity: equipRarityOf(slot),
+        name: (icon && icon.getAttribute('hover_title')) || ''
+      });
+    });
+    return out;
+  }
+
+  /** 把「品质 ≥ cfg.sellRarity」的装备逐件存进银行装备格；返回成功件数。
+      每件只试一次，存不进去就跳过（用户要求「存放失败算了」）。 */
+  async function depositBagEquips() {
+    if (!cfg.sellRarity) return 0;
+    const th = rarityRank(cfg.sellRarity);
+    if (th < 0) return 0;
+    let items = [];
+    try { items = await readBagEquipItems(); } catch (e) { return 0; }
+    const list = items.filter(function (it) { const rk = rarityRank(it.rarity); return rk >= 0 && rk >= th; });
+    if (!list.length) return 0;
+    if (!await ensureBankFrame()) { logEvent('存仓：打不开银行窗口，' + list.length + ' 件装备没存'); return 0; }
+    const free = bankFreeSlots();
+    if (!free.length) { logEvent('存仓：银行装备格已满，' + list.length + ' 件装备没存进去'); return 0; }
+    let n = 0;
+    for (const it of list) {
+      if (!tripAlive()) break;
+      if (n >= free.length) { logEvent('存仓：银行装备格用完，剩 ' + (list.length - n) + ' 件没存'); break; }
+      const target = free[n];
+      let ok = false;
+      try {
+        const res = await nrPost('/includes/ajax_inventory.php', { type: 'BankTransfer', value: it.cid, to: target });
+        ok = !!(res.json && res.json[1] === true);      /* 成功 = ["BankTransfer",true,{...}] */
+      } catch (e) { ok = false; }
+      if (ok) { n++; setStatus('存入装备 ' + (it.name || '') + (it.rarity ? '（' + rarityCN(it.rarity) + '）' : '') + '…'); await sleep(600); }
+      /* 失败（格子被占 / 该件不能存）→ 跳过，不重试 */
+    }
+    return n;
+  }
+
   async function doBankDeposit() {
-    const out = { deposited: 0, before: null, after: null };
+    const out = { deposited: 0, before: null, after: null, equip: 0 };
     const b0 = await readBag();
     out.before = b0 ? b0.used : null;
     let done = false;
@@ -4087,7 +4170,11 @@
       }
       if (btn) { humanClick(btn); done = true; }
     }
-    if (done) {
+    /* ② 装备：品质 ≥ 阈值的逐件存进银行装备格（用户 2026-10-22 需求） */
+    if (tripAlive()) {
+      try { out.equip = await depositBagEquips(); } catch (e) { /* 装备存仓失败不影响材料存仓结果 */ }
+    }
+    if (done || out.equip) {
       const dl = now() + 6000;
       while (now() < dl) {
         await sleep(500);
@@ -7185,7 +7272,7 @@
           <div class="kv" id="nr-durinfo" style="color:#8fa3bd;font-size:10.5px;line-height:1.5;margin-top:4px"></div>
           <div class="opts">
             <label><input type="checkbox" class="chk" id="nr-sellon" title="背包快满时去铁匠出售/拆解低品质装备（可与「自动存仓」同时开）">自动清包</label>
-            <label><input type="checkbox" class="chk" id="nr-depositon" title="背包快满时去银行点「快速存入」（可与「自动清包」同时开）">自动存仓</label>
+            <label><input type="checkbox" class="chk" id="nr-depositon" title="背包快满时去银行存包（可与「自动清包」同时开）。存材料走游戏「快速存入」；并把「品质 ≥ 品质低于阈值」的装备逐件存进银行装备格（每件只试一次，存不进去就跳过）">自动存仓</label>
           </div>
           <div class="half" style="margin-top:8px">
             <div class="inline"><span>背包剩余 ≤</span><input type="number" id="nr-sellfree" min="1" step="1" title="背包剩余格数 ≤ 该值就去休整（清包 / 存仓共用）"></div>
@@ -7193,7 +7280,7 @@
           </div>
           <div class="half" style="margin-top:6px">
             <div class="inline"><span>操作</span><select id="nr-clearaction" title="自动清包的方式：出售换金币 / 拆解换材料"><option value="sell">出售</option><option value="salvage">拆解</option></select></div>
-            <div class="inline"><span>品质低于</span><select id="nr-sellrarity" title="只处理「低于」该品质的装备（例：选稀有 → 处理普通/魔法）。选「普通」= 只清灰色装备。不限 = 不按品质过滤"><option value="">不限</option><option value="normal">普通（仅灰色）</option><option value="magic">魔法</option><option value="rare">稀有</option><option value="epic">史诗</option><option value="mystical">神秘</option><option value="ascended">飞升</option><option value="legendary">传说</option><option value="relic">遗物</option><option value="unique">独特</option></select></div>
+            <div class="inline"><span>品质低于</span><select id="nr-sellrarity" title="只处理「低于」该品质的装备（例：选稀有 → 处理普通/魔法）。选「普通」= 只清灰色装备。不限 = 不按品质过滤。★ 自动存仓时反向：把「≥ 该品质」的装备存进银行（不限 = 不按品质存装备）"><option value="">不限</option><option value="normal">普通（仅灰色）</option><option value="magic">魔法</option><option value="rare">稀有</option><option value="epic">史诗</option><option value="mystical">神秘</option><option value="ascended">飞升</option><option value="legendary">传说</option><option value="relic">遗物</option><option value="unique">独特</option></select></div>
           </div>
           <div class="row" style="margin-top:6px">
             <button class="pri" id="nr-sellnow" style="flex:1">🧰 立即维护</button>
@@ -10194,7 +10281,7 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
     applySkin: applySkin, setSkin: setSkin, skinOn: skinOn,
     readEquipDur: readEquipDur, parseEquipDur: parseEquipDur, durWorst: durWorst, durText: durText, repairNeeded: repairNeeded, gatherDurNow: gatherDurNow, lastGatherDur: lastGatherDur, renderDurInfo: renderDurInfo,
     getMapDict: getMapDict, startRestock: startRestock, repairSellNow: repairSellNow,
-    nrPost: nrPost, apiRepairRows: apiRepairRows, stashDeposit: stashDeposit, stashWithdraw: stashWithdraw, stashCount: stashCount, clickEquipSell: clickEquipSell, sellEquips: sellEquips, findBank: findBank, doBankDeposit: doBankDeposit, runDeposit: runDeposit,
+    nrPost: nrPost, apiRepairRows: apiRepairRows, stashDeposit: stashDeposit, stashWithdraw: stashWithdraw, stashCount: stashCount, clickEquipSell: clickEquipSell, sellEquips: sellEquips, findBank: findBank, doBankDeposit: doBankDeposit, runDeposit: runDeposit, ensureBankFrame: ensureBankFrame, bankFreeSlots: bankFreeSlots, readBagEquipItems: readBagEquipItems, depositBagEquips: depositBagEquips,
     verifyPath: verifyPath, refreshCurMap: refreshCurMap, detectGatherPoints: detectGatherPoints, liveMapSnapshot: liveMapSnapshot, poiLearnNow: poiLearnNow, MapDB: MapDB,
     comboInfo: comboInfo, pollCombo: pollCombo, readComboInfo: readComboInfo,
     gatheringSpots: gatheringSpots, findGatheringSpot: findGatheringSpot, stepGather: stepGather, effectiveGatherPoint: effectiveGatherPoint,
