@@ -305,6 +305,8 @@ const bioList = [...new Set(cards.flatMap((c) => c.biome.split(',').map((s) => s
 </script>
 
 <style is:global>
+  /* hidden 属性优先：显式 display 会覆盖 [hidden]，需显式复位 */
+  .bl-card[hidden], .bl-modal[hidden], .bl-empty[hidden] { display: none !important; }
   .bl-app { display: grid; grid-template-columns: 230px minmax(0, 1fr); gap: 1.1rem; align-items: start; margin: 1rem 0 1.5rem; }
   /* ---- 侧栏 ---- */
   .bl-side { position: sticky; top: 4.5rem; border: 1px solid var(--nr-line); border-radius: 10px; background: linear-gradient(180deg, var(--nr-panel-2), var(--nr-panel)); padding: .85rem; display: flex; flex-direction: column; gap: .7rem; box-shadow: inset 0 1px 0 rgba(238,187,102,.05); }
