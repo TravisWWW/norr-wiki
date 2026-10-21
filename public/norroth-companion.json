@@ -1,8 +1,8 @@
 {
-  "version": "2.6.91",
+  "version": "2.6.92",
   "date": "2026-10-22",
-  "notes": "v2.6.91：图鉴同步接入专用数据仓库 nor-database，社区令牌由 CI 从 Secret 生成（不入库），用户零配置；上传后自动通知服务器立即合并。",
+  "notes": "v2.6.92：维修/清包城镇「没步行路线但有传送点」也能选（下拉不再误灰、行程不再提前报错）；爬塔城镇同样兜底",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 707661,
-  "sha256": "c6c3a1b8d0e0ac055dd77eed729b2feb0aeae7df2920d8ccf3e9b63927f6048e"
+  "size": 709961,
+  "sha256": "be4db56ea817e22a6305c60f18566ddb044145e0da53cb2e667ae118bbc43a57"
 }

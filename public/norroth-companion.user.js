@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.91
+// @version      2.6.92
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -184,7 +184,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.91';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
+  const SCRIPT_VER = '2.6.92';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -2825,11 +2825,15 @@
       seen[id] = 1;
       const r = MapDB.get(id) || {};
       const noId = !!(extra && extra.noId);
-      let reach;
+      let reach, viaWg = false;
       if (noId) reach = false;
       else {
-        try { reach = inGame() ? !!navRoute(character.current_map, +id) : !!r.visited; }
-        catch (e) { reach = !!r.visited; }
+        try {
+          if (inGame()) {
+            reach = !!navRoute(character.current_map, +id);
+            if (!reach) { viaWg = waygateReachable(id); reach = viaWg; }   /* ★ v2.6.86：没步行路线但传送点能到 */
+          } else reach = !!r.visited;
+        } catch (e) { reach = !!r.visited; }
       }
       out.push(Object.assign({
         id: id,
@@ -2837,6 +2841,7 @@
         type: MapDB.type(id) || r.type || '',
         smith: !!r.smith,
         visited: !!r.visited,
+        viaWg: viaWg,
         reachable: reach
       }, extra || {}));
     };
@@ -3289,7 +3294,12 @@
     if (townId) {
       navLearn();
       const plan = navRoute(character.current_map, +townId);
-      if (!plan) throw new Error('暂无到「' + townName(townId) + '」的路线（该区域还没探索过，先手动走一趟让插件学习）');
+      if (!plan) {
+        /* ★ v2.6.86：没有步行路线 ≠ 到不了 —— 勾了传送点的话，travelToRepairPoint 会走 navGoTo 用传送点过去，
+           所以这里只在「既没步行路线、传送点也用不了」时才报错。返回的占位路线在选了城镇时会被忽略。 */
+        if (!waygateReachable(townId)) throw new Error('暂无到「' + townName(townId) + '」的路线（该区域还没探索过，先手动走一趟让插件学习；也可勾选「城市/野外传送点」）');
+        return [{ id: String(townId), name: navMapName(townId) }];
+      }
       return plan.map(id => ({ id: String(id), name: navMapName(id) }));
     }
     const lines = parseLines(cfg.repairPath);
@@ -5463,14 +5473,15 @@
   }
   function isInTownNow() { try { return inGame() && MapDB.isTown(character.current_map); } catch (e) { return false; } }
   function nearestTowerTown() {
-    let best = null, bd = Infinity;
+    let best = null, bd = Infinity, wgBest = 0;
     serviceTowns().forEach(t => {
       if (t.noId || !t.id) return;
       let hops; try { hops = navRoute(character.current_map, +t.id); } catch (e) { hops = null; }
-      if (!hops) return;
-      if (hops.length < bd) { bd = hops.length; best = +t.id; }
+      if (hops) { if (hops.length < bd) { bd = hops.length; best = +t.id; } return; }
+      /* ★ v2.6.86：没有步行路线但传送点能到的城镇 → 作为兜底（否则「找不到可用的城镇」） */
+      if (!wgBest && t.viaWg) wgBest = +t.id;
     });
-    return best;
+    return best || wgBest;
   }
   /* 开塔：diff 1/2/3。必须在城镇。 */
   function openTower(diff) {
@@ -8278,7 +8289,7 @@
     }
     sel.appendChild(h('option', { value: '', text: '（未选择）' }));
     towns.forEach(t => {
-      const why = t.noId ? '（未探索·暂不可选）' : (t.reachable ? '' : '（暂无路线·暂不可选）');
+      const why = t.noId ? '（未探索·暂不可选）' : (t.reachable ? (t.viaWg ? '（可传送）' : '') : '（暂无路线·暂不可选）');
       const tag = (t.type === 'City' ? '🏙 ' : '') + t.name
         + (t.smith ? ' ⚒' : '')
         + why
@@ -8300,7 +8311,7 @@
     sel.innerHTML = '';
     sel.appendChild(h('option', { value: '', text: '自动（最近的城镇）' }));
     towns.forEach(t => {
-      const why = t.noId ? '（未探索·暂不可选）' : (t.reachable ? '' : '（暂无路线·暂不可选）');
+      const why = t.noId ? '（未探索·暂不可选）' : (t.reachable ? (t.viaWg ? '（可传送）' : '') : '（暂无路线·暂不可选）');
       const tag = (t.type === 'City' ? '🏙 ' : '') + t.name + why;
       const opt = h('option', { value: t.id, text: tag });
       if (!t.reachable) opt.disabled = true;
@@ -8318,7 +8329,11 @@
       navLearn();
       const plan = navRoute(character.current_map, +cfg.serviceTown);
       if (!plan) {
-        if (msg) msg.textContent = '✗ 暂无到「' + townName(cfg.serviceTown) + '」的路线（该区域还没探索过）';
+        /* ★ v2.6.86：没有步行路线 ≠ 到不了 —— 勾了传送点的话可以传送过去 */
+        const wg = waygateReachable(cfg.serviceTown);
+        if (msg) msg.textContent = wg
+          ? '✓ 无步行路线，但可用传送点到达「' + townName(cfg.serviceTown) + '」'
+          : '✗ 暂无到「' + townName(cfg.serviceTown) + '」的路线（该区域还没探索过；也可勾选「城市/野外传送点」）';
         return;
       }
       const names = [character.current_map].concat(plan).map(id => navMapName(id) + '[' + id + ']');
@@ -9243,6 +9258,20 @@
     { name: 'Wardens’ Bridge',      id: 352, lv: 53 },
     { name: 'Red Desert',          id: 336, lv: 54 }
   ];
+
+  /* ★ v2.6.86：没有步行路线 ≠ 到不了。
+     勾了「城市传送点」→ 任何 City（= 传送站 Cities 页 / Noble 世界地图免费传）都能传送过去；
+     勾了「野外传送点」→ 22 个野外锚点（WAYGATE_WILD）也能传过去。
+     城镇下拉的「可不可选」要把这条算进去，否则「没路但传送点能到」的城镇会被误灰掉。
+     （Cities 页清单 = MAPDB_SEED.cities = 所有 type==='City' 的图，与 isServiceTownById 一致。） */
+  function waygateReachable(id) {
+    id = +id; if (!(id > 0)) return false;
+    try {
+      if (cfg.useWaygateCity && isServiceTownById(id)) return true;
+      if (cfg.useWaygateWild && WAYGATE_WILD.some(function (w) { return +w.id === id; })) return true;
+    } catch (e) { /* WAYGATE_WILD 未就绪等 → 保守 false */ }
+    return false;
+  }
 
   function findWaygateTile() {
     let wg = document.querySelector('.map_table [action=waygate]');
@@ -10638,7 +10667,7 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
     applySkin: applySkin, setSkin: setSkin, skinOn: skinOn,
     readEquipDur: readEquipDur, parseEquipDur: parseEquipDur, durWorst: durWorst, durText: durText, repairNeeded: repairNeeded, gatherDurNow: gatherDurNow, lastGatherDur: lastGatherDur, renderDurInfo: renderDurInfo,
     getMapDict: getMapDict, startRestock: startRestock, repairSellNow: repairSellNow,
-    nrPost: nrPost, apiRepairRows: apiRepairRows, stashDeposit: stashDeposit, stashWithdraw: stashWithdraw, stashCount: stashCount, clickEquipSell: clickEquipSell, sellEquips: sellEquips, findBank: findBank, doBankDeposit: doBankDeposit, runDeposit: runDeposit, ensureBankFrame: ensureBankFrame, bankFreeSlots: bankFreeSlots, readBagEquipItems: readBagEquipItems, depositBagEquips: depositBagEquips,
+    nrPost: nrPost, apiRepairRows: apiRepairRows, stashDeposit: stashDeposit, stashWithdraw: stashWithdraw, stashCount: stashCount, clickEquipSell: clickEquipSell, sellEquips: sellEquips, findBank: findBank, doBankDeposit: doBankDeposit, runDeposit: runDeposit, ensureBankFrame: ensureBankFrame, bankFreeSlots: bankFreeSlots, readBagEquipItems: readBagEquipItems, depositBagEquips: depositBagEquips, serviceTowns: serviceTowns, waygateReachable: waygateReachable, navRoute: navRoute, renderTownSelect: renderTownSelect, verifyPath: verifyPath, resolveRepairRoute: resolveRepairRoute,
     verifyPath: verifyPath, refreshCurMap: refreshCurMap, detectGatherPoints: detectGatherPoints, liveMapSnapshot: liveMapSnapshot, poiLearnNow: poiLearnNow, MapDB: MapDB,
     comboInfo: comboInfo, pollCombo: pollCombo, readComboInfo: readComboInfo,
     gatheringSpots: gatheringSpots, findGatheringSpot: findGatheringSpot, stepGather: stepGather, effectiveGatherPoint: effectiveGatherPoint,
