@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.95
+// @version      2.6.96
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -184,7 +184,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.95';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
+  const SCRIPT_VER = '2.6.96';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -3286,11 +3286,19 @@
     return 'ok';
   }
 
+  /* ★ v2.6.96：当前生效的「维修/清包城镇」。
+     副角色行程中（st.altTrip）**只用该副角色自己的 serviceTown**，绝不回落到主角色的全局设置；
+     其余情况（主角色 / 手动行程）用主角色的全局设置 cfg.serviceTown。
+     —— 修掉「副角色没设城镇时会跑去主角色的维修城镇」这个串味 bug。 */
+  function activeServiceTown() {
+    return st.altTrip ? String(st.tripTown || '') : String(cfg.serviceTown || '');
+  }
+
   async function resolveRepairRoute() {
     await getMapDict();
     // ★ 选了城镇：路线由跨图导航自动算（travelToRepairPoint 会走 nav 过去）
-    // ★ 多角色：行程期间用 st.tripTown 覆盖（副角色可能用不同城镇）
-    const townId = st.tripTown || cfg.serviceTown;
+    // ★ 多角色：副角色用自己的城镇（activeServiceTown）
+    const townId = activeServiceTown();
     if (townId) {
       navLearn();
       const plan = navRoute(character.current_map, +townId);
@@ -3344,8 +3352,8 @@
 
   async function travelToRepairPoint(route, kind) {
     const isBank = (kind === 'bank');
-    // ★ 选了城镇：直接用跨图导航过去，比按名字找门更可靠（多角色行程用 st.tripTown 覆盖）
-    const svcTown = st.tripTown || cfg.serviceTown;
+    // ★ 选了城镇：直接用跨图导航过去，比按名字找门更可靠（副角色用自己的城镇）
+    const svcTown = activeServiceTown();
     if (svcTown) return await travelToTownByNav(svcTown, kind);
     const target = route[route.length - 1];
     if (!inGame()) return 'cancel';
@@ -3373,7 +3381,7 @@
 
   async function travelBack(route) {
     // ★ 选了城镇：返程直接导航回挂机地图（多角色行程用 st.tripHome 覆盖目标图）
-    if (st.tripTown || cfg.serviceTown) {
+    if (activeServiceTown()) {
       const home = +(st.tripHome || cfg.farmMap || st.tripOrigin || 0);
       if (home && String(character.current_map) !== String(home)) {
         setStatus('返程：导航回「' + townName(home) + '」…');
@@ -4279,7 +4287,7 @@
     if (st.repair.active || st.sell.active || st.bank.active || !running) return;
     if (!inGame()) return;
     const why = (RESTOCK_WHY_CN[reason] || reason || '未知原因') + (detail ? '（' + detail + '）' : '');
-    const _dest = +(st.tripTown || cfg.serviceTown || 0);
+    const _dest = +activeServiceTown();
     logEvent('回城休整：' + why + (_dest ? ' → 前往「' + townName(_dest) + '」' : ''));
     setStatus('回城休整：' + why + '…');
     st.repair.active = true; st.bank.active = true; st.sell.active = true;
@@ -5909,6 +5917,8 @@
     if (!alt) return false;
     if (!alt.gatherMap) { mcSkipAlt(alt, '未设置挂机地图'); return false; }
     if (!(alt.nodeX > 0 && alt.nodeY > 0)) { mcSkipAlt(alt, '未设置采集点坐标'); return false; }
+    /* ★ v2.6.96：副角色必须有自己的维修城镇（不再回落到主角色的设置） */
+    if (!alt.serviceTown) { mcSkipAlt(alt, '未设置维修城镇'); return false; }
     return true;
   }
   function mcSkipAlt(alt, msg) {
@@ -5925,6 +5935,7 @@
     mcAlts().forEach(function (alt) {
       if (!alt.gatherMap) { mcSkipAlt(alt, '未设置挂机地图'); bad.push(alt.name + '缺挂机地图'); return; }
       if (!(alt.nodeX > 0 && alt.nodeY > 0)) { mcSkipAlt(alt, '未设置采集点坐标'); bad.push(alt.name + '缺采集点'); return; }
+      if (!alt.serviceTown) { mcSkipAlt(alt, '未设置维修城镇'); bad.push(alt.name + '缺维修城镇'); return; }
       if (alt.profession && !(lv[alt.profession] > 0)) { mcSkipAlt(alt, '职业「' + alt.profession + '」未解锁或等级为 0'); bad.push(alt.name + '职业未解锁'); return; }
       /* ★ 提醒：采集点不属于选定的图（行程会自愈，但先提个醒） */
       try {
@@ -6239,7 +6250,7 @@
       /* ★ 走到采集点后：先多读几次；仍不行就「走开一格再走回」强制同步服务端位置 */
       let info = await mcSettleAtSpot(alive, +alt.nodeX, +alt.nodeY);
       /* ★ 工具耐久为 0 → 采不动：自动去维修一次，再回采集点重试 */
-      if ((!info || !info.turns) && !repaired && (alt.serviceTown || cfg.serviceTown)) {
+      if ((!info || !info.turns) && !repaired && alt.serviceTown) {
         logEvent('多角色：副角色「' + alt.name + '」工具采不动（' + (info ? info.dur : '—') + '），先去维修…');
         await doRepair();
         if (!alive()) return;
@@ -6358,7 +6369,7 @@
           '<div class="mc-b">' +
             '<span class="fld"><span class="lb">图</span><select class="nr-mc-map" title="挂机地图' + (c.gatherMap ? (' · ' + navMapName(c.gatherMap) + ' [' + c.gatherMap + ']') : '') + '">' + mapOpts + '</select></span>' +
             '<span class="fld"><span class="lb">采</span><select class="nr-mc-node" title="采集点' + (c.res ? (' · ' + c.res + (c.nodeX > 0 ? (' ' + c.nodeX + '-' + c.nodeY) : '')) : '') + '">' + nodeOpts + '</select></span>' +
-            '<span class="fld"><span class="lb">城</span><select class="nr-mc-town" title="维修/存仓城镇' + (c.serviceTown ? (' · ' + navMapName(c.serviceTown) + ' [' + c.serviceTown + ']') : '') + '"><option value="">（不维修）</option>' + townOpts + '</select></span>' +
+            '<span class="fld"><span class="lb">城</span><select class="nr-mc-town" title="维修/存仓城镇' + (c.serviceTown ? (' · ' + navMapName(c.serviceTown) + ' [' + c.serviceTown + ']') : '') + '"><option value="">（未设置 · 不能运行）</option>' + townOpts + '</select></span>' +
             '<span class="fld2">' +
               '<label title="进城先维修（是否要修按「休整」页的维修阈值判断；阈值也在「休整」页设）"><input type="checkbox" class="chk nr-mc-rep" ' + (c.repairOn ? 'checked' : '') + '>修</label>' +
               '<label title="进城直接存仓（不看背包剩余，能存的全存）"><input type="checkbox" class="chk nr-mc-dep" ' + (c.depositOn ? 'checked' : '') + '>存</label>' +
@@ -6437,7 +6448,6 @@
     tgt.gatherMap = String(character.current_map);
     const spot = nearestGatherTile();
     if (spot) { tgt.nodeX = spot.x; tgt.nodeY = spot.y; tgt.res = spot.name || tgt.res; tgt.profession = spot.prof || tgt.profession; }
-    if (cfg.serviceTown) tgt.serviceTown = String(cfg.serviceTown);
     saveCfg(); mcRender();
     setStatus('多角色：已把当前位置填给「' + tgt.name + '」' + (spot ? '（图 ' + tgt.gatherMap + ' · 采集点 ' + spot.x + '-' + spot.y + (spot.name ? ' · ' + spot.name : '') + '）' : '（本图没找到采集点）'));
   }
@@ -8551,6 +8561,7 @@
     st.runElapsed = 0;
     st.mode = null;
     st.tripManual = false;
+    st.altTrip = false;
     st.target = null;
     clearRunMark();
     if (resumeTimer) { clearInterval(resumeTimer); resumeTimer = null; }
@@ -9131,7 +9142,7 @@
         if (r.length < bestLen) { bestLen = r.length; best = id; }
       });
     } catch (e) { /* ignore */ }
-    const svc = +(cfg.serviceTown || 0);
+    const svc = +activeServiceTown();
     if (svc > 0 && svc !== dest && svc !== best && isTownMap(svc)) {
       let sl = null; try { sl = navRoute(svc, dest); } catch (e) { sl = null; }
       if (sl && sl.length <= bestLen + 2) return svc;
@@ -9327,7 +9338,7 @@
     if (cands.indexOf(+destId) >= 0) { best = +destId; }
     else {
       /* ★ v2.6.63：用户设的「休整城镇」优先（在候选里、且能算出到目标的路线时）。 */
-      const svcId = +(cfg.serviceTown || 0);
+      const svcId = +activeServiceTown();
       for (let i = 0; i < cands.length; i++) {
         const r = navRoute(cands[i], destId);
         if (!r) continue;
@@ -10567,7 +10578,7 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
 
   window.__norrothFarm = {
     event: { tick: eventTick, reset: eventReset, activitiesHasJoin: eventActivitiesHasJoin, enterGate: eventEnterGate, pickPoint: eventPickPoint, typeOf: eventTypeOf, res: function () { return st.event; }, mapId: EVENT_MAP_ID },
-    mc: { toggle: mcToggle, togglePause: mcTogglePause, syncBtns: syncMcBtns, queue: mcQueue, profLevels: mcProfLevels, profLevelsCached: mcProfLevelsCached, idleInfo: mcIdleInfo, startIdle: mcStartIdle, switch: mcSwitch, readChars: mcReadChars, setOn: mcSetOn, startAll: mcStartAll, stopAll: mcStopAll, validateAll: mcValidateAll, canGather: mcCanGather, render: mcRender, tick: mcTick, fillCurrent: mcFillCurrent, runTrip: mcRunTrip, beginTrip: mcBeginTrip, runRepairAndDeposit: runRepairAndDeposit, nearestGatherTile: nearestGatherTile, idleRaw: function () { return _mcGatherRaw; }, loadRot: mcLoadRot, saveRot: mcSaveRot, rot: function () { return rot; }, due: mcDue, chars: function () { return cfg.mcChars; }, queueCache: function () { return _mcQueueCache; }, claimIdleRewards: claimIdleRewards, closeIdleDialog: closeIdleResultDialog, refreshStatus: mcRefreshStatus, applyQueue: mcApplyQueue },
+    mc: { serviceTownNow: activeServiceTown, toggle: mcToggle, togglePause: mcTogglePause, syncBtns: syncMcBtns, queue: mcQueue, profLevels: mcProfLevels, profLevelsCached: mcProfLevelsCached, idleInfo: mcIdleInfo, startIdle: mcStartIdle, switch: mcSwitch, readChars: mcReadChars, setOn: mcSetOn, startAll: mcStartAll, stopAll: mcStopAll, validateAll: mcValidateAll, canGather: mcCanGather, render: mcRender, tick: mcTick, fillCurrent: mcFillCurrent, runTrip: mcRunTrip, beginTrip: mcBeginTrip, runRepairAndDeposit: runRepairAndDeposit, nearestGatherTile: nearestGatherTile, idleRaw: function () { return _mcGatherRaw; }, loadRot: mcLoadRot, saveRot: mcSaveRot, rot: function () { return rot; }, due: mcDue, chars: function () { return cfg.mcChars; }, queueCache: function () { return _mcQueueCache; }, claimIdleRewards: claimIdleRewards, closeIdleDialog: closeIdleResultDialog, refreshStatus: mcRefreshStatus, applyQueue: mcApplyQueue },
     start: () => beginRun('battle'), stop: stop, cfg: cfg, st: st, step: step,
     startTower: () => beginRun('tower'), stepTower: stepTower, isTowerMap: isTowerMap, towerTiles: towerTiles, towerNextGate: towerNextGate, towerGateCandidates: towerGateCandidates, towerAdjacentTile: towerAdjacentTile, openTower: openTower, nearestTowerTown: nearestTowerTown,
     bestiary: { scan: bestiaryScan, ids: bestiaryIds, sync: syncBestiary, token: ghCommunityToken, loadToken: loadCommunityToken, clearLegacyToken: clearLegacyToken, cancel: function(){ _bestCancel = true; } },
