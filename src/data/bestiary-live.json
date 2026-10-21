@@ -7,15 +7,15 @@
    {
     "file": "char-1330.json",
     "char": "#1330",
-    "level": 36,
-    "time": "2026-10-21T17:57:29.978Z",
-    "count": 199,
-    "recorded": 98,
+    "level": 38,
+    "time": "2026-10-21T19:34:29.563Z",
+    "count": 193,
+    "recorded": 102,
     "mergedAt": "2026-10-21"
    }
   ],
   "count": 199,
-  "recordedCount": 98,
+  "recordedCount": 102,
   "withLore": 198,
   "withStats": 28,
   "withSkills": 42,
@@ -4162,7 +4162,12 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_126.gif",
    "bg": "red_desert.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "50 - 60",
+   "alignment": "Neutral",
+   "health": "High",
+   "defense": "High",
+   "resistance": "Low"
   },
   {
    "id": 128,
@@ -5622,7 +5627,60 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_165.gif",
    "bg": "red_desert.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "18 - 50",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "Medium",
+   "defense": "High",
+   "resistance": "Low",
+   "scavenging": [
+    {
+     "name": "Scrap Meat",
+     "res": "scrap_meat",
+     "pct": "19%"
+    },
+    {
+     "name": "Scrap Scale",
+     "res": "scrap_scale",
+     "pct": "13%"
+    },
+    {
+     "name": "Scrap Tooth",
+     "res": "scrap_tooth",
+     "pct": "13%"
+    },
+    {
+     "name": "Scrap Bone",
+     "res": "scrap_bone",
+     "pct": "13%"
+    },
+    {
+     "name": "Scrap Tendon",
+     "res": "scrap_tendon",
+     "pct": "19%"
+    },
+    {
+     "name": "Scrap Skull",
+     "res": "scrap_skull",
+     "pct": "3%"
+    },
+    {
+     "name": "Scrap Claw",
+     "res": "scrap_claw",
+     "pct": "13%"
+    },
+    {
+     "name": "Scrap Eye",
+     "res": "scrap_eye",
+     "pct": "6%"
+    },
+    {
+     "name": "Scrap Tail",
+     "res": "scrap_tail",
+     "pct": "3%"
+    }
+   ]
   },
   {
    "id": 166,
@@ -5633,7 +5691,29 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_166.gif",
    "bg": "red_desert.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "18 - 50",
+   "alignment": "Neutral",
+   "health": "Low",
+   "defense": "High",
+   "resistance": "Low",
+   "scavenging": [
+    {
+     "name": "Scrap Chitin",
+     "res": "scrap_chitin",
+     "pct": "14%"
+    },
+    {
+     "name": "Scrap Tendon",
+     "res": "scrap_tendon",
+     "pct": "71%"
+    },
+    {
+     "name": "Scrap Tail",
+     "res": "scrap_tail",
+     "pct": "14%"
+    }
+   ]
   },
   {
    "id": 167,
@@ -6298,7 +6378,54 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_185.gif",
    "bg": "red_desert.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "18 - 22",
+   "alignment": "Neutral",
+   "health": "Medium",
+   "defense": "High",
+   "resistance": "Low",
+   "scavenging": [
+    {
+     "name": "Scrap Wing",
+     "res": "scrap_wing",
+     "pct": "9%"
+    },
+    {
+     "name": "Scrap Meat",
+     "res": "scrap_meat",
+     "pct": "13%"
+    },
+    {
+     "name": "Scrap Hide",
+     "res": "scrap_hide",
+     "pct": "35%"
+    },
+    {
+     "name": "Scrap Bone",
+     "res": "scrap_bone",
+     "pct": "13%"
+    },
+    {
+     "name": "Scrap Tendon",
+     "res": "scrap_tendon",
+     "pct": "13%"
+    },
+    {
+     "name": "Scrap Skull",
+     "res": "scrap_skull",
+     "pct": "4%"
+    },
+    {
+     "name": "Scrap Eye",
+     "res": "scrap_eye",
+     "pct": "9%"
+    },
+    {
+     "name": "Scrap Tail",
+     "res": "scrap_tail",
+     "pct": "4%"
+    }
+   ]
   },
   {
    "id": 186,
