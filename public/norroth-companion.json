@@ -1,8 +1,8 @@
 {
-  "version": "2.6.82",
+  "version": "2.6.83",
   "date": "2026-10-21",
-  "notes": "v2.6.82：世界地图 POI 改成实时读取 —— 进游戏后从 /modal/help_detail?id=49（采集点）和 ?id=53（敌人）实时拉取，缓存 24h，失败回退内置快照；覆盖 324→351 张图",
+  "notes": "v2.6.83：地图信息懒加载自愈（点开 Map Details 顺手收下，零额外请求）+ 高级页新增「更新地图数据」按钮（后台重扫 id 1..2100，可取消、可断点续扫、结果与内嵌表合并）",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 681868,
-  "sha256": "1b44d0fb673b82800bc216dfbfbc947f91eabb80534b3d053fb4b10d7e36188d"
+  "size": 691247,
+  "sha256": "a42d9ba4aa3e00a1a9d5f22339ed885c27fa77b6bf75077e7ba516754c969d4a"
 }
