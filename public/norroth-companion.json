@@ -1,8 +1,8 @@
 {
-  "version": "2.6.88",
+  "version": "2.6.89",
   "date": "2026-10-22",
-  "notes": "v2.6.88：图鉴导出简化为 JSON，并大幅提速（先取图鉴 id 清单只抓 193 条 + 并发 6，150 秒 → 10~16 秒）。",
+  "notes": "v2.6.89：高级页新增「图鉴同步」——把本账号图鉴记录一键上传到公共图鉴仓库（需 GitHub 令牌；无令牌则下载 JSON + 打开上传页），由 Actions 自动并入唯一一份权威图鉴文档。令牌只存本机。",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 696326,
-  "sha256": "43b3e09d9ad9be095441101ea0f41b7b4d3acc3a7b2f69b2ce357b036eae656c"
+  "size": 704726,
+  "sha256": "8b89a05b70514b9065e5fb827f31335fe4a0065b87389a670036374224f106f8"
 }

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.88
+// @version      2.6.89
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -184,7 +184,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.88';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
+  const SCRIPT_VER = '2.6.89';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
   /* ★ v2.6.77：在线更新。
      脚本托管在 GitHub Pages（和中文 Wiki 同一个仓库 / 同一次部署），元数据块里的
      @updateURL / @downloadURL 都指向下面这个地址 —— Tampermonkey 会按自己的周期
@@ -7380,6 +7380,21 @@
 
           <div class="divblock_dark" style="margin-top:4px">
             <div class="nr-srow">
+              <span class="nr-sl" style="flex:none" title="把你的图鉴记录上传到公共图鉴仓库（TravisWWW/norr-wiki），GitHub Actions 会自动并入唯一一份权威图鉴文档，所有用小伴侣的人共享同一份数据。填了令牌可一键上传；没令牌则下载 JSON 并打开 GitHub 上传页手动拖入。">图鉴同步</span>
+              <button class="mini" id="nr-bestsync" type="button" style="flex:1" title="扫描并上传到公共图鉴">同步到公共图鉴</button>
+            </div>
+            <div class="nr-srow" style="margin-top:4px">
+              <span id="nr-bestsyncstate" style="flex:1;color:#9aa4b2;font-size:10.5px">填好令牌后点「同步到公共图鉴」</span>
+            </div>
+            <div class="nr-srow" style="margin-top:4px">
+              <span class="nr-sl" style="flex:none" title="GitHub 细粒度令牌（Fine-grained PAT），权限只需勾选本仓库的 Contents: Read and write。只存在你本机浏览器，不写进配置、不随导出泄漏。留空则只能手动下载 JSON 再拖到 GitHub 上传页。">GitHub 令牌</span>
+              <input type="password" id="nr-ghtoken" placeholder="github_pat_…（可留空）" autocomplete="off" spellcheck="false" style="flex:1;min-width:0;padding:2px 4px;font-size:10.5px;height:auto;line-height:1.3">
+              <button class="mini" id="nr-ghtokensave" type="button" title="保存到本机浏览器">保存</button>
+            </div>
+          </div>
+
+          <div class="divblock_dark" style="margin-top:4px">
+            <div class="nr-srow">
               <span class="nr-sl" style="flex:none" title="脚本托管在 GitHub Pages：元数据里的 @updateURL / @downloadURL 指向同一地址，Tampermonkey 会按自己的周期（默认每天，可在设置里调短）静默自动升级。这里额外做一次「进游戏就查」的轻量检查，发现新版本时右上角版本号会变成金色角标，点一下即可更新。">在线更新</span>
               <span id="nr-updstate" style="flex:1;color:#9aa4b2;font-size:10.5px">当前 v${SCRIPT_VER}</span>
               <button class="mini" id="nr-updcheck" type="button" title="立即检查远端是否有新版本（绕过 5 分钟节流）">检查更新</button>
@@ -7838,6 +7853,17 @@
     if (bestExpEl) bestExpEl.addEventListener('click', function () { exportBestiary(); });
     const bestCancelEl = panel.querySelector('#nr-bestcancel');
     if (bestCancelEl) bestCancelEl.addEventListener('click', function () { _bestCancel = true; });
+    const bestSyncEl = panel.querySelector('#nr-bestsync');
+    if (bestSyncEl) bestSyncEl.addEventListener('click', function () { syncBestiary(); });
+    const ghTokEl = panel.querySelector('#nr-ghtoken');
+    if (ghTokEl) ghTokEl.value = ghToken();
+    const ghTokSaveEl = panel.querySelector('#nr-ghtokensave');
+    if (ghTokSaveEl) ghTokSaveEl.addEventListener('click', function () {
+      const v = ((ghTokEl && ghTokEl.value) || '').trim();
+      setGhToken(v);
+      const s = panel.querySelector('#nr-bestsyncstate');
+      if (s) s.textContent = v ? '已保存令牌（仅本机）' : '已清除令牌';
+    });
     // 详细统计：点标题栏展开/收起，点「清空」清零
     const detbar = panel.querySelector('#nr-detbar');
     if (detbar) detbar.addEventListener('click', e => {
@@ -10442,12 +10468,123 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
     }
   }
 
+  /* ======================= 图鉴同步（GitHub 公共图鉴） =======================
+     设计：仓库里只维护「一份」权威图鉴文档（src/data/bestiary-live.json）。
+     每个人只上传自己账号的原始记录到收件箱 data/bestiary-contrib/char-<id>.json，
+     由 GitHub Actions 自动合并进那份文档，然后清空收件箱。
+     · 有令牌：脚本直接 PUT 到 GitHub（一键、真正实时）。
+     · 没令牌：下载 JSON + 打开 GitHub 上传页，手动拖进去（无需令牌）。
+     令牌只存本机 localStorage，不进配置、不随导出泄漏。 */
+  const GH_REPO = 'TravisWWW/norr-wiki';
+  const GH_BRANCH = 'main';
+  const GH_CONTRIB_DIR = 'data/bestiary-contrib';
+  const GH_TOKEN_KEY = 'norroth_gh_token';
+
+  function ghToken() { try { return localStorage.getItem(GH_TOKEN_KEY) || ''; } catch (e) { return ''; } }
+  function setGhToken(v) { try { if (v) localStorage.setItem(GH_TOKEN_KEY, v); else localStorage.removeItem(GH_TOKEN_KEY); } catch (e) { /* ignore */ } }
+
+  function b64utf8(str) {
+    const bytes = new TextEncoder().encode(str);
+    let bin = '';
+    const CH = 0x8000;
+    for (let i = 0; i < bytes.length; i += CH) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + CH));
+    return btoa(bin);
+  }
+
+  async function ghApi(method, path, body, token) {
+    const headers = { 'Accept': 'application/vnd.github+json', 'X-GitHub-Api-Version': '2022-11-28' };
+    if (token) headers['Authorization'] = 'Bearer ' + token;
+    if (body) headers['Content-Type'] = 'application/json';
+    const r = await fetch('https://api.github.com' + path, { method, headers, body: body ? JSON.stringify(body) : undefined });
+    const txt = await r.text();
+    let j = null; try { j = txt ? JSON.parse(txt) : null; } catch (e) { /* ignore */ }
+    if (!r.ok) { const err = new Error((j && j.message) ? j.message : ('HTTP ' + r.status)); err.status = r.status; throw err; }
+    return j;
+  }
+
+  function bestiaryPayload(list, src) {
+    const c = (typeof character === 'object' && character) || {};
+    const rec = list.filter(function (m) { return m.recorded; }).length;
+    return {
+      meta: {
+        char: c.name || ('#' + (c.id || '?')), charId: c.id || 0, level: c.level || '?',
+        time: new Date().toISOString(), count: list.length, recorded: rec,
+        idSource: src, scriptVersion: SCRIPT_VER, source: 'game Inspect /modal/inspect_enemy',
+        unlock: { recorded: 1, skills: 10, stats: 20 }
+      },
+      monsters: list
+    };
+  }
+
+  async function syncBestiary() {
+    if (_bestBusy) return;
+    const panel = els.panel;
+    const stEl = panel && panel.querySelector('#nr-bestsyncstate');
+    const syncBtn = panel && panel.querySelector('#nr-bestsync');
+    const cancelBtn = panel && panel.querySelector('#nr-bestcancel');
+    const expBtn = panel && panel.querySelector('#nr-bestexp');
+    const say = s => { if (stEl) stEl.textContent = s; };
+    _bestBusy = true; _bestCancel = false;
+    if (cancelBtn) cancelBtn.style.display = '';
+    if (syncBtn) { syncBtn.disabled = true; syncBtn.textContent = '同步中…'; }
+    if (expBtn) expBtn.disabled = true;
+    const t0 = Date.now();
+    try {
+      const res = await bestiaryScan(function (n, found, total) {
+        say('扫描中… ' + n + '/' + total + '，已找到 ' + found + ' 种');
+      });
+      const list = res.list;
+      if (!list.length) { say('没取到数据（未登录或接口被限流）'); setStatus('图鉴同步：没取到数据'); return; }
+      const payload = bestiaryPayload(list, res.src);
+      const fname = 'char-' + (payload.meta.charId || 'unknown') + '.json';
+      const fpath = GH_CONTRIB_DIR + '/' + fname;
+      const text = JSON.stringify(payload, null, 1);
+      const token = ghToken();
+      if (token) {
+        say('上传中… ' + fname);
+        let sha = null;
+        try {
+          const cur = await ghApi('GET', '/repos/' + GH_REPO + '/contents/' + fpath + '?ref=' + GH_BRANCH, null, token);
+          if (cur && cur.sha) sha = cur.sha;
+        } catch (e) { if (e.status !== 404) throw e; }
+        const body = { message: '图鉴贡献：' + payload.meta.char + '（' + payload.meta.recorded + '/' + payload.meta.count + '）', content: b64utf8(text), branch: GH_BRANCH };
+        if (sha) body.sha = sha;
+        await ghApi('PUT', '/repos/' + GH_REPO + '/contents/' + fpath, body, token);
+        const secs = Math.round((Date.now() - t0) / 1000);
+        say('已上传 ' + fname + '（已记录 ' + payload.meta.recorded + '），服务器正在合并…');
+        setStatus('图鉴已同步：' + payload.meta.char + '（' + payload.meta.recorded + '/' + payload.meta.count + '，' + secs + 's）');
+        logEvent('图鉴同步上传 ' + fname + ' / 已记录 ' + payload.meta.recorded + ' / ' + secs + 's');
+      } else {
+        const blob = new Blob([text], { type: 'application/json;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = fname;
+        document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(function () { try { URL.revokeObjectURL(url); } catch (e) { /* ignore */ } }, 60000);
+        const upUrl = 'https://github.com/' + GH_REPO + '/upload/' + GH_BRANCH + '/' + GH_CONTRIB_DIR;
+        try { window.open(upUrl, '_blank', 'noopener'); } catch (e) { /* ignore */ }
+        say('已下载 ' + fname + '，请拖到刚打开的 GitHub 上传页（或填令牌后一键上传）');
+        setStatus('图鉴同步：已下载 ' + fname + '，请拖到 GitHub 上传页');
+        logEvent('图鉴同步（无令牌）：已下载 ' + fname);
+      }
+    } catch (e) {
+      const msg = (e && e.message) ? e.message : String(e);
+      say('同步失败：' + msg);
+      setStatus('图鉴同步失败：' + msg);
+    } finally {
+      _bestBusy = false;
+      if (cancelBtn) cancelBtn.style.display = 'none';
+      if (syncBtn) { syncBtn.disabled = false; syncBtn.textContent = '同步到公共图鉴'; }
+      if (expBtn) expBtn.disabled = false;
+    }
+  }
+
   window.__norrothFarm = {
     event: { tick: eventTick, reset: eventReset, activitiesHasJoin: eventActivitiesHasJoin, enterGate: eventEnterGate, pickPoint: eventPickPoint, typeOf: eventTypeOf, res: function () { return st.event; }, mapId: EVENT_MAP_ID },
     mc: { toggle: mcToggle, togglePause: mcTogglePause, syncBtns: syncMcBtns, queue: mcQueue, profLevels: mcProfLevels, profLevelsCached: mcProfLevelsCached, idleInfo: mcIdleInfo, startIdle: mcStartIdle, switch: mcSwitch, readChars: mcReadChars, setOn: mcSetOn, startAll: mcStartAll, stopAll: mcStopAll, validateAll: mcValidateAll, canGather: mcCanGather, render: mcRender, tick: mcTick, fillCurrent: mcFillCurrent, runTrip: mcRunTrip, beginTrip: mcBeginTrip, runRepairAndDeposit: runRepairAndDeposit, nearestGatherTile: nearestGatherTile, idleRaw: function () { return _mcGatherRaw; }, loadRot: mcLoadRot, saveRot: mcSaveRot, rot: function () { return rot; }, due: mcDue, chars: function () { return cfg.mcChars; }, queueCache: function () { return _mcQueueCache; }, claimIdleRewards: claimIdleRewards, closeIdleDialog: closeIdleResultDialog, refreshStatus: mcRefreshStatus, applyQueue: mcApplyQueue },
     start: () => beginRun('battle'), stop: stop, cfg: cfg, st: st, step: step,
     startTower: () => beginRun('tower'), stepTower: stepTower, isTowerMap: isTowerMap, towerTiles: towerTiles, towerNextGate: towerNextGate, towerGateCandidates: towerGateCandidates, towerAdjacentTile: towerAdjacentTile, openTower: openTower, nearestTowerTown: nearestTowerTown,
-    bestiary: { scan: bestiaryScan, ids: bestiaryIds, export: exportBestiary, cancel: function(){ _bestCancel = true; } },
+    bestiary: { scan: bestiaryScan, ids: bestiaryIds, export: exportBestiary, sync: syncBestiary, token: ghToken, setToken: setGhToken, cancel: function(){ _bestCancel = true; } },
     scanEnemies: scanEnemies, attackableEnemies: attackableEnemies, pickTarget: pickTarget,
     rankWeight: rankWeight, nameWeight: nameWeight, detectRank: detectRank, whyText: whyText,
     targetKey: targetKey, nameAllowed: nameAllowed,   /* ★ v2.6.74：便于验证索敌模式 */
