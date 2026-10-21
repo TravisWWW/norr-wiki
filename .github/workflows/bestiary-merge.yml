@@ -1,7 +1,10 @@
 name: 合并图鉴贡献
 
 # 收件箱（data/bestiary-contrib/）收到新贡献时，自动并入唯一一份权威图鉴文档
-# src/data/bestiary-live.json，并清空收件箱。提交后由 deploy.yml 重新构建并发布。
+# src/data/bestiary-live.json，清空收件箱，并重新构建发布。
+#
+# 注意：机器人用 GITHUB_TOKEN 推送的提交【不会】再触发 deploy.yml（GitHub 的防递归规则），
+# 所以这里必须自己把 Pages 部署跑一遍。
 on:
   push:
     paths:
@@ -10,16 +13,20 @@ on:
 
 permissions:
   contents: write
+  pages: write
+  id-token: write
 
 concurrency:
-  group: bestiary-merge
-  cancel-in-progress: false
+  group: pages
+  cancel-in-progress: true
 
 jobs:
   merge:
     # 机器人自己提交（清空收件箱）时不再触发，避免空跑
     if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
+    outputs:
+      changed: ${{ steps.commit.outputs.changed }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -28,13 +35,42 @@ jobs:
       - name: 合并贡献 → 权威图鉴文档
         run: node tools/merge-bestiary-contrib.mjs
       - name: 提交合并结果
+        id: commit
         run: |
           git config user.name "norr-wiki-bot"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add -A data/bestiary-contrib src/data/bestiary-live.json
           if git diff --cached --quiet; then
             echo "没有变化，跳过提交"
+            echo "changed=false" >> "$GITHUB_OUTPUT"
           else
             git commit -m "图鉴自动合并：$(date -u +'%Y-%m-%d %H:%M UTC')"
             git push
+            echo "changed=true" >> "$GITHUB_OUTPUT"
           fi
+
+  deploy:
+    needs: merge
+    if: needs.merge.outputs.changed == 'true'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      # 取最新的 main（含机器人刚推的合并提交）
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: npm run check:site
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+      - id: deployment
+        uses: actions/deploy-pages@v4
