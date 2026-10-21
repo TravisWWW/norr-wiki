@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.94
+// @version      2.6.95
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -184,7 +184,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.94';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
+  const SCRIPT_VER = '2.6.95';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -7401,22 +7401,12 @@
 
           <div class="divblock_dark" style="margin-top:4px">
             <div class="nr-srow">
-              <span class="nr-sl" style="flex:none" title="读取游戏内图鉴（Inspect）里你这个账号的记录，导出成 JSON。只读，不改动任何游戏数据。并发抓取 id 1~300，约 20 秒，可随时取消。">图鉴导出</span>
-              <button class="mini" id="nr-bestexp" type="button" title="扫描并导出 JSON" style="flex:1">导出 JSON</button>
-            </div>
-            <div class="nr-srow" style="margin-top:4px">
-              <span id="nr-beststate" style="flex:1;color:#9aa4b2;font-size:10.5px">点「导出 JSON」扫描游戏内图鉴记录（约 20 秒）</span>
-              <button class="mini" id="nr-bestcancel" type="button" style="display:none">取消</button>
-            </div>
-          </div>
-
-          <div class="divblock_dark" style="margin-top:4px">
-            <div class="nr-srow">
-              <span class="nr-sl" style="flex:none" title="扫描本账号的图鉴记录，然后【静默上传】到公共图鉴数据仓库（TravisWWW/nor-database）；norr-wiki 会自动拉取并并入唯一一份权威图鉴文档，所有用小伴侣的人共享同一份数据。全程不需要填令牌、不会打开任何网页。">图鉴同步</span>
+              <span class="nr-sl" style="flex:none" title="扫描本账号的图鉴记录，然后【静默上传】到公共图鉴数据仓库（TravisWWW/nor-database）；norr-wiki 会自动拉取并并入唯一一份权威图鉴文档，所有用小伴侣的人共享同一份数据。全程不需要填令牌、不会打开任何网页，约 20 秒，可随时取消。">图鉴同步</span>
               <button class="mini" id="nr-bestsync" type="button" style="flex:1" title="扫描并静默上传到公共图鉴">同步到公共图鉴</button>
             </div>
             <div class="nr-srow" style="margin-top:4px">
               <span id="nr-bestsyncstate" style="flex:1;color:#9aa4b2;font-size:10.5px">点「同步到公共图鉴」（静默上传，无需令牌）</span>
+              <button class="mini" id="nr-bestcancel" type="button" style="display:none">取消</button>
             </div>
           </div>
 
@@ -7876,8 +7866,6 @@
       if (e.target.id === 'nr-logclear') { st.log = []; renderLog(); }
       if (e.target.id === 'nr-logexport') { exportErrorLog(); }
     });
-    const bestExpEl = panel.querySelector('#nr-bestexp');
-    if (bestExpEl) bestExpEl.addEventListener('click', function () { exportBestiary(); });
     const bestCancelEl = panel.querySelector('#nr-bestcancel');
     if (bestCancelEl) bestCancelEl.addEventListener('click', function () { _bestCancel = true; });
     const bestSyncEl = panel.querySelector('#nr-bestsync');
@@ -10457,54 +10445,6 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
     return { list: out, src: src.src, total: total };
   }
 
-  async function exportBestiary() {
-    if (_bestBusy) return;
-    const panel = els.panel;
-    const stEl = panel && panel.querySelector('#nr-beststate');
-    const cancelBtn = panel && panel.querySelector('#nr-bestcancel');
-    const expBtn = panel && panel.querySelector('#nr-bestexp');
-    _bestBusy = true; _bestCancel = false;
-    if (cancelBtn) cancelBtn.style.display = '';
-    if (expBtn) { expBtn.disabled = true; expBtn.textContent = '导出中…'; }
-    const t0 = Date.now();
-    try {
-      const res = await bestiaryScan(function (n, found, total) {
-        if (stEl) stEl.textContent = '扫描中… ' + n + '/' + total + '，已找到 ' + found + ' 种';
-      });
-      const list = res.list;
-      if (!list.length) { setStatus('图鉴导出：没取到数据（未登录或接口被限流）'); if (stEl) stEl.textContent = '未取到数据'; return; }
-      const c = (typeof character === 'object' && character) || {};
-      const rec = list.filter(function (m) { return m.recorded; }).length;
-      const payload = {
-        meta: {
-          char: c.name || ('#' + (c.id || '?')), level: c.level || '?', time: new Date().toISOString(),
-          count: list.length, recorded: rec, idSource: res.src, scriptVersion: SCRIPT_VER,
-          source: 'game Inspect /modal/inspect_enemy',
-          unlock: { recorded: 1, skills: 10, stats: 20 }
-        },
-        monsters: list
-      };
-      const blob = new Blob([JSON.stringify(payload, null, 1)], { type: 'application/json;charset=utf-8' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'norroth_bestiary_' + new Date().toISOString().slice(0, 10) + '.json';
-      document.body.appendChild(a); a.click(); a.remove();
-      setTimeout(function () { try { URL.revokeObjectURL(url); } catch (e) { /* ignore */ } }, 60000);
-      const secs = Math.round((Date.now() - t0) / 1000);
-      setStatus('已导出图鉴：' + list.length + ' 种（已记录 ' + rec + '，耗时 ' + secs + 's）');
-      logEvent('导出图鉴 ' + list.length + ' 种 / 已记录 ' + rec + ' / ' + secs + 's');
-      if (stEl) stEl.textContent = '已导出 ' + list.length + ' 种（已记录 ' + rec + '，耗时 ' + secs + 's）';
-    } catch (e) {
-      setStatus('图鉴导出失败：' + (e && e.message ? e.message : String(e)));
-      if (stEl) stEl.textContent = '导出失败';
-    } finally {
-      _bestBusy = false;
-      if (cancelBtn) cancelBtn.style.display = 'none';
-      if (expBtn) { expBtn.disabled = false; expBtn.textContent = '导出 JSON'; }
-    }
-  }
-
   /* ======================= 图鉴同步（GitHub 公共图鉴） =======================
      设计：仓库里只维护「一份」权威图鉴文档（src/data/bestiary-live.json）。
      每个人只上传自己账号的原始记录到收件箱 data/bestiary-contrib/char-<id>.json，
@@ -10572,12 +10512,10 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
     const stEl = panel && panel.querySelector('#nr-bestsyncstate');
     const syncBtn = panel && panel.querySelector('#nr-bestsync');
     const cancelBtn = panel && panel.querySelector('#nr-bestcancel');
-    const expBtn = panel && panel.querySelector('#nr-bestexp');
     const say = s => { if (stEl) stEl.textContent = s; };
     _bestBusy = true; _bestCancel = false;
     if (cancelBtn) cancelBtn.style.display = '';
     if (syncBtn) { syncBtn.disabled = true; syncBtn.textContent = '同步中…'; }
-    if (expBtn) expBtn.disabled = true;
     const t0 = Date.now();
     let token = '';
     try {
@@ -10609,7 +10547,7 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
           notified = true;
         } catch (e) { /* ignore */ }
         const secs = Math.round((Date.now() - t0) / 1000);
-        say('已上传 ' + fname + '（已记录 ' + payload.meta.recorded + '），' + (notified ? '服务器正在合并…' : '服务器将在几分钟内合并'));
+        say('已同步 ' + fname + '（已记录 ' + payload.meta.recorded + '/' + payload.meta.count + '）' + (notified ? '，服务器已收到' : ''));
         setStatus('图鉴已同步：' + payload.meta.char + '（' + payload.meta.recorded + '/' + payload.meta.count + '，' + secs + 's）');
         logEvent('图鉴同步上传 ' + fname + ' / 已记录 ' + payload.meta.recorded + ' / ' + secs + 's');
       }
@@ -10624,7 +10562,6 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
       _bestBusy = false;
       if (cancelBtn) cancelBtn.style.display = 'none';
       if (syncBtn) { syncBtn.disabled = false; syncBtn.textContent = '同步到公共图鉴'; }
-      if (expBtn) expBtn.disabled = false;
     }
   }
 
@@ -10633,7 +10570,7 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
     mc: { toggle: mcToggle, togglePause: mcTogglePause, syncBtns: syncMcBtns, queue: mcQueue, profLevels: mcProfLevels, profLevelsCached: mcProfLevelsCached, idleInfo: mcIdleInfo, startIdle: mcStartIdle, switch: mcSwitch, readChars: mcReadChars, setOn: mcSetOn, startAll: mcStartAll, stopAll: mcStopAll, validateAll: mcValidateAll, canGather: mcCanGather, render: mcRender, tick: mcTick, fillCurrent: mcFillCurrent, runTrip: mcRunTrip, beginTrip: mcBeginTrip, runRepairAndDeposit: runRepairAndDeposit, nearestGatherTile: nearestGatherTile, idleRaw: function () { return _mcGatherRaw; }, loadRot: mcLoadRot, saveRot: mcSaveRot, rot: function () { return rot; }, due: mcDue, chars: function () { return cfg.mcChars; }, queueCache: function () { return _mcQueueCache; }, claimIdleRewards: claimIdleRewards, closeIdleDialog: closeIdleResultDialog, refreshStatus: mcRefreshStatus, applyQueue: mcApplyQueue },
     start: () => beginRun('battle'), stop: stop, cfg: cfg, st: st, step: step,
     startTower: () => beginRun('tower'), stepTower: stepTower, isTowerMap: isTowerMap, towerTiles: towerTiles, towerNextGate: towerNextGate, towerGateCandidates: towerGateCandidates, towerAdjacentTile: towerAdjacentTile, openTower: openTower, nearestTowerTown: nearestTowerTown,
-    bestiary: { scan: bestiaryScan, ids: bestiaryIds, export: exportBestiary, sync: syncBestiary, token: ghCommunityToken, loadToken: loadCommunityToken, clearLegacyToken: clearLegacyToken, cancel: function(){ _bestCancel = true; } },
+    bestiary: { scan: bestiaryScan, ids: bestiaryIds, sync: syncBestiary, token: ghCommunityToken, loadToken: loadCommunityToken, clearLegacyToken: clearLegacyToken, cancel: function(){ _bestCancel = true; } },
     scanEnemies: scanEnemies, attackableEnemies: attackableEnemies, pickTarget: pickTarget,
     rankWeight: rankWeight, nameWeight: nameWeight, detectRank: detectRank, whyText: whyText,
     targetKey: targetKey, nameAllowed: nameAllowed,   /* ★ v2.6.74：便于验证索敌模式 */
