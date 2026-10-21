@@ -1,13 +1,13 @@
 {
  "meta": {
-  "source": "https://www.norroth.com/ 游戏内 Inspect（/modal/inspect_enemy）",
+  "source": "游戏内 Inspect（/modal/inspect_enemy）· 小伴侣导出",
   "fetched": "2026-10-22",
   "version": "1.0",
   "count": 199,
-  "recordedCount": 15,
+  "recordedCount": 98,
   "withLore": 198,
-  "withStats": 5,
-  "withSkills": 7,
+  "withStats": 28,
+  "withSkills": 42,
   "withBg": 183,
   "tabs": {
    "normal": 163,
@@ -94,43 +94,7 @@
      "id": 10009,
      "level": 1
     }
-   ],
-   "stats": {
-    "Base Damage": 10,
-    "Physical Damage": 3,
-    "Blunt Damage": 0,
-    "Spell Damage": 3,
-    "Bleed Damage": 0,
-    "Arcane Damage": 0,
-    "Cold Damage": 0,
-    "Dark Damage": 0,
-    "Fire Damage": 0,
-    "Light Damage": 0,
-    "Lightning Damage": 0,
-    "Poison Damage": 5,
-    "Thorn Damage": 0,
-    "Defense": 20,
-    "Block Chance": 0,
-    "Block Rating": 0,
-    "Arcane Resist": 5,
-    "Cold Resist": 5,
-    "Dark Resist": 5,
-    "Fire Resist": 5,
-    "Light Resist": 5,
-    "Lightning Resist": 5,
-    "Poison Resist": 5,
-    "Evasion": 8,
-    "Critical Chance": 2,
-    "Critical Strike": 2,
-    "Hit Rating": 30,
-    "Attack Speed": 10,
-    "Armor Penetration": 1,
-    "Life Steal": 0,
-    "Mana Steal": 0,
-    "Life Regeneration": 0,
-    "Mana Regeneration": 0,
-    "Maximum Life": 60
-   }
+   ]
   },
   {
    "id": 3,
@@ -194,39 +158,7 @@
      "res": "mucky_tail",
      "pct": "3%"
     }
-   ],
-   "skills": [
-    {
-     "name": "headbutt",
-     "id": 10011,
-     "level": 1
-    },
-    {
-     "name": "kick",
-     "id": 10082,
-     "level": 1
-    },
-    {
-     "name": "trample",
-     "id": 10136,
-     "level": 1
-    }
-   ],
-   "stats": {
-    "Base Damage": 10,
-    "Physical Damage": 3,
-    "Blunt Damage": 0,
-    "Spell Damage": 0,
-    "Bleed Damage": 0,
-    "Arcane Damage": 0,
-    "Cold Damage": 0,
-    "Dark Damage": 0,
-    "Fire Damage": 0,
-    "Light Damage": 0,
-    "Lightning Damage": 0,
-    "Poison Damage": 0,
-    "Thorn Damage": 0
-   }
+   ]
   },
   {
    "id": 4,
@@ -237,7 +169,30 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_4.gif",
    "bg": "coastal.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "4 - 10",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "Low",
+   "defense": "Medium",
+   "resistance": "Low",
+   "scavenging": [
+    {
+     "name": "Mucky Meat",
+     "res": "mucky_meat",
+     "pct": "25%"
+    },
+    {
+     "name": "Mucky Tendon",
+     "res": "mucky_tendon",
+     "pct": "50%"
+    },
+    {
+     "name": "Mucky Eye",
+     "res": "mucky_eye",
+     "pct": "25%"
+    }
+   ]
   },
   {
    "id": 5,
@@ -308,43 +263,7 @@
      "id": 10009,
      "level": 1
     }
-   ],
-   "stats": {
-    "Base Damage": 5,
-    "Physical Damage": 3,
-    "Blunt Damage": 0,
-    "Spell Damage": 0,
-    "Bleed Damage": 0,
-    "Arcane Damage": 0,
-    "Cold Damage": 0,
-    "Dark Damage": 0,
-    "Fire Damage": 0,
-    "Light Damage": 0,
-    "Lightning Damage": 0,
-    "Poison Damage": 0,
-    "Thorn Damage": 0,
-    "Defense": 10,
-    "Block Chance": 0,
-    "Block Rating": 0,
-    "Arcane Resist": 5,
-    "Cold Resist": 5,
-    "Dark Resist": 5,
-    "Fire Resist": 5,
-    "Light Resist": 5,
-    "Lightning Resist": 5,
-    "Poison Resist": 5,
-    "Evasion": 8,
-    "Critical Chance": 0,
-    "Critical Strike": 0,
-    "Hit Rating": 20,
-    "Attack Speed": 10,
-    "Armor Penetration": 1,
-    "Life Steal": 0,
-    "Mana Steal": 0,
-    "Life Regeneration": 0,
-    "Mana Regeneration": 0,
-    "Maximum Life": 60
-   }
+   ]
   },
   {
    "id": 6,
@@ -425,43 +344,7 @@
      "id": 10112,
      "level": 1
     }
-   ],
-   "stats": {
-    "Base Damage": 5,
-    "Physical Damage": 3,
-    "Blunt Damage": 0,
-    "Spell Damage": 0,
-    "Bleed Damage": 0,
-    "Arcane Damage": 0,
-    "Cold Damage": 0,
-    "Dark Damage": 0,
-    "Fire Damage": 0,
-    "Light Damage": 0,
-    "Lightning Damage": 0,
-    "Poison Damage": 0,
-    "Thorn Damage": 0,
-    "Defense": 20,
-    "Block Chance": 0,
-    "Block Rating": 0,
-    "Arcane Resist": 5,
-    "Cold Resist": 5,
-    "Dark Resist": 5,
-    "Fire Resist": 5,
-    "Light Resist": 5,
-    "Lightning Resist": 5,
-    "Poison Resist": 5,
-    "Evasion": 5,
-    "Critical Chance": 0,
-    "Critical Strike": 0,
-    "Hit Rating": 30,
-    "Attack Speed": 6,
-    "Armor Penetration": 1,
-    "Life Steal": 0,
-    "Mana Steal": 0,
-    "Life Regeneration": 0,
-    "Mana Regeneration": 0,
-    "Maximum Life": 60
-   }
+   ]
   },
   {
    "id": 8,
@@ -590,7 +473,60 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_11.gif",
    "bg": "temperate_forest.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "2 - 5",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "Low",
+   "defense": "Medium",
+   "resistance": "Medium",
+   "scavenging": [
+    {
+     "name": "Mucky Meat",
+     "res": "mucky_meat",
+     "pct": "11%"
+    },
+    {
+     "name": "Mucky Hide",
+     "res": "mucky_hide",
+     "pct": "33%"
+    },
+    {
+     "name": "Mucky Tooth",
+     "res": "mucky_tooth",
+     "pct": "7%"
+    },
+    {
+     "name": "Mucky Bone",
+     "res": "mucky_bone",
+     "pct": "7%"
+    },
+    {
+     "name": "Mucky Tendon",
+     "res": "mucky_tendon",
+     "pct": "11%"
+    },
+    {
+     "name": "Mucky Skull",
+     "res": "mucky_skull",
+     "pct": "4%"
+    },
+    {
+     "name": "Mucky Claw",
+     "res": "mucky_claw",
+     "pct": "15%"
+    },
+    {
+     "name": "Mucky Eye",
+     "res": "mucky_eye",
+     "pct": "7%"
+    },
+    {
+     "name": "Mucky Tail",
+     "res": "mucky_tail",
+     "pct": "4%"
+    }
+   ]
   },
   {
    "id": 13,
@@ -640,7 +576,35 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_14.gif",
    "bg": "underground.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "5 - 10",
+   "alignment": "Dark",
+   "specials": "-",
+   "health": "Medium",
+   "defense": "High",
+   "resistance": "Low",
+   "drops": [
+    {
+     "name": "Bronze Sestertii",
+     "res": "coin_bronze",
+     "pct": "100%"
+    },
+    {
+     "name": "Mucky Sharpened Tooth",
+     "res": "mucky_sharpened_tooth",
+     "pct": "10%"
+    },
+    {
+     "name": "Aspen Club",
+     "res": "aspen_club",
+     "pct": "12%"
+    },
+    {
+     "name": "Mucky Leather Glove Base",
+     "res": "mucky_leather_glove_base",
+     "pct": "8%"
+    }
+   ]
   },
   {
    "id": 15,
@@ -700,7 +664,30 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_16.gif",
    "bg": "underground.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "6 - 20",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "Low",
+   "defense": "High",
+   "resistance": "Medium",
+   "scavenging": [
+    {
+     "name": "Mucky Meat",
+     "res": "mucky_meat",
+     "pct": "38%"
+    },
+    {
+     "name": "Mucky Tooth",
+     "res": "mucky_tooth",
+     "pct": "25%"
+    },
+    {
+     "name": "Mucky Tendon",
+     "res": "mucky_tendon",
+     "pct": "38%"
+    }
+   ]
   },
   {
    "id": 19,
@@ -764,7 +751,54 @@
      "res": "mucky_tail",
      "pct": "3%"
     }
-   ]
+   ],
+   "skills": [
+    {
+     "name": "bite",
+     "id": 10009,
+     "level": 1
+    },
+    {
+     "name": "maul",
+     "id": 10015,
+     "level": 1
+    },
+    {
+     "name": "scratch",
+     "id": 10008,
+     "level": 1
+    },
+    {
+     "name": "final_swipe",
+     "id": 10140,
+     "level": 1
+    }
+   ],
+   "stats": {
+    "Base Damage": 15,
+    "Physical Damage": 3,
+    "Blunt Damage": 0,
+    "Spell Damage": 0,
+    "Bleed Damage": 5,
+    "Arcane Damage": 0,
+    "Cold Damage": 0,
+    "Dark Damage": 0,
+    "Fire Damage": 0,
+    "Light Damage": 0,
+    "Lightning Damage": 0,
+    "Poison Damage": 0,
+    "Thorn Damage": 0,
+    "Defense": 20,
+    "Block Chance": 0,
+    "Block Rating": 0,
+    "Arcane Resist": 10,
+    "Cold Resist": 10,
+    "Dark Resist": 10,
+    "Fire Resist": 10,
+    "Light Resist": 10,
+    "Lightning Resist": 10,
+    "Poison Resist": 10
+   }
   },
   {
    "id": 20,
@@ -828,28 +862,6 @@
      "res": "mucky_tail",
      "pct": "3%"
     }
-   ],
-   "skills": [
-    {
-     "name": "headbutt",
-     "id": 10011,
-     "level": 1
-    },
-    {
-     "name": "charge",
-     "id": 10016,
-     "level": 1
-    },
-    {
-     "name": "horn_stab",
-     "id": 10017,
-     "level": 1
-    },
-    {
-     "name": "trample",
-     "id": 10136,
-     "level": 1
-    }
    ]
   },
   {
@@ -861,7 +873,47 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_21.gif",
    "bg": "coastal.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "6 - 10",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "Low",
+   "defense": "High",
+   "resistance": "Low",
+   "scavenging": [
+    {
+     "name": "Mucky Meat",
+     "res": "mucky_meat",
+     "pct": "25%"
+    },
+    {
+     "name": "Mucky Tendon",
+     "res": "mucky_tendon",
+     "pct": "50%"
+    },
+    {
+     "name": "Mucky Eye",
+     "res": "mucky_eye",
+     "pct": "25%"
+    }
+   ],
+   "skills": [
+    {
+     "name": "leap",
+     "id": 9,
+     "level": 1
+    },
+    {
+     "name": "spit",
+     "id": 10083,
+     "level": 1
+    },
+    {
+     "name": "disease",
+     "id": 10078,
+     "level": 1
+    }
+   ]
   },
   {
    "id": 22,
@@ -872,7 +924,65 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_22.gif",
    "bg": "coastal.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "4 - 20",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "Medium",
+   "defense": "High",
+   "resistance": "Medium",
+   "scavenging": [
+    {
+     "name": "Mucky Meat",
+     "res": "mucky_meat",
+     "pct": "18%"
+    },
+    {
+     "name": "Mucky Hide",
+     "res": "mucky_hide",
+     "pct": "9%"
+    },
+    {
+     "name": "Mucky Scale",
+     "res": "mucky_scale",
+     "pct": "9%"
+    },
+    {
+     "name": "Mucky Tooth",
+     "res": "mucky_tooth",
+     "pct": "12%"
+    },
+    {
+     "name": "Mucky Bone",
+     "res": "mucky_bone",
+     "pct": "12%"
+    },
+    {
+     "name": "Mucky Tendon",
+     "res": "mucky_tendon",
+     "pct": "18%"
+    },
+    {
+     "name": "Mucky Skull",
+     "res": "mucky_skull",
+     "pct": "3%"
+    },
+    {
+     "name": "Mucky Claw",
+     "res": "mucky_claw",
+     "pct": "12%"
+    },
+    {
+     "name": "Mucky Eye",
+     "res": "mucky_eye",
+     "pct": "6%"
+    },
+    {
+     "name": "Mucky Tail",
+     "res": "mucky_tail",
+     "pct": "3%"
+    }
+   ]
   },
   {
    "id": 23,
@@ -883,7 +993,44 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_23.gif",
    "bg": "coastal.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "6 - 10",
+   "alignment": "Neutral",
+   "health": "Low",
+   "defense": "High",
+   "resistance": "Low",
+   "scavenging": [
+    {
+     "name": "Mucky Meat",
+     "res": "mucky_meat",
+     "pct": "20%"
+    },
+    {
+     "name": "Mucky Scale",
+     "res": "mucky_scale",
+     "pct": "20%"
+    },
+    {
+     "name": "Mucky Tendon",
+     "res": "mucky_tendon",
+     "pct": "33%"
+    },
+    {
+     "name": "Mucky Skull",
+     "res": "mucky_skull",
+     "pct": "7%"
+    },
+    {
+     "name": "Mucky Eye",
+     "res": "mucky_eye",
+     "pct": "13%"
+    },
+    {
+     "name": "Mucky Tail",
+     "res": "mucky_tail",
+     "pct": "7%"
+    }
+   ]
   },
   {
    "id": 24,
@@ -916,7 +1063,80 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_27.gif",
    "bg": "dry_desert.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "10 - 20",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "Low",
+   "defense": "High",
+   "resistance": "Low",
+   "scavenging": [
+    {
+     "name": "Scrap Scale",
+     "res": "scrap_scale",
+     "pct": "43%"
+    },
+    {
+     "name": "Scrap Tendon",
+     "res": "scrap_tendon",
+     "pct": "57%"
+    }
+   ],
+   "drops": [
+    {
+     "name": "Scorpion Pet Egg",
+     "res": "scorpion_pet_egg",
+     "pct": "4%"
+    }
+   ],
+   "skills": [
+    {
+     "name": "poison_sting",
+     "id": 10020,
+     "level": 2
+    },
+    {
+     "name": "pinch",
+     "id": 10084,
+     "level": 2
+    }
+   ],
+   "stats": {
+    "Base Damage": 20,
+    "Physical Damage": 3,
+    "Blunt Damage": 0,
+    "Spell Damage": 0,
+    "Bleed Damage": 0,
+    "Arcane Damage": 0,
+    "Cold Damage": 0,
+    "Dark Damage": 0,
+    "Fire Damage": 0,
+    "Light Damage": 0,
+    "Lightning Damage": 0,
+    "Poison Damage": 5,
+    "Thorn Damage": 0,
+    "Defense": 40,
+    "Block Chance": 0,
+    "Block Rating": 0,
+    "Arcane Resist": 5,
+    "Cold Resist": 5,
+    "Dark Resist": 5,
+    "Fire Resist": 5,
+    "Light Resist": 5,
+    "Lightning Resist": 5,
+    "Poison Resist": 5,
+    "Evasion": 8,
+    "Critical Chance": 2,
+    "Critical Strike": 2,
+    "Hit Rating": 30,
+    "Attack Speed": 10,
+    "Armor Penetration": 1,
+    "Life Steal": 0,
+    "Mana Steal": 0,
+    "Life Regeneration": 0,
+    "Mana Regeneration": 0,
+    "Maximum Life": 60
+   }
   },
   {
    "id": 28,
@@ -927,7 +1147,39 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_28.gif",
    "bg": "underground.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "6 - 10",
+   "alignment": "Neutral",
+   "health": "Low",
+   "defense": "Medium",
+   "resistance": "High",
+   "scavenging": [
+    {
+     "name": "Mucky Meat",
+     "res": "mucky_meat",
+     "pct": "20%"
+    },
+    {
+     "name": "Mucky Fang",
+     "res": "mucky_fang",
+     "pct": "13%"
+    },
+    {
+     "name": "Mucky Wing",
+     "res": "mucky_wing",
+     "pct": "13%"
+    },
+    {
+     "name": "Mucky Tendon",
+     "res": "mucky_tendon",
+     "pct": "40%"
+    },
+    {
+     "name": "Mucky Eye",
+     "res": "mucky_eye",
+     "pct": "13%"
+    }
+   ]
   },
   {
    "id": 29,
@@ -938,7 +1190,71 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_29.gif",
    "bg": "underground.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "11 - 19",
+   "alignment": "Neutral",
+   "health": "High",
+   "defense": "High",
+   "resistance": "Low",
+   "scavenging": [
+    {
+     "name": "Scrap Meat",
+     "res": "scrap_meat",
+     "pct": "29%"
+    },
+    {
+     "name": "Scrap Fang",
+     "res": "scrap_fang",
+     "pct": "12%"
+    },
+    {
+     "name": "Scrap Wing",
+     "res": "scrap_wing",
+     "pct": "12%"
+    },
+    {
+     "name": "Scrap Tendon",
+     "res": "scrap_tendon",
+     "pct": "35%"
+    },
+    {
+     "name": "Scrap Eye",
+     "res": "scrap_eye",
+     "pct": "12%"
+    }
+   ],
+   "skills": [
+    {
+     "name": "vampiric_bite",
+     "id": 10021,
+     "level": 2
+    },
+    {
+     "name": "dark_ball",
+     "id": 10073,
+     "level": 2
+    },
+    {
+     "name": "bite",
+     "id": 10009,
+     "level": 2
+    }
+   ],
+   "stats": {
+    "Base Damage": 10,
+    "Physical Damage": 3,
+    "Blunt Damage": 0,
+    "Spell Damage": 0,
+    "Bleed Damage": 0,
+    "Arcane Damage": 0,
+    "Cold Damage": 0,
+    "Dark Damage": 5,
+    "Fire Damage": 0,
+    "Light Damage": 0,
+    "Lightning Damage": 0,
+    "Poison Damage": 0,
+    "Thorn Damage": 0
+   }
   },
   {
    "id": 30,
@@ -1030,26 +1346,7 @@
    "specials": "-",
    "health": "Low",
    "defense": "High",
-   "resistance": "Low",
-   "scavenging": [
-    {
-     "name": "Mucky Fang",
-     "res": "mucky_fang",
-     "pct": "67%"
-    },
-    {
-     "name": "Mucky Chitin",
-     "res": "mucky_chitin",
-     "pct": "33%"
-    }
-   ],
-   "drops": [
-    {
-     "name": "Woodland Spider Pet Egg",
-     "res": "woodland_spider_pet_egg",
-     "pct": "4.5%"
-    }
-   ]
+   "resistance": "Low"
   },
   {
    "id": 37,
@@ -1130,7 +1427,43 @@
      "id": 10136,
      "level": 1
     }
-   ]
+   ],
+   "stats": {
+    "Base Damage": 20,
+    "Physical Damage": 3,
+    "Blunt Damage": 0,
+    "Spell Damage": 0,
+    "Bleed Damage": 0,
+    "Arcane Damage": 0,
+    "Cold Damage": 0,
+    "Dark Damage": 0,
+    "Fire Damage": 0,
+    "Light Damage": 0,
+    "Lightning Damage": 0,
+    "Poison Damage": 0,
+    "Thorn Damage": 0,
+    "Defense": 20,
+    "Block Chance": 0,
+    "Block Rating": 0,
+    "Arcane Resist": 10,
+    "Cold Resist": 10,
+    "Dark Resist": 10,
+    "Fire Resist": 10,
+    "Light Resist": 10,
+    "Lightning Resist": 10,
+    "Poison Resist": 10,
+    "Evasion": 2,
+    "Critical Chance": 0,
+    "Critical Strike": 0,
+    "Hit Rating": 30,
+    "Attack Speed": 2,
+    "Armor Penetration": 1,
+    "Life Steal": 0,
+    "Mana Steal": 0,
+    "Life Regeneration": 0,
+    "Mana Regeneration": 0,
+    "Maximum Life": 110
+   }
   },
   {
    "id": 39,
@@ -1150,7 +1483,45 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_40.gif",
    "bg": "temple.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "10 - 19",
+   "alignment": "Light",
+   "specials": "-",
+   "health": "Medium",
+   "defense": "Medium",
+   "resistance": "High",
+   "drops": [
+    {
+     "name": "Bronze Sestertii",
+     "res": "coin_bronze",
+     "pct": "100%"
+    },
+    {
+     "name": "Scrap Scroll",
+     "res": "scrap_scroll",
+     "pct": "15%"
+    },
+    {
+     "name": "Silk Fleece",
+     "res": "silk_fleece",
+     "pct": "8%"
+    },
+    {
+     "name": "Elm Rod",
+     "res": "elm_rod",
+     "pct": "8%"
+    },
+    {
+     "name": "Scrap String",
+     "res": "scrap_string",
+     "pct": "10%"
+    },
+    {
+     "name": "Round Sphene",
+     "res": "round_sphene",
+     "pct": "10%"
+    }
+   ]
   },
   {
    "id": 43,
@@ -1172,7 +1543,34 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_45.gif",
    "bg": "sewers.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "1 - 10",
+   "alignment": "Neutral",
+   "health": "Low",
+   "defense": "High",
+   "resistance": "Low",
+   "scavenging": [
+    {
+     "name": "Mucky Chitin",
+     "res": "mucky_chitin",
+     "pct": "11%"
+    },
+    {
+     "name": "Mucky Tooth",
+     "res": "mucky_tooth",
+     "pct": "22%"
+    },
+    {
+     "name": "Mucky Tendon",
+     "res": "mucky_tendon",
+     "pct": "56%"
+    },
+    {
+     "name": "Mucky Tail",
+     "res": "mucky_tail",
+     "pct": "11%"
+    }
+   ]
   },
   {
    "id": 47,
@@ -1215,7 +1613,52 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_51.gif",
    "bg": "dry_desert.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "10 - 20",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "Low",
+   "defense": "High",
+   "resistance": "Medium",
+   "scavenging": [
+    {
+     "name": "Scrap Chitin",
+     "res": "scrap_chitin",
+     "pct": "11%"
+    },
+    {
+     "name": "Scrap Tendon",
+     "res": "scrap_tendon",
+     "pct": "56%"
+    },
+    {
+     "name": "Scrap Wing",
+     "res": "scrap_wing",
+     "pct": "33%"
+    }
+   ],
+   "skills": [
+    {
+     "name": "lethal_bite",
+     "id": 10019,
+     "level": 2
+    },
+    {
+     "name": "bite",
+     "id": 10009,
+     "level": 2
+    },
+    {
+     "name": "bone_shield",
+     "id": 10147,
+     "level": 2
+    },
+    {
+     "name": "scarab_swarm",
+     "id": 10148,
+     "level": 2
+    }
+   ]
   },
   {
    "id": 52,
@@ -1237,7 +1680,103 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_54.gif",
    "bg": "mountain.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "5 - 25",
+   "alignment": "Dark",
+   "specials": "-",
+   "health": "Low",
+   "defense": "Medium",
+   "resistance": "High",
+   "drops": [
+    {
+     "name": "Bronze Sestertii",
+     "res": "coin_bronze",
+     "pct": "100%"
+    },
+    {
+     "name": "Copper Buckle",
+     "res": "copper_buckle",
+     "pct": "5%"
+    },
+    {
+     "name": "Mucky Leather Belt Base",
+     "res": "mucky_leather_belt_base",
+     "pct": "5%"
+    },
+    {
+     "name": "Aspen Rod",
+     "res": "aspen_rod",
+     "pct": "8%"
+    },
+    {
+     "name": "Mucky Goblin Ear",
+     "res": "mucky_goblin_ear",
+     "pct": "6%"
+    },
+    {
+     "name": "Cotton Fleece",
+     "res": "cotton_fleece",
+     "pct": "8%"
+    }
+   ],
+   "skills": [
+    {
+     "name": "fire_thrust",
+     "id": 75,
+     "level": 1
+    },
+    {
+     "name": "blazing_bonk",
+     "id": 10175,
+     "level": 1
+    },
+    {
+     "name": "fire_bolt",
+     "id": 70,
+     "level": 1
+    },
+    {
+     "name": "fire_ball",
+     "id": 10052,
+     "level": 1
+    }
+   ],
+   "stats": {
+    "Base Damage": 6,
+    "Physical Damage": 0,
+    "Blunt Damage": 0,
+    "Spell Damage": 3,
+    "Bleed Damage": 0,
+    "Arcane Damage": 0,
+    "Cold Damage": 0,
+    "Dark Damage": 0,
+    "Fire Damage": 2,
+    "Light Damage": 0,
+    "Lightning Damage": 0,
+    "Poison Damage": 0,
+    "Thorn Damage": 0,
+    "Defense": 10,
+    "Block Chance": 0,
+    "Block Rating": 0,
+    "Arcane Resist": 20,
+    "Cold Resist": 0,
+    "Dark Resist": 20,
+    "Fire Resist": 20,
+    "Light Resist": 20,
+    "Lightning Resist": 30,
+    "Poison Resist": 20,
+    "Evasion": 5,
+    "Critical Chance": 2,
+    "Critical Strike": 2,
+    "Hit Rating": 20,
+    "Attack Speed": 6,
+    "Armor Penetration": 1,
+    "Life Steal": 0,
+    "Mana Steal": 0,
+    "Life Regeneration": 2,
+    "Mana Regeneration": 0,
+    "Maximum Life": 60
+   }
   },
   {
    "id": 55,
@@ -1248,7 +1787,93 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_55.gif",
    "bg": "mountain.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "4 - 20",
+   "alignment": "Dark",
+   "specials": "-",
+   "health": "Low",
+   "defense": "High",
+   "resistance": "Low",
+   "drops": [
+    {
+     "name": "Bronze Sestertii",
+     "res": "coin_bronze",
+     "pct": "100%"
+    },
+    {
+     "name": "Copper Blade",
+     "res": "copper_blade",
+     "pct": "10%"
+    },
+    {
+     "name": "Mucky Leather Helmet Base",
+     "res": "mucky_leather_helmet_base",
+     "pct": "8%"
+    },
+    {
+     "name": "Copper Buckle",
+     "res": "copper_buckle",
+     "pct": "6%"
+    },
+    {
+     "name": "Mucky Goblin Ear",
+     "res": "mucky_goblin_ear",
+     "pct": "6%"
+    }
+   ],
+   "skills": [
+    {
+     "name": "shield_bash",
+     "id": 44,
+     "level": 1
+    },
+    {
+     "name": "lethal_stab",
+     "id": 10046,
+     "level": 1
+    },
+    {
+     "name": "slash",
+     "id": 10024,
+     "level": 1
+    }
+   ],
+   "stats": {
+    "Base Damage": 20,
+    "Physical Damage": 3,
+    "Blunt Damage": 0,
+    "Spell Damage": 0,
+    "Bleed Damage": 5,
+    "Arcane Damage": 0,
+    "Cold Damage": 0,
+    "Dark Damage": 0,
+    "Fire Damage": 0,
+    "Light Damage": 0,
+    "Lightning Damage": 0,
+    "Poison Damage": 0,
+    "Thorn Damage": 0,
+    "Defense": 20,
+    "Block Chance": 30,
+    "Block Rating": 6,
+    "Arcane Resist": 5,
+    "Cold Resist": 5,
+    "Dark Resist": 5,
+    "Fire Resist": 5,
+    "Light Resist": 5,
+    "Lightning Resist": 5,
+    "Poison Resist": 5,
+    "Evasion": 5,
+    "Critical Chance": 5,
+    "Critical Strike": 5,
+    "Hit Rating": 30,
+    "Attack Speed": 6,
+    "Armor Penetration": 1,
+    "Life Steal": 0,
+    "Mana Steal": 0,
+    "Life Regeneration": 2,
+    "Mana Regeneration": 0,
+    "Maximum Life": 60
+   }
   },
   {
    "id": 56,
@@ -1259,7 +1884,35 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_56.gif",
    "bg": "coastal.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "6 - 10",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "Medium",
+   "defense": "High",
+   "resistance": "Low",
+   "drops": [
+    {
+     "name": "Bronze Sestertii",
+     "res": "coin_bronze",
+     "pct": "100%"
+    },
+    {
+     "name": "Slate",
+     "res": "slate",
+     "pct": "20%"
+    },
+    {
+     "name": "Mucky Sharpened Tooth",
+     "res": "mucky_sharpened_tooth",
+     "pct": "10%"
+    },
+    {
+     "name": "Cotton Fleece",
+     "res": "cotton_fleece",
+     "pct": "8%"
+    }
+   ]
   },
   {
    "id": 57,
@@ -1281,7 +1934,29 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_62.gif",
    "bg": "underground.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "7 - 8",
+   "alignment": "Neutral",
+   "health": "Low",
+   "defense": "Medium",
+   "resistance": "Low",
+   "scavenging": [
+    {
+     "name": "Aspen Log",
+     "res": "aspen",
+     "pct": "63%"
+    },
+    {
+     "name": "Mucky Hollowed Log",
+     "res": "mucky_hollowed_log",
+     "pct": "6%"
+    },
+    {
+     "name": "Spirit Log",
+     "res": "spirit_log",
+     "pct": "31%"
+    }
+   ]
   },
   {
    "id": 63,
@@ -1292,7 +1967,19 @@
    "tab": "boss",
    "icon": "https://www.norroth.com/images/maps/items/enemy_63.gif",
    "bg": "underground.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "7 - 7",
+   "alignment": "Neutral",
+   "health": "High",
+   "defense": "High",
+   "resistance": "Low",
+   "drops": [
+    {
+     "name": "Bronze Sestertii",
+     "res": "coin_bronze",
+     "pct": "100%"
+    }
+   ]
   },
   {
    "id": 64,
@@ -1303,7 +1990,45 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_64.gif",
    "bg": "underground.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "4 - 6",
+   "alignment": "Light",
+   "specials": "-",
+   "health": "Medium",
+   "defense": "High",
+   "resistance": "Low",
+   "drops": [
+    {
+     "name": "Bronze Sestertii",
+     "res": "coin_bronze",
+     "pct": "100%"
+    },
+    {
+     "name": "Miner`s Backpack",
+     "res": "miners_backpack",
+     "pct": "35%"
+    },
+    {
+     "name": "Slate",
+     "res": "slate",
+     "pct": "15%"
+    },
+    {
+     "name": "Copper Nails",
+     "res": "copper_nails",
+     "pct": "10%"
+    },
+    {
+     "name": "Copper Axe Blade",
+     "res": "copper_axe_blade",
+     "pct": "10%"
+    },
+    {
+     "name": "Mucky Leather Shoe Base",
+     "res": "mucky_leather_shoe_base",
+     "pct": "10%"
+    }
+   ]
   },
   {
    "id": 65,
@@ -1354,43 +2079,7 @@
      "id": 10138,
      "level": 1
     }
-   ],
-   "stats": {
-    "Base Damage": 2,
-    "Physical Damage": 3,
-    "Blunt Damage": 0,
-    "Spell Damage": 0,
-    "Bleed Damage": 0,
-    "Arcane Damage": 0,
-    "Cold Damage": 0,
-    "Dark Damage": 0,
-    "Fire Damage": 0,
-    "Light Damage": 0,
-    "Lightning Damage": 0,
-    "Poison Damage": 0,
-    "Thorn Damage": 0,
-    "Defense": 2,
-    "Block Chance": 0,
-    "Block Rating": 0,
-    "Arcane Resist": 2,
-    "Cold Resist": 2,
-    "Dark Resist": 2,
-    "Fire Resist": 2,
-    "Light Resist": 2,
-    "Lightning Resist": 2,
-    "Poison Resist": 2,
-    "Evasion": 1,
-    "Critical Chance": 0,
-    "Critical Strike": 0,
-    "Hit Rating": 200,
-    "Attack Speed": 30,
-    "Armor Penetration": 1,
-    "Life Steal": 0,
-    "Mana Steal": 0,
-    "Life Regeneration": 0,
-    "Mana Regeneration": 0,
-    "Maximum Life": 60
-   }
+   ]
   },
   {
    "id": 67,
@@ -1401,7 +2090,13 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_67.gif",
    "bg": "magic_plains.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "40 - 49",
+   "alignment": "Light",
+   "specials": "-",
+   "health": "Medium",
+   "defense": "High",
+   "resistance": "High"
   },
   {
    "id": 69,
@@ -1412,7 +2107,44 @@
    "tab": "boss",
    "icon": "https://www.norroth.com/images/maps/items/enemy_69.gif",
    "bg": "ratdom.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "5 - 5",
+   "alignment": "Neutral",
+   "health": "High",
+   "defense": "High",
+   "resistance": "Medium",
+   "drops": [
+    {
+     "name": "Bronze Sestertii",
+     "res": "coin_bronze",
+     "pct": "100%"
+    },
+    {
+     "name": "Copper Plating",
+     "res": "copper_plating",
+     "pct": "12%"
+    },
+    {
+     "name": "Cabochon Onyx",
+     "res": "cabochon_onyx",
+     "pct": "5%"
+    },
+    {
+     "name": "Copper Hilt",
+     "res": "copper_hilt",
+     "pct": "8%"
+    },
+    {
+     "name": "Copper Blade",
+     "res": "copper_blade",
+     "pct": "9%"
+    },
+    {
+     "name": "Cotton Fleece",
+     "res": "cotton_fleece",
+     "pct": "8%"
+    }
+   ]
   },
   {
    "id": 70,
@@ -1423,7 +2155,40 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_70.gif",
    "bg": "ratdom.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "5 - 5",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "Low",
+   "defense": "High",
+   "resistance": "Low",
+   "drops": [
+    {
+     "name": "Bronze Sestertii",
+     "res": "coin_bronze",
+     "pct": "100%"
+    },
+    {
+     "name": "Burlap Sack",
+     "res": "burlap_sack",
+     "pct": "35%"
+    },
+    {
+     "name": "Mucky Leather Glove Base",
+     "res": "mucky_leather_glove_base",
+     "pct": "8%"
+    },
+    {
+     "name": "Copper Plating",
+     "res": "copper_plating",
+     "pct": "10%"
+    },
+    {
+     "name": "Aspen Rod",
+     "res": "aspen_rod",
+     "pct": "7%"
+    }
+   ]
   },
   {
    "id": 71,
@@ -1456,7 +2221,98 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_86.gif",
    "bg": "mountain.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "11 - 20",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "Medium",
+   "defense": "High",
+   "resistance": "Low",
+   "drops": [
+    {
+     "name": "Bronze Sestertii",
+     "res": "coin_bronze",
+     "pct": "100%"
+    },
+    {
+     "name": "Fieldstone",
+     "res": "fieldstone",
+     "pct": "20%"
+    },
+    {
+     "name": "Elm Club",
+     "res": "elm_club",
+     "pct": "10%"
+    },
+    {
+     "name": "Scrap Sharpened Tooth",
+     "res": "scrap_sharpened_tooth",
+     "pct": "10%"
+    }
+   ],
+   "skills": [
+    {
+     "name": "boulder_hurl",
+     "id": 10031,
+     "level": 2
+    },
+    {
+     "name": "mountain_stance",
+     "id": 10032,
+     "level": 2
+    },
+    {
+     "name": "ground_slam",
+     "id": 10114,
+     "level": 2
+    },
+    {
+     "name": "smash",
+     "id": 10036,
+     "level": 2
+    },
+    {
+     "name": "rockslide",
+     "id": 10139,
+     "level": 2
+    }
+   ],
+   "stats": {
+    "Base Damage": 15,
+    "Physical Damage": 3,
+    "Blunt Damage": 0,
+    "Spell Damage": 0,
+    "Bleed Damage": 0,
+    "Arcane Damage": 0,
+    "Cold Damage": 0,
+    "Dark Damage": 0,
+    "Fire Damage": 0,
+    "Light Damage": 0,
+    "Lightning Damage": 0,
+    "Poison Damage": 0,
+    "Thorn Damage": 0,
+    "Defense": 20,
+    "Block Chance": 20,
+    "Block Rating": 3,
+    "Arcane Resist": 5,
+    "Cold Resist": 5,
+    "Dark Resist": 5,
+    "Fire Resist": 0,
+    "Light Resist": 5,
+    "Lightning Resist": 5,
+    "Poison Resist": 5,
+    "Evasion": 2,
+    "Critical Chance": 5,
+    "Critical Strike": 3,
+    "Hit Rating": 20,
+    "Attack Speed": 2,
+    "Armor Penetration": 1,
+    "Life Steal": 0,
+    "Mana Steal": 0,
+    "Life Regeneration": 2,
+    "Mana Regeneration": 0,
+    "Maximum Life": 90
+   }
   },
   {
    "id": 87,
@@ -1467,7 +2323,35 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_87.gif",
    "bg": "coastal.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "11 - 20",
+   "alignment": "Light",
+   "specials": "-",
+   "health": "Medium",
+   "defense": "High",
+   "resistance": "Low",
+   "drops": [
+    {
+     "name": "Bronze Sestertii",
+     "res": "coin_bronze",
+     "pct": "100%"
+    },
+    {
+     "name": "Scrap Sharpened Tooth",
+     "res": "scrap_sharpened_tooth",
+     "pct": "10%"
+    },
+    {
+     "name": "Iron Point",
+     "res": "iron_point",
+     "pct": "8%"
+    },
+    {
+     "name": "Elm Handle",
+     "res": "elm_handle",
+     "pct": "8%"
+    }
+   ]
   },
   {
    "id": 88,
@@ -1478,7 +2362,93 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_88.gif",
    "bg": "coastal.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "11 - 40",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "Medium",
+   "defense": "Medium",
+   "resistance": "High",
+   "drops": [
+    {
+     "name": "Bronze Sestertii",
+     "res": "coin_bronze",
+     "pct": "100%"
+    },
+    {
+     "name": "Shrimp",
+     "res": "shrimp",
+     "pct": "20%"
+    },
+    {
+     "name": "Scrap String",
+     "res": "scrap_string",
+     "pct": "8%"
+    },
+    {
+     "name": "Round Quartz",
+     "res": "round_quartz",
+     "pct": "5%"
+    },
+    {
+     "name": "Silk Fleece",
+     "res": "silk_fleece",
+     "pct": "9%"
+    }
+   ],
+   "skills": [
+    {
+     "name": "arcana_ball",
+     "id": 10075,
+     "level": 2
+    },
+    {
+     "name": "water_shield",
+     "id": 10150,
+     "level": 2
+    },
+    {
+     "name": "arcane_bolt",
+     "id": 68,
+     "level": 2
+    }
+   ],
+   "stats": {
+    "Base Damage": 10,
+    "Physical Damage": 0,
+    "Blunt Damage": 0,
+    "Spell Damage": 3,
+    "Bleed Damage": 0,
+    "Arcane Damage": 1,
+    "Cold Damage": 0,
+    "Dark Damage": 0,
+    "Fire Damage": 0,
+    "Light Damage": 0,
+    "Lightning Damage": 0,
+    "Poison Damage": 0,
+    "Thorn Damage": 0,
+    "Defense": 10,
+    "Block Chance": 0,
+    "Block Rating": 0,
+    "Arcane Resist": 25,
+    "Cold Resist": 25,
+    "Dark Resist": 20,
+    "Fire Resist": 20,
+    "Light Resist": 20,
+    "Lightning Resist": 0,
+    "Poison Resist": 20,
+    "Evasion": 5,
+    "Critical Chance": 3,
+    "Critical Strike": 3,
+    "Hit Rating": 20,
+    "Attack Speed": 6,
+    "Armor Penetration": 5,
+    "Life Steal": 0,
+    "Mana Steal": 0,
+    "Life Regeneration": 2,
+    "Mana Regeneration": 3,
+    "Maximum Life": 90
+   }
   },
   {
    "id": 89,
@@ -1500,7 +2470,60 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_95.gif",
    "bg": "deep_forest.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "11 - 15",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "Medium",
+   "defense": "High",
+   "resistance": "Low",
+   "scavenging": [
+    {
+     "name": "Scrap Meat",
+     "res": "scrap_meat",
+     "pct": "16%"
+    },
+    {
+     "name": "Scrap Hide",
+     "res": "scrap_hide",
+     "pct": "31%"
+    },
+    {
+     "name": "Scrap Fang",
+     "res": "scrap_fang",
+     "pct": "6%"
+    },
+    {
+     "name": "Scrap Bone",
+     "res": "scrap_bone",
+     "pct": "9%"
+    },
+    {
+     "name": "Scrap Tendon",
+     "res": "scrap_tendon",
+     "pct": "13%"
+    },
+    {
+     "name": "Scrap Skull",
+     "res": "scrap_skull",
+     "pct": "3%"
+    },
+    {
+     "name": "Scrap Claw",
+     "res": "scrap_claw",
+     "pct": "13%"
+    },
+    {
+     "name": "Scrap Eye",
+     "res": "scrap_eye",
+     "pct": "6%"
+    },
+    {
+     "name": "Scrap Tail",
+     "res": "scrap_tail",
+     "pct": "3%"
+    }
+   ]
   },
   {
    "id": 96,
@@ -1511,7 +2534,87 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_96.gif",
    "bg": "deep_forest.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "11 - 20",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "Medium",
+   "defense": "High",
+   "resistance": "Low",
+   "drops": [
+    {
+     "name": "Bronze Sestertii",
+     "res": "coin_bronze",
+     "pct": "100%"
+    },
+    {
+     "name": "Scrap String",
+     "res": "scrap_string",
+     "pct": "20%"
+    },
+    {
+     "name": "Elm Handle",
+     "res": "elm_handle",
+     "pct": "10%"
+    },
+    {
+     "name": "Iron Point",
+     "res": "iron_point",
+     "pct": "8%"
+    }
+   ],
+   "skills": [
+    {
+     "name": "rapid_fire",
+     "id": 112,
+     "level": 2
+    },
+    {
+     "name": "critical_shot",
+     "id": 10029,
+     "level": 2
+    },
+    {
+     "name": "basic_arrow",
+     "id": 3,
+     "level": 2
+    },
+    {
+     "name": "trample",
+     "id": 10136,
+     "level": 2
+    },
+    {
+     "name": "last_arrow",
+     "id": 10151,
+     "level": 2
+    }
+   ],
+   "stats": {
+    "Base Damage": 20,
+    "Physical Damage": 3,
+    "Blunt Damage": 0,
+    "Spell Damage": 0,
+    "Bleed Damage": 5,
+    "Arcane Damage": 0,
+    "Cold Damage": 0,
+    "Dark Damage": 0,
+    "Fire Damage": 0,
+    "Light Damage": 0,
+    "Lightning Damage": 0,
+    "Poison Damage": 0,
+    "Thorn Damage": 0,
+    "Defense": 20,
+    "Block Chance": 0,
+    "Block Rating": 0,
+    "Arcane Resist": 5,
+    "Cold Resist": 10,
+    "Dark Resist": 10,
+    "Fire Resist": 5,
+    "Light Resist": 5,
+    "Lightning Resist": 5,
+    "Poison Resist": 5
+   }
   },
   {
    "id": 97,
@@ -1533,7 +2636,30 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_98.gif",
    "bg": "deep_forest.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "11 - 15",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "High",
+   "defense": "High",
+   "resistance": "Medium",
+   "scavenging": [
+    {
+     "name": "Elm Log",
+     "res": "elm",
+     "pct": "59%"
+    },
+    {
+     "name": "Elm Gall",
+     "res": "elm_gall",
+     "pct": "12%"
+    },
+    {
+     "name": "Spirit Log",
+     "res": "spirit_log",
+     "pct": "29%"
+    }
+   ]
   },
   {
    "id": 99,
@@ -1544,7 +2670,13 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_99.gif",
    "bg": "spider_den.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "15 - 15",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "Low",
+   "defense": "High",
+   "resistance": "Low"
   },
   {
    "id": 100,
@@ -1555,7 +2687,25 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_100.gif",
    "bg": "spider_den.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "15 - 15",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "Low",
+   "defense": "Medium",
+   "resistance": "High",
+   "scavenging": [
+    {
+     "name": "Scrap Fang",
+     "res": "scrap_fang",
+     "pct": "67%"
+    },
+    {
+     "name": "Scrap Chitin",
+     "res": "scrap_chitin",
+     "pct": "33%"
+    }
+   ]
   },
   {
    "id": 101,
@@ -1566,7 +2716,25 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_101.gif",
    "bg": "spider_den.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "15 - 15",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "Low",
+   "defense": "High",
+   "resistance": "Low",
+   "scavenging": [
+    {
+     "name": "Scrap Fang",
+     "res": "scrap_fang",
+     "pct": "67%"
+    },
+    {
+     "name": "Scrap Chitin",
+     "res": "scrap_chitin",
+     "pct": "33%"
+    }
+   ]
   },
   {
    "id": 102,
@@ -1577,7 +2745,19 @@
    "tab": "boss",
    "icon": "https://www.norroth.com/images/maps/items/enemy_102.gif",
    "bg": "spider_den.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "15 - 15",
+   "alignment": "Neutral",
+   "health": "High",
+   "defense": "High",
+   "resistance": "Low",
+   "drops": [
+    {
+     "name": "Bronze Sestertii",
+     "res": "coin_bronze",
+     "pct": "100%"
+    }
+   ]
   },
   {
    "id": 103,
@@ -1588,7 +2768,93 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_103.gif",
    "bg": "dry_desert.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "10 - 30",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "Medium",
+   "defense": "High",
+   "resistance": "Low",
+   "drops": [
+    {
+     "name": "Bronze Sestertii",
+     "res": "coin_bronze",
+     "pct": "100%"
+    },
+    {
+     "name": "Stolen Supplies",
+     "res": "stolen_supplies",
+     "pct": "30%"
+    },
+    {
+     "name": "Iron Blade",
+     "res": "iron_blade",
+     "pct": "10%"
+    },
+    {
+     "name": "Iron Buckle",
+     "res": "iron_buckle",
+     "pct": "8%"
+    },
+    {
+     "name": "Silk Fleece",
+     "res": "silk_fleece",
+     "pct": "12%"
+    }
+   ],
+   "skills": [
+    {
+     "name": "slash",
+     "id": 10024,
+     "level": 2
+    },
+    {
+     "name": "dirty_trick",
+     "id": 10061,
+     "level": 2
+    },
+    {
+     "name": "stab",
+     "id": 10012,
+     "level": 2
+    }
+   ],
+   "stats": {
+    "Base Damage": 20,
+    "Physical Damage": 3,
+    "Blunt Damage": 0,
+    "Spell Damage": 0,
+    "Bleed Damage": 0,
+    "Arcane Damage": 0,
+    "Cold Damage": 0,
+    "Dark Damage": 0,
+    "Fire Damage": 0,
+    "Light Damage": 0,
+    "Lightning Damage": 0,
+    "Poison Damage": 0,
+    "Thorn Damage": 0,
+    "Defense": 20,
+    "Block Chance": 0,
+    "Block Rating": 0,
+    "Arcane Resist": 5,
+    "Cold Resist": 5,
+    "Dark Resist": 5,
+    "Fire Resist": 5,
+    "Light Resist": 5,
+    "Lightning Resist": 5,
+    "Poison Resist": 5,
+    "Evasion": 5,
+    "Critical Chance": 5,
+    "Critical Strike": 5,
+    "Hit Rating": 30,
+    "Attack Speed": 6,
+    "Armor Penetration": 1,
+    "Life Steal": 0,
+    "Mana Steal": 0,
+    "Life Regeneration": 2,
+    "Mana Regeneration": 0,
+    "Maximum Life": 90
+   }
   },
   {
    "id": 104,
@@ -1599,7 +2865,99 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_104.gif",
    "bg": "dry_desert.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "10 - 30",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "Low",
+   "defense": "High",
+   "resistance": "Low",
+   "scavenging": [
+    {
+     "name": "Scrap Meat",
+     "res": "scrap_meat",
+     "pct": "24%"
+    },
+    {
+     "name": "Scrap Claw",
+     "res": "scrap_claw",
+     "pct": "10%"
+    },
+    {
+     "name": "Scrap Wing",
+     "res": "scrap_wing",
+     "pct": "10%"
+    },
+    {
+     "name": "Scrap Tendon",
+     "res": "scrap_tendon",
+     "pct": "29%"
+    },
+    {
+     "name": "Scrap Bone",
+     "res": "scrap_bone",
+     "pct": "10%"
+    },
+    {
+     "name": "Scrap Skull",
+     "res": "scrap_skull",
+     "pct": "5%"
+    },
+    {
+     "name": "Scrap Eye",
+     "res": "scrap_eye",
+     "pct": "10%"
+    },
+    {
+     "name": "Scrap Tail",
+     "res": "scrap_tail",
+     "pct": "5%"
+    }
+   ],
+   "drops": [
+    {
+     "name": "Cassowary Pet Egg",
+     "res": "cassowary_pet_egg",
+     "pct": "3%"
+    }
+   ],
+   "skills": [
+    {
+     "name": "feather_throw",
+     "id": 222,
+     "level": 2
+    },
+    {
+     "name": "lethal_kick",
+     "id": 10059,
+     "level": 2
+    },
+    {
+     "name": "peck",
+     "id": 10058,
+     "level": 2
+    },
+    {
+     "name": "screech",
+     "id": 10152,
+     "level": 2
+    }
+   ],
+   "stats": {
+    "Base Damage": 15,
+    "Physical Damage": 3,
+    "Blunt Damage": 0,
+    "Spell Damage": 0,
+    "Bleed Damage": 0,
+    "Arcane Damage": 0,
+    "Cold Damage": 0,
+    "Dark Damage": 0,
+    "Fire Damage": 0,
+    "Light Damage": 0,
+    "Lightning Damage": 0,
+    "Poison Damage": 0,
+    "Thorn Damage": 0
+   }
   },
   {
    "id": 105,
@@ -1610,7 +2968,45 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_105.gif",
    "bg": "dry_desert.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "10 - 30",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "Low",
+   "defense": "High",
+   "resistance": "Low",
+   "scavenging": [
+    {
+     "name": "Scrap Meat",
+     "res": "scrap_meat",
+     "pct": "25%"
+    },
+    {
+     "name": "Scrap Fang",
+     "res": "scrap_fang",
+     "pct": "10%"
+    },
+    {
+     "name": "Scrap Tendon",
+     "res": "scrap_tendon",
+     "pct": "30%"
+    },
+    {
+     "name": "Scrap Chitin",
+     "res": "scrap_chitin",
+     "pct": "20%"
+    },
+    {
+     "name": "Scrap Eye",
+     "res": "scrap_eye",
+     "pct": "10%"
+    },
+    {
+     "name": "Scrap Tail",
+     "res": "scrap_tail",
+     "pct": "5%"
+    }
+   ]
   },
   {
    "id": 106,
@@ -1632,7 +3028,113 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_107.gif",
    "bg": "dark_forest.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "31 - 40",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "Medium",
+   "defense": "Medium",
+   "resistance": "Medium",
+   "scavenging": [
+    {
+     "name": "Medium Quality Meat",
+     "res": "medium_quality_meat",
+     "pct": "17%"
+    },
+    {
+     "name": "Medium Quality Hide",
+     "res": "medium_quality_hide",
+     "pct": "34%"
+    },
+    {
+     "name": "Medium Quality Tooth",
+     "res": "medium_quality_tooth",
+     "pct": "7%"
+    },
+    {
+     "name": "Medium Quality Bone",
+     "res": "medium_quality_bone",
+     "pct": "10%"
+    },
+    {
+     "name": "Medium Quality Tendon",
+     "res": "medium_quality_tendon",
+     "pct": "14%"
+    },
+    {
+     "name": "Medium Quality Skull",
+     "res": "medium_quality_skull",
+     "pct": "3%"
+    },
+    {
+     "name": "Medium Quality Hoof",
+     "res": "medium_quality_hoof",
+     "pct": "7%"
+    },
+    {
+     "name": "Medium Quality Claw",
+     "res": "medium_quality_claw",
+     "pct": "7%"
+    }
+   ],
+   "skills": [
+    {
+     "name": "horn_stab",
+     "id": 10017,
+     "level": 6
+    },
+    {
+     "name": "arcana_ball",
+     "id": 10075,
+     "level": 6
+    },
+    {
+     "name": "spectral_fear",
+     "id": 10077,
+     "level": 6
+    },
+    {
+     "name": "maul",
+     "id": 10015,
+     "level": 6
+    }
+   ],
+   "stats": {
+    "Base Damage": 10,
+    "Physical Damage": 3,
+    "Blunt Damage": 0,
+    "Spell Damage": 0,
+    "Bleed Damage": 0,
+    "Arcane Damage": 0,
+    "Cold Damage": 0,
+    "Dark Damage": 0,
+    "Fire Damage": 0,
+    "Light Damage": 0,
+    "Lightning Damage": 0,
+    "Poison Damage": 0,
+    "Thorn Damage": 0,
+    "Defense": 10,
+    "Block Chance": 0,
+    "Block Rating": 0,
+    "Arcane Resist": 10,
+    "Cold Resist": 20,
+    "Dark Resist": 10,
+    "Fire Resist": 0,
+    "Light Resist": 10,
+    "Lightning Resist": 10,
+    "Poison Resist": 20,
+    "Evasion": 2,
+    "Critical Chance": 0,
+    "Critical Strike": 0,
+    "Hit Rating": 30,
+    "Attack Speed": 2,
+    "Armor Penetration": 1,
+    "Life Steal": 0,
+    "Mana Steal": 4,
+    "Life Regeneration": 2,
+    "Mana Regeneration": 0,
+    "Maximum Life": 90
+   }
   },
   {
    "id": 108,
@@ -1643,7 +3145,25 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_108.gif",
    "bg": "underground.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "17 - 40",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "High",
+   "defense": "High",
+   "resistance": "Low",
+   "scavenging": [
+    {
+     "name": "Fieldstone",
+     "res": "fieldstone",
+     "pct": "67%"
+    },
+    {
+     "name": "Spirit Stone",
+     "res": "spirit_stone",
+     "pct": "33%"
+    }
+   ]
   },
   {
    "id": 109,
@@ -1654,7 +3174,118 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_109.gif",
    "bg": "dark_forest.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "31 - 40",
+   "alignment": "Dark",
+   "specials": "-",
+   "health": "Low",
+   "defense": "High",
+   "resistance": "Low",
+   "scavenging": [
+    {
+     "name": "Medium Quality Meat",
+     "res": "medium_quality_meat",
+     "pct": "19%"
+    },
+    {
+     "name": "Medium Quality Hide",
+     "res": "medium_quality_hide",
+     "pct": "32%"
+    },
+    {
+     "name": "Medium Quality Tendon",
+     "res": "medium_quality_tendon",
+     "pct": "16%"
+    },
+    {
+     "name": "Medium Quality Claw",
+     "res": "medium_quality_claw",
+     "pct": "6%"
+    },
+    {
+     "name": "Medium Quality Wing",
+     "res": "medium_quality_wing",
+     "pct": "6%"
+    },
+    {
+     "name": "Medium Quality Bone",
+     "res": "medium_quality_bone",
+     "pct": "6%"
+    },
+    {
+     "name": "Medium Quality Skull",
+     "res": "medium_quality_skull",
+     "pct": "3%"
+    },
+    {
+     "name": "Medium Quality Eye",
+     "res": "medium_quality_eye",
+     "pct": "6%"
+    },
+    {
+     "name": "Medium Quality Tail",
+     "res": "medium_quality_tail",
+     "pct": "3%"
+    }
+   ],
+   "skills": [
+    {
+     "name": "charge",
+     "id": 10016,
+     "level": 6
+    },
+    {
+     "name": "lethal_kick",
+     "id": 10059,
+     "level": 6
+    },
+    {
+     "name": "gaze",
+     "id": 10087,
+     "level": 6
+    },
+    {
+     "name": "peck",
+     "id": 10058,
+     "level": 6
+    }
+   ],
+   "stats": {
+    "Base Damage": 20,
+    "Physical Damage": 3,
+    "Blunt Damage": 0,
+    "Spell Damage": 0,
+    "Bleed Damage": 0,
+    "Arcane Damage": 0,
+    "Cold Damage": 0,
+    "Dark Damage": 0,
+    "Fire Damage": 0,
+    "Light Damage": 0,
+    "Lightning Damage": 0,
+    "Poison Damage": 0,
+    "Thorn Damage": 0,
+    "Defense": 20,
+    "Block Chance": 0,
+    "Block Rating": 0,
+    "Arcane Resist": 5,
+    "Cold Resist": 5,
+    "Dark Resist": 5,
+    "Fire Resist": 5,
+    "Light Resist": 5,
+    "Lightning Resist": 5,
+    "Poison Resist": 10,
+    "Evasion": 2,
+    "Critical Chance": 8,
+    "Critical Strike": 25,
+    "Hit Rating": 30,
+    "Attack Speed": 2,
+    "Armor Penetration": 4,
+    "Life Steal": 5,
+    "Mana Steal": 0,
+    "Life Regeneration": 0,
+    "Mana Regeneration": 0,
+    "Maximum Life": 60
+   }
   },
   {
    "id": 110,
@@ -1665,7 +3296,98 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_110.gif",
    "bg": "dark_forest.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "31 - 40",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "High",
+   "defense": "High",
+   "resistance": "Medium",
+   "scavenging": [
+    {
+     "name": "Medium Quality Meat",
+     "res": "medium_quality_meat",
+     "pct": "32%"
+    },
+    {
+     "name": "Medium Quality Chitin",
+     "res": "medium_quality_chitin",
+     "pct": "21%"
+    },
+    {
+     "name": "Medium Quality Fang",
+     "res": "medium_quality_fang",
+     "pct": "11%"
+    },
+    {
+     "name": "Medium Quality Tendon",
+     "res": "medium_quality_tendon",
+     "pct": "26%"
+    },
+    {
+     "name": "Medium Quality Claw",
+     "res": "medium_quality_claw",
+     "pct": "11%"
+    }
+   ],
+   "skills": [
+    {
+     "name": "burrow",
+     "id": 10013,
+     "level": 6
+    },
+    {
+     "name": "lethal_bite",
+     "id": 10019,
+     "level": 6
+    },
+    {
+     "name": "necrotic_bite",
+     "id": 10035,
+     "level": 6
+    },
+    {
+     "name": "multi_leg_strike",
+     "id": 10055,
+     "level": 6
+    },
+    {
+     "name": "stab",
+     "id": 10012,
+     "level": 6
+    }
+   ],
+   "stats": {
+    "Base Damage": 20,
+    "Physical Damage": 3,
+    "Blunt Damage": 0,
+    "Spell Damage": 0,
+    "Bleed Damage": 5,
+    "Arcane Damage": 0,
+    "Cold Damage": 0,
+    "Dark Damage": 0,
+    "Fire Damage": 0,
+    "Light Damage": 0,
+    "Lightning Damage": 0,
+    "Poison Damage": 5,
+    "Thorn Damage": 0,
+    "Defense": 20,
+    "Block Chance": 10,
+    "Block Rating": 1,
+    "Arcane Resist": 10,
+    "Cold Resist": 10,
+    "Dark Resist": 10,
+    "Fire Resist": 10,
+    "Light Resist": 10,
+    "Lightning Resist": 10,
+    "Poison Resist": 10,
+    "Evasion": 2,
+    "Critical Chance": 8,
+    "Critical Strike": 25,
+    "Hit Rating": 30,
+    "Attack Speed": 2,
+    "Armor Penetration": 4
+   }
   },
   {
    "id": 111,
@@ -1676,7 +3398,93 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_111.gif",
    "bg": "dark_forest.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "31 - 49",
+   "alignment": "Dark",
+   "specials": "-",
+   "health": "Medium",
+   "defense": "High",
+   "resistance": "Low",
+   "drops": [
+    {
+     "name": "Bronze Sestertii",
+     "res": "coin_bronze",
+     "pct": "100%"
+    },
+    {
+     "name": "Silken Veil Satchel (Tier 4)",
+     "res": "silken_veil_satchel_t4",
+     "pct": "15%"
+    },
+    {
+     "name": "Steel Point",
+     "res": "steel_point",
+     "pct": "8%"
+    },
+    {
+     "name": "Emerald Garnet",
+     "res": "emerald_garnet",
+     "pct": "5%"
+    },
+    {
+     "name": "Medium Quality Leather",
+     "res": "medium_quality_leather",
+     "pct": "10%"
+    }
+   ],
+   "skills": [
+    {
+     "name": "double_shot",
+     "id": 95,
+     "level": 6
+    },
+    {
+     "name": "crow_attack",
+     "id": 119,
+     "level": 6
+    },
+    {
+     "name": "critical_shot",
+     "id": 10029,
+     "level": 6
+    },
+    {
+     "name": "piercing_bolt",
+     "id": 100,
+     "level": 6
+    }
+   ],
+   "stats": {
+    "Base Damage": 20,
+    "Physical Damage": 3,
+    "Blunt Damage": 0,
+    "Spell Damage": 0,
+    "Bleed Damage": 0,
+    "Arcane Damage": 5,
+    "Cold Damage": 0,
+    "Dark Damage": 5,
+    "Fire Damage": 0,
+    "Light Damage": 0,
+    "Lightning Damage": 0,
+    "Poison Damage": 0,
+    "Thorn Damage": 0,
+    "Defense": 20,
+    "Block Chance": 0,
+    "Block Rating": 0,
+    "Arcane Resist": 10,
+    "Cold Resist": 5,
+    "Dark Resist": 10,
+    "Fire Resist": 5,
+    "Light Resist": 0,
+    "Lightning Resist": 5,
+    "Poison Resist": 5,
+    "Evasion": 5,
+    "Critical Chance": 8,
+    "Critical Strike": 25,
+    "Hit Rating": 40,
+    "Attack Speed": 6,
+    "Armor Penetration": 1
+   }
   },
   {
    "id": 112,
@@ -1687,7 +3495,88 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_112.gif",
    "bg": "dark_forest.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "31 - 40",
+   "alignment": "Light",
+   "specials": "-",
+   "health": "High",
+   "defense": "High",
+   "resistance": "Medium",
+   "scavenging": [
+    {
+     "name": "Maple Log",
+     "res": "maple",
+     "pct": "59%"
+    },
+    {
+     "name": "Maple Gall",
+     "res": "maple_gall",
+     "pct": "12%"
+    },
+    {
+     "name": "Spirit Log",
+     "res": "spirit_log",
+     "pct": "29%"
+    }
+   ],
+   "skills": [
+    {
+     "name": "charge",
+     "id": 10016,
+     "level": 6
+    },
+    {
+     "name": "rampage",
+     "id": 10064,
+     "level": 6
+    },
+    {
+     "name": "horn_stab",
+     "id": 10017,
+     "level": 6
+    },
+    {
+     "name": "root",
+     "id": 10086,
+     "level": 6
+    }
+   ],
+   "stats": {
+    "Base Damage": 20,
+    "Physical Damage": 3,
+    "Blunt Damage": 0,
+    "Spell Damage": 0,
+    "Bleed Damage": 5,
+    "Arcane Damage": 0,
+    "Cold Damage": 0,
+    "Dark Damage": 0,
+    "Fire Damage": 0,
+    "Light Damage": 0,
+    "Lightning Damage": 0,
+    "Poison Damage": 0,
+    "Thorn Damage": 0,
+    "Defense": 40,
+    "Block Chance": 0,
+    "Block Rating": 0,
+    "Arcane Resist": 20,
+    "Cold Resist": 20,
+    "Dark Resist": 0,
+    "Fire Resist": 0,
+    "Light Resist": 20,
+    "Lightning Resist": 10,
+    "Poison Resist": 10,
+    "Evasion": 2,
+    "Critical Chance": 8,
+    "Critical Strike": 25,
+    "Hit Rating": 30,
+    "Attack Speed": 2,
+    "Armor Penetration": 3,
+    "Life Steal": 0,
+    "Mana Steal": 0,
+    "Life Regeneration": 2,
+    "Mana Regeneration": 0,
+    "Maximum Life": 110
+   }
   },
   {
    "id": 113,
@@ -1698,7 +3587,40 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_113.gif",
    "bg": "dying_forest.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "10 - 19",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "Medium",
+   "defense": "Medium",
+   "resistance": "Medium",
+   "drops": [
+    {
+     "name": "Bronze Sestertii",
+     "res": "coin_bronze",
+     "pct": "100%"
+    },
+    {
+     "name": "Elm Gall",
+     "res": "elm_gall",
+     "pct": "12%"
+    },
+    {
+     "name": "Elm Log",
+     "res": "elm",
+     "pct": "10%"
+    },
+    {
+     "name": "Scrap Fruits",
+     "res": "scrap_fruits",
+     "pct": "10%"
+    },
+    {
+     "name": "Silk Fleece",
+     "res": "silk_fleece",
+     "pct": "6%"
+    }
+   ]
   },
   {
    "id": 114,
@@ -1709,7 +3631,49 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_114.gif",
    "bg": "dying_forest.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "10 - 19",
+   "alignment": "Neutral",
+   "health": "Medium",
+   "defense": "High",
+   "resistance": "Low",
+   "scavenging": [
+    {
+     "name": "Scrap Meat",
+     "res": "scrap_meat",
+     "pct": "15%"
+    },
+    {
+     "name": "Scrap Hide",
+     "res": "scrap_hide",
+     "pct": "37%"
+    },
+    {
+     "name": "Scrap Wing",
+     "res": "scrap_wing",
+     "pct": "7%"
+    },
+    {
+     "name": "Scrap Bone",
+     "res": "scrap_bone",
+     "pct": "15%"
+    },
+    {
+     "name": "Scrap Tendon",
+     "res": "scrap_tendon",
+     "pct": "15%"
+    },
+    {
+     "name": "Scrap Skull",
+     "res": "scrap_skull",
+     "pct": "4%"
+    },
+    {
+     "name": "Scrap Eye",
+     "res": "scrap_eye",
+     "pct": "7%"
+    }
+   ]
   },
   {
    "id": 115,
@@ -1720,7 +3684,42 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_115.gif",
    "bg": "dying_forest.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "11 - 20",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "Medium",
+   "defense": "High",
+   "resistance": "High",
+   "scavenging": [
+    {
+     "name": "Scrap Meat",
+     "res": "scrap_meat",
+     "pct": "15%"
+    },
+    {
+     "name": "Spirit Essence",
+     "res": "spirit_essence",
+     "pct": "38%"
+    },
+    {
+     "name": "Scrap Tendon",
+     "res": "scrap_tendon",
+     "pct": "38%"
+    },
+    {
+     "name": "Scrap Eye",
+     "res": "scrap_eye",
+     "pct": "8%"
+    }
+   ],
+   "drops": [
+    {
+     "name": "Myconid Pet Egg",
+     "res": "myconid_pet_egg",
+     "pct": "3.5%"
+    }
+   ]
   },
   {
    "id": 116,
@@ -1731,7 +3730,30 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_116.gif",
    "bg": "dying_forest.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "10 - 19",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "Medium",
+   "defense": "High",
+   "resistance": "Low",
+   "scavenging": [
+    {
+     "name": "Scrap Meat",
+     "res": "scrap_meat",
+     "pct": "42%"
+    },
+    {
+     "name": "Scrap Fang",
+     "res": "scrap_fang",
+     "pct": "17%"
+    },
+    {
+     "name": "Scrap Tendon",
+     "res": "scrap_tendon",
+     "pct": "42%"
+    }
+   ]
   },
   {
    "id": 117,
@@ -1742,7 +3764,60 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_117.gif",
    "bg": "dying_forest.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "10 - 19",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "Low",
+   "defense": "High",
+   "resistance": "Low",
+   "scavenging": [
+    {
+     "name": "Scrap Meat",
+     "res": "scrap_meat",
+     "pct": "13%"
+    },
+    {
+     "name": "Scrap Hide",
+     "res": "scrap_hide",
+     "pct": "31%"
+    },
+    {
+     "name": "Scrap Fang",
+     "res": "scrap_fang",
+     "pct": "6%"
+    },
+    {
+     "name": "Scrap Bone",
+     "res": "scrap_bone",
+     "pct": "13%"
+    },
+    {
+     "name": "Scrap Tendon",
+     "res": "scrap_tendon",
+     "pct": "13%"
+    },
+    {
+     "name": "Scrap Skull",
+     "res": "scrap_skull",
+     "pct": "3%"
+    },
+    {
+     "name": "Scrap Claw",
+     "res": "scrap_claw",
+     "pct": "13%"
+    },
+    {
+     "name": "Scrap Eye",
+     "res": "scrap_eye",
+     "pct": "6%"
+    },
+    {
+     "name": "Scrap Tail",
+     "res": "scrap_tail",
+     "pct": "3%"
+    }
+   ]
   },
   {
    "id": 118,
@@ -1753,7 +3828,59 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_118.gif",
    "bg": "marsh.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "16 - 23",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "High",
+   "defense": "High",
+   "resistance": "Low",
+   "scavenging": [
+    {
+     "name": "Scrap Meat",
+     "res": "scrap_meat",
+     "pct": "42%"
+    },
+    {
+     "name": "Scrap Fang",
+     "res": "scrap_fang",
+     "pct": "17%"
+    },
+    {
+     "name": "Scrap Tendon",
+     "res": "scrap_tendon",
+     "pct": "42%"
+    }
+   ],
+   "drops": [
+    {
+     "name": "Bog Worm Pet Egg",
+     "res": "bog_worm_pet_egg",
+     "pct": "2%"
+    }
+   ],
+   "skills": [
+    {
+     "name": "bite",
+     "id": 10009,
+     "level": 3
+    },
+    {
+     "name": "burrow",
+     "id": 10013,
+     "level": 3
+    },
+    {
+     "name": "subsurface_strike",
+     "id": 10065,
+     "level": 3
+    },
+    {
+     "name": "charge",
+     "id": 10016,
+     "level": 3
+    }
+   ]
   },
   {
    "id": 119,
@@ -1764,7 +3891,62 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_119.gif",
    "bg": "marsh.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "16 - 23",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "Medium",
+   "defense": "High",
+   "resistance": "Low",
+   "drops": [
+    {
+     "name": "Bronze Sestertii",
+     "res": "coin_bronze",
+     "pct": "100%"
+    },
+    {
+     "name": "Shrimp",
+     "res": "shrimp",
+     "pct": "20%"
+    },
+    {
+     "name": "Scrap Sharpened Tooth",
+     "res": "scrap_sharpened_tooth",
+     "pct": "8%"
+    },
+    {
+     "name": "Elm Club",
+     "res": "elm_club",
+     "pct": "8%"
+    },
+    {
+     "name": "Silk Fleece",
+     "res": "silk_fleece",
+     "pct": "6%"
+    },
+    {
+     "name": "Scrap Leather Belt Base",
+     "res": "scrap_leather_belt_base",
+     "pct": "5%"
+    }
+   ],
+   "skills": [
+    {
+     "name": "jump",
+     "id": 10010,
+     "level": 3
+    },
+    {
+     "name": "bash",
+     "id": 10120,
+     "level": 3
+    },
+    {
+     "name": "stump",
+     "id": 10133,
+     "level": 3
+    }
+   ]
   },
   {
    "id": 120,
@@ -1775,7 +3957,57 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_120.gif",
    "bg": "marsh.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "16 - 23",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "Medium",
+   "defense": "Medium",
+   "resistance": "Medium",
+   "scavenging": [
+    {
+     "name": "Scrap Meat",
+     "res": "scrap_meat",
+     "pct": "20%"
+    },
+    {
+     "name": "Scrap Hide",
+     "res": "scrap_hide",
+     "pct": "50%"
+    },
+    {
+     "name": "Scrap Tooth",
+     "res": "scrap_tooth",
+     "pct": "10%"
+    },
+    {
+     "name": "Scrap Tendon",
+     "res": "scrap_tendon",
+     "pct": "20%"
+    }
+   ],
+   "skills": [
+    {
+     "name": "vampiric_bite",
+     "id": 10021,
+     "level": 3
+    },
+    {
+     "name": "disease",
+     "id": 10078,
+     "level": 3
+    },
+    {
+     "name": "vile_regeneration",
+     "id": 10093,
+     "level": 3
+    },
+    {
+     "name": "bite",
+     "id": 10009,
+     "level": 3
+    }
+   ]
   },
   {
    "id": 121,
@@ -1786,7 +4018,37 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_121.gif",
    "bg": "marsh.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "18 - 23",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "Medium",
+   "defense": "High",
+   "resistance": "Low",
+   "scavenging": [
+    {
+     "name": "Scrap Chitin",
+     "res": "scrap_chitin",
+     "pct": "50%"
+    },
+    {
+     "name": "Scrap Wing",
+     "res": "scrap_wing",
+     "pct": "25%"
+    },
+    {
+     "name": "Scrap Eye",
+     "res": "scrap_eye",
+     "pct": "25%"
+    }
+   ],
+   "drops": [
+    {
+     "name": "Blood Queen Pet Egg",
+     "res": "blood_queen_pet_egg",
+     "pct": "2.5%"
+    }
+   ]
   },
   {
    "id": 122,
@@ -1797,7 +4059,55 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_122.gif",
    "bg": "marsh.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "16 - 23",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "High",
+   "defense": "High",
+   "resistance": "Low",
+   "scavenging": [
+    {
+     "name": "Scrap Scale",
+     "res": "scrap_scale",
+     "pct": "21%"
+    },
+    {
+     "name": "Scrap Meat",
+     "res": "scrap_meat",
+     "pct": "16%"
+    },
+    {
+     "name": "Scrap Fang",
+     "res": "scrap_fang",
+     "pct": "11%"
+    },
+    {
+     "name": "Scrap Tendon",
+     "res": "scrap_tendon",
+     "pct": "21%"
+    },
+    {
+     "name": "Scrap Skull",
+     "res": "scrap_skull",
+     "pct": "5%"
+    },
+    {
+     "name": "Scrap Claw",
+     "res": "scrap_claw",
+     "pct": "11%"
+    },
+    {
+     "name": "Scrap Eye",
+     "res": "scrap_eye",
+     "pct": "11%"
+    },
+    {
+     "name": "Scrap Tail",
+     "res": "scrap_tail",
+     "pct": "5%"
+    }
+   ]
   },
   {
    "id": 123,
@@ -1852,7 +4162,97 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_128.gif",
    "bg": "savanna.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "14 - 20",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "High",
+   "defense": "High",
+   "resistance": "Low",
+   "scavenging": [
+    {
+     "name": "Scrap Meat",
+     "res": "scrap_meat",
+     "pct": "16%"
+    },
+    {
+     "name": "Scrap Hide",
+     "res": "scrap_hide",
+     "pct": "31%"
+    },
+    {
+     "name": "Scrap Fang",
+     "res": "scrap_fang",
+     "pct": "6%"
+    },
+    {
+     "name": "Scrap Bone",
+     "res": "scrap_bone",
+     "pct": "9%"
+    },
+    {
+     "name": "Scrap Tendon",
+     "res": "scrap_tendon",
+     "pct": "13%"
+    },
+    {
+     "name": "Scrap Skull",
+     "res": "scrap_skull",
+     "pct": "3%"
+    },
+    {
+     "name": "Scrap Claw",
+     "res": "scrap_claw",
+     "pct": "13%"
+    },
+    {
+     "name": "Scrap Eye",
+     "res": "scrap_eye",
+     "pct": "6%"
+    },
+    {
+     "name": "Scrap Tail",
+     "res": "scrap_tail",
+     "pct": "3%"
+    }
+   ],
+   "skills": [
+    {
+     "name": "bite",
+     "id": 10009,
+     "level": 3
+    },
+    {
+     "name": "rampage",
+     "id": 10064,
+     "level": 3
+    },
+    {
+     "name": "lethal_scratch",
+     "id": 10085,
+     "level": 3
+    },
+    {
+     "name": "maul",
+     "id": 10015,
+     "level": 3
+    }
+   ],
+   "stats": {
+    "Base Damage": 20,
+    "Physical Damage": 3,
+    "Blunt Damage": 0,
+    "Spell Damage": 0,
+    "Bleed Damage": 0,
+    "Arcane Damage": 0,
+    "Cold Damage": 0,
+    "Dark Damage": 0,
+    "Fire Damage": 0,
+    "Light Damage": 0,
+    "Lightning Damage": 0,
+    "Poison Damage": 0,
+    "Thorn Damage": 0
+   }
   },
   {
    "id": 129,
@@ -1863,7 +4263,92 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_129.gif",
    "bg": "savanna.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "14 - 20",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "Medium",
+   "defense": "High",
+   "resistance": "Low",
+   "drops": [
+    {
+     "name": "Bronze Sestertii",
+     "res": "coin_bronze",
+     "pct": "100%"
+    },
+    {
+     "name": "Bloodstained Pouch",
+     "res": "bloodstained_pouch",
+     "pct": "30%"
+    },
+    {
+     "name": "Iron Point",
+     "res": "iron_point",
+     "pct": "10%"
+    },
+    {
+     "name": "Scrap Shaped Skull",
+     "res": "scrap_shaped_skull",
+     "pct": "8%"
+    },
+    {
+     "name": "Silk Fleece",
+     "res": "silk_fleece",
+     "pct": "6%"
+    },
+    {
+     "name": "Silk Cord",
+     "res": "silk_cord",
+     "pct": "8%"
+    }
+   ],
+   "skills": [
+    {
+     "name": "slash",
+     "id": 10024,
+     "level": 3
+    },
+    {
+     "name": "lethal_stab",
+     "id": 10046,
+     "level": 3
+    },
+    {
+     "name": "stab",
+     "id": 10012,
+     "level": 3
+    },
+    {
+     "name": "war_howl",
+     "id": 10112,
+     "level": 3
+    }
+   ],
+   "stats": {
+    "Base Damage": 20,
+    "Physical Damage": 3,
+    "Blunt Damage": 0,
+    "Spell Damage": 0,
+    "Bleed Damage": 5,
+    "Arcane Damage": 0,
+    "Cold Damage": 0,
+    "Dark Damage": 0,
+    "Fire Damage": 0,
+    "Light Damage": 0,
+    "Lightning Damage": 0,
+    "Poison Damage": 0,
+    "Thorn Damage": 0,
+    "Defense": 20,
+    "Block Chance": 30,
+    "Block Rating": 6,
+    "Arcane Resist": 5,
+    "Cold Resist": 5,
+    "Dark Resist": 5,
+    "Fire Resist": 5,
+    "Light Resist": 5,
+    "Lightning Resist": 5,
+    "Poison Resist": 5
+   }
   },
   {
    "id": 130,
@@ -1874,7 +4359,77 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_130.gif",
    "bg": "shrubland.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "14 - 30",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "High",
+   "defense": "High",
+   "resistance": "Medium",
+   "scavenging": [
+    {
+     "name": "Scrap Meat",
+     "res": "scrap_meat",
+     "pct": "22%"
+    },
+    {
+     "name": "Scrap Hide",
+     "res": "scrap_hide",
+     "pct": "28%"
+    },
+    {
+     "name": "Scrap Fang",
+     "res": "scrap_fang",
+     "pct": "6%"
+    },
+    {
+     "name": "Scrap Bone",
+     "res": "scrap_bone",
+     "pct": "11%"
+    },
+    {
+     "name": "Scrap Tendon",
+     "res": "scrap_tendon",
+     "pct": "11%"
+    },
+    {
+     "name": "Scrap Skull",
+     "res": "scrap_skull",
+     "pct": "3%"
+    },
+    {
+     "name": "Scrap Hoof",
+     "res": "scrap_hoof",
+     "pct": "11%"
+    },
+    {
+     "name": "Scrap Eye",
+     "res": "scrap_eye",
+     "pct": "6%"
+    },
+    {
+     "name": "Scrap Tail",
+     "res": "scrap_tail",
+     "pct": "3%"
+    }
+   ],
+   "skills": [
+    {
+     "name": "horn_stab",
+     "id": 10017,
+     "level": 3
+    },
+    {
+     "name": "rampage",
+     "id": 10064,
+     "level": 3
+    },
+    {
+     "name": "charge",
+     "id": 10016,
+     "level": 3
+    }
+   ]
   },
   {
    "id": 131,
@@ -1885,7 +4440,103 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_131.gif",
    "bg": "savanna.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "14 - 50",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "High",
+   "defense": "High",
+   "resistance": "Medium",
+   "scavenging": [
+    {
+     "name": "Scrap Meat",
+     "res": "scrap_meat",
+     "pct": "27%"
+    },
+    {
+     "name": "Scrap Hide",
+     "res": "scrap_hide",
+     "pct": "33%"
+    },
+    {
+     "name": "Scrap Bone",
+     "res": "scrap_bone",
+     "pct": "13%"
+    },
+    {
+     "name": "Scrap Tendon",
+     "res": "scrap_tendon",
+     "pct": "13%"
+    },
+    {
+     "name": "Scrap Skull",
+     "res": "scrap_skull",
+     "pct": "3%"
+    },
+    {
+     "name": "Scrap Eye",
+     "res": "scrap_eye",
+     "pct": "7%"
+    },
+    {
+     "name": "Scrap Tail",
+     "res": "scrap_tail",
+     "pct": "3%"
+    }
+   ],
+   "skills": [
+    {
+     "name": "horn_stab",
+     "id": 10017,
+     "level": 3
+    },
+    {
+     "name": "rampage",
+     "id": 10064,
+     "level": 3
+    },
+    {
+     "name": "charge",
+     "id": 10016,
+     "level": 3
+    }
+   ],
+   "stats": {
+    "Base Damage": 20,
+    "Physical Damage": 3,
+    "Blunt Damage": 0,
+    "Spell Damage": 0,
+    "Bleed Damage": 0,
+    "Arcane Damage": 0,
+    "Cold Damage": 0,
+    "Dark Damage": 0,
+    "Fire Damage": 0,
+    "Light Damage": 0,
+    "Lightning Damage": 0,
+    "Poison Damage": 0,
+    "Thorn Damage": 0,
+    "Defense": 20,
+    "Block Chance": 10,
+    "Block Rating": 1,
+    "Arcane Resist": 10,
+    "Cold Resist": 10,
+    "Dark Resist": 10,
+    "Fire Resist": 10,
+    "Light Resist": 10,
+    "Lightning Resist": 10,
+    "Poison Resist": 10,
+    "Evasion": 2,
+    "Critical Chance": 8,
+    "Critical Strike": 25,
+    "Hit Rating": 30,
+    "Attack Speed": 2,
+    "Armor Penetration": 1,
+    "Life Steal": 0,
+    "Mana Steal": 0,
+    "Life Regeneration": 0,
+    "Mana Regeneration": 0,
+    "Maximum Life": 100
+   }
   },
   {
    "id": 132,
@@ -1896,7 +4547,91 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_132.gif",
    "bg": "savanna.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "14 - 25",
+   "alignment": "Neutral",
+   "health": "Medium",
+   "defense": "High",
+   "resistance": "Low",
+   "scavenging": [
+    {
+     "name": "Scrap Meat",
+     "res": "scrap_meat",
+     "pct": "17%"
+    },
+    {
+     "name": "Scrap Wing",
+     "res": "scrap_wing",
+     "pct": "11%"
+    },
+    {
+     "name": "Scrap Claw",
+     "res": "scrap_claw",
+     "pct": "22%"
+    },
+    {
+     "name": "Scrap Tendon",
+     "res": "scrap_tendon",
+     "pct": "33%"
+    },
+    {
+     "name": "Scrap Eye",
+     "res": "scrap_eye",
+     "pct": "11%"
+    },
+    {
+     "name": "Scrap Tail",
+     "res": "scrap_tail",
+     "pct": "6%"
+    }
+   ],
+   "skills": [
+    {
+     "name": "feather_throw",
+     "id": 222,
+     "level": 3
+    },
+    {
+     "name": "vampiric_bite",
+     "id": 10021,
+     "level": 3
+    },
+    {
+     "name": "aerial_claw_assault",
+     "id": 10062,
+     "level": 3
+    },
+    {
+     "name": "scratch",
+     "id": 10008,
+     "level": 3
+    }
+   ],
+   "stats": {
+    "Base Damage": 20,
+    "Physical Damage": 3,
+    "Blunt Damage": 0,
+    "Spell Damage": 3,
+    "Bleed Damage": 5,
+    "Arcane Damage": 0,
+    "Cold Damage": 0,
+    "Dark Damage": 0,
+    "Fire Damage": 0,
+    "Light Damage": 0,
+    "Lightning Damage": 0,
+    "Poison Damage": 0,
+    "Thorn Damage": 0,
+    "Defense": 20,
+    "Block Chance": 0,
+    "Block Rating": 0,
+    "Arcane Resist": 5,
+    "Cold Resist": 5,
+    "Dark Resist": 5,
+    "Fire Resist": 5,
+    "Light Resist": 5,
+    "Lightning Resist": 5,
+    "Poison Resist": 5
+   }
   },
   {
    "id": 133,
@@ -1940,7 +4675,12 @@
    "tab": "boss",
    "icon": "https://www.norroth.com/images/maps/items/enemy_137.gif",
    "bg": "wyvern_forest.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "1 - 60",
+   "alignment": "Neutral",
+   "health": "High",
+   "defense": "High",
+   "resistance": "Medium"
   },
   {
    "id": 138,
@@ -1951,7 +4691,102 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_138.gif",
    "bg": "wyvern_forest.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "1 - 60",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "High",
+   "defense": "Medium",
+   "resistance": "Medium",
+   "scavenging": [
+    {
+     "name": "Mucky Meat",
+     "res": "mucky_meat",
+     "pct": "24%"
+    },
+    {
+     "name": "Mucky Fang",
+     "res": "mucky_fang",
+     "pct": "10%"
+    },
+    {
+     "name": "Mucky Wing",
+     "res": "mucky_wing",
+     "pct": "10%"
+    },
+    {
+     "name": "Mucky Tendon",
+     "res": "mucky_tendon",
+     "pct": "29%"
+    },
+    {
+     "name": "Mucky Scale",
+     "res": "mucky_scale",
+     "pct": "14%"
+    },
+    {
+     "name": "Mucky Eye",
+     "res": "mucky_eye",
+     "pct": "10%"
+    },
+    {
+     "name": "Mucky Tail",
+     "res": "mucky_tail",
+     "pct": "5%"
+    }
+   ],
+   "skills": [
+    {
+     "name": "fire_thrust",
+     "id": 75,
+     "level": 1
+    },
+    {
+     "name": "maul",
+     "id": 10015,
+     "level": 1
+    },
+    {
+     "name": "fire_ball",
+     "id": 10052,
+     "level": 1
+    },
+    {
+     "name": "rampage",
+     "id": 10064,
+     "level": 1
+    },
+    {
+     "name": "fire_bolt",
+     "id": 70,
+     "level": 1
+    }
+   ],
+   "stats": {
+    "Base Damage": 15,
+    "Physical Damage": 3,
+    "Blunt Damage": 0,
+    "Spell Damage": 0,
+    "Bleed Damage": 0,
+    "Arcane Damage": 0,
+    "Cold Damage": 0,
+    "Dark Damage": 0,
+    "Fire Damage": 5,
+    "Light Damage": 0,
+    "Lightning Damage": 0,
+    "Poison Damage": 0,
+    "Thorn Damage": 0,
+    "Defense": 10,
+    "Block Chance": 10,
+    "Block Rating": 1,
+    "Arcane Resist": 10,
+    "Cold Resist": 10,
+    "Dark Resist": 10,
+    "Fire Resist": 10,
+    "Light Resist": 15,
+    "Lightning Resist": 0,
+    "Poison Resist": 10
+   }
   },
   {
    "id": 140,
@@ -1962,7 +4797,19 @@
    "tab": "boss",
    "icon": "https://www.norroth.com/images/maps/items/enemy_140.gif",
    "bg": "void.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "1 - 60",
+   "alignment": "Neutral",
+   "health": "Low",
+   "defense": "High",
+   "resistance": "Medium",
+   "drops": [
+    {
+     "name": "Bronze Sestertii",
+     "res": "coin_bronze",
+     "pct": "100%"
+    }
+   ]
   },
   {
    "id": 141,
@@ -1995,7 +4842,29 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_143.gif",
    "bg": "underground.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "16 - 20",
+   "alignment": "Neutral",
+   "health": "High",
+   "defense": "High",
+   "resistance": "Low",
+   "scavenging": [
+    {
+     "name": "Scrap Meat",
+     "res": "scrap_meat",
+     "pct": "42%"
+    },
+    {
+     "name": "Scrap Fang",
+     "res": "scrap_fang",
+     "pct": "17%"
+    },
+    {
+     "name": "Scrap Tendon",
+     "res": "scrap_tendon",
+     "pct": "42%"
+    }
+   ]
   },
   {
    "id": 144,
@@ -2017,7 +4886,67 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_145.gif",
    "bg": "temple.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "10 - 19",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "Medium",
+   "defense": "High",
+   "resistance": "Low",
+   "drops": [
+    {
+     "name": "Bronze Sestertii",
+     "res": "coin_bronze",
+     "pct": "100%"
+    },
+    {
+     "name": "Silk Cord",
+     "res": "silk_cord",
+     "pct": "15%"
+    },
+    {
+     "name": "Silk Fleece",
+     "res": "silk_fleece",
+     "pct": "8%"
+    },
+    {
+     "name": "Scrap Tooth",
+     "res": "scrap_tooth",
+     "pct": "7%"
+    },
+    {
+     "name": "Scrap Bone",
+     "res": "scrap_bone",
+     "pct": "10%"
+    },
+    {
+     "name": "Scrap Skull",
+     "res": "scrap_skull",
+     "pct": "5%"
+    }
+   ],
+   "skills": [
+    {
+     "name": "necrotic_bite",
+     "id": 10035,
+     "level": 2
+    },
+    {
+     "name": "rotting_grasp",
+     "id": 10156,
+     "level": 2
+    },
+    {
+     "name": "curse_strike",
+     "id": 10158,
+     "level": 2
+    },
+    {
+     "name": "death_curse",
+     "id": 10157,
+     "level": 2
+    }
+   ]
   },
   {
    "id": 146,
@@ -2083,7 +5012,108 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_151.gif",
    "bg": "swamp.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "21 - 30",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "High",
+   "defense": "High",
+   "resistance": "Low",
+   "scavenging": [
+    {
+     "name": "Low Quality Hide",
+     "res": "low_quality_hide",
+     "pct": "37%"
+    },
+    {
+     "name": "Low Quality Meat",
+     "res": "low_quality_meat",
+     "pct": "15%"
+    },
+    {
+     "name": "Low Quality Fang",
+     "res": "low_quality_fang",
+     "pct": "7%"
+    },
+    {
+     "name": "Low Quality Wing",
+     "res": "low_quality_wing",
+     "pct": "7%"
+    },
+    {
+     "name": "Low Quality Tendon",
+     "res": "low_quality_tendon",
+     "pct": "22%"
+    },
+    {
+     "name": "Low Quality Eye",
+     "res": "low_quality_eye",
+     "pct": "7%"
+    },
+    {
+     "name": "Low Quality Tail",
+     "res": "low_quality_tail",
+     "pct": "4%"
+    }
+   ],
+   "skills": [
+    {
+     "name": "bite",
+     "id": 10009,
+     "level": 4
+    },
+    {
+     "name": "maul",
+     "id": 10015,
+     "level": 4
+    },
+    {
+     "name": "rampage",
+     "id": 10064,
+     "level": 4
+    },
+    {
+     "name": "charge",
+     "id": 10016,
+     "level": 4
+    }
+   ],
+   "stats": {
+    "Base Damage": 15,
+    "Physical Damage": 3,
+    "Blunt Damage": 0,
+    "Spell Damage": 0,
+    "Bleed Damage": 0,
+    "Arcane Damage": 0,
+    "Cold Damage": 0,
+    "Dark Damage": 0,
+    "Fire Damage": 5,
+    "Light Damage": 0,
+    "Lightning Damage": 0,
+    "Poison Damage": 0,
+    "Thorn Damage": 0,
+    "Defense": 20,
+    "Block Chance": 10,
+    "Block Rating": 1,
+    "Arcane Resist": 5,
+    "Cold Resist": 5,
+    "Dark Resist": 10,
+    "Fire Resist": 5,
+    "Light Resist": 5,
+    "Lightning Resist": 0,
+    "Poison Resist": 5,
+    "Evasion": 5,
+    "Critical Chance": 4,
+    "Critical Strike": 5,
+    "Hit Rating": 40,
+    "Attack Speed": 6,
+    "Armor Penetration": 1,
+    "Life Steal": 0,
+    "Mana Steal": 0,
+    "Life Regeneration": 2,
+    "Mana Regeneration": 0,
+    "Maximum Life": 110
+   }
   },
   {
    "id": 152,
@@ -2094,7 +5124,93 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_152.gif",
    "bg": "swamp.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "21 - 30",
+   "alignment": "Light",
+   "specials": "-",
+   "health": "Medium",
+   "defense": "High",
+   "resistance": "Low",
+   "drops": [
+    {
+     "name": "Bronze Sestertii",
+     "res": "coin_bronze",
+     "pct": "100%"
+    },
+    {
+     "name": "Low Quality Sharpened Tooth",
+     "res": "low_quality_sharpened_tooth",
+     "pct": "12%"
+    },
+    {
+     "name": "Bronze Point",
+     "res": "bronze_point",
+     "pct": "8%"
+    },
+    {
+     "name": "Spruce Handle",
+     "res": "spruce_handle",
+     "pct": "8%"
+    }
+   ],
+   "skills": [
+    {
+     "name": "slash",
+     "id": 10024,
+     "level": 4
+    },
+    {
+     "name": "scale_deflection",
+     "id": 10033,
+     "level": 4
+    },
+    {
+     "name": "tail_sweep",
+     "id": 10149,
+     "level": 4
+    },
+    {
+     "name": "stab",
+     "id": 10012,
+     "level": 4
+    }
+   ],
+   "stats": {
+    "Base Damage": 20,
+    "Physical Damage": 3,
+    "Blunt Damage": 0,
+    "Spell Damage": 0,
+    "Bleed Damage": 0,
+    "Arcane Damage": 0,
+    "Cold Damage": 0,
+    "Dark Damage": 0,
+    "Fire Damage": 0,
+    "Light Damage": 0,
+    "Lightning Damage": 0,
+    "Poison Damage": 0,
+    "Thorn Damage": 0,
+    "Defense": 20,
+    "Block Chance": 20,
+    "Block Rating": 3,
+    "Arcane Resist": 5,
+    "Cold Resist": 0,
+    "Dark Resist": 5,
+    "Fire Resist": 5,
+    "Light Resist": 5,
+    "Lightning Resist": 5,
+    "Poison Resist": 5,
+    "Evasion": 5,
+    "Critical Chance": 2,
+    "Critical Strike": 1,
+    "Hit Rating": 20,
+    "Attack Speed": 6,
+    "Armor Penetration": 1,
+    "Life Steal": 0,
+    "Mana Steal": 0,
+    "Life Regeneration": 2,
+    "Mana Regeneration": 0,
+    "Maximum Life": 90
+   }
   },
   {
    "id": 153,
@@ -2105,7 +5221,72 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_153.gif",
    "bg": "savanna.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "14 - 20",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "Medium",
+   "defense": "Medium",
+   "resistance": "High",
+   "drops": [
+    {
+     "name": "Bronze Sestertii",
+     "res": "coin_bronze",
+     "pct": "100%"
+    },
+    {
+     "name": "Bloodstained Pouch",
+     "res": "bloodstained_pouch",
+     "pct": "25%"
+    },
+    {
+     "name": "Elm Rod",
+     "res": "elm_rod",
+     "pct": "8%"
+    },
+    {
+     "name": "Scrap Shaped Skull",
+     "res": "scrap_shaped_skull",
+     "pct": "8%"
+    }
+   ],
+   "skills": [
+    {
+     "name": "lightning_beam",
+     "id": 89,
+     "level": 3
+    },
+    {
+     "name": "lightning_orb",
+     "id": 10051,
+     "level": 3
+    },
+    {
+     "name": "lightning_bolt",
+     "id": 69,
+     "level": 3
+    },
+    {
+     "name": "storm_call",
+     "id": 10160,
+     "level": 3
+    }
+   ],
+   "stats": {
+    "Base Damage": 10,
+    "Physical Damage": 0,
+    "Blunt Damage": 0,
+    "Spell Damage": 3,
+    "Bleed Damage": 0,
+    "Arcane Damage": 0,
+    "Cold Damage": 0,
+    "Dark Damage": 0,
+    "Fire Damage": 5,
+    "Light Damage": 0,
+    "Lightning Damage": 5,
+    "Poison Damage": 0,
+    "Thorn Damage": 0
+   }
   },
   {
    "id": 155,
@@ -2147,7 +5328,62 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_158.gif",
    "bg": "shrubland.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "18 - 50",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "Medium",
+   "defense": "High",
+   "resistance": "Medium",
+   "drops": [
+    {
+     "name": "Bronze Sestertii",
+     "res": "coin_bronze",
+     "pct": "100%"
+    },
+    {
+     "name": "Warfang Cache",
+     "res": "warfang_cache",
+     "pct": "20%"
+    },
+    {
+     "name": "Scrap Sharpened Tooth",
+     "res": "scrap_sharpened_tooth",
+     "pct": "9%"
+    },
+    {
+     "name": "Scrap Leather",
+     "res": "scrap_leather",
+     "pct": "8%"
+    },
+    {
+     "name": "Iron Axe Blade",
+     "res": "iron_axe_blade",
+     "pct": "7%"
+    }
+   ],
+   "skills": [
+    {
+     "name": "enchanted_axes",
+     "id": 21,
+     "level": 4
+    },
+    {
+     "name": "furious_swing",
+     "id": 10179,
+     "level": 4
+    },
+    {
+     "name": "double_swing",
+     "id": 6,
+     "level": 4
+    },
+    {
+     "name": "primal_rage",
+     "id": 27,
+     "level": 4
+    }
+   ]
   },
   {
    "id": 159,
@@ -2158,7 +5394,77 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_159.gif",
    "bg": "shrubland.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "21 - 50",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "Medium",
+   "defense": "High",
+   "resistance": "Low",
+   "drops": [
+    {
+     "name": "Bronze Sestertii",
+     "res": "coin_bronze",
+     "pct": "100%"
+    },
+    {
+     "name": "Warfang Cache",
+     "res": "warfang_cache",
+     "pct": "20%"
+    },
+    {
+     "name": "Low Quality Shaped Skull",
+     "res": "low_quality_shaped_skull",
+     "pct": "8%"
+    },
+    {
+     "name": "Spruce Rod",
+     "res": "spruce_rod",
+     "pct": "9%"
+    },
+    {
+     "name": "Bronze Point",
+     "res": "bronze_point",
+     "pct": "5%"
+    }
+   ],
+   "skills": [
+    {
+     "name": "rapid_fire",
+     "id": 112,
+     "level": 4
+    },
+    {
+     "name": "critical_shot",
+     "id": 10029,
+     "level": 4
+    },
+    {
+     "name": "basic_arrow",
+     "id": 3,
+     "level": 4
+    },
+    {
+     "name": "last_arrow",
+     "id": 10151,
+     "level": 4
+    }
+   ],
+   "stats": {
+    "Base Damage": 20,
+    "Physical Damage": 3,
+    "Blunt Damage": 0,
+    "Spell Damage": 0,
+    "Bleed Damage": 0,
+    "Arcane Damage": 0,
+    "Cold Damage": 0,
+    "Dark Damage": 0,
+    "Fire Damage": 0,
+    "Light Damage": 0,
+    "Lightning Damage": 0,
+    "Poison Damage": 0,
+    "Thorn Damage": 0
+   }
   },
   {
    "id": 160,
@@ -2169,7 +5475,57 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_160.gif",
    "bg": "shrubland.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "18 - 50",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "Medium",
+   "defense": "Medium",
+   "resistance": "High",
+   "drops": [
+    {
+     "name": "Bronze Sestertii",
+     "res": "coin_bronze",
+     "pct": "100%"
+    },
+    {
+     "name": "Warfang Cache",
+     "res": "warfang_cache",
+     "pct": "20%"
+    },
+    {
+     "name": "Elm Rod",
+     "res": "elm_rod",
+     "pct": "9%"
+    },
+    {
+     "name": "Scrap Scroll",
+     "res": "scrap_scroll",
+     "pct": "8%"
+    },
+    {
+     "name": "Scrap Fang",
+     "res": "scrap_fang",
+     "pct": "8%"
+    }
+   ],
+   "skills": [
+    {
+     "name": "lightning_beam",
+     "id": 89,
+     "level": 4
+    },
+    {
+     "name": "lightning_orb",
+     "id": 10051,
+     "level": 4
+    },
+    {
+     "name": "lightning_bolt",
+     "id": 69,
+     "level": 4
+    }
+   ]
   },
   {
    "id": 161,
@@ -2180,7 +5536,60 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_161.gif",
    "bg": "shrubland.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "30 - 39",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "High",
+   "defense": "High",
+   "resistance": "Low",
+   "scavenging": [
+    {
+     "name": "Medium Quality Meat",
+     "res": "medium_quality_meat",
+     "pct": "16%"
+    },
+    {
+     "name": "Medium Quality Hide",
+     "res": "medium_quality_hide",
+     "pct": "31%"
+    },
+    {
+     "name": "Medium Quality Fang",
+     "res": "medium_quality_fang",
+     "pct": "6%"
+    },
+    {
+     "name": "Medium Quality Bone",
+     "res": "medium_quality_bone",
+     "pct": "9%"
+    },
+    {
+     "name": "Medium Quality Tendon",
+     "res": "medium_quality_tendon",
+     "pct": "13%"
+    },
+    {
+     "name": "Medium Quality Skull",
+     "res": "medium_quality_skull",
+     "pct": "3%"
+    },
+    {
+     "name": "Medium Quality Claw",
+     "res": "medium_quality_claw",
+     "pct": "13%"
+    },
+    {
+     "name": "Medium Quality Eye",
+     "res": "medium_quality_eye",
+     "pct": "6%"
+    },
+    {
+     "name": "Medium Quality Tail",
+     "res": "medium_quality_tail",
+     "pct": "3%"
+    }
+   ]
   },
   {
    "id": 164,
@@ -2311,7 +5720,41 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_172.gif",
    "bg": "dry_desert.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "16 - 20",
+   "alignment": "Light",
+   "health": "Medium",
+   "defense": "Medium",
+   "resistance": "High",
+   "drops": [
+    {
+     "name": "Bronze Sestertii",
+     "res": "coin_bronze",
+     "pct": "100%"
+    },
+    {
+     "name": "Spirit Essence",
+     "res": "spirit_essence",
+     "pct": "100%"
+    }
+   ],
+   "skills": [
+    {
+     "name": "fire_bolt",
+     "id": 70,
+     "level": 3
+    },
+    {
+     "name": "fire_ball",
+     "id": 10052,
+     "level": 3
+    },
+    {
+     "name": "rise_from_ashes",
+     "id": 10183,
+     "level": 3
+    }
+   ]
   },
   {
    "id": 173,
@@ -2322,7 +5765,115 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_173.gif",
    "bg": "swamp.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "21 - 30",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "Medium",
+   "defense": "High",
+   "resistance": "Medium",
+   "scavenging": [
+    {
+     "name": "Low Quality Hide",
+     "res": "low_quality_hide",
+     "pct": "32%"
+    },
+    {
+     "name": "Low Quality Meat",
+     "res": "low_quality_meat",
+     "pct": "13%"
+    },
+    {
+     "name": "Low Quality Tooth",
+     "res": "low_quality_tooth",
+     "pct": "13%"
+    },
+    {
+     "name": "Low Quality Claw",
+     "res": "low_quality_claw",
+     "pct": "13%"
+    },
+    {
+     "name": "Low Quality Tendon",
+     "res": "low_quality_tendon",
+     "pct": "19%"
+    },
+    {
+     "name": "Low Quality Eye",
+     "res": "low_quality_eye",
+     "pct": "6%"
+    },
+    {
+     "name": "Low Quality Tail",
+     "res": "low_quality_tail",
+     "pct": "3%"
+    }
+   ],
+   "drops": [
+    {
+     "name": "Hydra Pet Egg",
+     "res": "hydra_pet_egg",
+     "pct": "1.5%"
+    }
+   ],
+   "skills": [
+    {
+     "name": "infectious_strike",
+     "id": 10044,
+     "level": 4
+    },
+    {
+     "name": "infectious_ball",
+     "id": 10072,
+     "level": 4
+    },
+    {
+     "name": "bite",
+     "id": 10009,
+     "level": 4
+    },
+    {
+     "name": "severed_head",
+     "id": 10161,
+     "level": 4
+    }
+   ],
+   "stats": {
+    "Base Damage": 15,
+    "Physical Damage": 3,
+    "Blunt Damage": 0,
+    "Spell Damage": 3,
+    "Bleed Damage": 0,
+    "Arcane Damage": 0,
+    "Cold Damage": 0,
+    "Dark Damage": 0,
+    "Fire Damage": 0,
+    "Light Damage": 0,
+    "Lightning Damage": 0,
+    "Poison Damage": 5,
+    "Thorn Damage": 0,
+    "Defense": 20,
+    "Block Chance": 10,
+    "Block Rating": 1,
+    "Arcane Resist": 10,
+    "Cold Resist": 10,
+    "Dark Resist": 10,
+    "Fire Resist": 10,
+    "Light Resist": 10,
+    "Lightning Resist": 10,
+    "Poison Resist": 10,
+    "Evasion": 2,
+    "Critical Chance": 5,
+    "Critical Strike": 2,
+    "Hit Rating": 20,
+    "Attack Speed": 2,
+    "Armor Penetration": 1,
+    "Life Steal": 0,
+    "Mana Steal": 0,
+    "Life Regeneration": 2,
+    "Mana Regeneration": 0,
+    "Maximum Life": 90
+   }
   },
   {
    "id": 174,
@@ -2333,7 +5884,77 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_174.gif",
    "bg": "swamp.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "21 - 30",
+   "alignment": "Neutral",
+   "health": "Low",
+   "defense": "Medium",
+   "resistance": "High",
+   "drops": [
+    {
+     "name": "Bronze Sestertii",
+     "res": "coin_bronze",
+     "pct": "100%"
+    },
+    {
+     "name": "Spirit Essence",
+     "res": "spirit_essence",
+     "pct": "100%"
+    }
+   ],
+   "skills": [
+    {
+     "name": "lightning_beam",
+     "id": 89,
+     "level": 4
+    },
+    {
+     "name": "lightning_orb",
+     "id": 10051,
+     "level": 4
+    },
+    {
+     "name": "lightning_bolt",
+     "id": 69,
+     "level": 4
+    }
+   ],
+   "stats": {
+    "Base Damage": 10,
+    "Physical Damage": 0,
+    "Blunt Damage": 0,
+    "Spell Damage": 3,
+    "Bleed Damage": 0,
+    "Arcane Damage": 0,
+    "Cold Damage": 0,
+    "Dark Damage": 0,
+    "Fire Damage": 0,
+    "Light Damage": 0,
+    "Lightning Damage": 5,
+    "Poison Damage": 0,
+    "Thorn Damage": 0,
+    "Defense": 10,
+    "Block Chance": 0,
+    "Block Rating": 0,
+    "Arcane Resist": 30,
+    "Cold Resist": 20,
+    "Dark Resist": 20,
+    "Fire Resist": 20,
+    "Light Resist": 20,
+    "Lightning Resist": 30,
+    "Poison Resist": 20,
+    "Evasion": 8,
+    "Critical Chance": 3,
+    "Critical Strike": 4,
+    "Hit Rating": 40,
+    "Attack Speed": 10,
+    "Armor Penetration": 1,
+    "Life Steal": 0,
+    "Mana Steal": 3,
+    "Life Regeneration": 2,
+    "Mana Regeneration": 2,
+    "Maximum Life": 60
+   }
   },
   {
    "id": 175,
@@ -2344,7 +5965,35 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_175.gif",
    "bg": "dry_desert.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "10 - 30",
+   "alignment": "Light",
+   "specials": "-",
+   "health": "Medium",
+   "defense": "Medium",
+   "resistance": "High",
+   "drops": [
+    {
+     "name": "Bronze Sestertii",
+     "res": "coin_bronze",
+     "pct": "100%"
+    },
+    {
+     "name": "Elm Rod",
+     "res": "elm_rod",
+     "pct": "15%"
+    },
+    {
+     "name": "Silk Padding",
+     "res": "silk_padding",
+     "pct": "9%"
+    },
+    {
+     "name": "Scrap String",
+     "res": "scrap_string",
+     "pct": "8%"
+    }
+   ]
   },
   {
    "id": 176,
@@ -2376,7 +6025,25 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_178.gif",
    "bg": "magic_plains.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "19 - 50",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "Medium",
+   "defense": "Medium",
+   "resistance": "High",
+   "drops": [
+    {
+     "name": "Bronze Sestertii",
+     "res": "coin_bronze",
+     "pct": "100%"
+    },
+    {
+     "name": "Spirit Essence",
+     "res": "spirit_essence",
+     "pct": "100%"
+    }
+   ]
   },
   {
    "id": 179,
@@ -2387,7 +6054,25 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_179.gif",
    "bg": "magic_plains.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "19 - 50",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "Medium",
+   "defense": "Medium",
+   "resistance": "Medium",
+   "drops": [
+    {
+     "name": "Bronze Sestertii",
+     "res": "coin_bronze",
+     "pct": "100%"
+    },
+    {
+     "name": "Spirit Essence",
+     "res": "spirit_essence",
+     "pct": "100%"
+    }
+   ]
   },
   {
    "id": 181,
@@ -2398,7 +6083,40 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_181.gif",
    "bg": "magic_plains.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "19 - 50",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "Medium",
+   "defense": "Medium",
+   "resistance": "High",
+   "drops": [
+    {
+     "name": "Bronze Sestertii",
+     "res": "coin_bronze",
+     "pct": "100%"
+    },
+    {
+     "name": "Arcane Lockbox (Tier 2)",
+     "res": "arcane_lockbox_t2",
+     "pct": "25%"
+    },
+    {
+     "name": "Scrap Scroll",
+     "res": "scrap_scroll",
+     "pct": "15%"
+    },
+    {
+     "name": "Round Quartz",
+     "res": "round_quartz",
+     "pct": "8%"
+    },
+    {
+     "name": "Silk Fleece",
+     "res": "silk_fleece",
+     "pct": "9%"
+    }
+   ]
   },
   {
    "id": 182,
@@ -2409,7 +6127,54 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_182.gif",
    "bg": "magic_plains.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "19 - 39",
+   "alignment": "Neutral",
+   "health": "Low",
+   "defense": "Medium",
+   "resistance": "High",
+   "scavenging": [
+    {
+     "name": "Scrap Meat",
+     "res": "scrap_meat",
+     "pct": "13%"
+    },
+    {
+     "name": "Scrap Hide",
+     "res": "scrap_hide",
+     "pct": "33%"
+    },
+    {
+     "name": "Scrap Tooth",
+     "res": "scrap_tooth",
+     "pct": "8%"
+    },
+    {
+     "name": "Scrap Bone",
+     "res": "scrap_bone",
+     "pct": "13%"
+    },
+    {
+     "name": "Scrap Tendon",
+     "res": "scrap_tendon",
+     "pct": "13%"
+    },
+    {
+     "name": "Scrap Skull",
+     "res": "scrap_skull",
+     "pct": "4%"
+    },
+    {
+     "name": "Scrap Wing",
+     "res": "scrap_wing",
+     "pct": "8%"
+    },
+    {
+     "name": "Scrap Eye",
+     "res": "scrap_eye",
+     "pct": "8%"
+    }
+   ]
   },
   {
    "id": 183,
@@ -2420,7 +6185,39 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_183.gif",
    "bg": "magic_plains.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "19 - 50",
+   "alignment": "Neutral",
+   "health": "High",
+   "defense": "Medium",
+   "resistance": "High",
+   "drops": [
+    {
+     "name": "Bronze Sestertii",
+     "res": "coin_bronze",
+     "pct": "100%"
+    },
+    {
+     "name": "Arcane Lockbox (Tier 2)",
+     "res": "arcane_lockbox_t2",
+     "pct": "25%"
+    },
+    {
+     "name": "Scrap Scroll",
+     "res": "scrap_scroll",
+     "pct": "10%"
+    },
+    {
+     "name": "Small Rejuvenation Potion",
+     "res": "small_rejuv_potion",
+     "pct": "4%"
+    },
+    {
+     "name": "Silk Padding",
+     "res": "silk_padding",
+     "pct": "6%"
+    }
+   ]
   },
   {
    "id": 184,
@@ -2431,7 +6228,55 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_184.gif",
    "bg": "temple.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "18 - 22",
+   "alignment": "Light",
+   "specials": "-",
+   "health": "High",
+   "defense": "High",
+   "resistance": "Medium",
+   "scavenging": [
+    {
+     "name": "Scrap Meat",
+     "res": "scrap_meat",
+     "pct": "17%"
+    },
+    {
+     "name": "Scrap Claw",
+     "res": "scrap_claw",
+     "pct": "7%"
+    },
+    {
+     "name": "Scrap Wing",
+     "res": "scrap_wing",
+     "pct": "7%"
+    },
+    {
+     "name": "Scrap Tendon",
+     "res": "scrap_tendon",
+     "pct": "21%"
+    },
+    {
+     "name": "Scrap Hide",
+     "res": "scrap_hide",
+     "pct": "34%"
+    },
+    {
+     "name": "Scrap Skull",
+     "res": "scrap_skull",
+     "pct": "3%"
+    },
+    {
+     "name": "Scrap Eye",
+     "res": "scrap_eye",
+     "pct": "7%"
+    },
+    {
+     "name": "Scrap Tail",
+     "res": "scrap_tail",
+     "pct": "3%"
+    }
+   ]
   },
   {
    "id": 185,
@@ -2486,7 +6331,30 @@
    "tab": "boss",
    "icon": "https://www.norroth.com/images/maps/items/enemy_189.gif",
    "bg": "urban.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "9 - 9",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "Medium",
+   "defense": "High",
+   "resistance": "High",
+   "drops": [
+    {
+     "name": "Bronze Sestertii",
+     "res": "coin_bronze",
+     "pct": "100%"
+    },
+    {
+     "name": "Mucky Scroll",
+     "res": "mucky_scroll",
+     "pct": "100%"
+    },
+    {
+     "name": "Cabochon Onyx",
+     "res": "cabochon_onyx",
+     "pct": "100%"
+    }
+   ]
   },
   {
    "id": 190,
@@ -2519,7 +6387,12 @@
    "tab": "boss",
    "icon": "https://www.norroth.com/images/maps/items/enemy_192.gif",
    "bg": "dark_forest.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "39 - 39",
+   "alignment": "Neutral",
+   "health": "High",
+   "defense": "High",
+   "resistance": "Medium"
   },
   {
    "id": 193,
@@ -2552,7 +6425,34 @@
    "tab": "boss",
    "icon": "https://www.norroth.com/images/maps/items/enemy_197.gif",
    "bg": "dry_desert.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "13 - 13",
+   "alignment": "Neutral",
+   "health": "Medium",
+   "defense": "High",
+   "resistance": "High",
+   "drops": [
+    {
+     "name": "Bronze Sestertii",
+     "res": "coin_bronze",
+     "pct": "100%"
+    },
+    {
+     "name": "Iron Plating",
+     "res": "iron_plating",
+     "pct": "100%"
+    },
+    {
+     "name": "Iron Wire",
+     "res": "iron_wire",
+     "pct": "100%"
+    },
+    {
+     "name": "Iron Blade",
+     "res": "iron_blade",
+     "pct": "100%"
+    }
+   ]
   },
   {
    "id": 198,
@@ -2574,7 +6474,102 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_199.gif",
    "bg": "coastal.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "31 - 40",
+   "alignment": "Neutral",
+   "health": "Medium",
+   "defense": "Medium",
+   "resistance": "High",
+   "scavenging": [
+    {
+     "name": "Medium Quality Meat",
+     "res": "medium_quality_meat",
+     "pct": "21%"
+    },
+    {
+     "name": "Medium Quality Wing",
+     "res": "medium_quality_wing",
+     "pct": "11%"
+    },
+    {
+     "name": "Medium Quality Tooth",
+     "res": "medium_quality_tooth",
+     "pct": "11%"
+    },
+    {
+     "name": "Medium Quality Bone",
+     "res": "medium_quality_bone",
+     "pct": "21%"
+    },
+    {
+     "name": "Medium Quality Tendon",
+     "res": "medium_quality_tendon",
+     "pct": "21%"
+    },
+    {
+     "name": "Medium Quality Skull",
+     "res": "medium_quality_skull",
+     "pct": "5%"
+    },
+    {
+     "name": "Medium Quality Eye",
+     "res": "medium_quality_eye",
+     "pct": "11%"
+    }
+   ],
+   "skills": [
+    {
+     "name": "arcana_ball",
+     "id": 10075,
+     "level": 6
+    },
+    {
+     "name": "blind",
+     "id": 10091,
+     "level": 6
+    },
+    {
+     "name": "light_ball",
+     "id": 10074,
+     "level": 6
+    }
+   ],
+   "stats": {
+    "Base Damage": 10,
+    "Physical Damage": 0,
+    "Blunt Damage": 0,
+    "Spell Damage": 3,
+    "Bleed Damage": 0,
+    "Arcane Damage": 0,
+    "Cold Damage": 5,
+    "Dark Damage": 5,
+    "Fire Damage": 0,
+    "Light Damage": 0,
+    "Lightning Damage": 5,
+    "Poison Damage": 0,
+    "Thorn Damage": 0,
+    "Defense": 10,
+    "Block Chance": 0,
+    "Block Rating": 0,
+    "Arcane Resist": 30,
+    "Cold Resist": 20,
+    "Dark Resist": 20,
+    "Fire Resist": 20,
+    "Light Resist": 30,
+    "Lightning Resist": 20,
+    "Poison Resist": 0,
+    "Evasion": 8,
+    "Critical Chance": 8,
+    "Critical Strike": 25,
+    "Hit Rating": 20,
+    "Attack Speed": 6,
+    "Armor Penetration": 1,
+    "Life Steal": 0,
+    "Mana Steal": 2,
+    "Life Regeneration": 2,
+    "Mana Regeneration": 2,
+    "Maximum Life": 90
+   }
   },
   {
    "id": 200,
@@ -2962,7 +6957,34 @@
    "tab": "boss",
    "icon": "https://www.norroth.com/images/maps/items/enemy_243.gif",
    "bg": "underground.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "20 - 20",
+   "alignment": "Neutral",
+   "health": "Low",
+   "defense": "Medium",
+   "resistance": "Medium",
+   "drops": [
+    {
+     "name": "Bronze Sestertii",
+     "res": "coin_bronze",
+     "pct": "100%"
+    },
+    {
+     "name": "Princess Onyx",
+     "res": "princess_onyx",
+     "pct": "8%"
+    },
+    {
+     "name": "Princess Spinel",
+     "res": "princess_spinel",
+     "pct": "6%"
+    },
+    {
+     "name": "Low Quality Shaped Skull",
+     "res": "low_quality_shaped_skull",
+     "pct": "10%"
+    }
+   ]
   },
   {
    "id": 244,
