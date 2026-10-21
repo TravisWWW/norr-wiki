@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.96
+// @version      2.6.97
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -184,7 +184,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.96';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
+  const SCRIPT_VER = '2.6.97';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -9008,6 +9008,9 @@
 
   function navMapName(id) { return MapDB.name(id); }
 
+  /* ★ v2.6.97：步行 ≤ 这么多跳就直走，不用传送点。
+     实测踩坑：副角色在 Owranbu 修完，采集图就在隔壁（1 跳），却还跑去传送站、甚至往 Owranbu 传。 */
+  const NAV_WALK_PREFER = 3;
   function navRoute(from, to) {
     /* ★ 地图 id 统一成数字：nearestTowerTown() / 城镇下拉框给的是字符串（"5"），
        而这里用严格相等（t === to）做 BFS 匹配，字符串永远匹配不上数字 → 返回 null（表现为「无步行路线」）。 */
@@ -9346,7 +9349,14 @@
       }
       scored.sort((a, b) => a.svc - b.svc || a.city - b.city || a.len - b.len || a.price - b.price || a.id - b.id);
       if (scored.length) best = scored[0].id;
-      if (!best) best = cands[0];   /* 都算不出路线：退而求其次，选第一个能去的 */
+      /* ★ v2.6.97：没有任何候选能算出「到目标」的路线时，**不要乱传**。
+         原来会退回 cands[0] —— 表现就是「人明明在 Owranbu，却被传到随便一个城市」。
+         现在直接放弃，让上层去走陆路 / 报错。 */
+      if (!best) {
+        logEvent('传送站：' + cands.length + ' 个候选都算不出到「' + navMapName(destId) + '」的路线 → 放弃传送（不乱传）');
+        try { closeFrameById('frame_Waygate'); } catch (e) { /* ignore */ }
+        return 0;
+      }
     }
     /* 候选顺序：先 best，再按评分顺序，最后兜底原顺序（去重、最多试 4 个） */
     const order = [];
@@ -9466,7 +9476,11 @@
     let wgUsed = false;   /* 一次导航里传送站最多用一次，避免「传送→走岔→再传送」死循环 */
     try {
       navLearn();
-      if (allowCity || allowWild) {
+      /* ★ v2.6.97：步行就能到、而且不远 → 直接走，别碰传送点。 */
+      const nearPlan = navRoute(character.current_map, destId);
+      const walkFirst = !!(nearPlan && nearPlan.length <= NAV_WALK_PREFER);
+      if (walkFirst) logEvent('导航：' + navMapName(destId) + ' 步行 ' + nearPlan.length + ' 跳可达 → 直接走，不用传送点');
+      if (!walkFirst && (allowCity || allowWild)) {
         wgUsed = true;
         setStatus('先用传送点缩短路程…');
         let out = 0;
@@ -9550,8 +9564,12 @@
       const start = character.current_map;
       if (start === destId) { navStatus('已经在该地图了', null, false); setTimeout(navHideBar, 1800); return true; }
       const alive = function () { return navBusy && inGame(); };
+      /* ★ v2.6.97：步行可达且不远 → 直接走，不用传送点 */
+      const nearPlan0 = navRoute(start, destId);
+      const walkFirst0 = !!(nearPlan0 && nearPlan0.length <= NAV_WALK_PREFER);
+      if (walkFirst0) logEvent('导航：' + navMapName(destId) + ' 步行 ' + nearPlan0.length + ' 跳可达 → 直接走，不用传送点');
       /* ★ 融合：勾了「使用传送点」→ 先传送到离目标最近的城市，再步行 */
-      if (cfg.useWaygateCity || cfg.useWaygateWild) {
+      if (!walkFirst0 && (cfg.useWaygateCity || cfg.useWaygateWild)) {
         navStatus('🧭 先用传送点缩短路程…', null, true);
         /* ★ 先试世界地图传送（野外直接传城镇）；没道具自动回退到传送站 */
         let out0 = await navWorldTeleport(worldTeleportTarget(destId), alive);
