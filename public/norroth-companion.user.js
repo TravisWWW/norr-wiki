@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.79
+// @version      2.6.80
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -67,6 +67,7 @@
     questMonsters: false,    // 派生（= targetMode 为 priority/all）：把「未完成的任务怪」并入名单
     nameFirst: false,        // 派生（= targetMode 为 all）：不做名单过滤（名单外也打），名单内的排前面
     zoomUnlock: true,        // ★ 地图缩放解锁（新前端）：Ctrl+滚轮交给浏览器缩放；滚轮范围放宽到 0.4×~4×
+    worldMapUnlock: true,    // ★ v2.6.80：世界地图解锁 —— 补齐所有未访问地图点 + 去掉战争迷雾（显示上解锁）
     monsterLvMin: 0,         // ★ 融合：只打等级 ≥ 此值的怪（0 = 不限）
     monsterLvMax: 0,         // ★ 融合：只打等级 ≤ 此值的怪（0 = 不限）
 
@@ -183,7 +184,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.79';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
+  const SCRIPT_VER = '2.6.80';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
   /* ★ v2.6.77：在线更新。
      脚本托管在 GitHub Pages（和中文 Wiki 同一个仓库 / 同一次部署），元数据块里的
      @updateURL / @downloadURL 都指向下面这个地址 —— Tampermonkey 会按自己的周期
@@ -418,6 +419,7 @@
     delete c.repairTurnsMin;   /* v1.8.1 已合并成单一的「维修阈值(%)」 */
     c.autoRespawn = !!c.autoRespawn;
     c.sweepFrames = (c.sweepFrames === undefined) ? true : !!c.sweepFrames;
+    c.worldMapUnlock = (c.worldMapUnlock === undefined) ? true : !!c.worldMapUnlock;
     if (c.skin === 'gray') c.skin = 'grid';                 // ★ 去掉「灰阶」，游戏界面只剩 原版 / 工作台
     c.skin = ['off', 'grid'].indexOf(c.skin) >= 0 ? c.skin : 'off';
     c.skinLast = 'grid';
@@ -7272,6 +7274,12 @@
 
           <div class="divblock_dark" style="margin-top:4px">
             <div class="nr-srow">
+              <label title="游戏的世界地图只画「你去过的」地图点，没去过的连点都没有、整块还被战争迷雾盖住。开启后用抓好的全量世界坐标（380 张）补齐所有地图点、并去掉迷雾，让整幅地图都可见可点。点开的仍是游戏真实的 Map Details（看详情 / 传送）。"><input type="checkbox" class="chk" id="nr-wmunlock">解锁世界地图</label>
+            </div>
+          </div>
+
+          <div class="divblock_dark" style="margin-top:4px">
+            <div class="nr-srow">
               <span class="nr-sl" style="flex:none" title="脚本托管在 GitHub Pages：元数据里的 @updateURL / @downloadURL 指向同一地址，Tampermonkey 会按自己的周期（默认每天，可在设置里调短）静默自动升级。这里额外做一次「进游戏就查」的轻量检查，发现新版本时右上角版本号会变成金色角标，点一下即可更新。">在线更新</span>
               <span id="nr-updstate" style="flex:1;color:#9aa4b2;font-size:10.5px">当前 v${SCRIPT_VER}</span>
               <button class="mini" id="nr-updcheck" type="button" title="立即检查远端是否有新版本（绕过 5 分钟节流）">检查更新</button>
@@ -7535,6 +7543,7 @@
     })();
     bindCheck('nr-autorespawn', 'autoRespawn');
     bindCheck('nr-sweepframes', 'sweepFrames');
+    bindCheck('nr-wmunlock', 'worldMapUnlock');
     (function () {
       const el = document.getElementById('nr-petfeed');
       if (el) el.addEventListener('change', () => togglePetFeed(el.checked));
@@ -7905,6 +7914,7 @@
     set('nr-autorespawn', cfg.autoRespawn);
     try { const _ts = document.getElementById('nr-tmode'); if (_ts) _ts.querySelectorAll('button').forEach(function (b) { b.classList.toggle('on', b.dataset.tmode === (cfg.targetMode || 'priority')); }); } catch (e) { /* ignore */ }
     set('nr-sweepframes', cfg.sweepFrames);
+    set('nr-wmunlock', cfg.worldMapUnlock);
     set('nr-gscrap', cfg.gatherScrap); set('nr-autoevent', cfg.autoEvent);
     try { const _er = document.getElementById('nr-eventres'); if (_er) _er.value = cfg.eventRes || ''; } catch (e) { /* ignore */ }
     set('nr-gatherflee', cfg.gatherFlee);
@@ -9587,6 +9597,79 @@
            (ms.length ? sec('怪物', 'm', mChips) : '') + '</div>';
   }
 
+  /* ======================= 19b. 世界地图「解锁未访问地图」(v2.6.80) =======================
+   * 游戏的世界地图只渲染「角色访问过的」地图节点（实测 2026-10-21：整张图只有 11 个 <g map_id>），
+   * 未访问的地图连 DOM 都没有，而且整幅地图还盖着一层战争迷雾（rect.world-map-fog + #fogMask）。
+   * 但服务端并不拦：GET /modal/map_info?id=N 对任何 id 都返回完整内容（实测 380/380 全成功），
+   * 点击节点也只是 createDialog(..., '/modal/map_info?id=N')，不需要额外授权。
+   * 所以这里用抓好的全量世界坐标（data/map_meta_1.0.json，380 张 / 379 个有坐标）在客户端补齐：
+   *   · 按 <g map_id=N transform="translate(wx-8,wy-8)"> 注入缺失的地图点（和游戏原生节点同款式）；
+   *   · 去掉 rect.world-map-fog（迷雾遮罩）→ 整幅地图清晰可见；
+   *   · 注入的节点绑自己的 pointerup → 和原生节点一样打开真实的 Map Details（可看详情 / 传送）。
+   * 由 cfg.worldMapUnlock 控制（默认开）。数据每行：[id, name, level, biome, continent, wx, wy]。
+   * 坐标来源：世界地图缩略图文件名 world_map_<id>_<wx>_<wy>.jpg / location[wx/wy]（两处冗余互校）。
+   * ============================================================================= */
+  const WM_UNLOCK_MAPS = [[1,"Fountain of Rebirth","1","Enchanted Forest","",887,1797],[2,"Lower Fountain’s Descent","1","Temperate Forest","Arodas",721,1783],[3,"Sasquatch Grotto","1","Underground","Arodas",731,1721],[4,"Upper Fountain’s Descent","1","Grassland","Arodas",814,1683],[5,"El Caspar","1","Grassland","Arodas",871,1551],[6,"Brisban Pond","1-3","Grassland","Arodas",721,1499],[7,"Akelay Foothills","4-6","Grassland","Arodas",771,1445],[8,"Akelay Cave Level 1","4-6","Underground","Arodas",738,1440],[9,"Akelay Cave Level 2","6-9","Underground","Arodas",738,1440],[10,"Mount Akelay","4-6","Mountain","Arodas",767,1413],[11,"Elena’s Crossroad","1-3","Grassland","Arodas",869,1435],[12,"Forested Canyon","4-5","Temperate Forest","Arodas",878,1328],[13,"Tree of Life","5-6","Temperate Forest","Arodas",804,1231],[14,"Arodas Lakeshore","4-6","Coastal","Arodas",625,1464],[15,"Arodas Beach","7-10","Coastal","Arodas",583,1367],[16,"Elundi","10","Temperate Forest","Arodas",585,1250],[17,"Southern Foothill","1-3","Temperate Forest","Arodas",925,1672],[18,"Bay’s Alley","4-6","Coastal","Arodas",974,1729],[19,"Bay’s Alley","7-10","Coastal","Arodas",1047,1754],[20,"Windy Fields","1-3","Grassland","Arodas",1026,1539],[21,"Forest Of Owranbu","4-6","Temperate Forest","Arodas",1093,1584],[22,"Owranbu River","7-10","Temperate Forest","Arodas",1182,1558],[23,"Owranbu","10","Temperate Forest","Arodas",1285,1561],[24,"Manor’s Courtyard","4-6","Mountain","Arodas",1054,1452],[25,"Laverne Foothill","4-6","Grassland","Arodas",990,1397],[26,"Grasping Maze","6-7","Underground","Arodas",799,1208],[27,"Heart of the Tree","7","Underground","",799,1208],[28,"Dying Forest","10-11","Dying Forest","Arodas",1345,1650],[29,"Dead Leaves Tiara","12-13","Dying Forest","",1323,1681],[30,"Venom Arch Forest","14-15","Dying Forest","",1387,1728],[31,"Pirate Wreck Foothill","11-13","Coastal","Arodas",1106,1775],[32,"Pirate Wreck Beach","14-15","Coastal","Arodas",1135,1837],[33,"The Pirate Wreck","15-16","Shipwreck","Arodas",1107,1883],[34,"Sewers","1-3","Sewers","Arodas",826,1537],[35,"Deep Sewers","4-6","Sewers","",826,1537],[36,"Ratdom","5","Ratdom","",826,1537],[37,"Manor Main Floor","4-6","Urban","Arodas",1074,1426],[38,"Manor 1st Floor","4-6","Urban","",1074,1426],[39,"Manor Attic","4-6","Urban","",1074,1426],[40,"Manor Cellar","4-6","Underground","Arodas",1074,1426],[41,"Owranbu Drylands","10-11","Dry Desert","Tharnoth",1315,1504],[42,"The Cult Tunnel","7-9","Underground","Arodas",751,1424],[43,"The Cult Hideout","7-9","Underground","Arodas",751,1424],[44,"Farmer’s House","4","Urban","",925,1672],[45,"Baron’s Lair","9","Underground","",1074,1426],[46,"Bear Den","10","Bear Den","",638,1161],[47,"Den Of Devourer","10","Den Of Devourer","",638,1161],[48,"Elundi Garden","10-11","Deep Forest","Ruahnia",580,1175],[49,"Elundi Garden","11-12","Deep Forest","Ruahnia",624,1130],[50,"Deep Forest","12-13","Deep Forest","Ruahnia",675,1109],[51,"Deep Forest","13-14","Deep Forest","Ruahnia",717,1076],[52,"Deep Forest","14-15","Deep Forest","Ruahnia",754,1065],[53,"Deep Forest","14-15","Deep Forest","Ruahnia",790,1052],[54,"Elm’s Rest","15","Deep Forest","",617,1070],[55,"Way to Morwen","14-15","Deep Forest","",778,998],[56,"Abandoned Mine","41-42","Underground","",724,960],[57,"Abandoned Mine","41-42","Underground","",667,937],[58,"Abandoned Mine","41-42","Underground","",618,935],[59,"Abandoned Mine","41-42","Underground","",565,949],[61,"Sandstorm Pass","11-12","Dry Desert","Tharnoth",1343,1440],[62,"Sun-Scorched Plateau","11-12","Dry Desert","Tharnoth",1322,1396],[63,"Sandspire Summit","13-14","Dry Desert","",1375,1364],[64,"Droughtlands","13-14","Dry Desert","",1397,1312],[65,"Mesa Mine Area","11-12","Dry Desert","Tharnoth",1396,1445],[66,"Rock Valley","11-12","Dry Desert","Tharnoth",1446,1462],[67,"Mirage Mountains","13-14","Dry Desert","Tharnoth",1499,1485],[68,"Yurk’s Yard","30","Shrubland","",2527,1147],[69,"Yurk’s Lodge","30","Underground","",2527,1147],[72,"Shifting Sands","13-14","Dry Desert","Tharnoth",1559,1488],[73,"Radiant Heat Flats","13-14","Dry Desert","Tharnoth",1602,1455],[74,"Sunken Sands","14-15","Dry Desert","Tharnoth",1655,1454],[75,"The Shifting Tides","14-15","Dry Desert","Tharnoth",1698,1421],[76,"Sirocco Springs","14-15","Dry Desert","",1683,1366],[77,"Guardian Queen Hive","39","Guardian Queen Hive","",1169,843],[78,"Guardian Queen Hive","39","Guardian Queen Hive","",1169,843],[83,"Khamsin Cliffs","14-15","Dry Desert","",1716,1329],[84,"Golden Sandscape","16-17","Dry Desert","",1717,1275],[85,"Oasis","16-17","Oasis","",1753,1234],[87,"Oasis","16-17","Oasis","",1780,1172],[90,"Whispering Sands","14-15","Dry Desert","",1607,1185],[91,"Drouver","15","Savanna","",1577,1124],[92,"Savanna","14-15","Savanna","",1516,1111],[93,"Savanna","14-15","Savanna","",1453,1107],[94,"Scorpion`s Nest","14-15","Dry Desert","",1385,1133],[95,"Dry Mirage","16-17","Dry Desert","",1335,1108],[96,"Dune Sea","13-14","Dry Desert","",1349,1181],[97,"Ancient Ruins","13-14","Dry Desert","",1353,1252],[98,"Burning Sands","13-14","Dry Desert","",1433,1258],[99,"Burnt Sienna Wastes","14-15","Dry Desert","",1493,1265],[100,"Dust Outskirts","14-15","Dry Desert","",1549,1221],[106,"Savanna","16-17","Savanna","",1726,1102],[107,"Savanna","15-16","Savanna","",1656,1096],[110,"Corduin","24-25","Ruins","",2009,1077],[111,"Spider Den","15","Spider Den","",1387,1728],[112,"Vileton Entrance","14-15","Mountain","Arodas",1181,1838],[113,"Vileton","15","Mountain","Arodas",1263,1835],[114,"Marsh","15-16","Marsh","",1467,1785],[115,"Marsh","17-18","Marsh","",1513,1756],[116,"Marsh","19-20","Marsh","",1552,1718],[117,"Swamp","24-25","Swamp","",1469,1825],[118,"Swamp","26-28","Swamp","",1458,1862],[119,"Swamp","24-25","Swamp","",1409,1843],[120,"Swamp","21-23","Swamp","Arodas",1361,1858],[121,"Marsh","19-20","Marsh","",1506,1894],[122,"Marsh","19-20","Marsh","",1530,1854],[123,"Swamp","29-30","Swamp","",1447,1907],[124,"Swamp","26-28","Swamp","",1430,1949],[125,"Swamp","24-25","Swamp","",1429,1995],[126,"Marsh","19-20","Marsh","",1479,2073],[127,"Marsh","19-20","Marsh","",1523,1955],[128,"Marsh","19-20","Marsh","",1491,2005],[129,"Marsh","21-23","Marsh","",1441,2040],[130,"Secret Cave Tunnel","7-10","Underground","",1006,1683],[131,"The Squid Lair","25","Underground","",1043,1665],[133,"Magic Plains","19-20","Magic Plains","",1511,2119],[134,"Sanjuo","19","Magic Plains","",1533,2204],[135,"Chamber of Oracles","10","Underground","Arodas",848,1328],[136,"The Bilge","19","Marine","",1107,1883],[137,"Marsh","17-18","Marsh","",1547,1804],[138,"Abandoned Mine","43-44","Underground","",581,900],[139,"Ghrorak’s Prison","49","Underground","",581,852],[141,"Abandoned Mine","41-42","Underground","",500,945],[142,"Abandoned Mine","41-42","Underground","",444,938],[143,"Nythrendal","40","Mountain","",353,926],[144,"Abandoned Mine","","Underground","",748,925],[145,"Abandoned Mine","","Underground","",783,908],[146,"Abandoned Mine","","Underground","",772,867],[147,"Abandoned Mine","","Underground","",749,830],[148,"Abandoned Mine","","Underground","",730,783],[167,"Mountain","","Mountain","",1272,655],[168,"Tundra","","Savanna","",1322,686],[169,"Bungavik","20","Savanna","",1433,705],[170,"Dying Forest","15-16","Dying Forest","",1445,1678],[171,"Dying Forest","16-17","Dying Forest","",1483,1642],[172,"Dying Forest","18-19","Dying Forest","",1539,1633],[179,"Deep Forest","14-15","Deep Forest","Ruahnia",835,1041],[180,"Caeltys’ Causeway","31-33","Dark Forest","Ruahnia",875,1011],[181,"Caeltys’ Causeway","31-33","Dark Forest","",913,972],[182,"Caeltys’ Causeway","31-33","Dark Forest","",982,957],[183,"Caeltys","30","Enchanted Forest","",1059,929],[184,"Caeltys’ Yarden","31-33","Dark Forest","",1131,943],[185,"Caeltys’ Yarden","34-37","Dark Forest","",1173,923],[186,"Caeltys’ Yarden","38-39","Dark Forest","",1165,883],[187,"Caeltys’ Yarden","38-39","Dark Forest","",1169,843],[188,"Caeltys’ Yarden","34-37","Dark Forest","",1131,845],[189,"Caeltys’ Yarden","30-33","Dark Forest","",1099,866],[190,"Savanna","16-17","Savanna","",1576,1039],[191,"Savanna","16-17","Savanna","",1583,993],[192,"Savanna","17-18","Savanna","",1534,968],[193,"Savanna","17-18","Savanna","",1487,933],[194,"Savanna","18-19","Savanna","",1460,887],[195,"Savanna","19-20","Savanna","",1463,836],[196,"Savanna","19-20","Savanna","",1443,774],[197,"Desert","16-17","Savanna","",1778,1067],[198,"Desert","17-18","Savanna","",1809,1025],[199,"Desert","19-20","Savanna","",1820,981],[200,"Haunted Forest","21-22","Haunted Forest","",1860,951],[201,"Saurville","20","Haunted Forest","",1873,866],[202,"Haunted Forest","21-22","Haunted Forest","",1886,994],[203,"Desert of Whispers","22-23","Haunted Forest","",1940,1042],[204,"Pumpkin King`s Lodge","29","Pumpkin Lodge","",1552,1718],[209,"Savanna","19-20","Savanna","",1724,852],[210,"Crimson Dust","21-22","Dry Desert","",1781,857],[211,"Taiga","40-41","Taiga","",1165,1343],[212,"Taiga","41-42","Taiga","",1141,1306],[213,"Taiga","43-44","Taiga","",1144,1257],[214,"Taiga","45-46","Taiga","",1157,1217],[215,"Taiga","47-48","Taiga","",1187,1188],[216,"Taiga","48-49","Taiga","",1195,1145],[217,"Taiga","48-49","Taiga","",1107,1177],[218,"Desert of Lost Hope","14-15","Dry Desert","",1746,1452],[219,"Sandstorm Ridge","14-15","Dry Desert","",1787,1477],[220,"Burning Moon Sands","16-17","Dry Desert","",1840,1504],[221,"Deserted Cavern","16-17","Underground","",1882,1533],[222,"The Living Desert","16-17","Dry Desert","",1931,1490],[224,"Desert of Illusions","18-19","Dry Desert","",1987,1466],[225,"Devil’s Gulch","18-19","Dry Desert","",2057,1426],[226,"Temple Entrance","18-19","Dry Desert","",1969,1360],[227,"Shrubland","21-22","Shrubland","",2248,1304],[228,"Shrubland","21-22","Shrubland","",2301,1245],[229,"Ururg","20","Shrubland","",2410,1256],[230,"Red Desert","50-52","Red Desert","",2187,1626],[231,"Old Graveyard","22-23","Haunted Forest","",1948,957],[232,"Mausoleum Stairway","23-25","Underground","",1980,915],[233,"Mausoleum Chamber","23-25","Underground","",1980,915],[234,"Medusa’s Hallway","18-19","Underground","",1303,1096],[235,"Medusa’s Chamber","20","Underground","",1303,1096],[239,"Orc Domain Entrance","19-20","Dry Desert","",2161,1348],[240,"Shrubland","19-20","Shrubland","",2217,1336],[241,"Desert of the Damned","19-20","Dry Desert","",2115,1381],[243,"Sands of Echoes","18-19","Dry Desert","",2010,1532],[244,"Red Desert","18-19","Red Desert","",2039,1587],[245,"Red Desert","18-19","Red Desert","",2115,1613],[246,"Red Desert","19-20","Red Desert","",2114,1680],[247,"Underground","19-20","Underground","",2121,1736],[248,"Red Desert","20-21","Red Desert","",2114,1790],[249,"Red Desert","21-22","Red Desert","",2140,1845],[250,"Cactus Canyon","22-23","Dry Desert","",2132,1894],[251,"Unison Obelisk","23-24","Dry Desert","",2090,1925],[252,"Haunted Forest","21-22","Haunted Forest","",1931,797],[253,"Haunted Forest","23-24","Haunted Forest","",1998,801],[254,"Haunted Forest","25-26","Haunted Forest","",2061,801],[255,"Toxic River","27-28","Haunted Forest","",2044,855],[256,"Haunted Forest","27-28","Haunted Forest","",2081,890],[257,"Necropolis","29-30","Underground","",2138,844],[260,"Stirge Lair","29","Stirge Lair","",1530,1854],[262,"Sands of the Forgotten","21-22","Dry Desert","",1712,799],[263,"Mirage’s Eye","23-24","Dry Desert","",1682,758],[264,"Sandstorm Plains","25-26","Dry Desert","",1668,706],[265,"Taiga","25-26","Taiga","",1663,653],[266,"Taiga","27-28","Taiga","",1680,600],[267,"Taiga","27-28","Taiga","",1715,554],[268,"Taiga","29-30","Taiga","",1736,496],[269,"Orc’s Bone Road","40-41","Shrubland","",2438,1353],[270,"Orc’s Bone Road","41-42","Shrubland","",2448,1403],[271,"Orc’s Bone Road","43-44","Shrubland","",2449,1454],[272,"Shrubland","45-46","Shrubland","",2495,1501],[273,"Shrubland","47-48","Shrubland","",2540,1536],[274,"Shrubland","49-50","Shrubland","",2602,1541],[275,"Shrubland","21-23","Shrubland","",2461,1185],[276,"Shrubland","24-26","Shrubland","",2487,1127],[277,"Shrubland","31-33","Shrubland","",2506,1072],[278,"Shrubland","34-35","Shrubland","",2562,1028],[279,"Ancient Worm Tunnel","34-35","Underground","",2625,995],[280,"Shrubland","36-37","Shrubland","",2685,963],[281,"Trescan","30","Shrubland","",2752,890],[282,"Taiga","31-32","Taiga","",1711,462],[283,"Taiga","31-32","Taiga","",1676,420],[284,"Stogow","30","Tundra","",1656,342],[285,"Taiga","33-34","Taiga","",1722,306],[286,"Taiga","34-35","Taiga","",1752,266],[287,"Yeti’s Cave","35","Frost Cave","",1789,230],[288,"Itham’s Lakeshore","31-33","Coastal","",1927,1715],[289,"Itham’s Crator","34-35","Coastal","",1977,1767],[290,"Itham’s Old Bay","34-35","Coastal","",2009,1829],[291,"Itham’s Anchorage","36-37","Coastal","",1975,1895],[292,"Itham’s Heart","38-40","Itham’s Heart","",1774,1931],[293,"Rainforest","31-32","Rainforest","",3122,1529],[294,"Rainforest","31-32","Rainforest","",3163,1554],[295,"Rainforest","33-34","Rainforest","",3210,1580],[296,"Rainforest","33-34","Rainforest","",3217,1643],[297,"Rainforest","35-36","Rainforest","",3169,1644],[298,"Rainforest","35-36","Rainforest","",3109,1651],[299,"Rainforest","","Rainforest","",3261,1598],[300,"Rainforest","","Rainforest","",3318,1613],[301,"Rainforest","31-33","Rainforest","",3262,1687],[302,"Coveted Blossom","31-33","Rainforest","",3316,1712],[303,"Rainforest","","Rainforest","",3370,1648],[304,"Rainforest","37-38","Rainforest","",3161,1700],[305,"Rainforest","","Rainforest","",3412,1695],[306,"Rainforest","39-40","Rainforest","",3173,1767],[307,"Rainforest","41-42","Rainforest","",3130,1820],[308,"Haunted Forest","23-24","Haunted Forest","",1932,734],[309,"Haunted Forest","25-26","Haunted Forest","",1985,701],[310,"Haunted Forest","27-28","Haunted Forest","",2056,691],[311,"Haunted Forest","29-30","Underground","",2056,691],[313,"Haunted Forest","","Haunted Forest","",2243,724],[314,"Haunted Forest","","Haunted Forest","",2178,737],[315,"Haunted Forest","","Haunted Forest","",2123,777],[316,"Rainforest","43-45","Rainforest","",3123,1877],[317,"Galkathos","45","Rainforest","",3180,1890],[318,"Temple Hall","18-19","Temple","",2009,1333],[319,"Valdor’s Throneroom","23-25","Temple","",2009,1333],[320,"Glacierbane’s Hollow","49","Frost Cave","",1141,1306],[321,"Goliathor’s Temple","40","Rainforest","",3316,1712],[322,"Goliathor’s Throne Room","40","Ape Temple","",3316,1712],[323,"Trescan’s Dock","34-35","Coastal","",2605,900],[324,"Dark Boreal","40-41","Dark Boreal","",2703,799],[325,"Dark Boreal","41-42","Dark Boreal","",2720,723],[326,"Dark Boreal","43-44","Dark Boreal","",2735,654],[327,"Dark Boreal","45-46","Dark Boreal","",2727,594],[328,"The Ghost Shore","47-49","Ghost Shore","",2641,564],[329,"Dark Boreal","47-48","Dark Boreal","",2813,556],[330,"Dark Boreal","49-50","Dark Boreal","",2894,581],[331,"Dark Boreal","50-51","Dark Boreal","",2990,545],[332,"Grimble’s Camp","45","Dark Boreal","",2688,658],[333,"Magic Plains","40-42","Magic Plains","",1666,2299],[334,"Magic Plains","42-44","Magic Plains","",1753,2280],[335,"Magic Plains","44-46","Magic Plains","",1838,2266],[336,"Red Desert","54-56","Red Desert","",2118,1550],[337,"Red Desert","57-59","Red Desert","",2171,1510],[338,"Trial of Embers","59","Vulcanic Underground","",2213,1482],[339,"Tunnel of Embers","59","Vulcanic Underground","",2213,1482],[340,"Hall of Embers","59","Vulcanic Underground","",2213,1482],[341,"The Ember Forge","59","Vulcanic Underground","",2213,1482],[342,"Dark Boreal","40-41","Dark Boreal","",2833,994],[343,"Dark Boreal","41-42","Dark Boreal","",2870,1028],[344,"Dark Boreal","43-44","Dark Boreal","",2911,1054],[345,"Dark Boreal","45-46","Dark Boreal","",2945,1088],[346,"Dark Boreal","47-48","Dark Boreal","",2975,1122],[347,"Dark Boreal","48-49","Dark Boreal","",3028,1114],[348,"Laen Dorei","50","Dark Boreal","",3153,1085],[349,"Dark Boreal","50-51","Dark Boreal","",3158,1186],[350,"Dark Boreal","51-52","Dark Boreal","",3200,1240],[351,"Wardens’ Bridge","52-53","Coastal","",3260,1247],[352,"Wardens’ Bridge","53-54","Coastal","",3337,1246],[353,"Wardens’ Bridge","54-55","Coastal","",3415,1247],[354,"Mountain","55-56","Mountain","",3460,1271],[355,"Mountain","57-58","Mountain","",3480,1325],[356,"Mountain","59","Mountain","",3526,1361],[357,"Red Desert Cave","53-55","Vulcanic Underground","",2284,1622],[358,"Red Desert Cave","55","Vulcanic Underground","",2284,1622],[359,"House of Zehrak","59","Urban","",3526,1361],[360,"Dominion Spire","50","Urban","",2680,1547],[361,"Dominion Spire 2nd Floor","50","Urban","",2680,1547],[362,"Dominion Spire Roof","50","Urban","",2680,1547],[363,"Moldrir Depths","51-52","Underground","",3066,477],[364,"The Living Cavern","55","Underground","",3022,418],[900,"Abyssal Tower Entrance","1","Urban","",651,1998],[901,"Abyssal Tower","1","Grassland","",651,1998],[902,"Abyssal Tower","10","Magic Plains","",651,1998],[903,"Abyssal Tower","20","Dry Desert","",651,1998],[904,"Abyssal Tower","30","Deep Forest","",651,1998],[905,"Abyssal Tower","40","Haunted Forest","",651,1998],[906,"Abyssal Tower","50","Taiga","",651,1998],[907,"Abyssal Tower","60","Urban","",651,1998],[908,"Abyssal Tower","70","Urban","",651,1998],[909,"Abyssal Tower","80","Urban","",651,1998],[910,"Abyssal Tower","90","Urban","",651,1998],[911,"Abyssal Tower","100","Urban","",651,1998],[998,"Fall of Rebirth","60","Enchanted Forest","",887,1797],[1000,"Fountain of Rebirth","1","Enchanted Forest","Arodas",887,1797],[1001,"Winter Wonderland Lobby","100","Taiga","",541,1868],[1002,"Winter Wonderland","1-9","Taiga","",541,1868],[1003,"Winter Wonderland","10-19","Taiga","",541,1868],[1004,"Winter Wonderland","20-29","Taiga","",541,1868],[1005,"Winter Wonderland","30-39","Taiga","",541,1868],[1006,"Winter Wonderland","40-49","Taiga","",541,1868],[1007,"Winter Wonderland","50-59","Taiga","",541,1868],[1027,"Loveland Lobby","100","Loveland","",541,1868],[1028,"Loveland","1-9","Loveland","",541,1868],[1029,"Loveland","10-19","Loveland","",541,1868],[1030,"Loveland","20-29","Loveland","",541,1868],[1031,"Loveland","30-39","Loveland","",541,1868],[1032,"Loveland","40-49","Loveland","",541,1868],[1033,"Loveland","50-59","Loveland","",541,1868],[1040,"Patrick’s Land Lobby","100","Grassland","",541,1868],[1041,"Patrick’s Land","1-9","Grassland","",541,1868],[1042,"Patrick’s Land","10-19","Grassland","",541,1868],[1043,"Patrick’s Land","20-29","Grassland","",541,1868],[1044,"Patrick’s Land","30-39","Grassland","",541,1868],[1045,"Patrick’s Land","40-49","Grassland","",541,1868],[1046,"Patrick’s Land","50-59","Grassland","",541,1868],[1066,"Bunnyland Lobby","100","Spring Fields","",541,1868],[1067,"Bunnyland","1-9","Spring Fields","",541,1868],[1068,"Bunnyland","10-19","Spring Fields","",541,1868],[1069,"Bunnyland","20-29","Spring Fields","",541,1868],[1070,"Bunnyland","30-39","Spring Fields","",541,1868],[1071,"Bunnyland","40-49","Spring Fields","",541,1868],[1072,"Bunnyland","50-59","Spring Fields","",541,1868],[1144,"Das Festhalle Lobby","100","Mountain","",541,1868],[1145,"Das Festhalle","1-9","Mountain","",541,1868],[1146,"Das Festhalle","10-19","Mountain","",541,1868],[1147,"Das Festhalle","20-29","Mountain","",541,1868],[1148,"Das Festhalle","30-39","Mountain","",541,1868],[1149,"Das Festhalle","40-49","Mountain","",541,1868],[1150,"Das Festhalle","50-59","Mountain","",541,1868],[1157,"Sleepy Hollow Lobby","100","Hollow Forest","",541,1868],[1158,"Sleepy Hollow","1-9","Hollow Forest","",541,1868],[1159,"Sleepy Hollow","10-19","Hollow Forest","",541,1868],[1160,"Sleepy Hollow","20-29","Hollow Forest","",541,1868],[1161,"Sleepy Hollow","30-39","Hollow Forest","",541,1868],[1162,"Sleepy Hollow","40-49","Hollow Forest","",541,1868],[1163,"Sleepy Hollow","50-59","Hollow Forest","",541,1868],[1183,"The Sacred Wilds Lobby","100","Wyvern Forest","",541,1868],[1184,"The Sacred Wilds","1-9","Wyvern Forest","",541,1868],[1185,"The Sacred Wilds","10-19","Wyvern Forest","",541,1868],[1186,"The Sacred Wilds","20-29","Wyvern Forest","",541,1868],[1187,"The Sacred Wilds","30-39","Wyvern Forest","",541,1868],[1188,"The Sacred Wilds","40-49","Wyvern Forest","",541,1868],[1189,"The Sacred Wilds","50-59","Wyvern Forest","",541,1868],[2001,"Overgrown Land","1","Temperate Forest","",503,1787],[2002,"Encampment","10","Temperate Forest","",503,1787],[2003,"Fenced Encampment","20","Temperate Forest","",503,1787],[2004,"Village","30","Temperate Forest","",503,1787],[2005,"Tudor Village","40","Temperate Forest","",503,1787],[2006,"Motte-and-Bailey","50","Temperate Forest","",503,1787],[2007,"Stone Keep","60","Temperate Forest","",503,1787],[2100,"Ashspire Battlegrounds","1-60","Temperate Forest","",503,1787]];
+  function navUnlockWorldMap() {
+    if (!cfg.worldMapUnlock) return;
+    const box = document.getElementById('world_map_container');
+    if (!box) return;
+    let shown = true;
+    try { shown = getComputedStyle(box).display !== 'none'; } catch (e) { /* ignore */ }
+    if (!shown) return;
+    const svg = document.getElementById('world_map');
+    if (!svg) return;
+    /* 找到游戏放地图点的那个 <g>（有 map_id 的节点的父级）；找不到就退到 svg 下第一个 <g>，再退到 svg 本身 */
+    let anchor = null;
+    const gs = svg.querySelectorAll('g');
+    for (let i = 0; i < gs.length; i++) {
+      if (gs[i].parentNode === svg && gs[i].querySelector('g[map_id]')) { anchor = gs[i]; break; }
+    }
+    if (!anchor) { for (let i = 0; i < gs.length; i++) { if (gs[i].parentNode === svg) { anchor = gs[i]; break; } } }
+    if (!anchor) anchor = svg;
+    const have = {};
+    const cur = svg.querySelectorAll('g[map_id]');
+    for (let i = 0; i < cur.length; i++) have[cur[i].getAttribute('map_id')] = 1;
+    let added = 0;
+    for (let i = 0; i < WM_UNLOCK_MAPS.length; i++) {
+      const m = WM_UNLOCK_MAPS[i];
+      const id = String(m[0]);
+      if (have[id]) continue;
+      const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+      g.setAttribute('map_id', id);
+      g.setAttribute('title', '');
+      g.setAttribute('content',
+        '\n<h1 class=left>' + m[1] + '</h1><br/>\n<h2 class=left>\nLevel: <span class=transp75>' + m[2] +
+        '</span><br/>\nBiome: <span class=transp75>' + m[3] + '</span><br/>' +
+        (m[4] ? '\nContinent: <span class=transp75>' + m[4] + '</span>' : '') +
+        '<hr/>\n</h2>\n<i>Click for more information</i>\n' +
+        '<div class=\'divblock_dark tooltip-costlabel smaller\'>🗺️ Map #' + id + '</div>\n');
+      g.setAttribute('hover_title', '');
+      g.setAttribute('class', 'circle-animated tooltip2');
+      g.setAttribute('id', 'map_' + id);
+      g.setAttribute('transform', 'translate(' + (m[5] - 8) + ',' + (m[6] - 8) + ')');
+      g.setAttribute('role', 'button');
+      g.setAttribute('aria-label', 'map_name');
+      g.setAttribute('tabindex', '0');
+      g.setAttribute('data-nr-unlocked', '1');
+      g.innerHTML = '<rect height=40 width=40 rx=70 ry=40 transform="translate(-6 -6)"></rect>' +
+                    '<circle class=circle1 fill="#fff" cx="13.5" cy="13.5" r="9.8"></circle>' +
+                    '<circle class=circle2 fill="#99714e" cx="13.5" cy="13.5" r="4.2"></circle>';
+      g.addEventListener('pointerup', function () {
+        if (window.did_move) return;
+        try { playSound('btn_click'); } catch (e) { /* ignore */ }
+        try { createDialog('Map Details', '', 'ajax', '/modal/map_info?id=' + id, false, false, false, 'Map Details'); } catch (e) { /* ignore */ }
+      });
+      anchor.appendChild(g);
+      added++;
+    }
+    /* 去迷雾：遮罩矩形一去掉，整幅地图就都亮了 */
+    const fog = svg.querySelector('rect.world-map-fog');
+    if (fog) { try { fog.parentNode.removeChild(fog); } catch (e) { /* ignore */ } }
+    /* 新加的节点要让游戏重新初始化一次 tooltip，鼠标移上去才有效 */
+    if (added) { try { if (typeof window.createTooltip === 'function') window.createTooltip(); } catch (e) { /* ignore */ } }
+  }
+
   function navDecorateWorldMap() {
     const box = document.getElementById('world_map_container');
     if (!box) return;
@@ -9707,7 +9790,7 @@
   rhythmTimer(function () { try { navInjectMoveButton(); } catch (e) { /* ignore */ } }, 1200);
   rhythmTimer(function () { navLearn(); poiLearnNow(); }, 2500);
   /* ★ 世界地图开着时，把「资源点 / 怪物」刷进地名 tooltip（关了就是一次 getComputedStyle，几乎零开销） */
-  rhythmTimer(function () { try { navDecorateWorldMap(); } catch (e) { /* ignore */ } }, 1200);
+  rhythmTimer(function () { try { navUnlockWorldMap(); } catch (e) { /* ignore */ } try { navDecorateWorldMap(); } catch (e) { /* ignore */ } }, 1200);
   rhythmTimer(function () { if (MapDB.isDirty()) MapDB.save(); }, 3000);
   window.addEventListener('beforeunload', function () { if (MapDB.isDirty()) MapDB.save(); });
 

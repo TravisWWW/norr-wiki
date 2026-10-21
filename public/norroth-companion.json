@@ -1,8 +1,8 @@
 {
-  "version": "2.6.79",
+  "version": "2.6.80",
   "date": "2026-10-21",
-  "notes": "多角色：「启动全部/停止」合并成一个切换按钮，新增「暂停/继续」（保留队列与记录，不切号不跑副角色行程，主角色照常挂机）",
+  "notes": "v2.6.80：新增「解锁世界地图」——补齐全部 380 张地图点（含未访问）+ 去掉战争迷雾，整幅世界地图可见可点；点开的仍是游戏真实的 Map Details",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 628106,
-  "sha256": "ec0dc7057c0b07fbf3a60434b428b556a4fbaad9bb1d3f4061ad8fffa4501f07"
+  "size": 654511,
+  "sha256": "8a91f5774df83f1f18ef06bda165ea301bbf2dcebf61bc709ac6b90b34e24730"
 }
