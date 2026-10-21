@@ -1,8 +1,8 @@
 {
-  "version": "2.6.89",
+  "version": "2.6.90",
   "date": "2026-10-22",
-  "notes": "v2.6.89：高级页新增「图鉴同步」——把本账号图鉴记录一键上传到公共图鉴仓库（需 GitHub 令牌；无令牌则下载 JSON + 打开上传页），由 Actions 自动并入唯一一份权威图鉴文档。令牌只存本机。",
+  "notes": "v2.6.90：图鉴同步改为零配置——内置社区令牌（只对纯数据仓库 norr-bestiary 有写权限，碰不到 wiki 和其它项目），用户无需填任何东西；仍可自填令牌覆盖。",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 704726,
-  "sha256": "8b89a05b70514b9065e5fb827f31335fe4a0065b87389a670036374224f106f8"
+  "size": 706098,
+  "sha256": "8dfbfdf9824ed554bb086577b7e00898945d26b1edddb4efd6ce52c88e1c1045"
 }

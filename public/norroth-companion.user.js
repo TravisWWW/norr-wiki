@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.89
+// @version      2.6.90
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -184,7 +184,20 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.89';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
+  const SCRIPT_VER = '2.6.90';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
+
+  /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
+     原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
+     唯一可靠的做法就是让它只够得着一个纯数据仓库 —— 这样它碰不到 norr-wiki，
+     也碰不到 TravisWWW 下任何其它项目（尤其是共用 traviswww.github.io 同源域名的 Pages）。 */
+  var GH_REPO = 'TravisWWW/norr-bestiary';
+  var GH_BRANCH = 'main';
+  var GH_CONTRIB_DIR = 'contrib';
+  var GH_TOKEN_KEY = 'norroth_gh_token';
+  /* ★ 内置「社区令牌」：细粒度 PAT，只对上面这个数据仓库有 Contents: Read and write。
+     因为够不到其它任何东西，所以可以随脚本公开分发 —— 用户什么都不用填。
+     留空则退回「用户自填令牌 / 手动下载上传」。 */
+  var GH_COMMUNITY_TOKEN = '';
   /* ★ v2.6.77：在线更新。
      脚本托管在 GitHub Pages（和中文 Wiki 同一个仓库 / 同一次部署），元数据块里的
      @updateURL / @downloadURL 都指向下面这个地址 —— Tampermonkey 会按自己的周期
@@ -7380,14 +7393,14 @@
 
           <div class="divblock_dark" style="margin-top:4px">
             <div class="nr-srow">
-              <span class="nr-sl" style="flex:none" title="把你的图鉴记录上传到公共图鉴仓库（TravisWWW/norr-wiki），GitHub Actions 会自动并入唯一一份权威图鉴文档，所有用小伴侣的人共享同一份数据。填了令牌可一键上传；没令牌则下载 JSON 并打开 GitHub 上传页手动拖入。">图鉴同步</span>
+              <span class="nr-sl" style="flex:none" title="把你的图鉴记录上传到公共图鉴数据仓库（TravisWWW/norr-bestiary），norr-wiki 会自动拉取并并入唯一一份权威图鉴文档，所有用小伴侣的人共享同一份数据。内置了社区令牌，正常情况下无需填写任何东西。">图鉴同步</span>
               <button class="mini" id="nr-bestsync" type="button" style="flex:1" title="扫描并上传到公共图鉴">同步到公共图鉴</button>
             </div>
             <div class="nr-srow" style="margin-top:4px">
-              <span id="nr-bestsyncstate" style="flex:1;color:#9aa4b2;font-size:10.5px">填好令牌后点「同步到公共图鉴」</span>
+              <span id="nr-bestsyncstate" style="flex:1;color:#9aa4b2;font-size:10.5px">点「同步到公共图鉴」</span>
             </div>
             <div class="nr-srow" style="margin-top:4px">
-              <span class="nr-sl" style="flex:none" title="GitHub 细粒度令牌（Fine-grained PAT），权限只需勾选本仓库的 Contents: Read and write。只存在你本机浏览器，不写进配置、不随导出泄漏。留空则只能手动下载 JSON 再拖到 GitHub 上传页。">GitHub 令牌</span>
+              <span class="nr-sl" style="flex:none" title="可选。脚本已内置社区令牌，正常情况下不用填。填了会改用你自己的令牌（以你的账号身份上传）。只存在你本机浏览器，不写进配置、不随导出泄漏。">GitHub 令牌</span>
               <input type="password" id="nr-ghtoken" placeholder="github_pat_…（可留空）" autocomplete="off" spellcheck="false" style="flex:1;min-width:0;padding:2px 4px;font-size:10.5px;height:auto;line-height:1.3">
               <button class="mini" id="nr-ghtokensave" type="button" title="保存到本机浏览器">保存</button>
             </div>
@@ -7856,13 +7869,17 @@
     const bestSyncEl = panel.querySelector('#nr-bestsync');
     if (bestSyncEl) bestSyncEl.addEventListener('click', function () { syncBestiary(); });
     const ghTokEl = panel.querySelector('#nr-ghtoken');
-    if (ghTokEl) ghTokEl.value = ghToken();
+    if (ghTokEl) ghTokEl.value = ghUserToken();
+    (function () {
+      const s0 = panel.querySelector('#nr-bestsyncstate');
+      if (s0) s0.textContent = GH_COMMUNITY_TOKEN ? '点「同步到公共图鉴」即可（无需填令牌）' : '未内置令牌：可填自己的令牌，或点按钮手动上传';
+    })();
     const ghTokSaveEl = panel.querySelector('#nr-ghtokensave');
     if (ghTokSaveEl) ghTokSaveEl.addEventListener('click', function () {
       const v = ((ghTokEl && ghTokEl.value) || '').trim();
       setGhToken(v);
       const s = panel.querySelector('#nr-bestsyncstate');
-      if (s) s.textContent = v ? '已保存令牌（仅本机）' : '已清除令牌';
+      if (s) s.textContent = v ? '已保存令牌（仅本机，将覆盖内置令牌）' : (GH_COMMUNITY_TOKEN ? '已清除，改用内置社区令牌' : '已清除令牌');
     });
     // 详细统计：点标题栏展开/收起，点「清空」清零
     const detbar = panel.querySelector('#nr-detbar');
@@ -10475,12 +10492,9 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
      · 有令牌：脚本直接 PUT 到 GitHub（一键、真正实时）。
      · 没令牌：下载 JSON + 打开 GitHub 上传页，手动拖进去（无需令牌）。
      令牌只存本机 localStorage，不进配置、不随导出泄漏。 */
-  const GH_REPO = 'TravisWWW/norr-wiki';
-  const GH_BRANCH = 'main';
-  const GH_CONTRIB_DIR = 'data/bestiary-contrib';
-  const GH_TOKEN_KEY = 'norroth_gh_token';
 
-  function ghToken() { try { return localStorage.getItem(GH_TOKEN_KEY) || ''; } catch (e) { return ''; } }
+  function ghUserToken() { try { return localStorage.getItem(GH_TOKEN_KEY) || ''; } catch (e) { return ''; } }
+  function ghToken() { return ghUserToken() || GH_COMMUNITY_TOKEN; }
   function setGhToken(v) { try { if (v) localStorage.setItem(GH_TOKEN_KEY, v); else localStorage.removeItem(GH_TOKEN_KEY); } catch (e) { /* ignore */ } }
 
   function b64utf8(str) {
@@ -10563,12 +10577,14 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
         setTimeout(function () { try { URL.revokeObjectURL(url); } catch (e) { /* ignore */ } }, 60000);
         const upUrl = 'https://github.com/' + GH_REPO + '/upload/' + GH_BRANCH + '/' + GH_CONTRIB_DIR;
         try { window.open(upUrl, '_blank', 'noopener'); } catch (e) { /* ignore */ }
-        say('已下载 ' + fname + '，请拖到刚打开的 GitHub 上传页（或填令牌后一键上传）');
+        say('已下载 ' + fname + '，请拖到刚打开的 GitHub 上传页');
         setStatus('图鉴同步：已下载 ' + fname + '，请拖到 GitHub 上传页');
         logEvent('图鉴同步（无令牌）：已下载 ' + fname);
       }
     } catch (e) {
-      const msg = (e && e.message) ? e.message : String(e);
+      let msg = (e && e.message) ? e.message : String(e);
+      if (e && e.status === 404) msg += '（数据仓库 ' + GH_REPO + ' 不存在，或令牌无权访问）';
+      else if (e && (e.status === 401 || e.status === 403)) msg += '（令牌无效或权限不足：需要该仓库的 Contents: Read and write）';
       say('同步失败：' + msg);
       setStatus('图鉴同步失败：' + msg);
     } finally {
