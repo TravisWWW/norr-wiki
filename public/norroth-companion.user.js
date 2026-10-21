@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.81
+// @version      2.6.82
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -184,7 +184,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.81';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
+  const SCRIPT_VER = '2.6.82';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
   /* ★ v2.6.77：在线更新。
      脚本托管在 GitHub Pages（和中文 Wiki 同一个仓库 / 同一次部署），元数据块里的
      @updateURL / @downloadURL 都指向下面这个地址 —— Tampermonkey 会按自己的周期
@@ -9571,11 +9571,157 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
   const WM_PROF_EN = { fishing: 'Fishing', mining: 'Mining', quarrying: 'Quarrying', chopping: 'Chopping', farming: 'Farming', foraging: 'Foraging' };
   const WM_LAND_EN = { dungeon: 'Dungeon', worldboss: 'World Boss', totem: 'Summoning Totem', caravan: 'Smugglers Route', dock: 'Dock', mailbox: 'Mailbox', waygate: 'Waygate' };
 
+  /* ======================= 19c. 世界地图 POI 实时数据（v2.6.82） =======================
+   * tooltip 的「资源点 / 怪物」原来是内嵌快照，会过期（实测：游戏敌人页 157 条 vs 内嵌 141 条，少 16 个）。
+   * 游戏自己就把这两张表放在帮助页里，可以直接读：
+   *   GET /modal/help_detail?id=49 → 采集点（专业 + 地图名 + Tier + Level + openWorldMap('wx/wy')）
+   *   GET /modal/help_detail?id=53 → 敌人（名字 + 图标 + Level Range + Biome）
+   * 进游戏后拉一次、缓存 24 小时，实时重建每张图的 POI；拉不到就回退内嵌快照 WM_POI。
+   * 地标（副本/世界BOSS/图腾/商队/码头/邮箱/传送站）来自 map_info 图标，没有批量接口，仍用内嵌快照。
+   * ============================================================================= */
+  const WM_LIVE_KEY = 'norroth_wm_live_v1';
+  const WM_LIVE_TTL = 24 * 3600 * 1000;
+  let _wmPoi = WM_POI;            /* 当前生效的 POI 表（实时优先，回退内嵌） */
+  let _wmMon = WM_POI_MON;        /* 当前生效的怪物表 [名字, 图标id] */
+  let _wmFetchState = '';         /* '' 未开始 | 'loading' | 'ok' | 'fail' */
+
+  /* 采集点页 → { 'wx/wy': [[专业, 层级, 等级], ...] } */
+  function wmParseGather(html) {
+    const out = {};
+    const parts = String(html).split(/res-icon-\w+\s+small_icon[^>]*><\/div>\s*([A-Za-z]+)\s*<\/h2>/);
+    for (let i = 1; i + 1 < parts.length; i += 2) {
+      const prof = String(parts[i]).toLowerCase();
+      const seg = parts[i + 1];
+      const re = /openWorldMap\('(\d+\/\d+)'\)[\s\S]{0,400}?col-xs-3">([^<]*)<\/div>[\s\S]{0,200}?col-xs-3">Tier\s*([^<]*)<\/div>[\s\S]{0,200}?col-xs-3">Level\s*([^<]*)<\/div>/g;
+      let m;
+      while ((m = re.exec(seg))) {
+        const key = m[1];
+        (out[key] = out[key] || []).push([prof, String(m[3]).trim(), String(m[4]).trim()]);
+      }
+    }
+    return out;
+  }
+
+  /* 敌人页 → [{ n:名字, ic:图标id, lv:[a,b], bi:[群系...] }] */
+  function wmParseEnemies(html) {
+    const out = [];
+    const blocks = String(html).split(/class="divblock[^"]*search-this"/).slice(1);
+    for (let i = 0; i < blocks.length; i++) {
+      const b = blocks[i];
+      const nm = (b.match(/<h2[^>]*>\s*([^<]+?)\s*<\/h2>/) || [])[1];
+      if (!nm) continue;
+      const ic = (b.match(/enemy_(\d+)\.gif/) || [])[1];
+      const lvs = (b.match(/Level Range:<\/b>\s*([^<]*)</) || [])[1] || '';
+      const bis = (b.match(/Biome:<\/b>\s*([^<]*)</) || [])[1] || '';
+      const r = /(\d+)\s*-\s*(\d+)/.exec(lvs);
+      const one = /(\d+)/.exec(lvs);
+      out.push({
+        n: nm.trim(),
+        ic: ic ? +ic : 0,
+        lv: r ? [+r[1], +r[2]] : (one ? [+one[1], +one[1]] : null),
+        bi: bis.split(',').map(function (x) { return x.trim(); }).filter(Boolean)
+      });
+    }
+    return out;
+  }
+
+  function wmLvRange(txt) {
+    const r = /(\d+)\s*-\s*(\d+)/.exec(txt || '');
+    if (r) return [+r[1], +r[2]];
+    const n = /(\d+)/.exec(txt || '');
+    return n ? [+n[1], +n[1]] : null;
+  }
+
+  /* 用实时数据重建每张图的 POI（结构同 WM_POI；地标沿用内嵌快照） */
+  function wmBuildPoi(gather, enemies) {
+    const poi = {};
+    const coordIdx = {}, meta = {};
+    for (let i = 0; i < WM_UNLOCK_MAPS.length; i++) {
+      const m = WM_UNLOCK_MAPS[i];
+      const id = String(m[0]);
+      meta[id] = { lv: m[2], biome: m[3] };
+      const key = m[5] + '/' + m[6];
+      (coordIdx[key] = coordIdx[key] || []).push(id);
+    }
+    /* 采集点：世界坐标 → 该坐标下的所有地图 */
+    Object.keys(gather).forEach(function (coord) {
+      const ids = coordIdx[coord];
+      if (!ids) return;
+      ids.forEach(function (id) { (poi[id] = poi[id] || {}).g = gather[coord]; });
+    });
+    /* 城镇（内嵌快照里带 waygate 地标的）是安全区，不推怪 */
+    const townOf = {};
+    Object.keys(WM_POI).forEach(function (id) {
+      const sp = WM_POI[id].s;
+      if (sp && sp.indexOf('waygate') >= 0) townOf[id] = 1;
+    });
+    /* 怪物：群系命中 + 等级区间有交集 */
+    Object.keys(meta).forEach(function (id) {
+      const mm = meta[id];
+      if (townOf[id] || !mm.biome) return;
+      const ml = wmLvRange(mm.lv);
+      const ms = [];
+      for (let i = 0; i < enemies.length; i++) {
+        const e = enemies[i];
+        if (e.bi.indexOf(mm.biome) < 0) continue;
+        if (e.lv && ml && (e.lv[1] < ml[0] || e.lv[0] > ml[1])) continue;
+        ms.push(i);
+      }
+      if (ms.length) (poi[id] = poi[id] || {}).m = ms;
+    });
+    /* 地标沿用内嵌快照（map_info 图标没有批量接口）；
+       实时没算出来的（活动大厅 / 特殊图）也回退内嵌，保证不丢信息 */
+    Object.keys(WM_POI).forEach(function (id) {
+      const e = WM_POI[id];
+      const cur = poi[id] = poi[id] || {};
+      if (e.s) cur.s = e.s;
+      if (!cur.g && e.g) cur.g = e.g;
+      if (!cur.m && e.m) cur.m = e.m;
+    });
+    return poi;
+  }
+
+  async function wmFetchLivePoi() {
+    if (_wmFetchState === 'loading') return;
+    if (!inGame()) { _wmFetchState = ''; return; }   /* 还没进世界，等下一轮 */
+    _wmFetchState = 'loading';
+    try {
+      const get = function (u) {
+        return fetch(u, { credentials: 'same-origin', headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+          .then(function (r) { return r.text(); });
+      };
+      const both = await Promise.all([get('/modal/help_detail?id=49'), get('/modal/help_detail?id=53')]);
+      const gather = wmParseGather(both[0]);
+      const enemies = wmParseEnemies(both[1]);
+      const nCoord = Object.keys(gather).length;
+      if (!nCoord || !enemies.length) throw new Error('解析为空（采集点坐标 ' + nCoord + ' / 敌人 ' + enemies.length + '）');
+      const mon = enemies.map(function (e) { return [e.n, e.ic]; });
+      const poi = wmBuildPoi(gather, enemies);
+      _wmPoi = poi; _wmMon = mon; _wmFetchState = 'ok';
+      try { localStorage.setItem(WM_LIVE_KEY, JSON.stringify({ at: now(), mon: mon, poi: poi })); } catch (e) { /* ignore */ }
+      logEvent('世界地图数据：已实时更新（采集点坐标 ' + nCoord + ' 个 / 敌人 ' + enemies.length + ' 种）');
+    } catch (e) {
+      _wmFetchState = 'fail';
+      logEvent('世界地图数据：实时读取失败，用内置快照（' + (e && e.message ? e.message : e) + '）');
+    }
+  }
+
+  /* 启动时：有新鲜缓存就直接用，否则后台拉一次（不阻塞任何东西） */
+  function wmLoadLivePoi() {
+    let cached = null;
+    try { cached = JSON.parse(localStorage.getItem(WM_LIVE_KEY) || 'null'); } catch (e) { cached = null; }
+    if (cached && cached.poi && cached.mon) {
+      _wmPoi = cached.poi; _wmMon = cached.mon; _wmFetchState = 'ok';
+      if (now() - (cached.at || 0) < WM_LIVE_TTL) return;   /* 还新鲜 → 不拉 */
+    }
+    wmFetchLivePoi();
+  }
+
   function navWmPoiBlock(mapId) {
     const key = String(mapId);
     const gs = MapDB.g(key);            /* 内置 + 边玩边学，MapDB 已合并（真实点位名） */
     const ms = MapDB.m(key);            /* 同上（真实怪物名单） */
-    const wp = WM_POI[key] || null;     /* ★ v2.6.81：Wiki 推算的「全图数据」，不依赖探索 */
+    const wp = _wmPoi[key] || null;     /* ★ v2.6.81 起：全图数据（v2.6.82 起优先用实时拉到的） */
     const mon = MapDB.monAll();
     const chip = function (cls, icon, name) {
       return '<span class="nr-wm-chip ' + cls + '">' +
@@ -9614,7 +9760,7 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
       }).join('');
     } else if (wp && wp.m) {
       mChips = wp.m.map(function (i) {
-        const e = WM_POI_MON[i] || [];
+        const e = _wmMon[i] || [];
         return chip('m', e[1] ? '/images/maps/items/enemy_' + e[1] + '.gif' : '', e[0] || '');
       }).join('');
     }
@@ -9828,6 +9974,16 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
   rhythmTimer(function () { navLearn(); poiLearnNow(); }, 2500);
   /* ★ 世界地图开着时，把「资源点 / 怪物」刷进地名 tooltip（关了就是一次 getComputedStyle，几乎零开销） */
   rhythmTimer(function () { try { navUnlockWorldMap(); } catch (e) { /* ignore */ } try { navDecorateWorldMap(); } catch (e) { /* ignore */ } }, 1200);
+  /* ★ v2.6.82：进游戏后拉一次「采集点 / 敌人」实时数据（缓存 24h；失败回退内置快照）。
+     不能在 /login、/choose_char 上拉（那时还没进世界，接口拿不到内容）→ 等 inGame() 再拉。 */
+  (function () {
+    let wmTried = false;
+    rhythmTimer(function () {
+      if (wmTried || !inGame()) return;
+      wmTried = true;
+      try { wmLoadLivePoi(); } catch (e) { /* ignore */ }
+    }, 2000);
+  })();
   rhythmTimer(function () { if (MapDB.isDirty()) MapDB.save(); }, 3000);
   window.addEventListener('beforeunload', function () { if (MapDB.isDirty()) MapDB.save(); });
 
