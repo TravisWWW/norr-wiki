@@ -1,8 +1,8 @@
 {
-  "version": "2.6.116",
+  "version": "2.6.117",
   "date": "2026-10-23",
-  "notes": "v2.6.116 到位没触发动作兜底（含战斗）：走到目标格 1.3s 内若格子还有 action、人还站在格上、且没弹出对应窗口，就补一次游戏自己的 execTileAction(action)；敌人格在 .map_table 里没有 action（敌人是覆盖层），战斗到位漏触发则改用 walkTo(同格) 触发游戏的「同格→loadCombat」分支（被守卫拦下时退回直接 loadCombat）。根因：1.0 客户端格子动作/战斗只在走格动画完成那一刻 character.x-y===walk_to 时才执行，而脚本 abortWalk()（分段导航/重发走位/落位/卡住自愈）会把 walk_to 清成 null，动作就永远不触发。真机实测：正常挂机 80s 内真实补触发 2 次漏掉的 collect_scrap，战斗重触发 0 误报、0 报错。",
+  "notes": "v2.6.117 两项修复：①野外挂机图的回图导航 —— 目的地是野外图（非城市/非野外锚点）时，先传送到离它最近的传送站图（城市∪野外锚点）再走剩下的短路，不再从很远的地方一路走过去（Dark Boreal 这种只把 327 当锚点的图尤其明显）；②没吃的就暂停 —— 需要补血/补蓝但背包里确实没有对应物品（且背包扫描过）时，暂停挂机并提示「没吃的了」，不再硬撑挨打。",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 772623,
-  "sha256": "d00aff7b57b63f5bc7e37538dbf615ae6be49d3fc7f3d54eadd9867cddbfe643"
+  "size": 776555,
+  "sha256": "85f1d7baf1b42cdbad3c768733e28acf0384151c4be1c9aded2f6a01042af218"
 }

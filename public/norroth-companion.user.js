@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.116
+// @version      2.6.117
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -77,6 +77,8 @@
     hpPct: 70, mpPct: 30,
     potionDelayMs: 1500,     // ★ 两瓶药之间的最小间隔（避免连点浪费）
     bagList: [],
+    bagScanned: false,       // ★ v2.6.117：背包至少扫描过一次（否则不能判「没吃的」，不暂停）
+    pauseNoSupply: true,     // ★ v2.6.117：需要补血/补蓝但背包里没物品了 → 暂停挂机
 
     /* 宠物 */
     petFeedOn: false,
@@ -184,7 +186,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.116';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
+  const SCRIPT_VER = '2.6.117';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -448,6 +450,8 @@
     c.repairDurPct = Math.max(1, Math.min(100, Math.round(+c.repairDurPct || 15)));
     delete c.repairTurnsMin;   /* v1.8.1 已合并成单一的「维修阈值(%)」 */
     c.autoRespawn = !!c.autoRespawn;
+    c.pauseNoSupply = (c.pauseNoSupply === undefined) ? true : !!c.pauseNoSupply;
+    c.bagScanned = !!c.bagScanned;
     c.sweepFrames = (c.sweepFrames === undefined) ? true : !!c.sweepFrames;
     c.worldMapUnlock = (c.worldMapUnlock === undefined) ? true : !!c.worldMapUnlock;
     if (c.skin === 'gray') c.skin = 'grid';                 // ★ 去掉「灰阶」，游戏界面只剩 原版 / 工作台
@@ -4757,6 +4761,7 @@
     });
     applyBagDiff(items);                              // ★ 详细统计：算「获得」增量 + 背包装备稀有度
     cfg.bagList = list;
+    cfg.bagScanned = true;
     if (cfg.hpPotion && !list.some(i => i.key === cfg.hpPotion)) cfg.hpPotion = '';
     if (cfg.mpPotion && !list.some(i => i.key === cfg.mpPotion)) cfg.mpPotion = '';
     saveCfg();
@@ -7287,6 +7292,16 @@
 
     verifyPotion();
 
+    /* ★ v2.6.117：没吃的 / 没药了 → 暂停挂机（用户要求）。
+       判据：需要补血/补蓝（低于阈值）但背包里已经没有可用的对应物品，且持续 >4s（防误判）。
+       动作：stop()。补货后重新开始即可。 */
+    if (cfg.pauseNoSupply && cfg.bagScanned) {
+      if (suppliesEmpty()) {
+        if (!st.noSupplyAt) st.noSupplyAt = now();
+        else if (now() - st.noSupplyAt > 4000) { stop('没吃的了：补血/补蓝物品已用完，已暂停挂机'); return; }
+      } else st.noSupplyAt = 0;
+    } else st.noSupplyAt = 0;
+
     if (now() - st.lastStats > 1200) {
       st.lastStats = now();
       updatePerf();
@@ -7921,6 +7936,7 @@
           <div class="opts">
             <label title="独立开关：只按血量/蓝量阈值吃药，不依赖挂机；吃药时挂机会自动让路。"><input type="checkbox" class="chk" id="nr-potion">自动补药</label>
             <label><input type="checkbox" class="chk" id="nr-petfeed">自动喂宠</label>
+            <label title="需要补血/补蓝但背包里已经没有对应物品时，暂停挂机（避免一直挨打）。"><input type="checkbox" class="chk" id="nr-pausesupply">没吃的就暂停</label>
           </div>
           <div class="half" style="margin-top:6px">
             <div><span class="lbl">吃药间隔(毫秒)</span><input type="number" id="nr-potdelay" min="700" max="10000" step="100"></div>
@@ -8348,6 +8364,7 @@
       const el = document.getElementById('nr-potion');
       if (el) el.addEventListener('change', () => setPotionOn(el.checked));
     })();
+    bindCheck('nr-pausesupply', 'pauseNoSupply');
     bindCheck('nr-repairon', 'repairOn');
     (function () {
       const mb = document.getElementById('nr-skinmute');
@@ -8729,7 +8746,7 @@
     try { const tss = document.getElementById('nr-towerstopsupply'); if (tss) tss.checked = !!cfg.towerStopSupply; } catch (e) { /* ignore */ }
     try { const tsf = document.getElementById('nr-towerstopfloor'); if (tsf) tsf.value = cfg.towerStopFloor ? String(cfg.towerStopFloor) : ''; } catch (e) { /* ignore */ }
     try { renderTowerTownSelect(); } catch (e) { /* ignore */ }
-    set('nr-petfeed', cfg.petFeedOn); syncPotionButton();
+    set('nr-petfeed', cfg.petFeedOn); syncPotionButton(); set('nr-pausesupply', cfg.pauseNoSupply);
     set('nr-repairon', cfg.repairOn); set('nr-sellon', cfg.sellOn); set('nr-depositon', cfg.autoDeposit);
     try { const _ca = document.getElementById('nr-clearaction'); if (_ca) _ca.value = cfg.clearAction || 'sell'; } catch (e) { /* ignore */ }
     try { const _sr = document.getElementById('nr-sellrarity'); if (_sr) _sr.value = cfg.sellRarity || ''; } catch (e) { /* ignore */ }
@@ -10025,6 +10042,42 @@
     return !!out;
   }
 
+  /* ★ v2.6.117：目的地是野外图（不是城市、也不是野外锚点）时，
+     优先「传送到离目的地最近的传送站图（城市∪野外锚点）+ 步行」，
+     而不是从当前位置一路走过去。
+     场景：挂机图设 Dark Boreal（324/325/…，只有 327 是野外锚点），
+           复活 / 出活动后从很远的地方走 → 又慢又容易卡。
+     返回 true = 已经用这条路到达目的地。 */
+  async function navTeleportNear(dest, alive, allowCity, allowWild) {
+    const cur = +character.current_map;
+    const D = +dest;
+    if (!(D > 0) || !(cur > 0) || cur === D) return false;
+    if (isTownMap(D) || isWildAnchor(D)) return false;      /* 这两种走已有分支 */
+    const anchor = nearestWaygateMap(D);                    /* 离目的地最近的传送站图 */
+    if (!(anchor > 0) || anchor === D) return false;
+    const page = isTownMap(anchor) ? 'cities' : 'wilderness';
+    if (page === 'cities' && !allowCity) return false;
+    if (page === 'wilderness' && !allowWild) return false;
+    const dWalk = navDist(cur, D);                          /* 从当前位置直接走到目的地 */
+    const dAnchor = navDist(anchor, D);                     /* 从锚点走到目的地 */
+    if (!(dAnchor < Infinity)) return false;
+    /* 只有「传送到锚点再走」明显比「直接走」省时，才绕传送站（不然就直走） */
+    if (!(dAnchor + WAYGATE_SLACK < dWalk)) return false;
+    if (alive && !alive()) return false;
+    logEvent('传送站：目的地「' + navMapName(D) + '」较远 → 先传到「' + navMapName(anchor) + '」再走（' + dAnchor + ' 跳）');
+    /* 先走到「离当前位置最近的传送站图」（若当前就在传送站图则直接传） */
+    const w = nearestWaygateMap(cur);
+    if (w > 0 && w !== cur) {
+      logEvent('传送站：先走到最近的有传送站的图「' + navMapName(w) + '」');
+      if (!await navWalkPlanTo(w, alive)) return false;
+    }
+    if (alive && !alive()) return false;
+    const out = await navWaygateOut(anchor, alive, page, true);
+    if (+out !== +anchor) return false;
+    if (await navWalkPlanTo(D, alive)) return true;
+    return false;
+  }
+
   /* ===== 模块 A 主函数 ===== */
   async function navToMap(destId, opts) {
     opts = opts || {};
@@ -10056,6 +10109,9 @@
           if (await navWaygateLogic(dest, 'wilderness', alive)) return true;
           if (alive && !alive()) return false;
         }
+        /* ③.5 ★ v2.6.117：目的地是野外图（非城市 / 非锚点）→ 先传到离它最近的传送站图再走 */
+        if (await navTeleportNear(dest, alive, allowCity, allowWild)) return true;
+        if (alive && !alive()) return false;
       }
       /* ④ 有步行通路 → 步行 */
       if (navRoute(character.current_map, dest)) {
@@ -11641,7 +11697,7 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
     applyBagDiff: applyBagDiff, parseInvItems: parseInvItems, initBagSnap: initBagSnap,
     pause: pause, resume: resume, toggleRun: toggleRun, runElapsedMs: runElapsedMs, pollBagGain: pollBagGain,
     startRoundTrip: function () { const seq = ++navAutoSeq; st.mapSwitch.active = true; return navRoundTrip(seq); },
-    returnToFarm: returnToFarm, navToMap: navToMap, navGoTo: navToMap, navWalkTile: navWalkTile, navDist: navDist, escapeTarget: escapeTarget, rideSmugglers: rideSmugglers, navWaygateOut: navWaygateOut, navWorldTeleport: navWorldTeleport, worldTeleportTarget: worldTeleportTarget, findMapDetailsTeleport: findMapDetailsTeleport, navWalkToAnyExit: navWalkToAnyExit, townName: townName,
+    returnToFarm: returnToFarm, navToMap: navToMap, navGoTo: navToMap, navWalkTile: navWalkTile, navDist: navDist, escapeTarget: escapeTarget, navTeleportNear: navTeleportNear, nearestWaygateMap: nearestWaygateMap, waygateMaps: waygateMaps, isWildAnchor: isWildAnchor, isTownMap: isTownMap, suppliesEmpty: suppliesEmpty, rideSmugglers: rideSmugglers, navWaygateOut: navWaygateOut, navWorldTeleport: navWorldTeleport, worldTeleportTarget: worldTeleportTarget, findMapDetailsTeleport: findMapDetailsTeleport, navWalkToAnyExit: navWalkToAnyExit, townName: townName,
     navImportRecorder: navImportRecorder,
     mapDB: MapDB,
     nav: { graph: MapDB, route: navRoute, travelTo: navTravelTo, hop: navHop, learn: navLearn,
