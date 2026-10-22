@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.103
+// @version      2.6.104
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -184,7 +184,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.103';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
+  const SCRIPT_VER = '2.6.104';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -776,10 +776,10 @@
     };
     const noNudge = function () { /* 落位期间不做卡死自愈，避免又走开 */ };
     const done = function () { st.pos.at = 0; st.pos.hits = 0; };
-    await walkTileCore(n2[0], n2[1], { timeoutMs: 12000, retrigger: false, alive: alive, onStuck: noNudge, cond: function () { return character.x === n2[0] && character.y === n2[1]; } });
+    await navWalkTile(n2[0], n2[1], { timeoutMs: 12000, alive: alive, onStuck: noNudge, cond: function () { return character.x === n2[0] && character.y === n2[1]; } });
     if (!alive()) { done(); return false; }
     await sleep(600);
-    await walkTileCore(tx, ty, { timeoutMs: 15000, retrigger: false, alive: alive, onStuck: noNudge, cond: function () { return character.x === tx && character.y === ty; } });
+    await navWalkTile(tx, ty, { timeoutMs: 15000, alive: alive, onStuck: noNudge, cond: function () { return character.x === tx && character.y === ty; } });
     done();
     return true;
   }
@@ -2347,6 +2347,12 @@
   /* ★ 内置种子：唯一一份写死的全地图数据（由 bot/inject_mapdb.js 从 data/map_db.json 注入） */
   const MAPDB_SEED = {"v":1,"cities":[{"name":"El Caspar","lv":"1","id":"5"},{"name":"Elundi","lv":"10","id":"16"},{"name":"Owranbu","lv":"10","id":"23"},{"name":"Drouver","lv":"15","id":"91"},{"name":"Vileton","lv":"15","id":"113"},{"name":"Sanjuo","lv":"19","id":"134"},{"name":"Bungavik","lv":"20","id":"169"},{"name":"Saurville","lv":"20","id":"201"},{"name":"Ururg","lv":"20","id":"229"},{"name":"Caeltys","lv":"30","id":"183"},{"name":"Trescan","lv":"30","id":"281"},{"name":"Stogow","lv":"30","id":"284"},{"name":"Nythrendal","lv":"40","id":"143"},{"name":"Galkathos","lv":"45","id":"317"},{"name":"Laen Dorei","lv":"50","id":"348"},{"name":"Dominion Spire","lv":"50","id":"360"}],"maps":{"110":{"name":"Corduin","type":"Normal"},"310":{"name":"Haunted Forest","type":"Normal"},"336":{"name":"Red Desert","type":"Normal"},"348":{"name":"Laen Dorei","type":"City"},"352":{"name":"Wardens’ Bridge","type":"Normal"},"360":{"name":"Dominion Spire","type":"City"},"1":{"name":"Fountain of Rebirth"},"2":{"name":"Lower Fountain’s Descent"},"3":{"name":"Sasquatch Grotto","type":"Normal","m":["Sasquatch"],"visited":1},"4":{"name":"Upper Fountain’s Descent","type":"Normal","g":["Mucky Patch"],"gt":[[24,12,"Mucky Patch"]],"visited":1},"5":{"name":"El Caspar","type":"City","g":["Minnow Pier","Mucky Patch"],"gt":[[13,22,"Minnow Pier"],[26,48,"Mucky Patch"]],"visited":1,"smith":1},"6":{"name":"Brisban Pond","type":"Normal","g":["Slate Quarry","Minnow Pier"],"gt":[[18,38,"Slate Quarry"],[39,28,"Minnow Pier"],[53,24,"Slate Quarry"]],"m":["Wild Dog","Snake","Deer","Hare","Wasp"],"visited":1},"7":{"name":"Akelay Foothills","type":"Normal","m":["Wild Hog","Wasp","Snake","Bison","Salamanderoid","Deer","Wild Dog"],"visited":1},"8":{"name":"Akelay Cave Level 1","type":"Normal","g":["Copper Mine"],"gt":[[36,26,"Copper Mine"]],"m":["Troglodyte","Snake","Miner","Goblin Pyro","Monstrous Worm","Hypnotic Bat"],"visited":1},"9":{"name":"Akelay Cave Level 2","type":"Secret","g":["Slate Quarry"],"gt":[[35,45,"Slate Quarry"]],"m":["Hypnotic Bat","Goblin Pyro","Troglodyte","Thorny Vines","Monstrous Worm","Miner","Snake"],"visited":1},"10":{"name":"Mount Akelay","m":["Wolf","Bison","Goblin Pyro","Goblin Soldier"]},"11":{"name":"Elena’s Crossroad","type":"Normal","g":["Cotton Field"],"gt":[[27,41,"Cotton Field"]],"m":["Wild Dog","Deer","Hare","Wasp","Snake"],"visited":1},"12":{"name":"Forested Canyon","type":"Normal","m":["Peasant","Beaver","Badger","Deer","Woodland Snake"],"visited":1},"13":{"name":"Tree of Life","type":"Normal","g":["Minnow Pier"],"gt":[[25,19,"Minnow Pier"],[40,20,"Minnow Pier"]],"m":["Wolf","Deer","Woodland Spider","Peasant","Woodland Snake","Bear","Badger","Wild Hog","Beaver"],"visited":1},"14":{"name":"Arodas Lakeshore","type":"Normal","g":["Mucky Patch","Cotton Field","Minnow Pier"],"gt":[[14,46,"Minnow Pier"],[23,35,"Mucky Patch"],[25,35,"Cotton Field"]],"m":["River Troll","Snapping Turtle","Toad","Salamanderoid","Crocodile","Beaver","Toxic Toad"],"visited":1},"15":{"name":"Arodas Beach","type":"Normal","g":["Shrimp Pier"],"gt":[[32,35,"Shrimp Pier"]],"m":["Salamanderoid","Crocodile","Snapping Turtle","River Troll","Toxic Toad","Toad"],"visited":1},"16":{"name":"Elundi","type":"City","g":["Shrimp Pier","Silk Field"],"gt":[[9,21,"Shrimp Pier"],[14,40,"Silk Field"]],"visited":1,"smith":1},"17":{"name":"Southern Foothill","type":"Normal","g":["Copper Mine","Aspen Grove","Cotton Field","Mucky Patch"],"gt":[[12,22,"Aspen Grove"],[13,27,"Cotton Field"],[19,31,"Mucky Patch"],[21,9,"Copper Mine"],[41,14,"Aspen Grove"],[54,53,"Copper Mine"]],"m":["Woodland Snake","Deer","Peasant","Beaver","Badger"],"visited":1},"18":{"name":"Bay’s Alley","type":"Normal","g":["Aspen Grove","Minnow Pier"],"gt":[[18,48,"Minnow Pier"],[58,44,"Aspen Grove"]],"m":["Toxic Toad","Salamanderoid","Beaver","River Troll","Toad","Crocodile","Snapping Turtle"],"visited":1},"19":{"name":"Bay’s Alley","type":"Normal","g":["Shrimp Pier"],"gt":[[34,50,"Shrimp Pier"]],"m":["Salamanderoid","Crocodile","Snapping Turtle","River Troll","Toxic Toad","Toad"],"visited":1},"20":{"name":"Windy Fields","type":"Normal","g":["Minnow Pier","Aspen Grove","Cotton Field"],"gt":[[9,56,"Aspen Grove"],[17,59,"Cotton Field"],[18,35,"Minnow Pier"],[40,10,"Minnow Pier"],[41,25,"Minnow Pier"]],"m":["Wild Dog","Wasp","Deer","Snake","Hare"],"visited":1},"21":{"name":"Forest Of Owranbu","type":"Normal","g":["Aspen Grove"],"gt":[[24,35,"Aspen Grove"]],"m":["Wolf","Woodland Snake","Badger","Woodland Spider","Beaver","Deer","Wild Hog","Peasant","Bear"],"visited":1},"22":{"name":"Owranbu River","type":"Normal","g":["Silk Field","Scrap Patch","Iron Mine","Shrimp Pier","Elm Grove"],"gt":[[19,11,"Scrap Patch"],[22,9,"Silk Field"],[27,19,"Shrimp Pier"],[44,25,"Elm Grove"],[55,14,"Iron Mine"]],"m":["Bear","Woodland Spider","Peasant","Badger","Wolf","Wild Hog","Woodland Snake"],"visited":1},"23":{"name":"Owranbu","type":"City","visited":1,"smith":1},"24":{"name":"Manor’s Courtyard","type":"Normal","m":["Goblin Pyro","Bison","Wolf","Goblin Soldier"],"visited":1},"25":{"name":"Laverne Foothill","type":"Normal","m":["Bison","Wild Hog","Deer","Salamanderoid","Wild Dog","Snake","Wasp"],"visited":1},"26":{"name":"Grasping Maze","type":"Normal","m":["Snake","Hypnotic Bat","Miner","Goblin Pyro","Troglodyte","Thorny Vines","Monstrous Worm"],"visited":1},"27":{"name":"Heart of the Tree","type":"Dungeon","m":["Thorny Vines","Troglodyte","Hypnotic Bat","Monstrous Worm","Snake","Goblin Pyro","Tree of Life"],"visited":1},"28":{"name":"Dying Forest","type":"Normal","m":["Myconid","Mothman","Dryad","Troll Boar","Decaying Worm"],"visited":1},"29":{"name":"Dead Leaves Tiara","type":"Normal","g":["Elm Grove","Shrimp Pier"],"gt":[[18,42,"Shrimp Pier"],[24,35,"Shrimp Pier"],[25,19,"Elm Grove"],[55,29,"Elm Grove"]],"m":["Decaying Worm","Troll Boar","Mothman","Myconid","Dryad"],"visited":1},"30":{"name":"Venom Arch Forest","type":"Normal","m":["Troll Boar","Mothman","Decaying Worm","Myconid","Dryad"],"visited":1},"31":{"name":"Pirate Wreck Foothill","type":"Normal","m":["Crocodile","Merfolk","Mountain Troll","Lizardman"],"visited":1},"32":{"name":"Pirate Wreck Beach","type":"Normal","g":["Shrimp Pier"],"gt":[[56,41,"Shrimp Pier"]],"m":["Crocodile","Mountain Troll","Lizardman","Merfolk"],"visited":1},"33":{"name":"The Pirate Wreck","type":"Secret","m":["Zombie Pirate","Pirate","Ghost Pirate"],"visited":1},"34":{"name":"Sewers","type":"Normal"},"35":{"name":"Deep Sewers"},"36":{"name":"Ratdom"},"37":{"name":"Manor Main Floor","type":"Secret","m":["Peasant","Goblin Pyro","Troglodyte"],"visited":1},"38":{"name":"Manor 1st Floor"},"39":{"name":"Manor Attic"},"40":{"name":"Manor Cellar","type":"Secret","m":["Goblin Pyro","Monstrous Worm","Miner","Snake","Hypnotic Bat","Troglodyte"],"visited":1},"41":{"name":"Owranbu Drylands","type":"Normal","m":["Scorpion","Dune Glider","Bone Scarab","Nomadic Cleric","Raider","Cassowary"],"visited":1},"42":{"name":"The Cult Tunnel","type":"Secret","m":["Monstrous Worm","Snake","Goblin Pyro","Thorny Vines"],"visited":1},"43":{"name":"The Cult Hideout","type":"Secret","visited":1},"44":{"name":"Farmer’s House","m":["Peasant"],"visited":1},"45":{"name":"Baron’s Lair"},"46":{"name":"Bear Den","visited":1},"47":{"name":"Den Of Devourer"},"48":{"name":"Elundi Garden","type":"Normal","m":["Centaur","Werewolf","Goblin Pyro","Druid","Owlbear","Wandering Ent","Goblin Soldier"],"visited":1},"49":{"name":"Elundi Garden","type":"Normal","g":["Elm Grove"],"gt":[[15,11,"Elm Grove"]],"m":["Goblin Soldier","Wandering Ent","Werewolf","Druid","Centaur","Goblin Pyro","Owlbear"],"visited":1},"50":{"name":"Deep Forest","type":"Normal","m":["Goblin Pyro","Druid","Owlbear","Goblin Soldier","Wandering Ent","Centaur","Werewolf"],"visited":1},"51":{"name":"Deep Forest","type":"Normal","m":["Goblin Pyro","Druid","Wandering Ent","Goblin Soldier","Werewolf","Centaur","Owlbear"],"visited":1},"52":{"name":"Deep Forest","type":"Normal","g":["Shrimp Pier"],"gt":[[36,53,"Shrimp Pier"]],"m":["Werewolf","Centaur","Goblin Soldier","Goblin Pyro","Druid","Owlbear","Wandering Ent"],"visited":1},"53":{"name":"Deep Forest","type":"Normal","g":["Elm Grove"],"gt":[[31,50,"Elm Grove"]],"m":["Wandering Ent","Druid","Owlbear","Centaur","Werewolf","Goblin Pyro","Goblin Soldier"],"visited":1},"54":{"name":"Elm’s Rest","visited":1},"55":{"name":"Way to Morwen","type":"Normal","g":["Fieldstone Quarry"],"gt":[[15,28,"Fieldstone Quarry"]],"m":["Centaur","Goblin Pyro","Goblin Soldier","Werewolf","Druid","Wandering Ent","Owlbear"],"visited":1},"56":{"name":"Abandoned Mine","type":"Normal","g":["Laterite Quarry"],"gt":[[16,46,"Laterite Quarry"],[19,22,"Laterite Quarry"]],"m":["Drow","Goblin Engineer","Rust Monster","Xorn","Phantom Miner","Werebat"],"visited":1},"57":{"name":"Abandoned Mine"},"58":{"name":"Abandoned Mine"},"59":{"name":"Abandoned Mine"},"61":{"name":"Sandstorm Pass","type":"Normal","m":["Raider","Cassowary","Dune Glider","Bone Scarab","Nomadic Cleric","Scorpion"],"visited":1},"62":{"name":"Sun-Scorched Plateau","type":"Normal","m":["Dune Glider","Cassowary","Nomadic Cleric","Scorpion","Raider","Bone Scarab"],"visited":1},"63":{"name":"Sandspire Summit","type":"Normal","m":["Cassowary","Bone Scarab","Scorpion","Raider","Nomadic Cleric","Dune Glider"],"visited":1},"64":{"name":"Droughtlands","type":"Normal","m":["Nomadic Cleric","Dune Glider","Cassowary","Scorpion","Bone Scarab","Raider","Ruin Guard"],"visited":1},"65":{"name":"Mesa Mine Area","type":"Normal","g":["Fieldstone Quarry","Iron Mine"],"gt":[[26,49,"Iron Mine"],[29,35,"Fieldstone Quarry"]],"m":["Raider","Scorpion","Cassowary","Dune Glider","Bone Scarab","Nomadic Cleric"],"visited":1},"66":{"name":"Rock Valley","type":"Normal","m":["Cassowary","Raider","Scorpion","Nomadic Cleric","Dune Glider","Bone Scarab"],"visited":1},"67":{"name":"Mirage Mountains","type":"Normal","m":["Scorpion","Bone Scarab","Cassowary","Raider","Nomadic Cleric","Dune Glider"],"visited":1},"68":{"name":"Yurk’s Yard"},"69":{"name":"Yurk’s Lodge"},"72":{"name":"Shifting Sands","type":"Normal","m":["Cassowary","Raider","Scorpion","Dune Glider","Nomadic Cleric","Bone Scarab"],"visited":1},"73":{"name":"Radiant Heat Flats","type":"Normal","m":["Cassowary","Scorpion","Raider","Dune Glider","Bone Scarab","Nomadic Cleric"],"visited":1},"74":{"name":"Sunken Sands","type":"Normal","m":["Dune Glider","Scorpion","Cassowary","Raider","Nomadic Cleric","Bone Scarab"],"visited":1},"75":{"name":"The Shifting Tides","type":"Normal","m":["Nomadic Cleric","Scorpion","Bone Scarab","Raider","Dune Glider","Cassowary"],"visited":1},"76":{"name":"Sirocco Springs","type":"Normal","m":["Cassowary","Raider","Dune Glider","Bone Scarab","Scorpion","Nomadic Cleric"],"visited":1},"77":{"name":"Guardian Queen Hive"},"78":{"name":"Guardian Queen Hive"},"83":{"name":"Khamsin Cliffs","type":"Normal","m":["Dune Glider","Bone Scarab","Nomadic Cleric","Cassowary","Raider","Scorpion"],"visited":1},"84":{"name":"Golden Sandscape","type":"Normal","m":["Dune Glider","Scorpion","Raider","Phoenix","Bone Scarab","Cassowary","Nomadic Cleric"],"visited":1},"85":{"name":"Oasis","type":"Normal","g":["Shrimp Pier","Elm Grove"],"gt":[[14,34,"Elm Grove"],[45,27,"Shrimp Pier"]],"m":["Boggard","Lizardman","Crocodile","Merfolk"],"visited":1},"90":{"name":"Whispering Sands","type":"Normal","m":["Dune Glider","Raider","Cassowary","Bone Scarab","Nomadic Cleric","Scorpion"],"visited":1},"91":{"name":"Drouver","type":"City","visited":1,"smith":1},"92":{"name":"Savanna","m":["Gnoll Warlock","Carrion Harpy","Terastodon","Gnoll Warrior","Scorpion","Arynx"],"visited":1},"93":{"name":"Savanna","type":"Normal","m":["Scorpion","Terastodon","Arynx","Gnoll Warrior","Gnoll Warlock","Carrion Harpy"],"visited":1},"94":{"name":"Scorpion`s Nest","g":["Iron Mine"],"gt":[[35,31,"Iron Mine"]],"m":["Raider","Scorpion","Nomadic Cleric","Cassowary","Bone Scarab","Dune Glider"],"visited":1},"95":{"name":"Dry Mirage","g":["Iron Mine"],"gt":[[40,17,"Iron Mine"]],"m":["Scorpion","Nomadic Cleric","Cassowary","Raider","Bone Scarab","Dune Glider","Phoenix"],"visited":1},"96":{"name":"Dune Sea","m":["Dune Glider","Nomadic Cleric","Bone Scarab","Cassowary","Raider","Scorpion"],"visited":1},"97":{"name":"Ancient Ruins","type":"Normal","m":["Dune Glider","Scorpion","Nomadic Cleric","Cassowary","Bone Scarab","Raider"],"visited":1},"98":{"name":"Burning Sands","type":"Normal","m":["Nomadic Cleric","Bone Scarab","Cassowary","Raider","Dune Glider","Scorpion"],"visited":1},"99":{"name":"Burnt Sienna Wastes","type":"Normal","m":["Dune Glider","Nomadic Cleric","Cassowary","Scorpion","Bone Scarab","Raider"],"visited":1},"100":{"name":"Dust Outskirts","type":"Normal","g":["Scrap Patch","Silk Field"],"gt":[[35,13,"Scrap Patch"],[38,14,"Silk Field"]],"m":["Bone Scarab","Scorpion","Dune Glider","Raider","Cassowary","Nomadic Cleric"],"visited":1},"106":{"name":"Savanna","type":"Normal","m":["Gnoll Warlock","Carrion Harpy","Scorpion","Gnoll Warrior","Terastodon","Arynx"],"visited":1},"107":{"name":"Savanna","type":"Normal","m":["Arynx","Carrion Harpy","Terastodon","Gnoll Warlock","Gnoll Warrior","Scorpion"],"visited":1},"111":{"name":"Spider Den","type":"Normal","m":["Mana Webber","Spitter","Brute Spider","Spider Queen"],"visited":1},"112":{"name":"Vileton Entrance","type":"Normal","m":["Mountain Troll","Bison","Goblin Pyro","Goblin Soldier"],"visited":1},"113":{"name":"Vileton","type":"City","visited":1,"smith":1},"114":{"name":"Marsh","type":"Normal","m":["Bog Worm","Bogleech","Tarn Linnorm","Killer Centipede","Boggard"],"visited":1},"115":{"name":"Marsh","m":["Tarn Linnorm","Bogleech","Boggard","Blood Queen","Bog Worm"],"visited":1},"116":{"name":"Marsh","g":["Spruce Grove","Jute Field","White Bass Pier"],"gt":[[16,7,"Spruce Grove"],[18,29,"White Bass Pier"],[33,14,"Jute Field"]],"m":["Bogleech","Tarn Linnorm","Blood Queen","Boggard","Bog Worm"],"visited":1},"117":{"name":"Swamp","m":["Swamp Dragon","Wisp Phantom","Mutated Lizardman","Hydra"],"visited":1},"118":{"name":"Swamp","m":["Wisp Phantom","Swamp Dragon","Hydra","Mutated Lizardman"],"visited":1},"119":{"name":"Swamp","m":["Wisp Phantom","Hydra","Swamp Dragon","Mutated Lizardman"],"visited":1},"120":{"name":"Swamp","type":"Normal","m":["Swamp Dragon","Mutated Lizardman","Hydra","Wisp Phantom"],"visited":1},"121":{"name":"Marsh"},"122":{"name":"Marsh","g":["White Bass Pier","Low Quality Patch"],"gt":[[25,16,"Low Quality Patch"],[31,12,"White Bass Pier"]],"m":["Boggard","Tarn Linnorm","Blood Queen","Bog Worm","Bogleech"],"visited":1},"123":{"name":"Swamp","type":"Normal","g":["Smallmouth Bass Pier","Maple Grove","Medium Quality Patch"],"m":["Swamp Dragon","Wisp Phantom","Mutated Lizardman","Hydra"],"visited":1},"124":{"name":"Swamp","type":"Normal"},"125":{"name":"Swamp"},"126":{"name":"Marsh"},"127":{"name":"Marsh"},"128":{"name":"Marsh"},"129":{"name":"Marsh"},"130":{"name":"Secret Cave Tunnel"},"131":{"name":"The Squid Lair"},"133":{"name":"Magic Plains"},"134":{"name":"Sanjuo","type":"City"},"135":{"name":"Chamber of Oracles","type":"Secret","visited":1},"136":{"name":"The Bilge"},"137":{"name":"Marsh","g":["Scrap Patch","Shrimp Pier"],"gt":[[45,29,"Scrap Patch"],[46,57,"Shrimp Pier"]],"m":["Bog Worm","Boggard","Tarn Linnorm","Bogleech","Blood Queen"],"visited":1},"138":{"name":"Abandoned Mine"},"139":{"name":"Ghrorak’s Prison"},"141":{"name":"Abandoned Mine"},"142":{"name":"Abandoned Mine"},"143":{"name":"Nythrendal","type":"City"},"169":{"name":"Bungavik","type":"City","visited":1,"smith":1},"170":{"name":"Dying Forest"},"171":{"name":"Dying Forest"},"172":{"name":"Dying Forest"},"173":{"name":"Dying Forest"},"174":{"name":"Dying Forest"},"175":{"name":"Dying Forest"},"176":{"name":"Dying Forest"},"179":{"name":"Deep Forest","type":"Normal","m":["Centaur","Druid","Goblin Pyro","Owlbear","Goblin Soldier","Wandering Ent","Werewolf"],"visited":1},"180":{"name":"Caeltys’ Causeway","type":"Normal","g":["Medium Quality Patch","Maple Grove","Nettle Field"],"gt":[[35,39,"Medium Quality Patch"],[38,37,"Medium Quality Patch"],[41,39,"Medium Quality Patch"],[45,44,"Nettle Field"],[48,46,"Nettle Field"],[51,44,"Nettle Field"],[55,42,"Maple Grove"]],"m":["Forest Guardian","Drow","Wendigo","Ankheg"],"visited":1},"181":{"name":"Caeltys’ Causeway"},"182":{"name":"Caeltys’ Causeway"},"183":{"name":"Caeltys","type":"City"},"184":{"name":"Caeltys’ Yarden"},"185":{"name":"Caeltys’ Yarden"},"186":{"name":"Caeltys’ Yarden"},"187":{"name":"Caeltys’ Yarden"},"188":{"name":"Caeltys’ Yarden"},"189":{"name":"Caeltys’ Yarden"},"190":{"name":"Savanna","type":"Normal","m":["Gnoll Warrior","Gnoll Warlock","Arynx","Scorpion","Carrion Harpy","Terastodon"],"visited":1},"191":{"name":"Savanna","m":["Carrion Harpy","Gnoll Warlock","Gnoll Warrior","Terastodon","Arynx","Scorpion"],"visited":1},"192":{"name":"Savanna","m":["Terastodon","Scorpion","Carrion Harpy","Arynx","Gnoll Warrior","Gnoll Warlock"],"visited":1},"193":{"name":"Savanna","m":["Gnoll Warrior","Terastodon","Arynx","Carrion Harpy","Scorpion","Gnoll Warlock"],"visited":1},"194":{"name":"Savanna","type":"Normal","m":["Gnoll Warrior","Arynx","Terastodon","Carrion Harpy","Scorpion","Gnoll Warlock"],"visited":1},"195":{"name":"Savanna","type":"Normal","g":["Tin Mine","Soapstone Quarry"],"gt":[[27,28,"Soapstone Quarry"],[38,25,"Tin Mine"]],"m":["Arynx","Terastodon","Scorpion","Gnoll Warrior","Gnoll Warlock","Carrion Harpy"],"visited":1},"196":{"name":"Savanna","type":"Normal","m":["Gnoll Warrior","Carrion Harpy","Scorpion","Gnoll Warlock","Terastodon","Arynx"],"visited":1},"197":{"name":"Desert","type":"Normal","m":["Carrion Harpy","Gnoll Warlock","Arynx","Scorpion","Gnoll Warrior","Terastodon"],"visited":1},"198":{"name":"Desert","m":["Gnoll Warrior","Arynx","Scorpion","Gnoll Warlock","Terastodon","Carrion Harpy"],"visited":1},"199":{"name":"Desert","m":["Carrion Harpy","Gnoll Warrior","Terastodon","Gnoll Warlock","Scorpion","Arynx"],"visited":1},"200":{"name":"Haunted Forest","type":"Normal","g":["White Bass Pier"],"gt":[[39,25,"White Bass Pier"]],"m":["Skeleton Archer","Skeleton Mage","Skeleton Warrior","Zombie Horse"],"visited":1},"201":{"name":"Saurville","type":"City","m":["Skeleton Warrior"],"visited":1,"smith":1},"202":{"name":"Haunted Forest","type":"Normal"},"203":{"name":"Desert of Whispers"},"204":{"name":"Pumpkin King`s Lodge"},"205":{"name":"Savanna"},"206":{"name":"Savanna"},"207":{"name":"Savanna"},"208":{"name":"Savanna"},"209":{"name":"Savanna","type":"Normal","m":["Arynx","Gnoll Warrior","Gnoll Warlock","Carrion Harpy","Scorpion","Terastodon"],"visited":1},"210":{"name":"Crimson Dust","type":"Normal","m":["Cassowary","Nomadic Cleric","Dune Glider","Raider"],"visited":1},"211":{"name":"Taiga","type":"Normal","m":["Valkyrie","Polar Bear","Frostbinder","Cougar","Berserker","Yak"],"visited":1},"212":{"name":"Taiga"},"213":{"name":"Taiga"},"214":{"name":"Taiga"},"215":{"name":"Taiga"},"216":{"name":"Taiga"},"217":{"name":"Taiga"},"218":{"name":"Desert of Lost Hope","type":"Normal","g":["Iron Mine"],"gt":[[52,21,"Iron Mine"]],"m":["Bone Scarab","Nomadic Cleric","Scorpion","Raider","Cassowary","Dune Glider"],"visited":1},"219":{"name":"Sandstorm Ridge","type":"Normal","m":["Dune Glider","Bone Scarab","Cassowary","Raider","Nomadic Cleric","Scorpion"],"visited":1},"220":{"name":"Burning Moon Sands","m":["Nomadic Cleric","Raider","Cassowary","Scorpion","Phoenix","Bone Scarab","Dune Glider"],"visited":1},"221":{"name":"Deserted Cavern","m":["Monstrous Bat","Monstrous Worm","Purple Worm","Goblin Pyro","Stone Hulk"],"visited":1},"222":{"name":"The Living Desert","g":["Fieldstone Quarry"],"gt":[[40,45,"Fieldstone Quarry"]],"m":["Phoenix","Cassowary","Bone Scarab","Raider","Dune Glider","Scorpion","Nomadic Cleric"],"visited":1},"224":{"name":"Desert of Illusions","m":["Cassowary","Dune Glider","Raider","Bone Scarab","Scorpion","Nomadic Cleric","Phoenix"],"visited":1},"225":{"name":"Devil’s Gulch","type":"Normal","m":["Cassowary","Nomadic Cleric","Raider","Scorpion","Phoenix","Bone Scarab","Dune Glider"],"visited":1},"226":{"name":"Temple Entrance","type":"Normal","m":["Phoenix","Dune Glider","Bone Scarab","Cassowary","Scorpion","Raider","Nomadic Cleric"],"visited":1},"227":{"name":"Shrubland","type":"Normal","g":["Spruce Grove"],"gt":[[17,54,"Spruce Grove"]],"m":["Orc Hunter","Catoblepas","Carrion Harpy","Terastodon","Orc Warrior","Orc Warlock"],"visited":1},"228":{"name":"Shrubland","type":"Normal","g":["White Bass Pier","Jute Field","Low Quality Patch"],"gt":[[20,11,"White Bass Pier"],[40,23,"Jute Field"],[44,25,"Low Quality Patch"]],"m":["Orc Warrior","Orc Hunter","Carrion Harpy","Catoblepas","Orc Warlock","Terastodon"],"visited":1},"229":{"name":"Ururg","type":"City","visited":1},"231":{"name":"Old Graveyard"},"232":{"name":"Mausoleum Stairway"},"233":{"name":"Mausoleum Chamber"},"234":{"name":"Medusa’s Hallway","m":["Stone Hulk","Goblin Pyro","Monstrous Worm","Purple Worm","Monstrous Bat"],"visited":1},"235":{"name":"Medusa’s Chamber"},"239":{"name":"Orc Domain Entrance","type":"Normal","m":["Dune Glider","Raider","Bone Scarab","Nomadic Cleric","Cassowary","Phoenix","Scorpion"],"visited":1},"240":{"name":"Shrubland","type":"Normal","m":["Orc Warrior","Catoblepas","Orc Warlock","Terastodon","Carrion Harpy"],"visited":1},"241":{"name":"Desert of the Damned","type":"Normal","m":["Raider","Dune Glider","Bone Scarab","Phoenix","Scorpion","Nomadic Cleric","Cassowary"],"visited":1},"243":{"name":"Sands of Echoes","type":"Normal","m":["Bone Scarab","Raider","Dune Glider","Nomadic Cleric","Phoenix","Cassowary","Scorpion"],"visited":1},"244":{"name":"Red Desert"},"245":{"name":"Red Desert"},"246":{"name":"Red Desert"},"247":{"name":"Underground"},"248":{"name":"Red Desert"},"249":{"name":"Red Desert"},"250":{"name":"Cactus Canyon"},"251":{"name":"Unison Obelisk"},"252":{"name":"Haunted Forest","type":"Normal","m":["Zombie Horse","Skeleton Warrior","Skeleton Mage","Skeleton Archer"],"visited":1},"253":{"name":"Haunted Forest","m":["Skeleton Mage","Skeleton Archer","Skeleton Warrior","Zombie Horse"],"visited":1},"254":{"name":"Haunted Forest"},"255":{"name":"Toxic River"},"256":{"name":"Haunted Forest"},"257":{"name":"Necropolis"},"260":{"name":"Stirge Lair"},"262":{"name":"Sands of the Forgotten","m":["Cassowary","Raider","Nomadic Cleric","Dune Glider"],"visited":1},"263":{"name":"Mirage’s Eye"},"264":{"name":"Sandstorm Plains"},"265":{"name":"Taiga"},"266":{"name":"Taiga"},"267":{"name":"Taiga"},"268":{"name":"Taiga"},"269":{"name":"Shrubland"},"270":{"name":"Shrubland"},"271":{"name":"Orc’s Bone Road"},"272":{"name":"Shrubland"},"273":{"name":"Shrubland"},"274":{"name":"Shrubland"},"275":{"name":"Shrubland","type":"Normal","m":["Carrion Harpy","Catoblepas","Orc Warrior","Orc Hunter","Orc Warlock","Terastodon"],"visited":1},"276":{"name":"Shrubland","type":"Normal"},"277":{"name":"Shrubland"},"278":{"name":"Shrubland"},"279":{"name":"Ancient Worm Tunnel"},"280":{"name":"Shrubland"},"281":{"name":"Trescan","type":"City"},"282":{"name":"Taiga"},"283":{"name":"Taiga"},"284":{"name":"Stogow","type":"City"},"285":{"name":"Taiga"},"286":{"name":"Taiga"},"287":{"name":"Yeti’s Cave"},"288":{"name":"Itham’s Lakeshore"},"289":{"name":"Itham’s Crator"},"290":{"name":"Itham’s Old Bay","type":"Normal"},"291":{"name":"Itham’s Anchorage","type":"Normal","g":["Coal Mine","Smallmouth Bass Pier"],"visited":1},"292":{"name":"Itham’s Heart","type":"Secret","m":["Thornweaver Itham"],"visited":1},"293":{"name":"Rainforest"},"294":{"name":"Rainforest"},"295":{"name":"Rainforest"},"296":{"name":"Rainforest"},"297":{"name":"Rainforest"},"298":{"name":"Rainforest"},"301":{"name":"Rainforest"},"302":{"name":"Coveted Blossom"},"304":{"name":"Rainforest"},"306":{"name":"Rainforest"},"307":{"name":"Rainforest"},"316":{"name":"Rainforest"},"317":{"name":"Galkathos","type":"City"},"318":{"name":"Temple Hall","type":"Normal","m":["Purifier","Monstrous Bat","Mummy","Sphinx"],"visited":1},"319":{"name":"Valdor’s Throneroom","m":["Valdor, Lord of Dawn"],"visited":1},"320":{"name":"Glacierbane’s Hollow"},"321":{"name":"Goliathor’s Temple"},"322":{"name":"Goliathor’s Throne Room"},"323":{"name":"Trescan’s Dock"},"324":{"name":"Dark Boreal"},"325":{"name":"Dark Boreal"},"326":{"name":"Dark Boreal"},"327":{"name":"Dark Boreal"},"328":{"name":"The Ghost Shore"},"332":{"name":"Grimble’s Camp"},"333":{"name":"Magic Plains"},"334":{"name":"Magic Plains"},"335":{"name":"Magic Plains"},"340":{"name":"The Ember Forge"},"900":{"name":"Abyssal Tower Entrance"},"901":{"name":"Abyssal Tower"},"902":{"name":"Abyssal Tower"},"903":{"name":"Abyssal Tower"},"904":{"name":"Abyssal Tower"},"905":{"name":"Abyssal Tower"},"906":{"name":"Abyssal Tower"},"907":{"name":"Abyssal Tower"},"908":{"name":"Abyssal Tower"},"909":{"name":"Abyssal Tower"},"910":{"name":"Abyssal Tower"},"911":{"name":"Abyssal Tower"},"998":{"name":"Fall of Rebirth"},"999":{"name":"Fountain of Rebirth"},"1000":{"name":"Fountain of Rebirth","type":"Normal","visited":1},"1001":{"name":"Winter Wonderland Lobby"},"1002":{"name":"Winter Wonderland"},"1003":{"name":"Winter Wonderland"},"1004":{"name":"Winter Wonderland"},"1005":{"name":"Winter Wonderland"},"1006":{"name":"Winter Wonderland"},"1027":{"name":"Loveland Lobby"},"1028":{"name":"Loveland"},"1029":{"name":"Loveland"},"1030":{"name":"Loveland"},"1031":{"name":"Loveland"},"1032":{"name":"Loveland"},"1040":{"name":"Patrick’s Land Lobby"},"1041":{"name":"Patrick’s Land"},"1066":{"name":"Bunnyland Lobby"},"1067":{"name":"Bunnyland"},"1068":{"name":"Bunnyland"},"1069":{"name":"Bunnyland"},"1070":{"name":"Bunnyland"},"1071":{"name":"Bunnyland"},"1144":{"name":"Das Festhalle Lobby"},"1145":{"name":"Das Festhalle"},"1157":{"name":"Sleepy Hollow Lobby"},"1158":{"name":"Sleepy Hollow"},"1159":{"name":"Sleepy Hollow"},"1160":{"name":"Sleepy Hollow"},"1161":{"name":"Sleepy Hollow"},"1162":{"name":"Sleepy Hollow"},"1183":{"name":"The Sacred Wilds Lobby","g":["Quarry","Grove","Mine","Pier","Field","Patch"],"visited":1},"1184":{"name":"The Sacred Wilds"},"1185":{"name":"The Sacred Wilds","type":"Secret","m":["Wyvern","Drake Boss"],"visited":1},"1186":{"name":"The Sacred Wilds"},"1187":{"name":"The Sacred Wilds"},"1188":{"name":"The Sacred Wilds"},"2001":{"name":"Overgrown Land","type":"Secret","visited":1},"2002":{"name":"Encampment"},"2003":{"name":"Fenced Encampment"},"2004":{"name":"Village"},"2005":{"name":"Tudor Village"},"2006":{"name":"Motte-and-Bailey"},"2007":{"name":"Stone Keep"},"2008":{"name":"Castle"},"2009":{"name":"Stronghold"},"2100":{"name":"Ashspire Battlegrounds"}},"edges":[[43,42,34,40],[42,9,17,60],[42,43,57,5],[9,8,10,23],[9,42,55,23],[8,7,17,40],[8,9,45,30],[7,6,14,57],[7,8,11,17],[7,10,49,20],[7,11,59,25],[6,5,57,30],[6,7,45,7],[6,14,11,7],[5,4,18,49],[5,6,11,32],[5,11,38,16],[5,17,41,50],[5,20,53,31],[5,34,39,28],[4,3,17,12],[4,5,47,7],[3,4,43,21],[11,5,33,46],[11,7,16,30],[11,12,31,18],[11,25,51,30],[12,11,38,60],[12,13,38,7],[12,135,21,33],[13,12,38,60],[13,26,33,30],[26,13,40,58],[26,26,56,24],[26,27,37,8],[135,12,36,41],[25,11,9,38],[17,5,31,8],[17,18,40,62],[17,44,22,24],[18,17,5,36],[18,19,60,37],[18,130,36,17],[19,18,10,36],[19,31,58,37],[31,19,9,31],[31,32,58,33],[32,31,9,20],[32,33,30,34],[32,112,59,22],[33,32,31,15],[33,136,34,44],[112,32,5,21],[112,113,53,18],[113,112,10,12],[113,120,49,35],[120,113,14,35],[120,119,52,20],[14,6,49,60],[14,15,27,16],[15,14,63,31],[15,16,36,9],[16,15,29,60],[16,48,29,7],[48,16,29,60],[48,49,56,10],[49,46,29,55],[49,48,14,39],[49,50,53,18],[50,49,14,34],[50,51,56,27],[51,50,15,28],[51,52,56,27],[51,54,22,8],[52,51,14,26],[52,53,59,21],[53,52,14,47],[53,55,39,7],[53,179,53,34],[55,53,40,60],[55,56,26,17],[56,55,31,63],[56,57,9,25],[179,53,14,25],[179,180,57,28],[180,179,16,47],[180,181,55,30],[75,74,16,34],[75,76,23,12],[75,218,49,42],[76,75,35,59],[76,83,41,16],[83,76,34,55],[83,84,36,9],[84,83,34,59],[84,85,41,13],[20,5,16,30],[20,21,57,47],[20,24,28,3],[24,20,9,47],[24,37,34,32],[37,24,34,55],[37,40,24,34],[40,37,15,40],[40,45,50,34],[21,20,9,27],[21,22,58,44],[22,21,9,33],[22,23,58,35],[23,22,9,34],[23,28,59,48],[23,41,52,12],[41,23,24,57],[41,61,44,7],[61,41,36,60],[61,62,43,9],[61,65,58,38],[65,61,10,34],[65,66,53,26],[66,65,14,37],[66,67,53,31],[67,66,14,32],[67,72,53,29],[72,67,18,34],[72,73,53,23],[73,72,19,35],[73,74,53,23],[74,73,14,35],[74,75,53,25],[218,75,19,7],[218,219,37,60],[219,218,22,11],[219,220,32,60],[220,219,23,7],[220,221,28,52],[221,220,24,7],[221,222,52,23],[222,221,14,42],[222,224,53,20],[224,222,14,19],[224,225,53,19],[224,243,39,60],[54,51,53,58],[62,61,36,60],[62,63,47,7],[63,62,14,59],[63,64,36,7],[64,63,23,59],[97,64,46,40],[97,96,53,24],[97,98,53,31],[96,94,32,7],[96,97,29,59],[94,93,49,7],[94,95,14,16],[94,96,20,60],[95,94,48,56],[95,234,36,35],[234,95,33,60],[234,235,33,7],[93,92,53,16],[93,94,14,36],[92,91,57,20],[92,93,20,19],[91,90,34,60],[91,92,13,35],[91,107,54,22],[91,190,28,7],[107,91,15,27],[107,106,53,28],[106,107,14,39],[106,197,53,19],[197,106,18,33],[197,198,53,22],[198,197,16,57],[198,199,53,10],[199,198,16,57],[199,200,50,22],[119,118,53,47],[119,120,18,10],[118,117,35,7],[118,119,14,27],[118,121,52,27],[118,123,37,59],[117,114,35,7],[117,118,22,60],[114,30,14,8],[114,115,53,36],[114,117,39,60],[115,114,14,36],[115,116,53,29],[115,137,49,60],[116,115,14,57],[137,115,25,7],[137,122,25,56],[122,121,14,52],[122,137,42,7],[122,260,48,42],[44,17,41,29],[1185,1183,56,11],[28,23,14,7],[28,29,41,60],[29,28,40,7],[29,30,38,60],[30,29,32,7],[30,111,44,41],[30,114,36,55],[90,91,28,7],[90,100,22,59],[100,90,43,15],[100,99,14,51],[99,98,14,40],[99,100,53,16],[98,97,14,26],[98,99,53,36],[64,97,13,16],[211,212,33,2],[27,26,36,60],[85,84,24,56],[225,224,16,46],[225,241,53,22],[227,228,38,8],[227,240,22,59],[228,227,14,55],[228,229,53,33],[239,240,46,29],[239,241,15,31],[240,227,51,19],[240,239,18,43],[241,225,14,48],[241,239,52,21],[243,224,27,10],[243,244,39,57],[201,200,34,61],[201,210,13,34],[201,252,41,7],[210,201,53,41],[210,209,13,26],[200,199,14,54],[200,201,31,7],[200,202,47,60],[169,196,31,57],[196,169,15,9],[196,195,34,60],[292,291,49,34],[291,290,37,2],[123,118,35,7],[123,124,44,60],[195,194,19,60],[195,196,45,7],[226,318,43,21],[229,228,14,45],[229,275,53,13],[275,229,11,47],[275,276,55,6],[318,226,34,66],[111,30,9,8],[252,201,19,54],[252,253,53,24],[253,252,14,27],[253,254,61,29],[209,210,49,41],[209,262,33,10],[262,209,44,63],[262,263,36,13],[319,318,35,50],[194,193,44,60],[194,195,20,7],[193,192,53,49],[193,194,14,11],[190,91,33,60],[190,191,34,7],[191,190,24,60],[191,192,15,10],[192,191,53,47],[192,193,14,19],[1183,5,24,35],[10,7,37,52]],"mon":{"Sasquatch":"65","Wild Dog":"6","Snake":"2","Deer":"3","Hare":"5","Wasp":"168","Wild Hog":"20","Bison":"37","Salamanderoid":"10","Troglodyte":"14","Miner":"64","Goblin Pyro":"54","Hypnotic Bat":"28","Thorny Vines":"62","Monstrous Worm":"16","Peasant":"13","Beaver":"11","Badger":"8","Woodland Snake":"15","Wolf":"32","Woodland Spider":"33","Bear":"19","River Troll":"56","Snapping Turtle":"23","Toad":"4","Crocodile":"22","Toxic Toad":"21","Merfolk":"88","Mountain Troll":"86","Lizardman":"87","Zombie Pirate":"89","Pirate":"57","Ghost Pirate":"141","Scorpion":"27","Dune Glider":"105","Bone Scarab":"51","Nomadic Cleric":"175","Raider":"103","Cassowary":"104","Centaur":"96","Werewolf":"95","Druid":"97","Owlbear":"106","Wandering Ent":"98","Goblin Soldier":"55","Drow":"111","Goblin Engineer":"217","Rust Monster":"213","Xorn":"215","Phantom Miner":"214","Werebat":"216","Phoenix":"172","Gnoll Warlock":"153","Carrion Harpy":"132","Terastodon":"131","Gnoll Warrior":"129","Arynx":"128","Bog Worm":"118","Bogleech":"120","Tarn Linnorm":"122","Killer Centipede":"49","Boggard":"119","Blood Queen":"121","Swamp Dragon":"151","Wisp Phantom":"174","Mutated Lizardman":"152","Hydra":"173","Forest Guardian":"112","Wendigo":"107","Ankheg":"110","Monstrous Bat":"29","Purple Worm":"143","Stone Hulk":"108","Wyvern":"138","Drake Boss":"137","Myconid":"115","Mothman":"114","Dryad":"113","Troll Boar":"117","Decaying Worm":"116","Valkyrie":"187","Polar Bear":"167","Frostbinder":"43","Cougar":"30","Berserker":"186","Yak":"188","Orc Warrior":"158","Catoblepas":"130","Orc Warlock":"160","Orc Hunter":"159","Tree of Life":"63","Skeleton Archer":"148","Skeleton Mage":"149","Skeleton Warrior":"150","Zombie Horse":"177","Thornweaver Itham":"207","Purifier":"40","Mummy":"145","Sphinx":"184","Mana Webber":"101","Spitter":"100","Brute Spider":"99","Spider Queen":"102","Valdor, Lord of Dawn":"206","Angry Egg":"198","Ape Brute":"203","Arcane Imp":"182","Armored Ram":"221","Basilisk":"165","Blue Stirge":"171","Cockatrice":"109","Cockroach":"47","Dwarven Caster":"224","Dwarven Guard":"222","Dwarven Hunter":"223","Eel":"52","Faery":"199","Fire Elemental":"205","Foliage Shaman":"24","Frost Elemental":"178","Giant Vulture":"185","Knight":"67","Komodo Basilisk":"225","Leech":"45","Light Elemental":"204","Lightning Elemental":"179","Loot Goblin":"230","Luminous Plant":"202","Ogre Mage":"183","Ooze":"193","Rat":"1","Red Stirge":"170","Skeleton":"147","Snow Rabbit":"237","Stone Centipede":"166","Succubus":"176","Tiger":"25","Vampire Bat":"135","Venomous Viper":"195","Vine Sniper":"201","Warg":"161","Wererat Slinger":"71","Wererat Soldier":"70","Wererat Wizard":"72","Wizard":"181","Wraith":"200","Zombie":"146"}};
 
+  /* ★ v2.6.104：Smugglers Route（走私路线）边表（双向）。用户手填，后续可改。
+     实测：格子 action = 'smugglers_route'，面板 #frame_SmugglersRoute，点 Ride 付金币直接换图。 */
+  const SMUGGLER_EDGES = [
+    [11, 62], [99, 67], [90, 76], [75, 226], [85, 87],
+    [196, 209], [110, 239], [221, 288], [346, 293]
+  ];
   const MapDB = (function () {
     const maps = {}, adj = {};
     let edges = [], mon = {}, cities = [], updated = '', dirty = false;
@@ -2358,23 +2364,36 @@
       return { id: +id, name: '', type: '', g: [], gt: [], m: [], ex: [], visited: false, smith: false, at: 0 };
     }
     function rec(id) { const k = String(id); return maps[k] || (maps[k] = blank(k)); }
+    /* ★ v2.6.104：边带类型。kind = 'gate'（普通门，可步行）| 'smugglers'（走私路线，付金币换图）| 'other'（副本/入口等，不参与寻路） */
+    const adjWalk = {};
+    function edgeKindOf(e) { return (e && e[4]) ? String(e[4]) : 'gate'; }
+    function isWalkKind(k) { return k === 'gate' || k === 'smugglers'; }
     function rebuildAdj() {
       Object.keys(adj).forEach(function (k) { delete adj[k]; });
-      edges.forEach(function (e) { (adj[e[0]] = adj[e[0]] || []).push(e[1]); });
+      Object.keys(adjWalk).forEach(function (k) { delete adjWalk[k]; });
+      edges.forEach(function (e) {
+        (adj[e[0]] = adj[e[0]] || []).push(e[1]);
+        if (isWalkKind(edgeKindOf(e))) (adjWalk[e[0]] = adjWalk[e[0]] || []).push(e[1]);
+      });
     }
     /* ★ 2026-10-17：同一条门 (from,to) 若坐标和已存的不一致，以「新看到的」为准并返回 true。
        老版本只按 (from,to) 去重、坐标永不更新 —— 游戏改过门的位置后，导航会一直走到死格。 */
-    function addEdge(a, b, x, y) {
+    function addEdge(a, b, x, y, kind) {
       a = +a; b = +b; if (!(a > 0) || !(b > 0)) return false;
       x = +x || 0; y = +y || 0;
+      kind = kind || '';   /* 空 = 「本次没读到格子」→ 保留原类型，不降级 */
       const ex = edges.filter(function (e) { return e[0] === a && e[1] === b; })[0];
       if (ex) {
-        if (ex[2] === x && ex[3] === y) return false;
-        ex[2] = x; ex[3] = y; dirty = true;
+        const nk = kind || edgeKindOf(ex);
+        if (ex[2] === x && ex[3] === y && edgeKindOf(ex) === nk) return false;
+        ex[2] = x; ex[3] = y; ex[4] = nk; dirty = true;
+        rebuildAdj();
         return true;
       }
-      edges.push([a, b, x, y]);
+      const k0 = kind || 'gate';
+      edges.push([a, b, x, y, k0]);
       (adj[a] = adj[a] || []).push(b);
+      if (isWalkKind(k0)) (adjWalk[a] = adjWalk[a] || []).push(b);
       dirty = true;
       return true;
     }
@@ -2396,7 +2415,7 @@
     function overlay(o) {
       if (o.cities && o.cities.length) cities = o.cities.map(function (c) { return Object.assign({}, c); });
       if (o.mon) Object.keys(o.mon).forEach(function (k) { if (!mon[k]) mon[k] = o.mon[k]; });
-      (o.edges || []).forEach(function (e) { addEdge(e[0], e[1], e[2], e[3]); });
+      (o.edges || []).forEach(function (e) { addEdge(e[0], e[1], e[2], e[3], e[4]); });
       if (o.maps) Object.keys(o.maps).forEach(function (k) {
         const s = o.maps[k]; if (!s) return;
         const r = rec(k);
@@ -2414,6 +2433,11 @@
       Object.keys(maps).forEach(function (k) { delete maps[k]; });
       Object.keys(MAPDB_SEED.maps).forEach(function (k) { maps[k] = Object.assign(blank(k), MAPDB_SEED.maps[k]); });
       edges = MAPDB_SEED.edges.map(function (e) { return e.slice(); });
+      /* ★ v2.6.104：走私路线边（双向、跳数 1、付金币换图）。用户手填，可随版本改。 */
+      SMUGGLER_EDGES.forEach(function (p) {
+        edges.push([+p[0], +p[1], 0, 0, 'smugglers']);
+        edges.push([+p[1], +p[0], 0, 0, 'smugglers']);
+      });
       mon = Object.assign({}, MAPDB_SEED.mon);
       cities = (MAPDB_SEED.cities || []).map(function (c) { return Object.assign({}, c); });
       try { const o = JSON.parse(localStorage.getItem(MAPDB_KEY) || 'null'); if (o) overlay(o); } catch (e) { /* ignore */ }
@@ -2450,6 +2474,16 @@
       edges: function () { return edges; },
       exits: function (id) { const r = maps[String(id)]; return (r && r.ex) || []; },
       adj: function (id) { return adj[String(id)] || []; },
+      /* ★ v2.6.104：只含「可步行」边（gate + smugglers）的邻接表 —— 寻路只认这个 */
+      adjWalk: function (id) { return adjWalk[String(id)] || []; },
+      edgeKind: function (a, b) {
+        a = +a; b = +b;
+        const list = edges.filter(function (e) { return e[0] === a && e[1] === b; });
+        if (!list.length) return '';
+        if (list.some(function (e) { return edgeKindOf(e) === 'gate'; })) return 'gate';
+        if (list.some(function (e) { return edgeKindOf(e) === 'smugglers'; })) return 'smugglers';
+        return edgeKindOf(list[0]);
+      },
       cities: function () { return cities; },
       list: function () { return Object.keys(maps).map(function (k) { return maps[k]; }); },
       count: function () { return Object.keys(maps).length; },
@@ -2565,13 +2599,16 @@
             const a = +e[0], b = +e[1], x = +e[2] || 0, y = +e[3] || 0;
             if (!(a > 0) || !(b > 0)) return;
             seen[a + '>' + b] = 1; miss[a + '>' + b] = 0;
+            const kind = (e[4] === 'smugglers') ? 'smugglers' : ((e[4] === 'other') ? 'other' : 'gate');
             const ex = edges.filter(function (o) { return o[0] === a && o[1] === b; })[0];
             if (!ex) {
-              edges.push([a, b, x, y]); (adj[a] = adj[a] || []).push(b);
-              diff.push('新门 ' + a + '→' + b + ' @' + x + ',' + y);
-            } else if (ex[2] !== x || ex[3] !== y) {
-              diff.push('门坐标 ' + a + '→' + b + ' ' + ex[2] + ',' + ex[3] + '→' + x + ',' + y);
-              ex[2] = x; ex[3] = y;
+              edges.push([a, b, x, y, kind]); (adj[a] = adj[a] || []).push(b);
+              if (kind === 'gate') (adjWalk[a] = adjWalk[a] || []).push(b);
+              diff.push('新门 ' + a + '→' + b + ' @' + x + ',' + y + (kind !== 'gate' ? '[' + kind + ']' : ''));
+            } else if (ex[2] !== x || ex[3] !== y || edgeKindOf(ex) !== kind) {
+              diff.push('门 ' + a + '→' + b + ' ' + ex[2] + ',' + ex[3] + '→' + x + ',' + y + (edgeKindOf(ex) !== kind ? ' [' + edgeKindOf(ex) + '→' + kind + ']' : ''));
+              ex[2] = x; ex[3] = y; ex[4] = kind;
+              rebuildAdj();
             }
           });
           /* 本图的门：连续 EDGE_MISS 次没再看到 → 删（游戏里门被移掉时导航才不会走死格） */
@@ -2586,6 +2623,8 @@
               edges.splice(i, 1); delete miss[k];
               const lst = adj[e[0]];
               if (lst) { const j = lst.indexOf(e[1]); if (j >= 0) lst.splice(j, 1); }
+              const lw = adjWalk[e[0]];
+              if (lw) { const j2 = lw.indexOf(e[1]); if (j2 >= 0) lw.splice(j2, 1); }
             }
           }
         }
@@ -3084,17 +3123,8 @@
     return bits.join(' · ');
   }
 
-  function findGateTo(targetId) {
-    if (!inGame()) return null;
-    const want = mapDict && mapDict.byId[String(targetId)];
-    if (!want) return null;
-    const wn = normName(want);
-    const hit = $$q('.map_table .tile_poi[action="gate"]').filter(el => normName(el.getAttribute('name')) === wn)[0];
-    if (!hit) return null;
-    const c = (hit.getAttribute('coords') || '').split('-');
-    const x = parseInt(c[0], 10), y = parseInt(c[1], 10);
-    return (isFinite(x) && isFinite(y)) ? { x: x, y: y, name: want } : null;
-  }
+  /* ★ v2.6.104：删掉「按地图名找门」的旧引擎（findGateTo / gotoMap）。
+     现在所有换图都走模块 A：navToMap()（用门坐标而不是名字）。 */
 
   /* 可维修的工匠只认名字里带 smith 的：Armorsmith / Weaponsmith / Toolsmith。
    * Stonemason（石匠）名字里没有 smith，不能维修，必须排除。 */
@@ -3167,7 +3197,7 @@
 
   /* ======================= 12a. 统一走格引擎（维修行程 / 跨图导航共用） =======================
    * 走到 (gx,gy) 并等待条件成立，返回 'ok' | 'timeout' | 'cancel'。
-   * 供「维修/清包行程」(walkAndWait) 与「跨图导航」(navWalkToTile) 共用一份实现，
+   * 它是模块 B navWalkTile() 的引擎：脚本里所有「在一张图内移动」都经过 navWalkTile() 到这里。
    * 避免两套「走到格 + 卡住自愈」逻辑各自演进而分叉。
    * opts:
    *   cond()      条件成立即成功（默认：站到目标格）
@@ -3328,23 +3358,7 @@
     return 'timeout';
   }
 
-  /** 走过去并等待条件成立：返回 'ok' | 'timeout' | 'cancel'（维修 / 清包行程用） */
-  function walkAndWait(tx, ty, cond, timeoutMs) {
-    return walkTileCore(tx, ty, {
-      timeoutMs: timeoutMs, alive: tripAlive, cond: cond, retrigger: false,
-      combatText: '维修途中遭遇战斗，等待游戏自动战斗…'
-    });
-  }
-
-  async function gotoMap(dest, hopNo, hopTotal) {
-    const gate = findGateTo(dest.id);
-    if (!gate) throw new Error('「' + currentMapName() + '」没有通往「' + dest.name + '」的出口');
-    setStatus('第 ' + hopNo + '/' + hopTotal + ' 跳：前往 ' + dest.name + '（' + gate.x + '-' + gate.y + '）');
-    const r = await walkAndWait(gate.x, gate.y, () => String(character.current_map) === dest.id, walkTimeoutFor(gate.x, gate.y));
-    if (r === 'cancel') return 'cancel';
-    if (r === 'timeout') throw new Error('换图超时：未能到达「' + dest.name + '」');
-    return 'ok';
-  }
+  /* ★ v2.6.104：维修/清包行程的走格统一走模块 B navWalkTile()（见下方「模块 B」）。 */
 
   /* ★ v2.6.96：当前生效的「维修/清包城镇」。
      副角色行程中（st.altTrip）**只用该副角色自己的 serviceTown**，绝不回落到主角色的全局设置；
@@ -3363,7 +3377,7 @@
       navLearn();
       const plan = navRoute(character.current_map, +townId);
       if (!plan) {
-        /* ★ v2.6.86：没有步行路线 ≠ 到不了 —— 勾了传送点的话，travelToRepairPoint 会走 navGoTo 用传送点过去，
+        /* ★ v2.6.86：没有步行路线 ≠ 到不了 —— 勾了传送点的话，travelToRepairPoint 会走 navToMap 用传送点过去，
            所以这里只在「既没步行路线、传送点也用不了」时才报错。返回的占位路线在选了城镇时会被忽略。 */
         if (!waygateReachable(townId)) throw new Error('暂无到「' + townName(townId) + '」的路线（该区域还没探索过，先手动走一趟让插件学习；也可勾选「城市/野外传送点」）');
         return [{ id: String(townId), name: navMapName(townId) }];
@@ -3381,80 +3395,56 @@
     return route;
   }
 
-  /* ★ 用跨图导航去指定城镇，并走到 smith 旁边（依赖 door_tiles 学习图） */
-  async function travelToTownByNav(townId, kind) {
+  /* ★ v2.6.104：维修/清包目标格 —— 统一走模块 B navWalkTile() */
+  async function walkToSpot(tx, ty, what) {
+    setStatus('前往 ' + what + '（' + tx + '-' + ty + '）');
+    let rs = await navWalkTile(tx, ty, {
+      cond: function () { return character.x === tx && character.y === ty; },
+      timeoutMs: walkTimeoutFor(tx, ty),
+      alive: tripAlive,
+      combatText: '维修途中遭遇战斗，等待游戏自动战斗…'
+    });
+    if (rs === 'cancel') return 'cancel';
+    /* 目标格可能被占住：停在紧邻的一格也算到达（服务器只要求相邻） */
+    if (rs === 'timeout' && manhattan(character.x, character.y, tx, ty) <= 1) { abortWalk(); rs = 'ok'; }
+    if (rs === 'timeout') throw new Error('走到 ' + what + ' 超时（目标格 ' + tx + '-' + ty + '）');
+    abortWalk();
+    return 'ok';
+  }
+
+  /* ★ v2.6.104：维修/清包行程的「到目标地」—— 统一走模块 A navToMap()。
+     有选城镇 → 导航到城镇（副角色用自己的）；没选 → 用 route 的最后一站。 */
+  async function travelToRepairPoint(route, kind) {
     const isBank = (kind === 'bank');
+    const svcTown = activeServiceTown();
+    const target = svcTown ? { id: String(svcTown), name: townName(svcTown) } : (route && route.length ? route[route.length - 1] : null);
+    if (!target) throw new Error('未选择维修/清包城镇');
     if (!inGame()) return 'cancel';
     st.tripOrigin = character.current_map;
-    const dest = +townId;
-    if (!dest) throw new Error('未选择维修/清包城镇');
-    if (String(character.current_map) !== String(dest)) {
-      setStatus('导航前往「' + townName(dest) + '」…');
-      const ok = await navGoTo(dest, tripAlive);
+    if (String(character.current_map) !== String(target.id)) {
+      setStatus('导航前往「' + target.name + '」…');
+      const ok = await navToMap(+target.id, { alive: tripAlive });
       if (!ok) {
         if (!tripAlive()) return 'cancel';
-        throw new Error('无法导航到「' + townName(dest) + '」（路线缺失或中途失败；先手动走一趟让插件学习路线）');
+        throw new Error('无法导航到「' + target.name + '」（路线缺失或中途失败；先手动走一趟让插件学习路线）');
       }
     }
     setStatus('已到达「' + currentMapName() + '」，寻找 ' + (isBank ? '银行' : 'smith') + '…');
     const smith = isBank ? findBank() : findSmith();
     if (!smith) throw new Error(isBank ? ('「' + currentMapName() + '」找不到银行（换个城镇试试）')
-                                            : ('「' + currentMapName() + '」找不到可维修的 smith（换个城镇试试）'));
-    setStatus('前往 ' + smith.name + '（' + smith.x + '-' + smith.y + '）');
-    let rs = await walkAndWait(smith.x, smith.y, () => character.x === smith.x && character.y === smith.y, walkTimeoutFor(smith.x, smith.y));
+                                            : ('「' + currentMapName() + '」找不到可维修的 smith（需要名字里带 smith 的工匠）'));
+    const rs = await walkToSpot(smith.x, smith.y, smith.name);
     if (rs === 'cancel') return 'cancel';
-    if (rs === 'timeout' && manhattan(character.x, character.y, smith.x, smith.y) <= 1) { abortWalk(); rs = 'ok'; }
-    if (rs === 'timeout') throw new Error('走到 smith 超时（目标格 ' + smith.x + '-' + smith.y + '）');
-    abortWalk();
     st.repair.smith = smith;
     return 'ok';
   }
 
-  async function travelToRepairPoint(route, kind) {
-    const isBank = (kind === 'bank');
-    // ★ 选了城镇：直接用跨图导航过去，比按名字找门更可靠（副角色用自己的城镇）
-    const svcTown = activeServiceTown();
-    if (svcTown) return await travelToTownByNav(svcTown, kind);
-    const target = route[route.length - 1];
-    if (!inGame()) return 'cancel';
-    st.tripOrigin = character.current_map;
-    for (let i = 0; i < route.length; i++) {
-      if (!tripAlive()) return 'cancel';
-      if (String(character.current_map) === route[i].id) continue;
-      if (String(character.current_map) === target.id) break;
-      if (await gotoMap(route[i], i + 1, route.length) === 'cancel') return 'cancel';
-    }
-    setStatus('已到达「' + target.name + '」，寻找 ' + (isBank ? '银行' : 'smith') + '…');
-    const smith = isBank ? findBank() : findSmith();
-    if (!smith) throw new Error(isBank ? ('「' + target.name + '」找不到银行')
-                                            : ('「' + target.name + '」找不到可维修的 smith（需要名字里带 smith 的工匠）'));
-    setStatus('前往 ' + smith.name + '（' + smith.x + '-' + smith.y + '）');
-    let rs = await walkAndWait(smith.x, smith.y, () => character.x === smith.x && character.y === smith.y, walkTimeoutFor(smith.x, smith.y));
-    if (rs === 'cancel') return 'cancel';
-    // smith 那格可能被占住：停在紧邻的一格也算到达（服务器只要求相邻）
-    if (rs === 'timeout' && manhattan(character.x, character.y, smith.x, smith.y) <= 1) { abortWalk(); rs = 'ok'; }
-    if (rs === 'timeout') throw new Error('走到 smith 超时（目标格 ' + smith.x + '-' + smith.y + '）');
-    abortWalk();
-    st.repair.smith = smith;
-    return 'ok';
-  }
-
+  /* ★ v2.6.104：返程 —— 统一走模块 A navToMap() */
   async function travelBack(route) {
-    // ★ 选了城镇：返程直接导航回挂机地图（多角色行程用 st.tripHome 覆盖目标图）
-    if (activeServiceTown()) {
-      const home = +(st.tripHome || cfg.farmMap || st.tripOrigin || 0);
-      if (home && String(character.current_map) !== String(home)) {
-        setStatus('返程：导航回「' + townName(home) + '」…');
-        await navGoTo(home, tripAlive);
-      }
-      abortWalk();
-      return 'ok';
-    }
-    const back = route.slice(0, -1).reverse();
-    for (let i = 0; i < back.length; i++) {
-      if (!tripAlive()) return 'cancel';
-      if (String(character.current_map) === back[i].id) continue;
-      if (await gotoMap(back[i], i + 1, back.length) === 'cancel') return 'cancel';
+    const home = +(st.tripHome || cfg.farmMap || st.tripOrigin || 0);
+    if (home && String(character.current_map) !== String(home)) {
+      setStatus('返程：导航回「' + townName(home) + '」…');
+      await navToMap(home, { alive: tripAlive });
     }
     abortWalk();
     return 'ok';
@@ -4991,7 +4981,7 @@
         logEvent('活动：前往战斗区「' + gate.name + '」@' + gate.x + ',' + gate.y + '（角色 Lv ' + (character.level || '?') + '）');
         setStatus('活动：进入战斗区（' + gate.name + '）…');
         (async function () {
-          try { await navWalkToTile(gate.x, gate.y, 60000, function () { return running && cfg.autoEvent; }); }
+          try { await navWalkTile(gate.x, gate.y, { until: 'mapChange', timeoutMs: 60000, alive: function () { return running && cfg.autoEvent; } }); }
           catch (e) { /* ignore */ }
           finally { E.gateBusy = false; }
         })();
@@ -5028,7 +5018,7 @@
         E.phase = 'idle';
       } else if (home && String(character.current_map) !== String(home)) {
         setStatus('活动结束：返回「' + navMapName(home) + '」…');
-        navGoTo(home, function () { return running && cfg.autoEvent; }, cfg.useWaygateCity, cfg.useWaygateWild)
+        navToMap(home, { alive: function () { return running && cfg.autoEvent; }, allowCity: cfg.useWaygateCity, allowWild: cfg.useWaygateWild })
           .then(function () { E.phase = 'idle'; }, function () { E.phase = 'idle'; });
       } else { E.phase = 'idle'; }
       return true;
@@ -5705,7 +5695,7 @@
     if (now() - (st.towerNavAt || 0) < 20000) { setStatus('爬塔：前往城镇 ' + townName(town) + '…'); return; }
     st.towerNavAt = now();
     logEvent('爬塔：前往城镇 ' + townName(town));
-    navGoTo(town).then(function (ok) { if (!ok) logEvent('爬塔：前往城镇失败'); }, function () {});
+    navToMap(town).then(function (ok) { if (!ok) logEvent('爬塔：前往城镇失败'); }, function () {});
   }
 
   /* ---- 爬塔前置任务：自动完成第 1 层 entrance 要求的任务链（The Note / Finding The Key） ----
@@ -6340,10 +6330,10 @@
       const n2 = mcAdjWalkTile(tx, ty);
       if (!n2) { await sleep(1500); info = await mcIdleInfo(); continue; }
       logEvent('多角色：服务端还没确认「' + tx + '-' + ty + '」是采集点 → 走开一格再走回（第 ' + (k + 1) + ' 次）');
-      await walkTileCore(n2[0], n2[1], { timeoutMs: 25000, alive: alive, retrigger: false, cond: function () { return character.x === n2[0] && character.y === n2[1]; } });
+      await navWalkTile(n2[0], n2[1], { timeoutMs: 25000, alive: alive, cond: function () { return character.x === n2[0] && character.y === n2[1]; } });
       if (!alive()) return null;
       await sleep(800);
-      await walkTileCore(tx, ty, { timeoutMs: 30000, alive: alive, retrigger: false, cond: function () { return character.x === tx && character.y === ty; } });
+      await navWalkTile(tx, ty, { timeoutMs: 30000, alive: alive, cond: function () { return character.x === tx && character.y === ty; } });
       if (!alive()) return null;
       await sleep(1200);
       info = await mcIdleInfo();
@@ -6371,7 +6361,7 @@
     async function goSpot() {
       if (alt.gatherMap && String(character.current_map) !== String(alt.gatherMap)) {
         setStatus('多角色：导航到「' + navMapName(+alt.gatherMap) + '」…');
-        const ok = await navGoTo(+alt.gatherMap, alive);
+        const ok = await navToMap(+alt.gatherMap, { alive: alive });
         if (!ok && String(character.current_map) !== String(alt.gatherMap)) return false;
       }
       if (!alive()) return false;
@@ -6388,18 +6378,18 @@
       }
       if (tx > 0 && ty > 0 && !(character.x === tx && character.y === ty)) {
         setStatus('多角色：前往采集点 ' + tx + '-' + ty + '…');
-        const r = await walkTileCore(tx, ty, { timeoutMs: 90000, alive: alive, retrigger: false,
+        const r = await navWalkTile(tx, ty, { timeoutMs: 90000, alive: alive,
           cond: function () { return character.x === tx && character.y === ty; } });
         if (r !== 'ok') return false;
       }
       /* ★ 兜底：走过去的路上若误踩门换了图 → 再导航回来一次 */
       if (alt.gatherMap && String(character.current_map) !== String(alt.gatherMap)) {
         setStatus('多角色：误入「' + currentMapName() + '」，返回「' + navMapName(+alt.gatherMap) + '」…');
-        await navGoTo(+alt.gatherMap, alive);
+        await navToMap(+alt.gatherMap, { alive: alive });
         if (!alive()) return false;
         if (String(character.current_map) !== String(alt.gatherMap)) return false;
         if (tx > 0 && ty > 0 && !(character.x === tx && character.y === ty)) {
-          const r2 = await walkTileCore(tx, ty, { timeoutMs: 90000, alive: alive, retrigger: false,
+          const r2 = await navWalkTile(tx, ty, { timeoutMs: 90000, alive: alive,
             cond: function () { return character.x === tx && character.y === ty; } });
           if (r2 !== 'ok') return false;
         }
@@ -6809,7 +6799,7 @@
     /* ── 兜底[回图] ───────────────────────────────────────────────
      * 症状：复活后只试一次太脆（传送站/网络抖一下、或那次导航失败，就永远回不去）。
      * 判据：还在重生泉水、挂机地图不是泉水、没在维修/清包/切图/导航。
-     * 动作：returnToFarm()（内部 navGoTo 显式允许传送出来）。
+     * 动作：returnToFarm()（内部 navToMap 显式允许传送出来）。
      * 上限：不停止；连续失败按 30s→60s→120s→240s→300s 退避（st.returnFails）。
      * 高级参数：不受影响。
      * ─────────────────────────────────────────────────────────── */
@@ -9054,12 +9044,17 @@
     poiEls.forEach(function (el) { const c = el.getAttribute('coords'); if (c) coordSet[c] = 1; });
     const dt = window.door_tiles || {};
     const edges = []; let doors = 0, matched = 0;
+    const actAt = {};
+    poiEls.forEach(function (el) { const c = el.getAttribute('coords'); if (c) actAt[c] = String(el.getAttribute('action') || ''); });
     Object.keys(dt).forEach(function (to) {
       const p = String(dt[to]).replace('ID', '').split('-');
       const x = +p[0], y = +p[1];
       if (!(x > 0) || !(y > 0)) return;
       doors++; if (coordSet[x + '-' + y]) matched++;
-      edges.push([id, +to, x, y]);
+      /* ★ v2.6.104：给边打类型 —— 只有 gate 可步行；副本/入口等一律 other（不参与寻路） */
+      const act = actAt[x + '-' + y] || '';
+      const kind = (act === 'gate') ? 'gate' : ((act === 'smugglers_route') ? 'smugglers' : 'other');
+      edges.push([id, +to, x, y, kind]);
     });
     /* 一致性校验：door_tiles 里的门坐标必须能在当前地图 DOM 的 tile_poi 里找到。
        （换图瞬间两者不同步 → 直接放弃这次快照，等下一个 tick） */
@@ -9231,7 +9226,7 @@
     const q = [[from, []]], seen = {}; seen[from] = 1;
     while (q.length) {
       const cur = q.shift(), c = cur[0], p = cur[1];
-      const nx = MapDB.adj(c);
+      const nx = MapDB.adjWalk(c);
       for (let i = 0; i < nx.length; i++) {
         const t = nx[i];
         if (seen[t]) continue;
@@ -9242,6 +9237,26 @@
       }
     }
     return null;
+  }
+
+  /* ★ v2.6.104：图上最短跳数（只走可步行边）；不可达 = Infinity */
+  function navDist(a, b) {
+    a = +a; b = +b;
+    if (!(a > 0) || !(b > 0)) return Infinity;
+    if (a === b) return 0;
+    const q = [a], seen = {}; seen[a] = 0;
+    while (q.length) {
+      const c = q.shift();
+      const nx = MapDB.adjWalk(c);
+      for (let i = 0; i < nx.length; i++) {
+        const t = nx[i];
+        if (seen[t] !== undefined) continue;
+        seen[t] = seen[c] + 1;
+        if (t === b) return seen[t];
+        q.push(t);
+      }
+    }
+    return Infinity;
   }
 
   /* 自动学习：每次换图把当前图的 door_tiles 并进图里 */
@@ -9258,7 +9273,11 @@
         if (isNaN(x) || isNaN(y)) return;
         const k = id + '>' + to;
         if (!store[k]) { store[k] = [x, y]; ch = true; }
-        if (MapDB.addEdge(id, +to, x, y)) ch = true;
+        /* ★ v2.6.104：读格子 action 给边打类型（读不到 = 保留原类型，不降级） */
+        const el = document.querySelector('.map_table .tile_poi[coords="' + x + '-' + y + '"]');
+        const act = el ? String(el.getAttribute('action') || '') : '';
+        const kind = (act === 'smugglers_route') ? 'smugglers' : (act === 'gate' ? 'gate' : (act ? 'other' : undefined));
+        if (MapDB.addEdge(id, +to, x, y, kind)) ch = true;
       });
       if (ch) {
         localStorage.setItem(NAV_LEARN_KEY, JSON.stringify(store));
@@ -9269,16 +9288,32 @@
     } catch (e) { /* ignore */ }
   }
 
-  /* 走到 (gx,gy) 并等换图（站门上先走开一格再走回）—— 统一走格引擎的重触发封装 */
-  function navWalkToTile(gx, gy, tmo, alive) {
+  /* ========================= 模块 B：地图内点到点寻路（唯一） =========================
+   * 走到 (gx,gy) 并等条件成立，返回 'ok' | 'timeout' | 'cancel'。
+   * 脚本里**所有「在一张图内移动」都必须走这里**（内部就是 walkTileCore 走格引擎）。
+   * opts:
+   *   until       'arrive'（默认，站到目标格）| 'mapChange'（换图；用于门 / 传送站，站上后会重触发）
+   *   cond        自定义成功条件（优先级最高，传了就不看 until）
+   *   timeoutMs   超时（战斗 / 挡路弹窗 / 阵亡等待不计入）
+   *   alive()     返回 false 立即中止（cancel）
+   *   combatText / onStuck  透传给走格引擎
+   * ========================================================================== */
+  function navWalkTile(gx, gy, opts) {
+    opts = opts || {};
+    const until = opts.until || 'arrive';
     let from = null;
-    try { from = character.current_map; } catch (e) { return Promise.resolve(false); }
+    try { from = character.current_map; } catch (e) { return Promise.resolve('cancel'); }
+    const cond = opts.cond || (until === 'mapChange'
+      ? function () { return character.current_map !== from; }
+      : function () { return character.x === gx && character.y === gy; });
     return walkTileCore(gx, gy, {
-      timeoutMs: tmo,
-      alive: alive || function () { return true; },
-      retrigger: true,
-      cond: function () { return character.current_map !== from; }
-    }).then(function (r) { return r === 'ok'; });
+      timeoutMs: opts.timeoutMs,
+      alive: opts.alive || function () { return true; },
+      cond: cond,
+      retrigger: (opts.retrigger !== undefined) ? !!opts.retrigger : (until === 'mapChange'),
+      combatText: opts.combatText,
+      onStuck: opts.onStuck
+    });
   }
 
   async function navHop(destId, alive) {
@@ -9295,7 +9330,7 @@
         return false;
       }
       const p = String(dt).replace('ID', '').split('-');
-      await navWalkToTile(+p[0], +p[1], 90000, alive);
+      await navWalkTile(+p[0], +p[1], { until: 'mapChange', timeoutMs: 90000, alive: alive });
       await sleep(2500);
       if (alive && !alive()) return false;
       if (character.current_map === destId) return true;
@@ -9348,7 +9383,7 @@
     const gx = +c[0], gy = +c[1];
     if (!(gx > 0 && gy > 0)) { logEvent('走私路线：格子坐标读不到'); return 0; }
     if (!(character.x === gx && character.y === gy)) {
-      await navWalkToTile(gx, gy, 70000, alive);
+      await navWalkTile(gx, gy, { timeoutMs: 70000, alive: alive });
       if (alive && !alive()) return 0;
       if (!(character.x === gx && character.y === gy)) {
         logEvent('走私路线：走不到格子 ' + gx + '-' + gy + '（当前 ' + character.x + '-' + character.y + '），放弃');
@@ -9387,6 +9422,178 @@
     logEvent('走私路线：已到达 ' + currentMapName());
     return character.current_map;
   }
+
+  /* ========================= 模块 A：地图到地图导航（唯一） ===========================
+   * 决策流程（详见 skill/references/pathfinding-redesign.md）：
+   *   ① cur == dest → 完成
+   *   ② dest 是城市 且 城市传送点开：Noble → 世界地图免费传（无跳数限制）；失败/非 Noble → 传送站 Cities 页
+   *   ③ dest 是野外锚点 且 野外传送点开：传送站逻辑(dest,'wilderness')
+   *   ④ 有步行通路 → 步行（gate 边 + smuggler 边）
+   *   ⑤ 无步行通路（泉水/死胡同）→ 强制传送逃生
+   * 脚本里**所有「换图」都必须走这里**。
+   * opts: { alive, allowCity, allowWild, walkOnly }
+   * ============================================================================ */
+
+  const WAYGATE_SLACK = 5;          /* 传送站判据里的固定 +5 */
+  const FREE_FALLBACK_MAP = 5;      /* 都没开传送点时，免费传送的兜底图（El Caspar） */
+
+  function isWildAnchor(id) {
+    id = +id; if (!(id > 0)) return false;
+    try { return WAYGATE_WILD.some(function (w) { return +w.id === id; }); } catch (e) { return false; }
+  }
+  /* 「有传送站的地图」= 城市(16) ∪ 野外锚点(22)（用户确认，不用实测学习） */
+  function waygateMaps() {
+    const out = [];
+    try { MapDB.cities().forEach(function (c) { if (c && +c.id > 0 && out.indexOf(+c.id) < 0) out.push(+c.id); }); } catch (e) { /* ignore */ }
+    try { WAYGATE_WILD.forEach(function (w) { if (w && +w.id > 0 && out.indexOf(+w.id) < 0) out.push(+w.id); }); } catch (e) { /* ignore */ }
+    return out;
+  }
+  /* 离 cur 跳数最小的「有传送站的地图」（含 cur 自己） */
+  function nearestWaygateMap(cur) {
+    cur = +cur; if (!(cur > 0)) return 0;
+    let best = 0, bl = Infinity;
+    waygateMaps().forEach(function (id) {
+      const d = navDist(cur, id);
+      if (d < bl) { bl = d; best = id; }
+    });
+    return best;
+  }
+  /* Noble = buff subscription（"Noble Potion"）→ 城市世界地图传送免费。5 分钟内存缓存，传不动即清。 */
+  let _nobleCache = null, _nobleAt = 0;
+  function nobleActive() {
+    if (_nobleCache !== null && now() - _nobleAt < 300000) return _nobleCache;
+    let v = false;
+    try {
+      if (document.querySelector('.buff_bar img[res="subscription"]')) v = true;
+      else if (character && Array.isArray(character.buffs) && character.buffs.indexOf('subscription') >= 0) v = true;
+    } catch (e) { /* ignore */ }
+    _nobleCache = v; _nobleAt = now();
+    return v;
+  }
+
+  /* 按边类型执行一跳：smugglers → Ride；其余 → 走普通门 */
+  async function navHopStep(destId, alive) {
+    const kind = MapDB.edgeKind(+character.current_map, +destId);
+    if (kind === 'smugglers') {
+      const out = await rideSmugglers(destId, alive);
+      return +out === +destId;
+    }
+    return await navHop(destId, alive);
+  }
+
+  /* 纯步行：沿「可步行图」逐跳走到 destId（gate + smuggler 边）。返回是否到达。 */
+  async function navWalkPlanTo(destId, alive) {
+    for (let guard = 0; guard < 3; guard++) {
+      if (alive && !alive()) return false;
+      if (+character.current_map === +destId) return true;
+      const plan = navRoute(character.current_map, destId);
+      if (!plan) return false;
+      let failed = false;
+      for (let i = 0; i < plan.length; i++) {
+        if (alive && !alive()) return false;
+        if (+character.current_map === +destId) return true;
+        const ok = await navHopStep(plan[i], alive);
+        if (!ok) { failed = true; break; }
+      }
+      if (+character.current_map === +destId) return true;
+      if (!failed) return false;
+      /* 走岔了：重算一次再试（最多 3 轮） */
+    }
+    return +character.current_map === +destId;
+  }
+
+  /* 传送站逻辑：dist(cur,最近传送站) + 5 < dist(cur,dest) 才绕去传送站 */
+  async function navWaygateLogic(dest, page, alive) {
+    const cur = +character.current_map;
+    const d = navDist(cur, dest);
+    if (d < WAYGATE_SLACK) return false;                 /* 太近，直接走 */
+    const w = nearestWaygateMap(cur);
+    if (!(w > 0)) return false;
+    const dw = navDist(cur, w);
+    if (!(dw + WAYGATE_SLACK < d)) return false;         /* 绕去传送站不划算 */
+    if (alive && !alive()) return false;
+    if (+character.current_map !== w) {
+      logEvent('传送站：先走到最近的有传送站的图「' + navMapName(w) + '」（' + dw + ' 跳）');
+      if (!await navWalkPlanTo(w, alive)) return false;
+    }
+    if (alive && !alive()) return false;
+    const out = await navWaygateOut(dest, alive, page);
+    return +out === +dest;
+  }
+
+  /* 强制传送逃生（泉水/死胡同）：按开关选「城市∪锚点里离目的地最近」的，都没开就传免费图 5 */
+  async function navEscapeStuck(dest, alive, allowCity, allowWild) {
+    const cur = +character.current_map;
+    if (!(cur > 0)) return false;
+    let target = 0;
+    if (!allowCity && !allowWild) {
+      target = FREE_FALLBACK_MAP;
+    } else {
+      const cands = [];
+      if (allowCity) { try { MapDB.cities().forEach(function (c) { if (c && +c.id > 0) cands.push({ id: +c.id, city: 1 }); }); } catch (e) { /* ignore */ } }
+      if (allowWild) { try { WAYGATE_WILD.forEach(function (w) { if (w && +w.id > 0) cands.push({ id: +w.id, city: 0 }); }); } catch (e) { /* ignore */ } }
+      let best = 0, bl = Infinity, bc = 1;
+      cands.forEach(function (c) {
+        const d = navDist(c.id, dest);                    /* 到「目的地」的跳数 */
+        if (d < bl || (d === bl && c.city > bc)) { bl = d; best = c.id; bc = c.city; }
+      });
+      target = best;
+    }
+    if (!(target > 0) || target === cur) return false;
+    const page = isTownMap(target) ? 'cities' : 'wilderness';
+    logEvent('无通路：从传送站逃生 → 「' + navMapName(target) + '」');
+    let out = await navWaygateOut(target, alive, page);
+    if (!out) out = await navWalkToAnyExit(alive);        /* 本图没有传送站 → 走任意出口 */
+    return !!out;
+  }
+
+  /* ===== 模块 A 主函数 ===== */
+  async function navToMap(destId, opts) {
+    opts = opts || {};
+    const dest = +destId;
+    if (!inGame() || !(dest > 0)) return false;
+    if (+character.current_map === dest) return true;
+    const alive = opts.alive || function () { return true; };
+    const allowCity = (opts.allowCity === undefined) ? !!cfg.useWaygateCity : !!opts.allowCity;
+    const allowWild = (opts.allowWild === undefined) ? !!cfg.useWaygateWild : !!opts.allowWild;
+    const walkOnly = !!opts.walkOnly;
+    if (navBusy && !opts._nested) return false;
+    if (!opts._nested) navBusy = true;
+    try {
+      navLearn();
+      if (!walkOnly) {
+        /* ② 目的地是城市 + 城市传送点开 */
+        if (isTownMap(dest) && allowCity) {
+          if (nobleActive()) {
+            const out = await navWorldTeleport(dest, alive);
+            if (alive && !alive()) return false;
+            if (+out === dest) return true;
+            _nobleCache = null;                           /* 传不动 → 可能不是 Noble 了，下次重判 */
+          }
+          if (await navWaygateLogic(dest, 'cities', alive)) return true;
+          if (alive && !alive()) return false;
+        }
+        /* ③ 目的地是野外锚点 + 野外传送点开 */
+        if (allowWild && isWildAnchor(dest)) {
+          if (await navWaygateLogic(dest, 'wilderness', alive)) return true;
+          if (alive && !alive()) return false;
+        }
+      }
+      /* ④ 有步行通路 → 步行 */
+      if (navRoute(character.current_map, dest)) {
+        if (await navWalkPlanTo(dest, alive)) return true;
+        if (alive && !alive()) return false;
+      }
+      if (walkOnly) return +character.current_map === dest;
+      /* ⑤ 无步行通路 → 强制传送逃生 */
+      if (await navEscapeStuck(dest, alive, allowCity, allowWild)) {
+        if (alive && !alive()) return false;
+        if (await navWalkPlanTo(dest, alive)) return true;
+      }
+      return +character.current_map === dest;
+    } finally { if (!opts._nested) navBusy = false; }
+  }
+
   /* 传送门回主城（死亡恢复） */
   /* ======================= 世界地图传送（野外 → 城镇） =======================
    * 实测 2026-10-19：世界地图 = #world_map_container（openWorldMap() 打开），
@@ -9396,9 +9603,8 @@
    *     · 没有传送道具 → a.btn-primary「How to Travel」 onclick="openHelp(55)"（图标 res=world_tp）
    *     · 有传送道具 / Noble → 同一个按钮变成 Teleport 动作（onclick 不再是 openHelp）
    *   所以判据：找带 world_tp/home_scroll 图标、且 onclick 不是 openHelp 的按钮 = 可以传送。
-   *   失败（没道具）会缓存 5 分钟，避免每次都白开一次世界地图。
+   *   ★ v2.6.104：删掉「失败冷却 5 分钟」（游戏里没这机制）。
    * ===================================================================== */
-  let _worldTpFailAt = 0;
   /* 在 Map Details 里找「传送」按钮。
    * ★ 实测（Noble 账号，2026-10-19，城市 Ururg #229）：
    *   <a class="btn btn-unique" onclick="loadTravel(false,'teleport=229&cH=<token>')">
@@ -9457,11 +9663,6 @@
     const dest = +destId;
     if (!(dest > 0)) return 0;
     if (String(character.current_map) === String(dest)) return dest;
-    /* ★ v2.6.57：冷却也记日志 —— 原来静默返回 0，看日志只能看到「没传送」不知道为什么。 */
-    if (now() - _worldTpFailAt < 5 * 60000) {
-      logEvent('世界地图传送：上次失败还在冷却（剩 ' + Math.ceil((5 * 60000 - (now() - _worldTpFailAt)) / 1000) + 's），本次跳过');
-      return 0;
-    }
     if (typeof window.openWorldMap !== 'function') { logEvent('世界地图传送：openWorldMap 不可用'); return 0; }
     const from = character.current_map;
     try { window.openWorldMap(''); } catch (e) { return 0; }
@@ -9488,8 +9689,7 @@
     const btn = findMapDetailsTeleport(md);
     if (!btn) {
       try { if (md) closeFrameById('frame_MapDetails'); } catch (e) {}
-      _worldTpFailAt = now();
-      logEvent('世界地图传送：Map Details 里没有传送按钮（没道具 / 非 Noble）→ 5 分钟内不再尝试');
+      logEvent('世界地图传送：Map Details 里没有传送按钮（没道具 / 非 Noble）→ 改走传送站 / 步行');
       return bail();
     }
     setStatus('世界地图传送 → 「' + navMapName(dest) + '」…');
@@ -9497,7 +9697,7 @@
     try { humanClick(btn); } catch (e) { try { btn.click(); } catch (e2) {} }
     for (let i = 0; i < 40; i++) { if (alive && !alive()) break; await sleep(500); if (String(character.current_map) !== String(from)) break; }
     try { if (md) closeFrameById('frame_MapDetails'); } catch (e) {}
-    if (String(character.current_map) !== String(from)) { _worldTpFailAt = 0; try { if (typeof window.closeWorldMap === 'function') window.closeWorldMap(); } catch (e) {} return character.current_map; }
+    if (String(character.current_map) !== String(from)) { try { if (typeof window.closeWorldMap === 'function') window.closeWorldMap(); } catch (e) {} return character.current_map; }
     return bail();
   }
   /* ★ 传送站（waygate）：走到传送站 → 打开界面 → 自动挑一个「能去、且离目标最近」的城市传送出去。
@@ -9564,7 +9764,7 @@
     const gx = +p[0], gy = +p[1];
     if (!(gx > 0 && gy > 0)) return 0;
     if (!(character.x === gx && character.y === gy)) {
-      await navWalkToTile(gx, gy, 70000, alive);
+      await navWalkTile(gx, gy, { timeoutMs: 70000, alive: alive });
       if (alive && !alive()) return 0;
       /* ★ v2.6.63：走到 ≠ 真的到（网络抖动 / 服务器位置不同步）→ 没站上格子就别硬点，记原因退出 */
       if (!(character.x === gx && character.y === gy)) {
@@ -9722,9 +9922,9 @@
         const x = +c[0], y = +c[1];
         if (!(x > 0 && y > 0)) continue;
         const from = character.current_map;
-        /* ★ 已经在格上也要试：交给 navWalkToTile 的「走开一格再走回」重触发逻辑。
+        /* ★ 已经在格上也要试：交给 navWalkTile 的「走开一格再走回」重触发逻辑。
              原来这里 continue 直接跳过 —— 若本图唯一出口正好在脚下，就永远出不去。 */
-        await navWalkToTile(x, y, 40000, alive);
+        await navWalkTile(x, y, { until: 'mapChange', timeoutMs: 40000, alive: alive });
         if (character.current_map !== from) return character.current_map;
       }
     }
@@ -9757,79 +9957,7 @@
   }
   function navHideBar() { if (navBar) { navBar.remove(); navBar = null; } }
 
-  /* ★ 内部导航（不停挂机）：沿 door_tiles 学习图走到目标图。alive() 返回 false 时中止。 */
-  async function navGoTo(destId, alive, allowCity, allowWild) {
-    /* ★ 拆分（2026-10-20）：allowCity = 城市传送点；allowWild = 野外传送点。
-       未指定时取对应勾选。两者都关 = 纯步行；「必须传送出来」（阵亡回图）显式传 true,true。 */
-    if (allowCity === undefined) allowCity = !!cfg.useWaygateCity;
-    if (allowWild === undefined) allowWild = !!cfg.useWaygateWild;
-    const allowWaygate = allowCity || allowWild;
-    if (!inGame()) return false;
-    if (String(character.current_map) === String(destId)) return true;
-    if (navBusy) return false;
-    navBusy = true;
-    let wgUsed = false;   /* 一次导航里传送站最多用一次，避免「传送→走岔→再传送」死循环 */
-    try {
-      navLearn();
-      /* ★ v2.6.97：步行就能到、而且不远 → 直接走，别碰传送点。 */
-      const nearPlan = navRoute(character.current_map, destId);
-      const walkFirst = !!(nearPlan && nearPlan.length <= NAV_WALK_PREFER);
-      if (walkFirst) logEvent('导航：' + navMapName(destId) + ' 步行 ' + nearPlan.length + ' 跳可达 → 直接走，不用传送点');
-      if (!walkFirst && (allowCity || allowWild)) {
-        wgUsed = true;
-        setStatus('先用传送点缩短路程…');
-        let out = 0;
-        /* ★ 城市传送点：Noble 走世界地图免费传；没道具 / 非 Noble → 走传送站 Cities 页 */
-        if (allowCity) {
-          out = await navWorldTeleport(worldTeleportTarget(destId), alive);
-          if (alive && !alive()) return false;
-          if (out && String(character.current_map) === String(destId)) return true;
-          if (!out) out = await navWaygateOut(destId, alive, 'cities');
-          if (alive && !alive()) return false;
-          if (out && String(character.current_map) === String(destId)) return true;
-        }
-        /* ★ 野外传送点：只能走传送站 Wilderness 页 */
-        if (allowWild) {
-          out = await navWaygateOut(destId, alive, 'wilderness');
-          if (alive && !alive()) return false;
-          if (out && String(character.current_map) === String(destId)) return true;
-        }
-        if (!out) logEvent('传送点都不可用 → 改走陆路（目标 ' + navMapName(destId) + '）');
-      }
-      let plan = navRoute(character.current_map, destId);
-      if (!plan) {
-        /* ★ 没有陆路（例如死亡后落在只有传送站的泉水图）→ 先想办法出去，再算路线 */
-        if (alive && !alive()) return false;
-        if (!allowWaygate) { setStatus('没有步行路线到「' + navMapName(destId) + '」（未勾选传送点）'); logEvent('无步行路线，且未启用传送点'); return false; }
-        setStatus('本图没有陆路，尝试从传送站出去…');
-        logEvent('无陆路 → 尝试传送站');
-        let out = wgUsed ? 0 : await navWaygateOut(destId, alive);
-        wgUsed = true;
-        if (!out) { setStatus('传送站不可用，尝试走其它出口…'); out = await navWalkToAnyExit(alive); }
-        if (!out) { setStatus('出不去：本图没有可用出口'); logEvent('出不去：本图没有可用出口'); return false; }
-        logEvent('已离开 ' + currentMapName() + '（' + (out ? navMapName(out) : '?') + '）');
-        plan = navRoute(character.current_map, destId);
-        if (!plan) { setStatus('离开后仍无到「' + navMapName(destId) + '」的路线'); return false; }
-      }
-      for (let i = 0; i < plan.length; i++) {
-        if (alive && !alive()) return false;
-        if (String(character.current_map) === String(destId)) return true;
-        const ok = await navHop(plan[i], alive);
-        if (!ok) {
-          if (alive && !alive()) return false;
-          /* 走岔了：勾了传送点 → 就近找传送站出去（选离目标最近的城市）；否则走任意出口 */
-          let out = 0;
-          if (allowWaygate && !wgUsed) { wgUsed = true; out = await navWaygateOut(destId, alive); }
-          if (!out) out = await navWalkToAnyExit(alive);
-          if (!out) return false;
-          plan = navRoute(character.current_map, destId);
-          if (!plan) return false;
-          i = -1; continue;
-        }
-      }
-      return String(character.current_map) === String(destId);
-    } finally { navBusy = false; }
-  }
+  /* ★ v2.6.104：navGoTo() 已删除 —— 统一用模块 A navToMap()。 */
 
   /* ★ 阵亡复活后：若不在挂机地图，自动导航回去 */
   async function returnToFarm() {
@@ -9840,7 +9968,7 @@
     try {
       setStatus('阵亡复活：导航回挂机地图「' + townName(dest) + '」…');
       logEvent('阵亡复活，导航回挂机地图 ' + townName(dest));
-      const ok = await navGoTo(dest, () => running, true, true);   // ★ 阵亡回图：必须允许传送出来
+      const ok = await navToMap(dest, { alive: () => running, allowCity: true, allowWild: true });   // ★ 阵亡回图：必须允许传送出来
       st.returnFails = ok ? 0 : ((st.returnFails || 0) + 1);
       logEvent(ok ? '已回到挂机地图 ' + townName(dest) : '回挂机地图失败（第 ' + st.returnFails + ' 次），当前在 ' + currentMapName());
       setStatus(ok ? '已回到挂机地图，继续挂机' : '回挂机地图失败：当前在 ' + currentMapName());
@@ -9849,63 +9977,26 @@
     } finally { st.returning = false; }
   }
 
-  /* ---- 导航到目标地图（Move 按钮调用） ---- */
+  /* ---- 导航到目标地图（Move 按钮调用）—— 纯 UI 壳，实现在模块 A ---- */
   async function navTravelTo(destId) {
     if (navBusy) { navStatus('已有导航在进行中', null, true); return false; }
     navBusy = true;
     try { if (running) stop('开始跨图导航，已暂停挂机'); } catch (e) { /* ignore */ }
-    navLearn();
     try {
-      const start = character.current_map;
-      if (start === destId) { navStatus('已经在该地图了', null, false); setTimeout(navHideBar, 1800); return true; }
+      if (String(character.current_map) === String(destId)) { navStatus('已经在该地图了', null, false); setTimeout(navHideBar, 1800); return true; }
       const alive = function () { return navBusy && inGame(); };
-      /* ★ v2.6.97：步行可达且不远 → 直接走，不用传送点 */
-      const nearPlan0 = navRoute(start, destId);
-      const walkFirst0 = !!(nearPlan0 && nearPlan0.length <= NAV_WALK_PREFER);
-      if (walkFirst0) logEvent('导航：' + navMapName(destId) + ' 步行 ' + nearPlan0.length + ' 跳可达 → 直接走，不用传送点');
-      /* ★ 融合：勾了「使用传送点」→ 先传送到离目标最近的城市，再步行 */
-      if (!walkFirst0 && (cfg.useWaygateCity || cfg.useWaygateWild)) {
-        navStatus('🧭 先用传送点缩短路程…', null, true);
-        /* ★ 先试世界地图传送（野外直接传城镇）；没道具自动回退到传送站 */
-        let out0 = await navWorldTeleport(worldTeleportTarget(destId), alive);
-        if (!alive()) { navHideBar(); return false; }
-        if (out0 && String(character.current_map) === String(destId)) { navStatus('✅ 已到达 ' + navMapName(destId), 100, false); setTimeout(navHideBar, 2500); logEvent('导航到达 ' + navMapName(destId)); return true; }
-        if (!out0) out0 = await navWaygateOut(destId, alive, cfg.useWaygateCity ? 'cities' : 'wilderness');
-        if (!alive()) { navHideBar(); return false; }
-        if (out0 && String(character.current_map) === String(destId)) { navStatus('✅ 已到达 ' + navMapName(destId), 100, false); setTimeout(navHideBar, 2500); logEvent('导航到达 ' + navMapName(destId)); return true; }
+      navStatus('🧭 导航中 → ' + navMapName(destId), null, true);
+      const ok = await navToMap(destId, { alive: alive, _nested: true });
+      if (!alive()) { navHideBar(); return false; }
+      if (ok) {
+        navStatus('✅ 已到达 ' + navMapName(destId), 100, false);
+        setTimeout(navHideBar, 2500);
+        logEvent('导航到达 ' + navMapName(destId));
+        return true;
       }
-      let plan = navRoute(character.current_map, destId);
-      if (!plan) {
-        navStatus('⚠ 暂无到「' + navMapName(destId) + '」的完整路线（该区域还没探索过）', null, true);
-        setTimeout(navHideBar, 4000);
-        return false;
-      }
-      for (let i = 0; i < plan.length; i++) {
-        if (!alive()) { navHideBar(); return false; }
-        const d = plan[i];
-        navStatus('🧭 导航中 → ' + navMapName(destId) + '<br><span style="color:#8fa3bd">' +
-          (i + 1) + '/' + plan.length + '　当前：' + navMapName(character.current_map) + ' → ' + navMapName(d) + '</span>',
-          Math.round((i / plan.length) * 100), true);
-        let ok = await navHop(d, alive);
-        if (!alive()) { navHideBar(); return false; }
-        if (!ok) {
-          /* ★ 门不是普通门（副本入口 / 读不到格子）→ 直接取消，别去传送站乱花资源 */
-          if (!isSwitchableDoor(d)) {
-            navStatus('⚠ 「' + navMapName(d) + '」的入口不是普通门（副本），已取消导航', null, false);
-            setTimeout(navHideBar, 3000); return false;
-          }
-          if (!cfg.useWaygateCity && !cfg.useWaygateWild) { navStatus('❌ 走岔了（未勾选传送点）', null, false); setTimeout(navHideBar, 3000); return false; }
-          navStatus('↻ 走岔了，就近传送站出去…', null, true);
-          if (!await navWaygateOut(destId, alive)) { navStatus('❌ 导航失败', null, false); setTimeout(navHideBar, 3000); return false; }
-          plan = navRoute(character.current_map, destId);
-          if (!plan) { navStatus('❌ 导航失败（路线中断）', null, false); setTimeout(navHideBar, 3000); return false; }
-          i = -1; continue;
-        }
-      }
-      navStatus('✅ 已到达 ' + navMapName(destId), 100, false);
-      setTimeout(navHideBar, 2500);
-      logEvent('导航到达 ' + navMapName(destId));
-      return true;
+      navStatus('❌ 无法到达「' + navMapName(destId) + '」', null, false);
+      setTimeout(navHideBar, 3500);
+      return false;
     } finally { navBusy = false; }
   }
 
@@ -9937,7 +10028,7 @@
       if (!alive()) return false;
       setStatus('切图刷怪：' + homeName + ' → ' + navMapName(destId) + ' …');
       logEvent('自动切图：去 ' + navMapName(destId));
-      if (!await navHop(destId, alive)) { if (alive()) setStatus('切图失败（去程）'); return false; }
+      if (!await navToMap(destId, { alive: alive, _nested: true })) { if (alive()) setStatus('切图失败（去程）'); return false; }
       await sleep(1200);
       if (!alive()) return false;
       // ★ 到了之后确认是普通野外图：万一进了副本/城镇，立刻记下并返回
@@ -9946,17 +10037,17 @@
       if (at && at !== 'Normal' && at !== 'City') {
         logEvent('切图：' + navMapName(destId) + ' 是「' + at + '」属于副本/特殊区域，立即返回');
         setStatus('「' + navMapName(destId) + '」是特殊区域，返回…');
-        await navHop(home, alive);
+        await navToMap(home, { alive: alive, _nested: true });
         return false;
       }
       setStatus('切图刷怪：返回 ' + homeName + ' …');
-      if (!await navHop(home, alive)) { if (alive()) setStatus('切图失败（回程），当前在 ' + currentMapName()); return false; }
+      if (!await navToMap(home, { alive: alive, _nested: true })) { if (alive()) setStatus('切图失败（回程），当前在 ' + currentMapName()); return false; }
       if (!alive()) return false;
       logEvent('自动切图完成，已返回 ' + homeName);
       // ★ 用挂机地图判断是否真的回来了；没回来再补一次导航
       if (String(character.current_map) !== String(home)) {
         setStatus('切图后不在挂机地图，正在返回…');
-        await navGoTo(home, alive);
+        await navToMap(home, { alive: alive, _nested: true });
       }
       setStatus('切图完成，怪物已刷新');
       return true;
@@ -10391,6 +10482,8 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
     const all = Array.prototype.slice.call(document.querySelectorAll('[id^="frame_"]'));
     const hits = all.filter(function (el) {
       if (el.id === 'frame_container') return false;
+      /* ★ v2.6.104：走私路线面板也有 world_map_ 缩略图，但不是 Map Details → 不注入导航按钮 */
+      if (el.id === 'frame_SmugglersRoute') return false;
       return !!el.querySelector('.frame-content .avatar[style*="world_map_"]')
           || !!el.querySelector('.frame-content [data-map-info-id]');
     });
@@ -11002,7 +11095,7 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
     scanEnemies: scanEnemies, attackableEnemies: attackableEnemies, pickTarget: pickTarget,
     rankWeight: rankWeight, nameWeight: nameWeight, detectRank: detectRank, whyText: whyText,
     targetKey: targetKey, nameAllowed: nameAllowed,   /* ★ v2.6.74：便于验证索敌模式 */
-    scanBag: scanBag, readBag: readBag, isDamaged: isDamaged, findSmith: findSmith, findGateTo: findGateTo,
+    scanBag: scanBag, readBag: readBag, isDamaged: isDamaged, findSmith: findSmith,
     applySkin: applySkin, setSkin: setSkin, skinOn: skinOn,
     readEquipDur: readEquipDur, parseEquipDur: parseEquipDur, durWorst: durWorst, durText: durText, repairNeeded: repairNeeded, gatherDurNow: gatherDurNow, lastGatherDur: lastGatherDur, renderDurInfo: renderDurInfo,
     getMapDict: getMapDict, startRestock: startRestock, repairSellNow: repairSellNow,
@@ -11036,7 +11129,7 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
     applyBagDiff: applyBagDiff, parseInvItems: parseInvItems, initBagSnap: initBagSnap,
     pause: pause, resume: resume, toggleRun: toggleRun, runElapsedMs: runElapsedMs, pollBagGain: pollBagGain,
     startRoundTrip: function () { const seq = ++navAutoSeq; st.mapSwitch.active = true; return navRoundTrip(seq); },
-    returnToFarm: returnToFarm, navGoTo: navGoTo, navWaygateOut: navWaygateOut, navWorldTeleport: navWorldTeleport, worldTeleportTarget: worldTeleportTarget, findMapDetailsTeleport: findMapDetailsTeleport, navWalkToAnyExit: navWalkToAnyExit, townName: townName,
+    returnToFarm: returnToFarm, navToMap: navToMap, navGoTo: navToMap, navWalkTile: navWalkTile, navDist: navDist, rideSmugglers: rideSmugglers, navWaygateOut: navWaygateOut, navWorldTeleport: navWorldTeleport, worldTeleportTarget: worldTeleportTarget, findMapDetailsTeleport: findMapDetailsTeleport, navWalkToAnyExit: navWalkToAnyExit, townName: townName,
     navImportRecorder: navImportRecorder,
     mapDB: MapDB,
     nav: { graph: MapDB, route: navRoute, travelTo: navTravelTo, hop: navHop, learn: navLearn,

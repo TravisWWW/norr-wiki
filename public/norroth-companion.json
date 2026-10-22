@@ -1,8 +1,8 @@
 {
-  "version": "2.6.103",
+  "version": "2.6.104",
   "date": "2026-10-22",
-  "notes": "v2.6.103 新增 rideSmugglers()：走私路线付费换图（实测确认面板 DOM / 无二次确认）",
+  "notes": "v2.6.104 寻路重构：只剩 2 个模块 —— navToMap()（地图到地图）+ navWalkTile()（地图内点到点）；边带类型（副本边不再进路线）；走私路线边；删掉旧引擎 gotoMap/findGateTo/navGoTo/walkAndWait/navWalkToTile 与世界地图传送冷却",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 730884,
-  "sha256": "865c2a212f9d43430a7fcc710920e20dc0c5423b2223510cf177a9aa21a63167"
+  "size": 734232,
+  "sha256": "9681fef630c5890eea832aee3791f23d93a1c575032987dc6f79ee5368b3e74f"
 }
