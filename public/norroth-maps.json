@@ -1,14 +1,14 @@
 {
  "meta": {
   "source": "小伴侣地图数据（MapDB）· 3 位贡献者合并",
-  "updated": "2026-10-22T22:33:05.737Z",
+  "updated": "2026-10-22T23:42:59.005Z",
   "version": "1.0",
   "contributors": [
    {
     "file": "maps-1151.json",
     "char": "#1151",
-    "level": 43,
-    "time": "2026-10-22T10:44:56.818Z",
+    "level": 46,
+    "time": "2026-10-22T23:42:44.732Z",
     "count": 338,
     "mergedAt": "2026-10-22"
    },
@@ -110,13 +110,13 @@
    ]
   },
   "5": {
-   "at": 1792654437449,
+   "at": 1792702629212,
    "name": "El Caspar",
    "type": "City",
    "g": [
     "Minnow Pier",
-    "Mucky Patch",
-    "Combat Training"
+    "Combat Training",
+    "Mucky Patch"
    ],
    "gt": [
     [
@@ -226,7 +226,7 @@
    ]
   },
   "6": {
-   "at": 0,
+   "at": 1792702602287,
    "name": "Brisban Pond",
    "type": "Normal",
    "g": [
@@ -256,6 +256,26 @@
     "Deer",
     "Hare",
     "Wasp"
+   ],
+   "ex": [
+    [
+     11,
+     7,
+     "gate",
+     "Arodas Lakeshore (Lv.4)"
+    ],
+    [
+     45,
+     7,
+     "gate",
+     "Akelay Foothills (Lv.4)"
+    ],
+    [
+     57,
+     30,
+     "gate",
+     "El Caspar (Lv.1)"
+    ]
    ],
    "visited": true,
    "edges": [
@@ -416,7 +436,7 @@
    ]
   },
   "11": {
-   "at": 1792489765617,
+   "at": 1792702656032,
    "name": "Elena’s Crossroad",
    "type": "Normal",
    "g": [
@@ -440,6 +460,32 @@
     "Hare",
     "Wasp",
     "Snake"
+   ],
+   "ex": [
+    [
+     31,
+     18,
+     "gate",
+     "Forested Canyon (Lv.4)"
+    ],
+    [
+     16,
+     30,
+     "gate",
+     "Akelay Foothills (Lv.4)"
+    ],
+    [
+     51,
+     30,
+     "gate",
+     "Laverne Foothill (Lv.4)"
+    ],
+    [
+     33,
+     46,
+     "gate",
+     "El Caspar (Lv.1)"
+    ]
    ],
    "visited": true,
    "edges": [
@@ -466,11 +512,17 @@
      25,
      51,
      30
+    ],
+    [
+     11,
+     62,
+     0,
+     0
     ]
    ]
   },
   "12": {
-   "at": 0,
+   "at": 1792710230421,
    "name": "Forested Canyon",
    "type": "Normal",
    "m": [
@@ -479,6 +531,26 @@
     "Badger",
     "Deer",
     "Woodland Snake"
+   ],
+   "ex": [
+    [
+     38,
+     7,
+     "gate",
+     "Tree of Life (Lv.5)"
+    ],
+    [
+     21,
+     33,
+     "entrance",
+     "Entrance"
+    ],
+    [
+     38,
+     60,
+     "gate",
+     "Elena’s Crossroad (Lv.1)"
+    ]
    ],
    "visited": true,
    "edges": [
@@ -550,7 +622,7 @@
    ]
   },
   "14": {
-   "at": 0,
+   "at": 1792702564596,
    "name": "Arodas Lakeshore",
    "type": "Normal",
    "g": [
@@ -584,6 +656,20 @@
     "Beaver",
     "Toxic Toad"
    ],
+   "ex": [
+    [
+     27,
+     16,
+     "gate",
+     "Arodas Beach (Lv.7)"
+    ],
+    [
+     49,
+     60,
+     "gate",
+     "Brisban Pond (Lv.1)"
+    ]
+   ],
    "visited": true,
    "edges": [
     [
@@ -601,7 +687,7 @@
    ]
   },
   "15": {
-   "at": 0,
+   "at": 1792702526561,
    "name": "Arodas Beach",
    "type": "Normal",
    "g": [
@@ -622,6 +708,20 @@
     "Toxic Toad",
     "Toad"
    ],
+   "ex": [
+    [
+     36,
+     9,
+     "gate",
+     "Elundi (Lv.10)"
+    ],
+    [
+     63,
+     31,
+     "gate",
+     "Arodas Lakeshore (Lv.4)"
+    ]
+   ],
    "visited": true,
    "edges": [
     [
@@ -639,7 +739,7 @@
    ]
   },
   "16": {
-   "at": 1792652773445,
+   "at": 1792702483953,
    "name": "Elundi",
    "type": "City",
    "g": [
@@ -982,7 +1082,7 @@
    ]
   },
   "22": {
-   "at": 1792660896720,
+   "at": 1792689260495,
    "name": "Owranbu River",
    "type": "Normal",
    "g": [
@@ -1059,7 +1159,7 @@
    ]
   },
   "23": {
-   "at": 1792642040793,
+   "at": 1792689212708,
    "name": "Owranbu",
    "type": "City",
    "g": [
@@ -4816,7 +4916,7 @@
    ]
   },
   "224": {
-   "at": 0,
+   "at": 1792686208666,
    "name": "Desert of Illusions",
    "m": [
     "Cassowary",
@@ -4826,6 +4926,32 @@
     "Scorpion",
     "Nomadic Cleric",
     "Phoenix"
+   ],
+   "ex": [
+    [
+     14,
+     19,
+     "gate",
+     "The Living Desert (Lv.16)"
+    ],
+    [
+     53,
+     19,
+     "gate",
+     "Devil’s Gulch (Lv.18)"
+    ],
+    [
+     35,
+     46,
+     "waygate",
+     "Waygate"
+    ],
+    [
+     39,
+     60,
+     "gate",
+     "Sands of Echoes (Lv.18)"
+    ]
    ],
    "visited": true,
    "edges": [
@@ -4940,7 +5066,7 @@
    ]
   },
   "228": {
-   "at": 0,
+   "at": 1792712019425,
    "name": "Shrubland",
    "type": "Normal",
    "g": [
@@ -4973,6 +5099,20 @@
     "Orc Warlock",
     "Terastodon"
    ],
+   "ex": [
+    [
+     53,
+     33,
+     "gate",
+     "Ururg (Lv.20)"
+    ],
+    [
+     14,
+     55,
+     "gate",
+     "Shrubland (Lv.21)"
+    ]
+   ],
    "visited": true,
    "edges": [
     [
@@ -4990,9 +5130,35 @@
    ]
   },
   "229": {
-   "at": 1792521661443,
+   "at": 1792711378732,
    "name": "Ururg",
    "type": "City",
+   "ex": [
+    [
+     53,
+     13,
+     "gate",
+     "Shrubland (Lv.21)"
+    ],
+    [
+     14,
+     45,
+     "gate",
+     "Shrubland (Lv.21)"
+    ],
+    [
+     42,
+     54,
+     "waygate",
+     "Waygate"
+    ],
+    [
+     30,
+     60,
+     "gate",
+     "Orc’s Bone Road (Lv.40)"
+    ]
+   ],
    "visited": true,
    "smith": true,
    "edges": [
@@ -5148,7 +5314,7 @@
    ]
   },
   "243": {
-   "at": 0,
+   "at": 1792686221315,
    "name": "Sands of Echoes",
    "type": "Normal",
    "m": [
@@ -5159,6 +5325,20 @@
     "Phoenix",
     "Cassowary",
     "Scorpion"
+   ],
+   "ex": [
+    [
+     27,
+     10,
+     "gate",
+     "Desert of Illusions (Lv.18)"
+    ],
+    [
+     39,
+     57,
+     "gate",
+     "Red Desert (Lv.18)"
+    ]
    ],
    "visited": true,
    "edges": [
@@ -5177,8 +5357,56 @@
    ]
   },
   "244": {
-   "at": 0,
-   "name": "Red Desert"
+   "at": 1792686391863,
+   "name": "Red Desert",
+   "m": [
+    "Orc Warrior",
+    "Orc Warlock",
+    "Basilisk",
+    "Stone Centipede",
+    "Giant Vulture"
+   ],
+   "ex": [
+    [
+     21,
+     7,
+     "gate",
+     "Sands of Echoes (Lv.18)"
+    ],
+    [
+     53,
+     15,
+     "gate",
+     "Red Desert (Lv.54)"
+    ],
+    [
+     50,
+     58,
+     "gate",
+     "Red Desert (Lv.18)"
+    ]
+   ],
+   "visited": true,
+   "edges": [
+    [
+     244,
+     243,
+     21,
+     7
+    ],
+    [
+     244,
+     245,
+     50,
+     58
+    ],
+    [
+     244,
+     336,
+     53,
+     15
+    ]
+   ]
   },
   "245": {
    "at": 0,
@@ -5568,7 +5796,7 @@
    ]
   },
   "281": {
-   "at": 1792659105749,
+   "at": 1792695350747,
    "name": "Trescan",
    "type": "City",
    "g": [
@@ -5754,7 +5982,7 @@
    ]
   },
   "285": {
-   "at": 1792658330978,
+   "at": 1792678446123,
    "name": "Taiga",
    "m": [
     "Berserker",
@@ -6032,13 +6260,14 @@
    "name": "Haunted Forest"
   },
   "310": {
-   "at": 1792540448407,
+   "at": 1792701136894,
    "name": "Haunted Forest",
    "type": "Normal",
    "g": [
     "Jute Field",
     "Low Quality Patch",
     "Tin Mine",
+    "Spruce Grove",
     "White Bass Pier"
    ],
    "gt": [
@@ -6058,6 +6287,16 @@
      "Tin Mine"
     ],
     [
+     8,
+     20,
+     "Spruce Grove"
+    ],
+    [
+     33,
+     50,
+     "Spruce Grove"
+    ],
+    [
      51,
      53,
      "White Bass Pier"
@@ -6068,6 +6307,20 @@
     "Skeleton Mage",
     "Skeleton Warrior",
     "Zombie Horse"
+   ],
+   "ex": [
+    [
+     3,
+     30,
+     "gate",
+     "Haunted Forest (Lv.25)"
+    ],
+    [
+     43,
+     32,
+     "waygate",
+     "Waygate"
+    ]
    ],
    "visited": true,
    "edges": [
@@ -6164,7 +6417,7 @@
    ]
   },
   "324": {
-   "at": 1792665890295,
+   "at": 1792712187710,
    "name": "Dark Boreal",
    "type": "Normal",
    "m": [
@@ -6201,20 +6454,203 @@
      325,
      39,
      1
+    ],
+    [
+     324,
+     280,
+     23,
+     56
+    ],
+    [
+     324,
+     323,
+     10,
+     18
+    ],
+    [
+     324,
+     324,
+     22,
+     4
+    ],
+    [
+     324,
+     342,
+     51,
+     54
     ]
    ]
   },
   "325": {
-   "at": 0,
-   "name": "Dark Boreal"
+   "at": 1792712271377,
+   "name": "Dark Boreal",
+   "type": "Normal",
+   "g": [
+    "Mithril Mine"
+   ],
+   "gt": [
+    [
+     40,
+     29,
+     "Mithril Mine"
+    ]
+   ],
+   "m": [
+    "Dwarven Guard",
+    "Armored Ram",
+    "Dwarven Caster",
+    "Dwarven Hunter",
+    "Komodo Basilisk"
+   ],
+   "ex": [
+    [
+     39,
+     1,
+     "gate",
+     "Dark Boreal (Lv.43)"
+    ],
+    [
+     42,
+     66,
+     "gate",
+     "Dark Boreal (Lv.40)"
+    ]
+   ],
+   "visited": true,
+   "edges": [
+    [
+     325,
+     324,
+     42,
+     66
+    ],
+    [
+     325,
+     326,
+     39,
+     1
+    ]
+   ]
   },
   "326": {
-   "at": 0,
-   "name": "Dark Boreal"
+   "at": 1792712304319,
+   "name": "Dark Boreal",
+   "type": "Normal",
+   "g": [
+    "Largemouth Bass Pier"
+   ],
+   "gt": [
+    [
+     60,
+     41,
+     "Largemouth Bass Pier"
+    ]
+   ],
+   "m": [
+    "Dwarven Caster",
+    "Dwarven Guard",
+    "Armored Ram",
+    "Dwarven Hunter",
+    "Komodo Basilisk"
+   ],
+   "ex": [
+    [
+     33,
+     9,
+     "gate",
+     "Dark Boreal (Lv.45)"
+    ],
+    [
+     13,
+     51,
+     "dungeon",
+     "Grimble’s Camp (Lv.45)"
+    ],
+    [
+     38,
+     66,
+     "gate",
+     "Dark Boreal (Lv.41)"
+    ]
+   ],
+   "visited": true,
+   "edges": [
+    [
+     326,
+     325,
+     38,
+     66
+    ],
+    [
+     326,
+     327,
+     33,
+     9
+    ],
+    [
+     326,
+     332,
+     13,
+     51
+    ]
+   ]
   },
   "327": {
-   "at": 0,
-   "name": "Dark Boreal"
+   "at": 1792712560481,
+   "name": "Dark Boreal",
+   "type": "Normal",
+   "g": [
+    "Beech Grove"
+   ],
+   "gt": [
+    [
+     11,
+     8,
+     "Beech Grove"
+    ]
+   ],
+   "m": [
+    "Dwarven Guard",
+    "Armored Ram",
+    "Dwarven Hunter",
+    "Komodo Basilisk",
+    "Dwarven Caster"
+   ],
+   "ex": [
+    [
+     58,
+     5,
+     "gate",
+     "Dark Boreal (Lv.47)"
+    ],
+    [
+     45,
+     46,
+     "waygate",
+     "Waygate"
+    ],
+    [
+     28,
+     65,
+     "gate",
+     "Dark Boreal (Lv.43)"
+    ]
+   ],
+   "visited": true,
+   "edges": [
+    [
+     327,
+     326,
+     28,
+     65
+    ],
+    [
+     327,
+     329,
+     58,
+     5
+    ]
+   ]
   },
   "328": {
    "at": 0,
@@ -6604,7 +7040,7 @@
    "name": "Sleepy Hollow"
   },
   "1183": {
-   "at": 1792649550989,
+   "at": 1792705335004,
    "name": "The Sacred Wilds Lobby",
    "g": [
     "Quarry",
@@ -6726,7 +7162,7 @@
    ]
   },
   "1188": {
-   "at": 1792652702465,
+   "at": 1792701031795,
    "name": "The Sacred Wilds",
    "m": [
     "Wyvern"
