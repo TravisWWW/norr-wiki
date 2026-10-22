@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.98
+// @version      2.6.99
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -184,7 +184,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.98';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
+  const SCRIPT_VER = '2.6.99';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -10606,6 +10606,32 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
     return j;
   }
 
+  /* ★ v2.6.99：上传单个文件到数据仓库，自动处理 409「sha 不匹配」。
+     GitHub contents API 是「先 GET 拿 sha，再 PUT 带 sha」；当两个客户端（多开标签页 / 多角色同时跑）
+     几乎同时上传同一个文件时，后到的那个会拿到 409 "<path> does not match <sha>"。
+     这里遇到 409 就重新取 sha 再传（最多 3 次，带退避）。 */
+  async function ghPutFile(fpath, message, text, token, tries) {
+    tries = tries || 3;
+    let lastErr = null;
+    for (let i = 0; i < tries; i++) {
+      let sha = null;
+      try {
+        const cur = await ghApi('GET', '/repos/' + GH_REPO + '/contents/' + fpath + '?ref=' + GH_BRANCH, null, token);
+        if (cur && cur.sha) sha = cur.sha;
+      } catch (e) { if (e.status !== 404) throw e; }
+      const body = { message: message, content: b64utf8(text), branch: GH_BRANCH };
+      if (sha) body.sha = sha;
+      try {
+        return await ghApi('PUT', '/repos/' + GH_REPO + '/contents/' + fpath, body, token);
+      } catch (e) {
+        lastErr = e;
+        if (e.status === 409 && i < tries - 1) { await sleep(500 + i * 800); continue; }
+        throw e;
+      }
+    }
+    throw lastErr || new Error('上传失败');
+  }
+
   function bestiaryPayload(list, src) {
     const c = (typeof character === 'object' && character) || {};
     const rec = list.filter(function (m) { return m.recorded; }).length;
@@ -10646,14 +10672,7 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
       if (!token) { say('未配置社区令牌，已跳过上传'); setStatus('图鉴同步：未配置令牌'); return; }
       {
         say('上传中… ' + fname);
-        let sha = null;
-        try {
-          const cur = await ghApi('GET', '/repos/' + GH_REPO + '/contents/' + fpath + '?ref=' + GH_BRANCH, null, token);
-          if (cur && cur.sha) sha = cur.sha;
-        } catch (e) { if (e.status !== 404) throw e; }
-        const body = { message: '图鉴贡献：' + payload.meta.char + '（' + payload.meta.recorded + '/' + payload.meta.count + '）', content: b64utf8(text), branch: GH_BRANCH };
-        if (sha) body.sha = sha;
-        await ghApi('PUT', '/repos/' + GH_REPO + '/contents/' + fpath, body, token);
+        await ghPutFile(fpath, '图鉴贡献：' + payload.meta.char + '（' + payload.meta.recorded + '/' + payload.meta.count + '）', text, token);
         /* 尽力通知 norr-wiki 立刻合并；失败就等它的 5 分钟定时兜底 */
         let notified = false;
         try {
@@ -10706,14 +10725,7 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
       token = await ghToken();
       if (!token) { say('未配置社区令牌，已跳过'); setStatus('地图同步：未配置令牌'); return; }
       say('上传中… ' + fname + '（' + n + ' 张图）');
-      let sha = null;
-      try {
-        const cur = await ghApi('GET', '/repos/' + GH_REPO + '/contents/' + fpath + '?ref=' + GH_BRANCH, null, token);
-        if (cur && cur.sha) sha = cur.sha;
-      } catch (e) { if (e.status !== 404) throw e; }
-      const body = { message: '地图数据：' + payload.meta.char + '（' + n + ' 张图）', content: b64utf8(JSON.stringify(payload)), branch: GH_BRANCH };
-      if (sha) body.sha = sha;
-      await ghApi('PUT', '/repos/' + GH_REPO + '/contents/' + fpath, body, token);
+      await ghPutFile(fpath, '地图数据：' + payload.meta.char + '（' + n + ' 张图）', JSON.stringify(payload), token);
       say('已上传，正在拉取公共地图数据…');
       let merged = 0;
       try {
