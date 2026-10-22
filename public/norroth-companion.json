@@ -1,8 +1,8 @@
 {
-  "version": "2.6.111",
+  "version": "2.6.112",
   "date": "2026-10-23",
-  "notes": "v2.6.111 换图没重画改成「换图后立刻核对」：换图 2.2s 后读屏幕上真正画出来的底图（.map_table 的 background-image），没画对就调游戏 loadTravel() 重画 + 重新对准镜头（只刷新画面，不刷新网页）；进入活动图同理（先 loadTravel，3s 后仍没画出才整页刷新）；看门狗判据也从 window.map.id 换成 DOM 底图 id",
+  "notes": "v2.6.112 调试接口补齐：__norrothFarm 暴露 softReloadMap / softRefreshEntities / renderedMapId / recenterCamera / scheduleRenderCheck / checkMapRender / checkEntityFresh（便于真机验收「换图没重画」与「怪物列表过期」）",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 764356,
-  "sha256": "ea2c6a2fcc62c01371c790a6126e3aff48348da3d9663bdde48c50669ee8f3b1"
+  "size": 764600,
+  "sha256": "42e0618daa1b4243fdc3aa220b28232473f7e9595afbd8139834d103922f4fc8"
 }

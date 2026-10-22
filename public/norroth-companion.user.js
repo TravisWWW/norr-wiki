@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.111
+// @version      2.6.112
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -184,7 +184,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.111';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
+  const SCRIPT_VER = '2.6.112';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -11524,7 +11524,7 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
     takeAllLoot: takeAllLoot, readPetInfo: readPetInfo, readPetFood: readPetFood, checkAndFeedPet: checkAndFeedPet,
     togglePetFeed: togglePetFeed, feedPetNowManual: feedPetNowManual, petTick: petTick,
     placePanel: placePanel, syncUI: syncUI, renderRankList: renderRankList,
-    gatherInterruptTarget: gatherInterruptTarget, combatTarget: combatTarget, makeRetarget: makeRetarget, retargetCombat: retargetCombat, retargetGather: retargetGather, targetDiag: targetDiag, targetDiagText: targetDiagText, closeGatheringWindows: closeGatheringWindows, syncServerPos: syncServerPos, settleServerPos: settleServerPos, settleAtSpot: settleAtSpot, checkMapLoad: checkMapLoad, mapLoadStuck: mapLoadStuck,
+    gatherInterruptTarget: gatherInterruptTarget, combatTarget: combatTarget, makeRetarget: makeRetarget, retargetCombat: retargetCombat, retargetGather: retargetGather, targetDiag: targetDiag, targetDiagText: targetDiagText, closeGatheringWindows: closeGatheringWindows, syncServerPos: syncServerPos, settleServerPos: settleServerPos, settleAtSpot: settleAtSpot, checkMapLoad: checkMapLoad, mapLoadStuck: mapLoadStuck, softReloadMap: softReloadMap, softRefreshEntities: softRefreshEntities, renderedMapId: renderedMapId, recenterCamera: recenterCamera, scheduleRenderCheck: scheduleRenderCheck, checkMapRender: checkMapRender, checkEntityFresh: checkEntityFresh,
     installSpeedPatch: installSpeedPatch, applySpeedK: applySpeedK, applyWinScale: applyWinScale, isNoAccelEl: isNoAccelEl,
     speedAllowed: speedAllowed, inCombatNow: inCombatNow,
     stepAuto: stepAuto, checkStuck: checkStuck, updatePerf: updatePerf, perfText: perfText, logEvent: logEvent,
