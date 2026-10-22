@@ -16,18 +16,18 @@
    {
     "file": "char-1151.json",
     "char": "#1151",
-    "level": 41,
-    "time": "2026-10-21T19:41:35.344Z",
+    "level": 43,
+    "time": "2026-10-22T09:27:49.965Z",
     "count": 193,
-    "recorded": 98,
+    "recorded": 99,
     "mergedAt": "2026-10-22"
    }
   ],
   "count": 199,
-  "recordedCount": 120,
+  "recordedCount": 121,
   "withLore": 198,
-  "withStats": 64,
-  "withSkills": 78,
+  "withStats": 65,
+  "withSkills": 81,
   "withBg": 183,
   "tabs": {
    "normal": 163,
@@ -9314,7 +9314,72 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_221.gif",
    "bg": "dark_boreal.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "40 - 52",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "Medium",
+   "defense": "High",
+   "resistance": "Low",
+   "scavenging": [
+    {
+     "name": "Quality Meat",
+     "res": "quality_meat",
+     "pct": "12%"
+    },
+    {
+     "name": "Quality Hide",
+     "res": "quality_hide",
+     "pct": "35%"
+    },
+    {
+     "name": "Quality Bone",
+     "res": "quality_bone",
+     "pct": "12%"
+    },
+    {
+     "name": "Quality Tendon",
+     "res": "quality_tendon",
+     "pct": "12%"
+    },
+    {
+     "name": "Quality Skull",
+     "res": "quality_skull",
+     "pct": "4%"
+    },
+    {
+     "name": "Quality Hoof",
+     "res": "quality_hoof",
+     "pct": "15%"
+    },
+    {
+     "name": "Quality Eye",
+     "res": "quality_eye",
+     "pct": "8%"
+    },
+    {
+     "name": "Quality Tail",
+     "res": "quality_tail",
+     "pct": "4%"
+    }
+   ],
+   "skills": [
+    {
+     "name": "jump",
+     "id": 10010,
+     "level": 8
+    },
+    {
+     "name": "headbutt",
+     "id": 10011,
+     "level": 8
+    },
+    {
+     "name": "bash",
+     "id": 10120,
+     "level": 8
+    }
+   ]
   },
   {
    "id": 222,
@@ -9330,7 +9395,34 @@
    "alignment": "Neutral",
    "health": "Low",
    "defense": "High",
-   "resistance": "Low"
+   "resistance": "Low",
+   "drops": [
+    {
+     "name": "Bronze Sestertii",
+     "res": "coin_bronze",
+     "pct": "100%"
+    },
+    {
+     "name": "Stoneforged Chest",
+     "res": "stoneforged_chest",
+     "pct": "10%"
+    },
+    {
+     "name": "Mithril Plating",
+     "res": "mithril_plating",
+     "pct": "9%"
+    },
+    {
+     "name": "Mithril Point",
+     "res": "mithril_point",
+     "pct": "6%"
+    },
+    {
+     "name": "Beech Rod",
+     "res": "beech_rod",
+     "pct": "7%"
+    }
+   ]
   },
   {
    "id": 223,
@@ -9373,6 +9465,28 @@
      "name": "Beech Rod",
      "res": "beech_rod",
      "pct": "8%"
+    }
+   ],
+   "skills": [
+    {
+     "name": "double_shot",
+     "id": 95,
+     "level": 8
+    },
+    {
+     "name": "pin_down",
+     "id": 97,
+     "level": 8
+    },
+    {
+     "name": "splintering_shot",
+     "id": 101,
+     "level": 8
+    },
+    {
+     "name": "piercing_bolt",
+     "id": 100,
+     "level": 8
     }
    ]
   },
@@ -9418,7 +9532,49 @@
      "res": "ramie_cord",
      "pct": "7%"
     }
-   ]
+   ],
+   "skills": [
+    {
+     "name": "fire_ball",
+     "id": 10052,
+     "level": 8
+    },
+    {
+     "name": "dark_ball",
+     "id": 10073,
+     "level": 8
+    },
+    {
+     "name": "tome_of_deep_rune",
+     "id": 10174,
+     "level": 8
+    }
+   ],
+   "stats": {
+    "Base Damage": 10,
+    "Physical Damage": 0,
+    "Blunt Damage": 0,
+    "Spell Damage": 0,
+    "Bleed Damage": 0,
+    "Arcane Damage": 0,
+    "Cold Damage": 0,
+    "Dark Damage": 5,
+    "Fire Damage": 5,
+    "Light Damage": 0,
+    "Lightning Damage": 0,
+    "Poison Damage": 0,
+    "Thorn Damage": 0,
+    "Defense": 10,
+    "Block Chance": 0,
+    "Block Rating": 0,
+    "Arcane Resist": 20,
+    "Cold Resist": 20,
+    "Dark Resist": 20,
+    "Fire Resist": 20,
+    "Light Resist": 20,
+    "Lightning Resist": 20,
+    "Poison Resist": 20
+   }
   },
   {
    "id": 225,
@@ -9435,7 +9591,61 @@
    "specials": "-",
    "health": "Medium",
    "defense": "High",
-   "resistance": "Medium"
+   "resistance": "Medium",
+   "scavenging": [
+    {
+     "name": "Quality Meat",
+     "res": "quality_meat",
+     "pct": "19%"
+    },
+    {
+     "name": "Quality Scale",
+     "res": "quality_scale",
+     "pct": "13%"
+    },
+    {
+     "name": "Quality Tooth",
+     "res": "quality_tooth",
+     "pct": "13%"
+    },
+    {
+     "name": "Quality Bone",
+     "res": "quality_bone",
+     "pct": "13%"
+    },
+    {
+     "name": "Quality Tendon",
+     "res": "quality_tendon",
+     "pct": "19%"
+    },
+    {
+     "name": "Quality Skull",
+     "res": "quality_skull",
+     "pct": "3%"
+    },
+    {
+     "name": "Quality Claw",
+     "res": "quality_claw",
+     "pct": "13%"
+    },
+    {
+     "name": "Quality Eye",
+     "res": "quality_eye",
+     "pct": "6%"
+    },
+    {
+     "name": "Quality Tail",
+     "res": "quality_tail",
+     "pct": "3%"
+    }
+   ],
+   "drops": [
+    {
+     "name": "Komodo Basilisk Pet Egg",
+     "res": "komodo_basilisk_pet_egg",
+     "pct": "0.3%"
+    }
+   ]
   },
   {
    "id": 226,
