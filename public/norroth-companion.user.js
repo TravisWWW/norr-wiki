@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.115
+// @version      2.6.116
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -184,7 +184,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.115';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
+  const SCRIPT_VER = '2.6.116';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -314,7 +314,7 @@
    *  [换图没重画] scheduleRenderCheck()· 状态 st.render             · 判据「换图后 2.2s .map_table 底图 id != current_map」· 动作「调游戏 loadTravel() 只重画画面 + 对准镜头」 · 看门狗 8s/4 次 → 整页刷新
    *  [怪物列表过期] checkEntityFresh()· 状态 st.entity.at            · 判据「距上次强制拉取 >20s」          · 动作「调游戏 fetchTravelData() 重拉实体」 · 不停止（节流 20s）
    *  [抢怪·出发前确认] startMove 入口  · 状态 st.entity.at            · 判据「去打 >3 格外的怪 且 距上次刷新 >6s」· 动作「先 fetchTravelData() 重拉实体，本 tick 不动」 · 不停止（节流 6s）
-   *  [到位没触发动作] scheduleArriveAction()· 状态 无（一次性）        · 判据「到位 1.3s 后格子还有 action 且没出对应窗口」· 动作「补一次 execTileAction(action)」 · 每次到位 1 次
+   *  [到位没触发动作] scheduleArriveAction()· 状态 无（一次性）        · 判据「到位 1.3s 后格子还有 action 且没出对应窗口」· 动作「补一次 execTileAction(action)」；敌人格无 action 则改用 walkTo(同格) 重触发战斗 · 每次到位 1 次
    *  [切图卡住] checkMapLoad()         · 状态 st.mapload              · 判据「#transition_container 停留 >12s」 · 动作「点游戏 [RETRY] / 预热底图」  · 3 次 → 整页刷新
    *  [活动]     eventTick 步骤④        · 状态 st.event.busy/busyAt    · 判据「检查卡住 >20s 或 fetch 超时 8s」 · 动作「AbortController 中断 + 强制释放 busy 重查」 · 不停止（节流 30s）
    *  [走位重试] checkMove !started    · 状态 st.move.retryAt/retries · 判据「900ms 还没发起」               · 动作「abortWalk + 重发 walkTo」     · 上限 8 次 → 拉黑该格 30s
@@ -964,6 +964,7 @@
    *   只要清空的那一刻正好落在目标格上，动作就永远不会触发；另外「本来就在格上」也不会触发。
    * 判据：到位后 ARRIVE_ACTION_MS 内，格子还有 action、角色还站在格上、且没有出现对应的窗口。
    * 动作：显式调游戏自己的 execTileAction(action)（和爬塔门 / 采集点 / 传送站一样的做法）。
+   *       ★ v2.6.116：敌人格在 .map_table 里没有 action（敌人是 #players_container 覆盖层），改用 walkTo(同格) 触发游戏的「同格 → loadCombat」分支。
    * 上限：每次到位只补触发 1 次（避免和游戏抢动作）。
    * 高级参数：不受影响。
    * ───────────────────────────────────────────────────────────── */
@@ -989,7 +990,26 @@
         if (+character.x !== +x || +character.y !== +y) return;   /* 已经走开了 → 不管 */
         if (mapLoadStuck()) return;                               /* 正在换图 → 别插一脚 */
         const act = tileActionAt(x, y);
-        if (!act) return;                                         /* 格子上没有动作 */
+        if (!act) {
+          /* ★ v2.6.116：敌人格在 .map_table 里没有 action（敌人是 #players_container 的覆盖层），
+             战斗靠「到位回调里的 findEnemyAtCoords → loadCombat」触发，同样会被 walk_to 清空打断。
+             站到怪格 ARRIVE_ACTION_MS 还没开战 → 用游戏自己的 walkTo(当前格) 触发它的「同格 → loadCombat」分支。 */
+          if (kind === 'enemy' && !hasFrame('frame_Combat') && window.pendingCombatLoad !== true) {
+            logEvent('到位没触发战斗（@' + x + '-' + y + '）→ 用 walkTo 同格重触发');
+            setStatus('到位没开战，正在重触发…');
+            let acted = false;
+            try { if (typeof window.walkTo === 'function') acted = (window.walkTo(x, y) !== false); } catch (e) { /* ignore */ }
+            /* walkTo 被守卫拦下（can_travel=false / current_action 非 Traveling）→
+               退一步走游戏自己的 loadCombat（和到位回调一致），仅当脚下确实还有怪时调。 */
+            if (!acted) {
+              try {
+                const has = (typeof window.findEnemyAtCoords === 'function') ? window.findEnemyAtCoords(x, y).length : 0;
+                if (has && typeof window.loadCombat === 'function') window.loadCombat(1);
+              } catch (e) { /* ignore */ }
+            }
+          }
+          return;                                                 /* 格子上没有动作 */
+        }
         if (arriveActionFired(act)) return;                       /* 已经触发了 */
         if (character.current_action && character.current_action !== 'Traveling') return;   /* 游戏正忙 */
         logEvent('到位没触发动作（' + act + ' @' + x + '-' + y + '）→ 补一次 execTileAction');
