@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.101
+// @version      2.6.102
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -184,7 +184,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.101';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
+  const SCRIPT_VER = '2.6.102';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -4825,20 +4825,25 @@
     if (m) return [+m[1], +m[1]];
     return null;
   }
-  /* 诊断：列出本图所有 tile_poi（action:名字@坐标），找不到门时写进日志 */
+  /* 诊断：把本图所有 POI 按 action 归类列出来（每个 action 最多 6 个），找不到门时写进日志。
+     ★ v2.6.102：原来只看 .tile_poi[action]，会漏掉「战斗区入口」这种非标准 action / 非 tile_poi 的点。 */
   function eventDumpTiles() {
     try {
-      const els = $$q('.map_table .tile_poi[action]');
-      const seen = {}, out = [];
+      const els = $$q('.map_table [action], #map_container [action], .map_table .tile_poi, #map_container .tile_poi, .map_table [data-poi], #map_container [data-poi]');
+      const cnt = {}, out = [];
       for (let i = 0; i < els.length; i++) {
-        const a = String(els[i].getAttribute('action') || '');
-        const n = String(els[i].getAttribute('name') || '').trim();
-        const c = String(els[i].getAttribute('coords') || '');
-        const k = a + '|' + n + '|' + c;
-        if (seen[k]) continue; seen[k] = 1;
-        out.push(a + ':' + n + '@' + c);
+        const el = els[i];
+        const a = String(el.getAttribute('action') || '') || '(no-action)';
+        const n = String(el.getAttribute('name') || el.getAttribute('data-poi') || el.getAttribute('title') || '').trim();
+        const c = String(el.getAttribute('coords') || '');
+        const oc = String(el.getAttribute('onclick') || '').trim();
+        if ((cnt[a] || 0) >= 6) continue;
+        cnt[a] = (cnt[a] || 0) + 1;
+        out.push(a + ':' + n + (c ? '@' + c : '') + (oc ? ' onclick=' + oc.slice(0, 50) : ''));
       }
-      return out.slice(0, 40).join(' / ') || '(本图没有 tile_poi)';
+      const nPoi = $$q('.map_table .tile_poi').length;
+      const nAct = $$q('.map_table .tile_poi[action]').length;
+      return 'tile_poi=' + nPoi + ' 有action=' + nAct + ' ｜ ' + (out.slice(0, 70).join(' / ') || '(无)');
     } catch (e) { return '(dump 失败：' + (e && e.message ? e.message : e) + ')'; }
   }
   /* 找大厅里「当前等级该走的那道门」：返回 {x,y,name,id} 或 null */
