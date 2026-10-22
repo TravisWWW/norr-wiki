@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.99
+// @version      2.6.100
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -184,7 +184,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.99';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
+  const SCRIPT_VER = '2.6.100';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -7167,6 +7167,8 @@
   .ui-tooltip-content .nr-wm-chip.g{border-color:rgba(53,196,106,.45)}
   .ui-tooltip-content .nr-wm-chip.m{border-color:rgba(255,192,97,.35)}
 .ui-tooltip-content .nr-wm-h.s{color:#7fb6ff}
+.ui-tooltip-content .nr-wm-note{margin-top:6px;font-size:12.5px;line-height:1.5;color:#8fd0a0}
+.ui-tooltip-content .nr-wm-note .k{color:#6f8a7a}
 .ui-tooltip-content .nr-wm-chip.s{border-color:rgba(127,182,255,.35)}
   /* 只有被我们装饰过的 tooltip 才把游戏那行 40px 图标缩小，避免和 chip 重复抢版面 */
   .ui-tooltip-content:has(.nr-wm) h2 img.rounded{height:22px;opacity:.75}
@@ -10036,7 +10038,35 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
     if (wp && wp.s) {
       sChips = wp.s.map(function (x) { return chip('s', '/images/icons/' + x + '.gif', WM_LAND_EN[x] || x); }).join('');
     }
-    if (!gChips && !mChips && !sChips) return '';
+    /* ★ v2.6.100：这张图在本地 MapDB 里有实测记录 → 加一行备注（哪些数据、多少、什么时候更新的）。
+       注意：资源点 / 怪物两栏本来就「真实数据优先、没有才用推算」，这一行是让人一眼看出「这张图我扫过」。 */
+    let noteHtml = '';
+    try {
+      const r = MapDB.get(key);
+      if (r) {
+        const nG = (r.g || []).length, nGt = (r.gt || []).length, nM = (r.m || []).length, nEx = (r.ex || []).length;
+        const nEdge = MapDB.adj(key).length;
+        if (r.visited || nG || nGt || nM || nEx || nEdge) {
+          const parts = [];
+          if (nG) parts.push('采集点 ' + nG);
+          if (nM) parts.push('怪物 ' + nM);
+          if (nEx) parts.push('出口 ' + nEx);
+          if (nEdge) parts.push('门 ' + nEdge);
+          let when = '';
+          if (r.at) {
+            try {
+              const d = new Date(r.at);
+              const p2 = function (n) { return (n < 10 ? '0' : '') + n; };
+              when = (d.getMonth() + 1) + '-' + p2(d.getDate()) + ' ' + p2(d.getHours()) + ':' + p2(d.getMinutes());
+            } catch (e) { when = ''; }
+          }
+          noteHtml = '<div class="nr-wm-note">📋 本地已记录' +
+            (parts.length ? '：' + parts.join(' · ') : '') +
+            (when ? ' <span class="k">· 更新 ' + when + '</span>' : '') + '</div>';
+        }
+      }
+    } catch (e) { /* ignore */ }
+    if (!gChips && !mChips && !sChips && !noteHtml) return '';
     const sec = function (label, cls, chips) {
       return '<div class="nr-wm-sec"><span class="nr-wm-h ' + cls + '">' + label + '</span>' +
              '<span class="nr-wm-chips">' + chips + '</span></div>';
@@ -10044,7 +10074,8 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
     return '<div class="nr-wm"><div class="nr-wm-sep"></div>' +
            (gChips ? sec('资源点', 'g', gChips) : '') +
            (mChips ? sec('怪物', 'm', mChips) : '') +
-           (sChips ? sec('地标', 's', sChips) : '') + '</div>';
+           (sChips ? sec('地标', 's', sChips) : '') +
+           noteHtml + '</div>';
   }
 
   /* ======================= 19b. 世界地图「解锁未访问地图」(v2.6.80) =======================

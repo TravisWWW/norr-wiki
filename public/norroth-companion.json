@@ -1,8 +1,8 @@
 {
-  "version": "2.6.99",
+  "version": "2.6.100",
   "date": "2026-10-22",
-  "notes": "v2.6.99：修「数据同步失败：maps-contrib/maps-<角色>.json does not match <sha>」——这是 GitHub contents API 的 409（先 GET sha 再 PUT，期间文件被另一个客户端改过就会冲突）。现在上传遇到 409 会自动重新取 sha 再传（最多 3 次，带退避），图鉴同步与地图同步都走同一套。",
+  "notes": "v2.6.100：世界地图 tooltip —— 本地 MapDB 里有实测记录的图，加一行备注「📋 本地已记录：采集点 N · 怪物 N · 出口 N · 门 N · 更新 MM-DD HH:MM」，一眼看出哪些图扫过。",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 716687,
-  "sha256": "ab61168ad675396b17a3553e38a17715dd0da3299f9bfec0f30fd14d95b4ac46"
+  "size": 718309,
+  "sha256": "95434ae3ebff20be1f446200c0e5ae551375430e14724ee6e11a2f4c8f6c0b99"
 }
