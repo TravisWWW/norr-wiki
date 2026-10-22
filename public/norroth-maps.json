@@ -1,7 +1,7 @@
 {
  "meta": {
-  "source": "小伴侣地图数据（MapDB）· 2 位贡献者合并",
-  "updated": "2026-10-22T10:21:16.896Z",
+  "source": "小伴侣地图数据（MapDB）· 3 位贡献者合并",
+  "updated": "2026-10-22T10:35:50.496Z",
   "version": "1.0",
   "contributors": [
    {
@@ -19,14 +19,23 @@
     "time": "2026-10-22T04:30:26.541Z",
     "count": 330,
     "mergedAt": "2026-10-22"
+   },
+   {
+    "file": "maps-2003.json",
+    "char": "#2003",
+    "level": 5,
+    "time": "2026-10-22T10:35:36.389Z",
+    "count": 330,
+    "mergedAt": "2026-10-22"
    }
   ],
   "count": 338
  },
  "maps": {
   "1": {
-   "at": 0,
+   "at": 1792244581006,
    "name": "Fountain of Rebirth",
+   "visited": true,
    "edges": [
     [
      1,
@@ -37,11 +46,20 @@
    ]
   },
   "2": {
-   "at": 0,
-   "name": "Lower Fountain’s Descent"
+   "at": 1792244612929,
+   "name": "Lower Fountain’s Descent",
+   "visited": true,
+   "edges": [
+    [
+     2,
+     3,
+     13,
+     41
+    ]
+   ]
   },
   "3": {
-   "at": 0,
+   "at": 1792244665726,
    "name": "Sasquatch Grotto",
    "type": "Normal",
    "m": [
@@ -58,7 +76,7 @@
    ]
   },
   "4": {
-   "at": 0,
+   "at": 1792244669734,
    "name": "Upper Fountain’s Descent",
    "type": "Normal",
    "g": [
@@ -70,6 +88,10 @@
      12,
      "Mucky Patch"
     ]
+   ],
+   "m": [
+    "Hare",
+    "Wild Dog"
    ],
    "visited": true,
    "edges": [
@@ -394,7 +416,7 @@
    ]
   },
   "11": {
-   "at": 0,
+   "at": 1792489765617,
    "name": "Elena’s Crossroad",
    "type": "Normal",
    "g": [
@@ -404,6 +426,11 @@
     [
      27,
      41,
+     "Cotton Field"
+    ],
+    [
+     27,
+     40,
      "Cotton Field"
     ]
    ],
@@ -476,11 +503,12 @@
    ]
   },
   "13": {
-   "at": 0,
+   "at": 1792160806758,
    "name": "Tree of Life",
    "type": "Normal",
    "g": [
-    "Minnow Pier"
+    "Minnow Pier",
+    "Minnow 码头"
    ],
    "gt": [
     [
@@ -1571,9 +1599,28 @@
    "name": "Baron’s Lair"
   },
   "46": {
-   "at": 0,
+   "at": 1792240947853,
    "name": "Bear Den",
-   "visited": true
+   "m": [
+    "Bear",
+    "Killer Centipede",
+    "Vampire Bat"
+   ],
+   "visited": true,
+   "edges": [
+    [
+     46,
+     47,
+     38,
+     19
+    ],
+    [
+     46,
+     49,
+     34,
+     63
+    ]
+   ]
   },
   "47": {
    "at": 0,
@@ -1609,7 +1656,7 @@
    ]
   },
   "49": {
-   "at": 0,
+   "at": 1792530826892,
    "name": "Elundi Garden",
    "type": "Normal",
    "g": [
@@ -1683,7 +1730,7 @@
    ]
   },
   "51": {
-   "at": 0,
+   "at": 1792531332532,
    "name": "Deep Forest",
    "type": "Normal",
    "m": [
@@ -1997,7 +2044,7 @@
    ]
   },
   "63": {
-   "at": 0,
+   "at": 1792173779987,
    "name": "Sandspire Summit",
    "type": "Normal",
    "m": [
@@ -2154,22 +2201,22 @@
    ]
   },
   "68": {
-   "at": 0,
+   "at": 1792519234217,
    "name": "Yurk’s Yard",
    "g": [
-    "Maple 树林",
-    "Smallmouth Bass 码头"
+    "Maple Grove",
+    "Smallmouth Bass Pier"
    ],
    "gt": [
     [
      20,
      13,
-     "Maple 树林"
+     "Maple Grove"
     ],
     [
      55,
      27,
-     "Smallmouth Bass 码头"
+     "Smallmouth Bass Pier"
     ]
    ],
    "m": [
@@ -2180,6 +2227,7 @@
     "Orc Warlock",
     "Warg"
    ],
+   "visited": true,
    "edges": [
     [
      68,
@@ -2440,7 +2488,7 @@
    ]
   },
   "84": {
-   "at": 0,
+   "at": 1792178706164,
    "name": "Golden Sandscape",
    "type": "Normal",
    "m": [
@@ -2533,7 +2581,7 @@
    ]
   },
   "91": {
-   "at": 0,
+   "at": 1792327909229,
    "name": "Drouver",
    "type": "City",
    "visited": true,
@@ -2946,7 +2994,7 @@
    ]
   },
   "112": {
-   "at": 0,
+   "at": 1792451638064,
    "name": "Vileton Entrance",
    "type": "Normal",
    "m": [
@@ -3125,7 +3173,7 @@
    ]
   },
   "118": {
-   "at": 1792285387155,
+   "at": 1792514412222,
    "name": "Swamp",
    "m": [
     "Wisp Phantom",
@@ -3162,7 +3210,7 @@
    ]
   },
   "119": {
-   "at": 1792480151755,
+   "at": 1792514514749,
    "name": "Swamp",
    "m": [
     "Wisp Phantom",
@@ -3187,7 +3235,7 @@
    ]
   },
   "120": {
-   "at": 1792474682684,
+   "at": 1792514506294,
    "name": "Swamp",
    "type": "Normal",
    "m": [
@@ -3474,8 +3522,30 @@
    ]
   },
   "129": {
-   "at": 0,
-   "name": "Marsh"
+   "at": 1792423033951,
+   "name": "Marsh",
+   "m": [
+    "Bog Worm",
+    "Boggard",
+    "Bogleech",
+    "Tarn Linnorm",
+    "Blood Queen"
+   ],
+   "visited": true,
+   "edges": [
+    [
+     129,
+     125,
+     23,
+     8
+    ],
+    [
+     129,
+     126,
+     31,
+     60
+    ]
+   ]
   },
   "130": {
    "at": 0,
@@ -3611,7 +3681,7 @@
    "type": "City"
   },
   "169": {
-   "at": 0,
+   "at": 1792406269130,
    "name": "Bungavik",
    "type": "City",
    "visited": true,
@@ -3784,14 +3854,14 @@
    "name": "Caeltys’ Causeway"
   },
   "182": {
-   "at": 1792577502051,
+   "at": 1792597129717,
    "name": "Caeltys’ Causeway",
    "m": [
     "Wendigo",
+    "Cockatrice",
     "Ankheg",
     "Drow",
-    "Forest Guardian",
-    "Cockatrice"
+    "Forest Guardian"
    ],
    "visited": true,
    "edges": [
@@ -4048,7 +4118,7 @@
    ]
   },
   "191": {
-   "at": 0,
+   "at": 1792327777901,
    "name": "Savanna",
    "m": [
     "Carrion Harpy",
@@ -4075,7 +4145,7 @@
    ]
   },
   "192": {
-   "at": 0,
+   "at": 1792327218257,
    "name": "Savanna",
    "m": [
     "Terastodon",
@@ -4102,7 +4172,7 @@
    ]
   },
   "193": {
-   "at": 0,
+   "at": 1792327184282,
    "name": "Savanna",
    "m": [
     "Gnoll Warrior",
@@ -4129,7 +4199,7 @@
    ]
   },
   "194": {
-   "at": 0,
+   "at": 1792327141828,
    "name": "Savanna",
    "type": "Normal",
    "m": [
@@ -4157,7 +4227,7 @@
    ]
   },
   "195": {
-   "at": 0,
+   "at": 1792359735399,
    "name": "Savanna",
    "type": "Normal",
    "g": [
@@ -4201,7 +4271,7 @@
    ]
   },
   "196": {
-   "at": 0,
+   "at": 1792344121414,
    "name": "Savanna",
    "type": "Normal",
    "m": [
@@ -4756,7 +4826,7 @@
    ]
   },
   "227": {
-   "at": 0,
+   "at": 1792583125780,
    "name": "Shrubland",
    "type": "Normal",
    "g": [
@@ -4844,10 +4914,11 @@
    ]
   },
   "229": {
-   "at": 0,
+   "at": 1792521661443,
    "name": "Ururg",
    "type": "City",
    "visited": true,
+   "smith": true,
    "edges": [
     [
      229,
@@ -4860,6 +4931,12 @@
      275,
      53,
      13
+    ],
+    [
+     229,
+     269,
+     30,
+     60
     ]
    ]
   },
@@ -5200,7 +5277,7 @@
    "name": "Shrubland"
   },
   "275": {
-   "at": 0,
+   "at": 1792521703892,
    "name": "Shrubland",
    "type": "Normal",
    "m": [
@@ -5228,17 +5305,18 @@
    ]
   },
   "276": {
-   "at": 0,
+   "at": 1792522276411,
    "name": "Shrubland",
    "type": "Normal",
    "m": [
-    "Catoblepas",
     "Carrion Harpy",
-    "Orc Warrior",
     "Orc Hunter",
+    "Orc Warlock",
+    "Catoblepas",
     "Terastodon",
-    "Orc Warlock"
+    "Orc Warrior"
    ],
+   "visited": true,
    "edges": [
     [
      276,
@@ -5261,8 +5339,58 @@
    ]
   },
   "277": {
-   "at": 0,
-   "name": "Shrubland"
+   "at": 1792522062686,
+   "name": "Shrubland",
+   "g": [
+    "Smallmouth Bass Pier",
+    "Maple Grove",
+    "Nettle Field",
+    "Medium Quality Patch"
+   ],
+   "gt": [
+    [
+     8,
+     18,
+     "Smallmouth Bass Pier"
+    ],
+    [
+     49,
+     29,
+     "Maple Grove"
+    ],
+    [
+     44,
+     45,
+     "Nettle Field"
+    ],
+    [
+     43,
+     50,
+     "Medium Quality Patch"
+    ]
+   ],
+   "m": [
+    "Terastodon",
+    "Orc Warrior",
+    "Orc Warlock",
+    "Warg",
+    "Orc Hunter"
+   ],
+   "visited": true,
+   "edges": [
+    [
+     277,
+     276,
+     5,
+     57
+    ],
+    [
+     277,
+     278,
+     52,
+     7
+    ]
+   ]
   },
   "278": {
    "at": 1792613857403,
@@ -5648,7 +5776,7 @@
    ]
   },
   "291": {
-   "at": 1792654506089,
+   "at": 1792665289709,
    "name": "Itham’s Anchorage",
    "type": "Normal",
    "g": [
@@ -5668,8 +5796,8 @@
     ]
    ],
    "m": [
-    "Merfolk",
     "Faery",
+    "Merfolk",
     "Oculus"
    ],
    "ex": [
@@ -5871,7 +5999,7 @@
    "name": "Goliathor’s Throne Room"
   },
   "323": {
-   "at": 1792545197987,
+   "at": 1792606552065,
    "name": "Trescan’s Dock",
    "g": [
     "Smallmouth Bass Pier"
@@ -6161,7 +6289,7 @@
    "name": "Fountain of Rebirth"
   },
   "1000": {
-   "at": 0,
+   "at": 1792451279173,
    "name": "Fountain of Rebirth",
    "type": "Normal",
    "visited": true,
@@ -6376,8 +6504,21 @@
    ]
   },
   "1186": {
-   "at": 0,
-   "name": "The Sacred Wilds"
+   "at": 1792413715580,
+   "name": "The Sacred Wilds",
+   "m": [
+    "Wyvern",
+    "Drake Boss"
+   ],
+   "visited": true,
+   "edges": [
+    [
+     1186,
+     1183,
+     56,
+     11
+    ]
+   ]
   },
   "1187": {
    "at": 1792567492659,
