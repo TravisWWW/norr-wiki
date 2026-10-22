@@ -15,6 +15,9 @@
 所以本目录平时是空的；仓库里长期只保留一份图鉴文档。贡献者名册记录在该文档的
 `meta.contributors` 里（角色 / 等级 / 时间 / 已记录数）。
 
+> 注：数据仓库 TravisWWW/nor-database 现在同时收两类数据 —— 本目录对应的 contrib/（图鉴）
+> 与 maps-contrib/（地图）。地图合并见 data/maps-contrib/README.md。
+
 本地手动合并：
 
 ```bash

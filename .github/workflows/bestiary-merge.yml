@@ -42,28 +42,32 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: 拉取图鉴收件箱（nor-database）
+      - name: 拉取收件箱（nor-database：图鉴 contrib/ + 地图 maps-contrib/）
         run: |
-          mkdir -p data/bestiary-contrib
+          mkdir -p data/bestiary-contrib data/maps-contrib
           if git clone --depth 1 https://github.com/TravisWWW/nor-database.git /tmp/inbox 2>/dev/null; then
             cp -f /tmp/inbox/contrib/*.json data/bestiary-contrib/ 2>/dev/null || true
-            echo "收件箱文件："; ls -1 data/bestiary-contrib/ || true
+            cp -f /tmp/inbox/maps-contrib/*.json data/maps-contrib/ 2>/dev/null || true
+            echo "图鉴收件箱："; ls -1 data/bestiary-contrib/ || true
+            echo "地图收件箱："; ls -1 data/maps-contrib/ || true
           else
-            echo "未能拉取 nor-database（可能尚未创建），仅使用本地 data/bestiary-contrib/"
+            echo "未能拉取 nor-database（可能尚未创建），仅使用本地收件箱"
           fi
       - name: 合并贡献 → 权威图鉴文档
         run: node tools/merge-bestiary-contrib.mjs
+      - name: 合并地图数据 → 公共地图库
+        run: node tools/merge-maps-contrib.mjs
       - name: 提交合并结果
         id: commit
         run: |
           git config user.name "norr-wiki-bot"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add -A data/bestiary-contrib src/data/bestiary-live.json
+          git add -A data/bestiary-contrib data/maps-contrib src/data/bestiary-live.json public/norroth-maps.json
           if git diff --cached --quiet; then
             echo "没有变化，跳过提交"
             echo "changed=false" >> "$GITHUB_OUTPUT"
           else
-            git commit -m "图鉴自动合并：$(date -u +'%Y-%m-%d %H:%M UTC')"
+            git commit -m "数据自动合并（图鉴 + 地图）：$(date -u +'%Y-%m-%d %H:%M UTC')"
             git push
             echo "changed=true" >> "$GITHUB_OUTPUT"
           fi
