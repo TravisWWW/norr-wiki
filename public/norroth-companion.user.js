@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.104
+// @version      2.6.105
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -184,7 +184,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.104';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
+  const SCRIPT_VER = '2.6.105';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -2358,7 +2358,11 @@
     let edges = [], mon = {}, cities = [], updated = '', dirty = false;
     /* ★ 到图即刷新用：门「连续未见」计数（只在内存里，不落盘）+ 连续几次没看到才删门 */
     const miss = {};
-    const EDGE_MISS = 3;
+    /* ★ v2.6.105：3 → 20。实测：window.door_tiles 会短暂不完整（换图刚到 / 渲染未完），
+       而 liveMapSnapshot 的 matched===doors 只能保证「内部一致」，不能保证「完整」。
+       3 次（约 7.5s）就删会把真门误删（实测：5→25 / 5→12 / 5→7 被删）→ 导航突然算不出路线。
+       20 次（约 50s 持续看不到）才删。 */
+    const EDGE_MISS = 20;
 
     function blank(id) {
       return { id: +id, name: '', type: '', g: [], gt: [], m: [], ex: [], visited: false, smith: false, at: 0 };
@@ -2615,6 +2619,9 @@
           for (let i = edges.length - 1; i >= 0; i--) {
             const e = edges[i];
             if (e[0] !== +id) continue;
+            /* ★ v2.6.104：只删「普通门」边。走私路线边不在 window.door_tiles 里，永远「看不见」，
+               若不排除会被误删（实测：11→62 走私边被删）。 */
+            if (edgeKindOf(e) !== 'gate') continue;
             const k = e[0] + '>' + e[1];
             if (seen[k]) continue;
             miss[k] = (miss[k] || 0) + 1;
@@ -9517,32 +9524,33 @@
       if (!await navWalkPlanTo(w, alive)) return false;
     }
     if (alive && !alive()) return false;
-    const out = await navWaygateOut(dest, alive, page);
+    const out = await navWaygateOut(dest, alive, page, true);
     return +out === +dest;
   }
 
-  /* 强制传送逃生（泉水/死胡同）：按开关选「城市∪锚点里离目的地最近」的，都没开就传免费图 5 */
+  /* 逃生目标：按开关选「城市∪锚点里离目的地跳数最小」的（平手优先城市）；都没开 → 免费图 5。 */
+  function escapeTarget(dest, allowCity, allowWild) {
+    if (!allowCity && !allowWild) return FREE_FALLBACK_MAP;
+    const cands = [];
+    if (allowCity) { try { MapDB.cities().forEach(function (c) { if (c && +c.id > 0) cands.push({ id: +c.id, city: 1 }); }); } catch (e) { /* ignore */ } }
+    if (allowWild) { try { WAYGATE_WILD.forEach(function (w) { if (w && +w.id > 0) cands.push({ id: +w.id, city: 0 }); }); } catch (e) { /* ignore */ } }
+    let best = 0, bl = Infinity, bc = -1;
+    cands.forEach(function (c) {
+      const d = navDist(c.id, dest);                      /* 到「目的地」的跳数 */
+      if (best === 0 || d < bl || (d === bl && c.city > bc)) { bl = d; best = c.id; bc = c.city; }
+    });
+    return best;
+  }
+
+  /* 强制传送逃生（泉水/死胡同） */
   async function navEscapeStuck(dest, alive, allowCity, allowWild) {
     const cur = +character.current_map;
     if (!(cur > 0)) return false;
-    let target = 0;
-    if (!allowCity && !allowWild) {
-      target = FREE_FALLBACK_MAP;
-    } else {
-      const cands = [];
-      if (allowCity) { try { MapDB.cities().forEach(function (c) { if (c && +c.id > 0) cands.push({ id: +c.id, city: 1 }); }); } catch (e) { /* ignore */ } }
-      if (allowWild) { try { WAYGATE_WILD.forEach(function (w) { if (w && +w.id > 0) cands.push({ id: +w.id, city: 0 }); }); } catch (e) { /* ignore */ } }
-      let best = 0, bl = Infinity, bc = 1;
-      cands.forEach(function (c) {
-        const d = navDist(c.id, dest);                    /* 到「目的地」的跳数 */
-        if (d < bl || (d === bl && c.city > bc)) { bl = d; best = c.id; bc = c.city; }
-      });
-      target = best;
-    }
+    const target = escapeTarget(dest, allowCity, allowWild);
     if (!(target > 0) || target === cur) return false;
     const page = isTownMap(target) ? 'cities' : 'wilderness';
     logEvent('无通路：从传送站逃生 → 「' + navMapName(target) + '」');
-    let out = await navWaygateOut(target, alive, page);
+    let out = await navWaygateOut(target, alive, page, true);
     if (!out) out = await navWalkToAnyExit(alive);        /* 本图没有传送站 → 走任意出口 */
     return !!out;
   }
@@ -9756,43 +9764,68 @@
       return /waygate/i.test(e.getAttribute('action') || '') || /waygate/i.test(e.getAttribute('name') || '');
     }) || null;
   }
-  async function navWaygateOut(destId, alive, tab) {
+  async function navWaygateOut(destId, alive, tab, strict) {
     const wg = findWaygateTile();
     if (!wg) return 0;
     if (alive && !alive()) return 0;
     const p = (wg.getAttribute('coords') || '').split('-');
     const gx = +p[0], gy = +p[1];
     if (!(gx > 0 && gy > 0)) return 0;
+    /* ★ v2.6.104：走到传送站格 —— 用 retrigger 让「走开一格再走回」重触发格子动作
+       （游戏只在「走进这一格」时才 execTileAction；已经站在格上不会触发）。
+       成功条件 = 面板内容到位（#tab_cities 出现）。 */
+    await navWalkTile(gx, gy, {
+      retrigger: true,
+      cond: function () { return !!document.getElementById('tab_cities'); },
+      timeoutMs: 70000,
+      alive: alive
+    });
+    if (alive && !alive()) return 0;
+    /* ★ v2.6.63：走到 ≠ 真的到（网络抖动 / 服务器位置不同步）→ 没站上格子就别硬点，记原因退出 */
     if (!(character.x === gx && character.y === gy)) {
-      await navWalkTile(gx, gy, { timeoutMs: 70000, alive: alive });
-      if (alive && !alive()) return 0;
-      /* ★ v2.6.63：走到 ≠ 真的到（网络抖动 / 服务器位置不同步）→ 没站上格子就别硬点，记原因退出 */
-      if (!(character.x === gx && character.y === gy)) {
-        logEvent('传送站：走不到传送站格 ' + gx + '-' + gy + '（当前 ' + character.x + '-' + character.y + '），本次放弃');
-        return 0;
-      }
+      logEvent('传送站：走不到传送站格 ' + gx + '-' + gy + '（当前 ' + character.x + '-' + character.y + '），本次放弃');
+      return 0;
     }
-    /* 打开传送站界面（可能已经开着） */
-    let frame = document.getElementById('frame_Waygate');
-    if (!frame) {
+    /* 打开传送站界面（可能已经开着）。
+       ★ v2.6.104：面板内容是 ajax 后填进来的 —— 必须等 #tab_cities 出现（只等 #frame_Waygate 会拿到空壳）；
+       内容没来（网络抖动 / 限流）就关掉重开，最多 3 轮。 */
+    /* 兜底：面板还没出来就直接调一次 execTileAction */
+    if (!document.getElementById('tab_cities')) {
       humanDefer(function () { try { window.execTileAction('waygate'); } catch (e) { /* ignore */ } });
-      for (let i = 0; i < 30 && !frame; i++) { await sleep(300); frame = document.getElementById('frame_Waygate'); }
+      for (let i = 0; i < 20; i++) { if (alive && !alive()) return 0; await sleep(300); if (document.getElementById('tab_cities')) break; }
     }
-    if (!frame) return 0;
-    await sleep(700);
+    const frame = document.getElementById('frame_Waygate');
+    if (!frame || !document.getElementById('tab_cities')) { logEvent('传送站：面板内容没加载出来，放弃'); return 0; }
+    await sleep(300);
     if (alive && !alive()) return 0;
 
-    /* ★ 指定页签：'cities' 只看城市；'wilderness' 只看野外锚点（不指定 = 先城市、空则野外） */
-    if (tab && document.getElementById('tab_' + tab)) {
-      try { if (typeof window.switchTab === 'function') window.switchTab(tab, 'Waygate'); else document.getElementById('main_btn_' + tab).click(); } catch (e) { /* ignore */ }
-      await sleep(900);
+    /* ★ 指定页签：'cities' 只看城市；'wilderness' 只看野外锚点。
+       切不过去就**直接放弃**（回上层走陆路），绝不拿错页签的名单乱传。 */
+    const tabShown = function (t) {
+      const el = document.getElementById('tab_' + t);
+      if (!el) return false;
+      if (el.classList && el.classList.contains('no_display')) return false;
+      try { if (getComputedStyle(el).display === 'none') return false; } catch (e) { /* ignore */ }
+      return true;
+    };
+    if (tab && !tabShown(tab)) {
+      try { if (typeof window.switchTab === 'function') window.switchTab(tab, 'Waygate'); } catch (e) { /* ignore */ }
+      await sleep(600);
+      if (!tabShown(tab)) { try { const b = document.getElementById('main_btn_' + tab); if (b) b.click(); } catch (e) { /* ignore */ } await sleep(600); }
+      if (!tabShown(tab)) {
+        logEvent('传送站：切不到「' + tab + '」页签 → 放弃，改走陆路');
+        try { closeFrameById('frame_Waygate'); } catch (e) { /* ignore */ }
+        return 0;
+      }
       if (alive && !alive()) return 0;
     }
 
-    /* 收集所有「可前往」的按钮：onclick 里带 waygate?id=N */
+    /* 收集所有「可前往」的按钮：onclick 里带 waygate?id=N。
+       ★ v2.6.104：只扫「当前显示的那个页签」的名单 —— 两个 tab 的 DOM 同时存在，不限定会串页。 */
     const collect = function () {
+      const scope = (tab && document.getElementById('tab_' + tab)) || document.getElementById('tab_cities') || frame;
       const out = [];
-      Array.prototype.slice.call(frame.querySelectorAll('input[type=button], a, button')).forEach(function (b) {
+      Array.prototype.slice.call(scope.querySelectorAll('input[type=button], a, button')).forEach(function (b) {
         const m = /waygate\?id=(\d+)/.exec(b.getAttribute('onclick') || '');
         if (!m) return;
         const id = +m[1];
@@ -9802,6 +9835,12 @@
       return out;
     };
     let cands = collect();
+    /* ★ v2.6.104：strict = 只接受目标本身（否则回上层走陆路），绝不拿别的目的地乱传。 */
+    if (strict && cands.indexOf(+destId) < 0) {
+      logEvent('传送站：' + (tab || '?') + ' 页里没有「' + navMapName(destId) + '」（没解锁 / 精华不够）→ 放弃，改走陆路');
+      try { closeFrameById('frame_Waygate'); } catch (e) { /* ignore */ }
+      return 0;
+    }
     /* 城市页没东西 → 切到「野外」页再扫一次（仅在未指定页签时） */
     if (!cands.length && !tab && document.getElementById('tab_wilderness')) {
       try { if (typeof window.switchTab === 'function') window.switchTab('wilderness', 'Waygate'); else document.getElementById('main_btn_wilderness').click(); } catch (e) { /* ignore */ }
@@ -11129,7 +11168,7 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
     applyBagDiff: applyBagDiff, parseInvItems: parseInvItems, initBagSnap: initBagSnap,
     pause: pause, resume: resume, toggleRun: toggleRun, runElapsedMs: runElapsedMs, pollBagGain: pollBagGain,
     startRoundTrip: function () { const seq = ++navAutoSeq; st.mapSwitch.active = true; return navRoundTrip(seq); },
-    returnToFarm: returnToFarm, navToMap: navToMap, navGoTo: navToMap, navWalkTile: navWalkTile, navDist: navDist, rideSmugglers: rideSmugglers, navWaygateOut: navWaygateOut, navWorldTeleport: navWorldTeleport, worldTeleportTarget: worldTeleportTarget, findMapDetailsTeleport: findMapDetailsTeleport, navWalkToAnyExit: navWalkToAnyExit, townName: townName,
+    returnToFarm: returnToFarm, navToMap: navToMap, navGoTo: navToMap, navWalkTile: navWalkTile, navDist: navDist, escapeTarget: escapeTarget, rideSmugglers: rideSmugglers, navWaygateOut: navWaygateOut, navWorldTeleport: navWorldTeleport, worldTeleportTarget: worldTeleportTarget, findMapDetailsTeleport: findMapDetailsTeleport, navWalkToAnyExit: navWalkToAnyExit, townName: townName,
     navImportRecorder: navImportRecorder,
     mapDB: MapDB,
     nav: { graph: MapDB, route: navRoute, travelTo: navTravelTo, hop: navHop, learn: navLearn,

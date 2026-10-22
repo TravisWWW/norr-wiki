@@ -1,8 +1,8 @@
 {
-  "version": "2.6.104",
+  "version": "2.6.105",
   "date": "2026-10-22",
-  "notes": "v2.6.104 寻路重构：只剩 2 个模块 —— navToMap()（地图到地图）+ navWalkTile()（地图内点到点）；边带类型（副本边不再进路线）；走私路线边；删掉旧引擎 gotoMap/findGateTo/navGoTo/walkAndWait/navWalkToTile 与世界地图传送冷却",
+  "notes": "v2.6.105 寻路重构实机验收 + 3 修复：走私路线边不再被误删；传送站面板加载竞态/页签串页/strict 只传目标；EDGE_MISS 3→20 防真门误删",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 734232,
-  "sha256": "9681fef630c5890eea832aee3791f23d93a1c575032987dc6f79ee5368b3e74f"
+  "size": 737219,
+  "sha256": "9b1dcdceb59972952d12d821789df6795d93f0352cb9bdba36620c9f29b906f7"
 }
