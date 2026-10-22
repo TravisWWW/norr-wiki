@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.109
+// @version      2.6.110
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -184,7 +184,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.109';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
+  const SCRIPT_VER = '2.6.110';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -266,6 +266,8 @@
     settling: 0,                                   // ★ 兜底[落位] 正在「走开一格再走回」强制同步服务端位置（此期间主循环让路）
     pos: { at: 0, x: 0, y: 0, hits: 0 },           // ★ 兜底[落位] 上一次「走路被打断」的时间/位置（= 可能失同步）
     mapload: { at: 0, hits: 0 },                   // ★ 兜底[切图卡住] 加载页开始停留的时间 / 连续重试次数
+    render: { map: 0, at: 0, hits: 0 },            // ★ 兜底[换图没重画] 上次检查的图 / 开始停留时间 / 连续重画次数
+    entity: { at: 0 },                             // ★ 兜底[怪物列表过期] 上次强制拉取实体列表的时间
     userActAt: 0, userFrames: {},                  // ★ 真人操作时间 / 真人手动打开的窗口（自动关弹窗 + 游戏 closeFrames 都要跳过）
     log: [], logOpen: false,                       // 操作日志（环形缓冲）
     perf: { samples: [], lastAt: 0, lastExp: 0, total: 0 },   // 收益统计
@@ -309,6 +311,8 @@
    *
    *  [位置同步] syncServerPos()        · 状态 _posSyncAt              · 判据「没有正在走的队列」            · 动作「重发空 walk queue（零移动）」 · 节流 800ms（便宜但通常不够）
    *  [落位]     settleServerPos()      · 状态 st.pos / st.settling    · 判据「走位被打断过 或 调用方 force」· 动作「走开一格再走回（重发寻路）」 · 单次上限 walkTileCore 超时
+   *  [换图没重画] checkMapRender()   · 状态 st.render               · 判据「换图后 8s window.map.id 仍 != current_map」· 动作「调游戏 loadTravel() 只重画画面」 · 4 次 → 整页刷新
+   *  [怪物列表过期] checkEntityFresh()· 状态 st.entity.at            · 判据「距上次强制拉取 >20s」          · 动作「调游戏 fetchTravelData() 重拉实体」 · 不停止（节流 20s）
    *  [切图卡住] checkMapLoad()         · 状态 st.mapload              · 判据「#transition_container 停留 >12s」 · 动作「点游戏 [RETRY] / 预热底图」  · 3 次 → 整页刷新
    *  [活动]     eventTick 步骤④        · 状态 st.event.busy/busyAt    · 判据「检查卡住 >20s 或 fetch 超时 8s」 · 动作「AbortController 中断 + 强制释放 busy 重查」 · 不停止（节流 30s）
    *  [走位重试] checkMove !started    · 状态 st.move.retryAt/retries · 判据「900ms 还没发起」               · 动作「abortWalk + 重发 walkTo」     · 上限 8 次 → 拉黑该格 30s
@@ -864,6 +868,92 @@
     setStatus('切图卡住：正在重试加载地图底图…（第 ' + M.hits + ' 次）');
     return true;
   }
+  /* ── 兜底[换图没重画] ───────────────────────────────────────────
+   * 症状：服务端已经把角色移到新图（character.current_map 变了、角色贴图也挪过去了），
+   *       但客户端**没有重画地图** → 画面还停在上一张图（旧的门 / 旧的怪 / 旧的地形）。
+   * 根因（读 1.0 客户端 travel.min.js，2026-10-23 复核）：
+   *   客户端只在「travel_data 推送里 current_map 变了 **且** character.current_action === 'Traveling'」
+   *   时才调 loadTravel() 重画地图；条件不满足（战斗中 / 搜刮中 / 其它动作态）就**静默跳过**，
+   *   而 current_map 已经被推送改掉了 → 之后再也对不上 → 永远停在旧图。
+   * 判据：换图后 RENDER_STUCK_MS 内 window.map.id（「渲染自己的 id」）仍 != character.current_map。
+   * 动作：先调游戏自己的 loadTravel()（= 手动换图那条链路：重拉 /includes/do/travel.php、
+   *       重画地图、重新对准镜头）—— **只刷新画面，不刷新网页**；
+   *       连续 RENDER_MAX 次仍没对上 → 退回整页刷新（老办法，最稳，刷新后自动续挂）。
+   * 上限：RENDER_MAX 次 → 刷新页面。
+   * 高级参数：不受影响。
+   * ───────────────────────────────────────────────────────────── */
+  const RENDER_STUCK_MS = 8000;
+  const RENDER_MAX = 4;
+  /* 只刷新画面（不刷新网页）：调游戏自己的 loadTravel() —— 等价于手动换一次图 */
+  function softReloadMap() {
+    try {
+      if (typeof window.loadTravel === 'function') { window.loadTravel(); return true; }
+    } catch (e) { /* ignore */ }
+    return false;
+  }
+  /* 只刷新实体列表（最轻）：调游戏自己的 fetchTravelData() —— 重拉 /includes/ajax_travel.php，
+     把「玩家 / 怪物 / 采集点」按服务端最新状态重画（已经死掉的怪会被移除）。 */
+  function softRefreshEntities() {
+    try {
+      if (typeof window.fetchTravelData === 'function') { window.fetchTravelData(); return true; }
+    } catch (e) { /* ignore */ }
+    return false;
+  }
+  function checkMapRender() {
+    const R = st.render;
+    if (!inGame()) { R.map = 0; R.at = 0; R.hits = 0; return false; }
+    const cm = +character.current_map || 0;
+    const rid = renderMapId();
+    /* 读不到「渲染 id」就不猜（登录页 / 加载中 / 游戏改版）—— 交给 checkMapLoad 兜底 */
+    if (!(cm > 0) || !(rid > 0)) { R.map = 0; R.at = 0; R.hits = 0; return false; }
+    if (cm === rid) { R.map = 0; R.at = 0; R.hits = 0; return false; }            /* 渲染已跟上 → 正常 */
+    if (R.map !== cm) { R.map = cm; R.at = now(); R.hits = 0; return false; }     /* 刚换图 → 先给客户端时间 */
+    if (mapLoadStuck()) { R.at = now(); return false; }                           /* 加载页还在转 → 交给 checkMapLoad */
+    if (now() - R.at < RENDER_STUCK_MS) return false;
+    R.at = now(); R.hits++;
+    if (R.hits > RENDER_MAX) {
+      /* ★ 防刷新循环：3 分钟内最多因「换图没重画」刷新一次 ——
+         万一某张图的 window.map.id 和 current_map 天生对不上，也不会变成刷新死循环。 */
+      let _last = 0;
+      try { _last = +(sessionStorage.getItem('norroth_render_reload_at') || 0); } catch (e) { /* ignore */ }
+      if (_last && now() - _last < 180000) {
+        R.hits = 0; R.at = now();
+        logEvent('换图没重画：3 分钟内已刷新过一次 → 本次不再刷新（避免刷新循环）');
+        setStatus('换图没重画：重试 ' + RENDER_MAX + ' 次仍没对上（3 分钟内不再刷新）');
+        return true;
+      }
+      try { sessionStorage.setItem('norroth_render_reload_at', String(now())); } catch (e) { /* ignore */ }
+      logEvent('换图没重画：loadTravel 连续 ' + RENDER_MAX + ' 次无效 → 刷新页面');
+      setStatus('换图没重画，正在刷新页面…');
+      saveCfgNow();
+      setTimeout(function () { try { location.reload(); } catch (e) { /* ignore */ } }, 300);
+      return true;
+    }
+    logEvent('换图没重画（服务端在 ' + cm + '，客户端还画着 ' + rid + '）→ 调游戏 loadTravel() 重画（第 ' + R.hits + ' 次）');
+    setStatus('换图没重画：正在重画地图…（第 ' + R.hits + ' 次）');
+    if (!softReloadMap()) R.hits = RENDER_MAX + 1;   /* 游戏没有 loadTravel → 下次直接走刷新分支 */
+    return true;
+  }
+  /* ── 兜底[怪物列表过期] ─────────────────────────────────────────
+   * 症状：同一张图很多人一起打怪时，画面上还挂着**已经被别人杀掉**的怪 →
+   *       走过去 / 点它 → 服务端回 "Enemy Not Found"（这次是真的没怪，不是位置不同步）。
+   * 根因：1.0 客户端优先走 WebSocket 推送（ensureTravelWebSocketBound() 成功就不再轮询），
+   *       推送丢包 / 断线时实体列表就停在旧状态；怪的死活只有服务端知道。
+   * 动作：每 ENTITY_REFRESH_MS 强制调一次游戏自己的 fetchTravelData()（REST 直拉，不依赖 WS），
+   *       让游戏按服务端最新状态重画实体（死掉的怪会被移除）。
+   * 上限：不停止（节流 ENTITY_REFRESH_MS）。
+   * 高级参数：不受影响。
+   * ───────────────────────────────────────────────────────────── */
+  const ENTITY_REFRESH_MS = 20000;
+  function checkEntityFresh() {
+    const E = st.entity;
+    if (!running || st.paused || !inGame()) return false;
+    if (mapLoadStuck() || navBusy || (st.mapSwitch && st.mapSwitch.active)) return false;
+    if (now() - E.at < ENTITY_REFRESH_MS) return false;
+    E.at = now();
+    softRefreshEntities();
+    return true;
+  }
   /* 状态栏去重：主循环 400ms 一次，重复写 DOM 会白白触发重排 */
   function setStatus(msg) {
     if (st.statusText === msg) return;
@@ -1358,7 +1448,10 @@
     resources.forEach(r => { const d = manhattan(cx, cy, r.x, r.y); if (d < rD) { rD = d; rBest = r; } });
 
     // 脚下的怪没触发战斗 → 先原地重触发一次（可能是服务端位置没跟上），再不行才拉黑
-    if (eBest && eD === 0) { blacklistTile(eBest.key, 15000); return { skip: true }; }
+    /* ★ v2.6.110：脚下的怪「点了没反应」多半不是位置问题，而是这只怪**已经被别人杀了**
+       （人多抢怪时客户端列表还没更新，画面上还挂着）→ 立刻强制拉一次实体列表把它清掉，
+       否则会一直对着一个不存在的怪原地重试（Enemy Not Found）。 */
+    if (eBest && eD === 0) { softRefreshEntities(); blacklistTile(eBest.key, 15000); return { skip: true }; }
 
     // 资源点只在「不比自己优先级最高的怪更远」时才插队，避免打断精英怪节奏
     if (rBest && (!eBest || rD <= eD)) {
@@ -7029,6 +7122,10 @@
 
     // ★ 兜底[切图卡住]：加载页卡住时接管本 tick（别在加载页上走位/交互）
     if (checkMapLoad()) return;
+    // ★ 兜底[换图没重画]：服务端换图了但客户端没重画 → 调游戏 loadTravel() 重画（不刷新网页）
+    if (checkMapRender()) return;
+    // ★ 兜底[怪物列表过期]：定期强制拉一次实体列表（人多抢怪时，画面上的怪可能已经被别人杀了）
+    checkEntityFresh();
     // ★ 卡死强恢复进行中：主循环短暂让路，避免和「点格」抢发 walkTo
     if (st.nudging && now() - st.nudging < 2600) { setStatus('卡住自愈：正在试探走位…'); return; }
     // ★ 兜底[落位]进行中：主循环让路，避免和 settleAtSpot 抢发 walkTo
