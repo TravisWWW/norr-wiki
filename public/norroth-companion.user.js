@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.108
+// @version      2.6.109
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -184,7 +184,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.108';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
+  const SCRIPT_VER = '2.6.109';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -4823,17 +4823,24 @@
     return p[p.length - 1].toLowerCase();
   }
   /* ★ v2.6.101：活动「战斗型」—— 大厅（1183）里有按等级分的战斗区入口，进「当前等级」对应的那个。
-     等级区间来自官方 Wiki / map_db：1184=1-9 / 1185=10-19 / 1186=20-29 / 1187=30-39 / 1188=40-49 / 1189=50-59。 */
-  const EVENT_COMBAT_MAPS = { '1184': [1, 9], '1185': [10, 19], '1186': [20, 29], '1187': [30, 39], '1188': [40, 49], '1189': [50, 59] };
+     ★★ v2.6.109 用户更正：**1184 不是战斗区，而是「出活动区域的门」；活动没有 Lv1-9 的区域**。
+     所以战斗区只有 5 个：1185=10-19 / 1186=20-29 / 1187=30-39 / 1188=40-49 / 1189=50-60。
+     （Lv1-9 的角色没有可进的战斗区 —— eventCombatTargetId() 返回 0，脚本会明确报出来。） */
+  const EVENT_COMBAT_MAPS = { '1185': [10, 19], '1186': [20, 29], '1187': [30, 39], '1188': [40, 49], '1189': [50, 60] };
+  /* ★ v2.6.109：大厅里「通向 1184（出活动区域的门）」的等级门 —— **绝对不能踩**（踩了就离开活动）。
+     实测 2026-10-23：门 @14-41 → env_1184.jpg。 */
+  const EVENT_LOBBY_EXIT_MAPS = { '1184': 1 };
+  const EVENT_LOBBY_EXIT_GATES = { '14-41': 1184 };
   /* ★ v2.6.108：活动大厅（1183）的「等级门」—— 格子 action='level_gate'，name 只有 'Level Gate'，
      **等级不在格子上**，要踩上去看弹出的 #frame_LevelGate：
        <h1>The Sacred Wilds (Level 10-19)</h1> + <img src="/images/maps/ambient/env_1185.jpg">
      → env_<目标图id>.jpg 就是这道门通向哪张图。踩对等级的门会**直接进图**（不弹窗）；
         踩错才弹这个窗（"A strong force is holding you back"）。
      实测 2026-10-23（Doubledawn 活动 / 角色 Lv10，大厅 1183）：
-       17-13→1186(20-29) · 38-13→1187(30-39) · 52-12→1188(40-49) · 54-26→1189(50-60) · 11-25→1185(10-19) · 14-41 未测(应为 1184)。
+       17-13→1186(20-29) · 38-13→1187(30-39) · 52-12→1188(40-49) · 54-26→1189(50-60) · 11-25→1185(10-19)；
+       14-41→1184 = **出活动区域的门**（不是战斗区，见 EVENT_LOBBY_EXIT_GATES，绝不踩）。
      用法：① 优先用「本次活动实测学到」的门→图映射；② 否则用下面这张内置表；③ 都对不上就逐个试（踩错就关窗换下一道）。 */
-  const EVENT_LOBBY_GATE_MAP = { '17-13': 1186, '38-13': 1187, '52-12': 1188, '54-26': 1189, '11-25': 1185, '14-41': 1184 };
+  const EVENT_LOBBY_GATE_MAP = { '17-13': 1186, '38-13': 1187, '52-12': 1188, '54-26': 1189, '11-25': 1185 };
   function eventCombatTargetId() {
     const lv = +((typeof character === 'object' && character && character.level) || 0);
     if (!(lv > 0)) return 0;
@@ -4887,19 +4894,24 @@
     const E = st.event;
     const learned = E.gateMap || {};
     const tried = E.gateTried || {};
+    /* ★ v2.6.109：通向 1184（出活动区域的门）的等级门一律不碰 —— 踩了就离开活动。 */
+    const isExitGate = function (key) {
+      if (EVENT_LOBBY_EXIT_GATES[key]) return true;
+      return !!EVENT_LOBBY_EXIT_MAPS[String(learned[key] || 0)];
+    };
     /* ★ v2.6.108：旧逻辑「按格子名字里的等级区间匹配」是错的 —— 大厅里唯一带 "(Lv.10)" 的格子是
        **回城出口** 'Elundi (Lv.10)'，会被误当成战斗区入口（实测踩过）。现在只认 level_gate 格子 +
        实测/内置的「门→目标图」映射。 */
     const idOf = function (key) { return (learned[key] !== undefined) ? learned[key] : EVENT_LOBBY_GATE_MAP[key]; };
     /* ② 已知通向目标图、且没被实测否掉的门 → 取最近的一道 */
-    const good = gates.filter(function (g) { return idOf(g.key) === want && learned[g.key] !== -1; });
+    const good = gates.filter(function (g) { return !isExitGate(g.key) && idOf(g.key) === want; });
     if (good.length) {
       const cx = character.x, cy = character.y;
       good.sort(function (a, b) { return manhattan(cx, cy, a.x, a.y) - manhattan(cx, cy, b.x, b.y); });
       return mk(good[0]);
     }
     /* ③ 映射对不上 → 逐个试「还没试过的门」（踩错会弹 #frame_LevelGate，eventTick 读到目标图后记进 E.gateMap） */
-    const fresh = gates.filter(function (g) { return !tried[g.key] && (learned[g.key] === undefined || learned[g.key] === want); });
+    const fresh = gates.filter(function (g) { return !isExitGate(g.key) && !tried[g.key] && (learned[g.key] === undefined || learned[g.key] === want); });
     if (!fresh.length) return null;
     const cx = character.x, cy = character.y;
     fresh.sort(function (a, b) { return manhattan(cx, cy, a.x, a.y) - manhattan(cx, cy, b.x, b.y); });
@@ -5036,7 +5048,9 @@
           const key = character.x + '-' + character.y;
           E.gateTried = E.gateTried || {}; E.gateTried[key] = 1;
           if (m) { E.gateMap = E.gateMap || {}; E.gateMap[key] = +m[1]; }
-          logEvent('活动：等级门 ' + key + ' 通向「' + (m ? navMapName(+m[1]) + '（' + m[1] + '）' : '?') + '」—— 等级不符 → 换下一道门');
+          const _isExit = !!(m && EVENT_LOBBY_EXIT_MAPS[String(+m[1])]);
+          logEvent('活动：等级门 ' + key + ' 通向「' + (m ? navMapName(+m[1]) + '（' + m[1] + '）' : '?') + '」'
+            + (_isExit ? '—— 这是「出活动区域的门」，不再踩它' : '—— 等级不符 → 换下一道门'));
           try { closeFrameById('frame_LevelGate'); } catch (e) { /* ignore */ }
           E.gateBusy = false;
           return true;
@@ -5045,6 +5059,12 @@
         if (E.gateBusy) return true;
         const gate = eventCombatGate();
         if (!gate) {
+          /* ★ v2.6.109：先分清「本等级根本没有战斗区」（Lv1-9）和「有区域但没找到门」 */
+          if (!eventCombatTargetId()) {
+            if (now() - (E.gateLogAt || 0) > 60000) { E.gateLogAt = now(); logEvent('活动：角色 Lv' + (character.level || '?') + ' 没有对应的战斗区（活动只有 Lv10-19 / 20-29 / 30-39 / 40-49 / 50-60 五个区域）→ 本次不进战斗区'); }
+            setStatus('活动：本等级没有对应的战斗区（Lv' + (character.level || '?') + '）');
+            return true;
+          }
           if (now() - (E.gateLogAt || 0) > 20000) {
             E.gateLogAt = now();
             logEvent('活动：大厅里没找到等级 ' + (character.level || '?') + ' 的战斗区入口 → tile_poi：' + eventDumpTiles() + ' ｜ door_tiles：' + (function(){ try { const d=window.door_tiles||{}; return Object.keys(d).map(function(k){return k+'='+d[k];}).join(',')||'(空)'; } catch(e){ return '(读不到)'; } })());
