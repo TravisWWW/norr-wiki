@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.113
+// @version      2.6.114
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -184,7 +184,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.113';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
+  const SCRIPT_VER = '2.6.114';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -313,6 +313,7 @@
    *  [落位]     settleServerPos()      · 状态 st.pos / st.settling    · 判据「走位被打断过 或 调用方 force」· 动作「走开一格再走回（重发寻路）」 · 单次上限 walkTileCore 超时
    *  [换图没重画] scheduleRenderCheck()· 状态 st.render             · 判据「换图后 2.2s .map_table 底图 id != current_map」· 动作「调游戏 loadTravel() 只重画画面 + 对准镜头」 · 看门狗 8s/4 次 → 整页刷新
    *  [怪物列表过期] checkEntityFresh()· 状态 st.entity.at            · 判据「距上次强制拉取 >20s」          · 动作「调游戏 fetchTravelData() 重拉实体」 · 不停止（节流 20s）
+   *  [抢怪·出发前确认] startMove 入口  · 状态 st.entity.at            · 判据「去打 >3 格外的怪 且 距上次刷新 >6s」· 动作「先 fetchTravelData() 重拉实体，本 tick 不动」 · 不停止（节流 6s）
    *  [切图卡住] checkMapLoad()         · 状态 st.mapload              · 判据「#transition_container 停留 >12s」 · 动作「点游戏 [RETRY] / 预热底图」  · 3 次 → 整页刷新
    *  [活动]     eventTick 步骤④        · 状态 st.event.busy/busyAt    · 判据「检查卡住 >20s 或 fetch 超时 8s」 · 动作「AbortController 中断 + 强制释放 busy 重查」 · 不停止（节流 30s）
    *  [走位重试] checkMove !started    · 状态 st.move.retryAt/retries · 判据「900ms 还没发起」               · 动作「abortWalk + 重发 walkTo」     · 上限 8 次 → 拉黑该格 30s
@@ -1001,6 +1002,9 @@
    * 高级参数：不受影响。
    * ───────────────────────────────────────────────────────────── */
   const ENTITY_REFRESH_MS = 20000;
+  /* ★ v2.6.114：出发打怪前「先确认一次」的节流（抢怪场景：画面上还挂着别人已打死的怪） */
+  const ENTITY_PRE_ATTACK_MS = 6000;
+  const ENTITY_PRE_ATTACK_DIST = 3;
   function checkEntityFresh() {
     const E = st.entity;
     if (!running || st.paused || !inGame()) return false;
@@ -1593,6 +1597,21 @@
 
   function startMove(x, y, kind, label) {
     if (!canAct()) return false;
+    /* ── 兜底[抢怪·出发前确认] ───────────────────────────────────
+     * 症状：同一张图很多人一起打怪时，画面上还挂着**已经被别人杀掉**的怪 →
+     *       走过去 / 点它 → 服务端回 "Enemy Not Found"（这次是真的没怪，不是位置不同步）。
+     * 判据：目标是怪 + 距离 > ENTITY_PRE_ATTACK_DIST 格 + 距上次强制刷新 > ENTITY_PRE_ATTACK_MS。
+     * 动作：先强制拉一次实体列表（把已死的怪清掉），**本 tick 先不动** → 下一 tick 用新列表重新选目标。
+     * 代价：一次轻量请求 + 约 0.5s；收益：不会白走 10~30 秒到一只不存在的怪那里。
+     * 上限：节流 ENTITY_PRE_ATTACK_MS（不停止）。
+     * 高级参数：不受影响。
+     * ─────────────────────────────────────────────────────────── */
+    if (kind === 'enemy' && manhattan(character.x, character.y, x, y) > ENTITY_PRE_ATTACK_DIST
+        && now() - (st.entity.at || 0) > ENTITY_PRE_ATTACK_MS) {
+      st.entity.at = now();
+      softRefreshEntities();
+      return false;   /* 本 tick 不动；下一 tick 用刷新后的列表重新选目标 */
+    }
     if (kind === 'gather' || kind === 'res') {
       st.gatherKind = String(label || '').replace(/^(采集点|资源)·/, '') || (kind === 'gather' ? '采集点' : '资源');
     }

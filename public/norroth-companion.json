@@ -1,8 +1,8 @@
 {
-  "version": "2.6.113",
+  "version": "2.6.114",
   "date": "2026-10-23",
-  "notes": "v2.6.113 真机实测修正：renderedMapId() 改读 .map_table 的内联 style（计算样式的 background-image 被游戏网格线 repeating-linear-gradient 覆盖，读不到底图）—— 实测 map 1183 内联 style 才有 map_1183.jpg",
+  "notes": "v2.6.114 抢怪自愈加强：去打 >3 格外的怪且距上次实体刷新 >6s 时，先强制 fetchTravelData() 重拉一次实体列表（把别人已打死的怪清掉）再出发，本 tick 不动 —— 避免白走 10~30 秒到一只不存在的怪那里（Enemy Not Found）",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 765182,
-  "sha256": "6045dcb42735f8a0471c23949ab8d178c58bfd638fe9ac5d28accbff31618099"
+  "size": 766989,
+  "sha256": "731edf6d8199063b8fe114fbccabc18b6ada782fe99add52f4f3a83e78a3a056"
 }
