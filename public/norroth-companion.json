@@ -1,8 +1,8 @@
 {
-  "version": "2.6.105",
-  "date": "2026-10-22",
-  "notes": "v2.6.105 寻路重构实机验收 + 3 修复：走私路线边不再被误删；传送站面板加载竞态/页签串页/strict 只传目标；EDGE_MISS 3→20 防真门误删",
+  "version": "2.6.107",
+  "date": "2026-10-23",
+  "notes": "v2.6.107 修复：导航途中击杀怪物后 frame_Loot 掉落窗死锁（角色原地卡死 20 分钟）→ 导航期间主动全部拾取/超时强关；爬塔每层两个房间必须都清完才下楼（新增 towerRoomDoor 用自环门判定房间门；塔门提示还剩 N 只怪时不点 Enter 先回去清）",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 737219,
-  "sha256": "9b1dcdceb59972952d12d821789df6795d93f0352cb9bdba36620c9f29b906f7"
+  "size": 744935,
+  "sha256": "b840b33843bddcc42097141a1a84122244fd82560c11a6a462c0214cb854bcb7"
 }

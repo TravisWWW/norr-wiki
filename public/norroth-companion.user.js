@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.105
+// @version      2.6.107
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -184,7 +184,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.105';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
+  const SCRIPT_VER = '2.6.107';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -280,6 +280,7 @@
     towerFloor: 0, towerGateSeen: false, towerEntered: 0,       // 爬塔：层数 / 本层已见塔门 / 进入塔的时间
     towerGateAt: 0, towerOff: null, tq: null,                   // 爬塔：塔门重触发时间 / 走开再走回 / 前置任务跟随
     towerNavAt: 0, towerOpenAt: 0, towerQuestLogAt: 0,          // 爬塔：去城镇节流 / 开塔节流 / 任务提示日志节流
+    towerRoomTries: 0, towerDoorAt: 0, towerRemainLogAt: 0,     // ★ v2.6.107：过房间门次数 / 房间门重触发节流 / 「还剩 N 只」日志节流
     idleActAt: 0, idleActBusy: false,                           // 随机浏览面板：下次允许 / 正在浏览
     mapSwitch: { active: false, lastAt: 0, idleSince: 0 },    // 自动切图刷怪
     paused: false,                                            // ★ 已暂停（统计保留，可继续）
@@ -2887,7 +2888,11 @@
   function recordVisit() {
     if (!inGame()) return;
     try {
-      const id = String(character.current_map);
+      /* ★ v2.6.106：id 用「渲染自己的 id」（window.map.id）—— 换图瞬间 character.current_map
+         会先变，而 type / smith 都是读当前 DOM 得到的，用它会把这几个字段写到新图名下。 */
+      const rid = renderMapId();
+      if (rid > 0 && !renderSynced()) return;         /* 渲染还没跟上 → 这一拍不记 */
+      const id = String(rid > 0 ? rid : character.current_map);
       const type = mapTypeById(id) || ((window.map && window.map.type) || '');
       const smith = !!findSmith();
       if (MapDB.markVisited(id, { type: type, smith: smith })) {
@@ -3280,7 +3285,7 @@
      * 高级参数：分段导航（只影响 retrigger:false 的调用点）。
      * ─────────────────────────────────────────────────────────── */
     const t0 = now();
-    let paused = 0, lastTry = 0, lastPos = '', lastMove = now(), bestD = 1e9, bestAt = now(), stuck = 0, blocked = 0;
+    let paused = 0, lastTry = 0, lastPos = '', lastMove = now(), bestD = 1e9, bestAt = now(), stuck = 0, blocked = 0, scavWait = 0;
     /* ★ paused 上限：避免“永远在等”（死循环） —— 真实时间超过 timeoutMs 且 paused 也超过 5 分钟就放弃 */
     while (now() - t0 - paused < timeoutMs && paused < 300000) {
       if (!alive()) { try { abortWalk(); } catch (e) { /* ignore */ } return 'cancel'; }
@@ -3292,7 +3297,21 @@
       if (df) { const b = df.querySelector('button'); if (b) { try { humanClick(b); } catch (e) { /* ignore */ } } paused += 4000; await sleep(4000); continue; }
       /* 战斗中：交给游戏自动战斗，等待期间不计入超时 */
       if (hasFrame('frame_Combat')) { if (opts.combatText) setStatus(opts.combatText); paused += 900; await sleep(900); continue; }
-      if (hasFrame('frame_Scavenge') || hasFrame('frame_Loot')) { await sleep(500); continue; }
+      /* ★ v2.6.107 修复「导航途中击杀怪物后永久卡死」：
+         实测根因 —— 导航中打死怪 → 游戏弹出 #frame_Loot，而导航期间主循环被 navBusy 挡住、
+         没人去关这个窗；原来的写法只是 `await sleep(500); continue;`（不关窗、不超时、paused 不累加）
+         → 整个 walkTileCore 无限空转，角色原地卡死 20 分钟（实测 map 22 / map 41 多次复现）。
+         现在：frame_Loot → 主动 takeAllLoot()（点「全部拾取」，15s 拿不完会自动关窗）；
+              frame_Scavenge → 等游戏自动搜刮，但给 30s 上限，超时强关。 */
+      if (hasFrame('frame_Loot')) {
+        try { takeAllLoot(); } catch (e) { /* ignore */ }
+        paused += 500; await sleep(500); continue;
+      }
+      if (hasFrame('frame_Scavenge')) {
+        scavWait += 500;
+        if (scavWait > 30000) { try { closeFrameById('frame_Scavenge'); } catch (e) { /* ignore */ } scavWait = 0; }
+        paused += 500; await sleep(500); continue;
+      }
       /* 挡路弹窗：关掉（非 force 版，保留玩家自己开的窗口）
          ★ 但同一个弹窗反复出现（例如站在门格上时门弹窗一直重开）会让 paused 永远跟着真实时间增长 →
             整个循环永不超时、角色永远卡住。这里限制连续清弹窗次数，超了就当卡住返回。 */
@@ -4847,6 +4866,8 @@
   function eventCombatGate() {
     const lv = +((typeof character === 'object' && character && character.level) || 0);
     const want = eventCombatTargetId();
+    /* ★ v2.6.106：door_tiles 属于当前渲染才敢用（换图空窗会拿到上一张图的门） */
+    if (!renderSynced()) return null;
     /* ① door_tiles 里直接指向战斗区的门（最可靠） */
     const dt = window.door_tiles || {};
     const keys = Object.keys(dt);
@@ -5654,6 +5675,33 @@
     for (let i = 0; i < dirs.length; i++) { const nx = x + dirs[i][0], ny = y + dirs[i][1]; if (set && set.has(nx + ',' + ny)) return { x: nx, y: ny }; }
     return null;
   }
+  /* ★ v2.6.107：本层「房间之间的门」—— 一层塔被一道门分成两个房间，先清一边、过门、再清另一边。
+     实测/用户确认：第 1 层的门是 entrance（通往上半区，且被任务锁住）；其它层是名字含 Abyssal Tower 的 gate。
+     真正的「下一层入口」是 tower_gate，这里必须排除它。 */
+  function towerRoomDoor() {
+    const cur = +character.current_map;
+    const dt = window.door_tiles || {};
+    const out = [];
+    /* ★ 最可靠的判据：door_tiles 里「目的地 = 本图自己」的门 = 同层两个房间之间的传送门
+       （实测 map 901：`901→901 @26,36`；而塔的出口是 `901→900 @42,41`，不能混）。
+       这样绝不会把「出塔的出口门」当成房间门。 */
+    Object.keys(dt).forEach(function (to) {
+      if (+to !== cur) return;
+      const p = String(dt[to]).replace('ID', '').split('-');
+      const x = +p[0], y = +p[1];
+      if (!(x > 0 && y > 0)) return;
+      const el = document.querySelector('.map_table .tile_poi[coords="' + x + '-' + y + '"]');
+      out.push({ x: x, y: y, action: el ? String(el.getAttribute('action') || '') : '', name: el ? String(el.getAttribute('name') || '') : '' });
+    });
+    /* 兜底：door_tiles 还没读到自环门时，用本层的 entrance 格 */
+    if (!out.length) towerTiles().forEach(function (t) { if (t.action === 'entrance') out.push(t); });
+    if (!out.length) return null;
+    const reach = out.filter(function (t) { return isReachable(t.x, t.y); });
+    const list = reach.length ? reach : out;
+    let best = null, bd = Infinity;
+    list.forEach(function (t) { const d = manhattan(character.x, character.y, t.x, t.y); if (d < bd) { bd = d; best = t; } });
+    return best;
+  }
   function isInTownNow() { try { return inGame() && MapDB.isTown(character.current_map); } catch (e) { return false; } }
   function nearestTowerTown() {
     let best = null, bd = Infinity, wgBest = 0;
@@ -5797,6 +5845,19 @@
        正文 'Clear the floor / Slay the N remaining enemies'），里面有「Enter」按钮（/modal/tower_gate?enter）。 */
     const tg = document.getElementById('frame_TowerGate');
     if (tg) {
+      /* ★ v2.6.107：塔门弹窗正文写着「Clear the floor / Slay the N remaining enemies」。
+         N > 0 = 本层还没清完（另一半房间的怪）→ 盲目点 Enter 没用，会在这里死循环。
+         读不到数字就按老逻辑走（保守）。 */
+      const remainM = /(\d+)\s*remaining/i.exec(tg.textContent || '');
+      const remain = remainM ? +remainM[1] : 0;
+      if (remain > 0) {
+        st.phase = 'wait';
+        setStatus('爬塔：本层还剩 ' + remain + ' 只怪，先清完再下楼');
+        if (now() - (st.towerRemainLogAt || 0) > 20000) { st.towerRemainLogAt = now(); logEvent('爬塔：塔门提示还剩 ' + remain + ' 只怪 → 先回去清完'); }
+        st.towerGateSeen = false;              /* 我们自己关的窗 → 不能算「进层成功」 */
+        try { closeFrameById('frame_TowerGate'); } catch (e) { /* ignore */ }
+        return;
+      }
       st.towerGateSeen = true;
       st.phase = 'wait'; setStatus('爬塔：进入下一层…');
       if (!st.towerEntered || now() - st.towerEntered > 8000) {
@@ -5809,7 +5870,7 @@
     }
     st.towerEntered = 0;
     /* ★ frame_TowerGate 关掉了 = 成功进下一层 → 层数 +1 */
-    if (st.towerGateSeen) { st.towerGateSeen = false; st.towerFloor = (st.towerFloor || 1) + 1; logEvent('爬塔：进入第 ' + st.towerFloor + ' 层'); }
+    if (st.towerGateSeen) { st.towerGateSeen = false; st.towerFloor = (st.towerFloor || 1) + 1; st.towerRoomTries = 0; logEvent('爬塔：进入第 ' + st.towerFloor + ' 层'); }
     const healing = supply();
     if (st.repair.active || st.sell.active) return;
     if (st.mapSwitch.active || navBusy) { setStatus(st.statusText); return; }
@@ -5846,6 +5907,52 @@
       startMove(t.x, t.y, t.kind, t.label);
       return;
     }
+
+    /* 1.5) ★ v2.6.107：本层被一道门分成两个房间 —— 另一侧房间的怪「走不到」（不在可达集合里），
+       pickTarget 会跳过它们 → 脚本误以为本层清完去下楼，结果被塔门拦住。
+       所以只要还有走不到的怪，就先去把「房间门」踩一遍（过门到另一侧），清完才能下楼。
+       用 st.towerRoomTries 限制次数，避免门踩不动时死循环。 */
+    if (unreachableEnemies() > 0 && (st.towerRoomTries || 0) < 6) {
+      const door = towerRoomDoor();
+      if (door) {
+        /* 第 1 层的门是 entrance，可能被前置任务锁住 → 交给 stepTowerQuest */
+        if (door.action === 'entrance') {
+          const ef = document.getElementById('frame_Entrance');
+          if (ef && ef.querySelector('a[onclick*="guidePath"]')) {
+            st.phase = 'quest';
+            if (stepTowerQuest()) return;
+          }
+        }
+        if (character.x === door.x && character.y === door.y) {
+          st.phase = 'wait'; setStatus('爬塔：过房间门 → 另一侧…');
+          if (!st.towerDoorAt) st.towerDoorAt = now();
+          if (now() - st.towerDoorAt > 2500) {
+            st.towerDoorAt = now();
+            let done = false;
+            try {
+              const act = (typeof window.getTileActionAt === 'function') ? window.getTileActionAt(door.x, door.y) : null;
+              if (act && typeof window.execTileAction === 'function') { window.execTileAction(act, false); logEvent('爬塔：触发房间门（' + act + '）'); done = true; }
+            } catch (e) { /* ignore */ }
+            if (!done) {
+              const off = towerAdjacentTile(door.x, door.y);
+              if (off) { st.towerOff = { x: off.x, y: off.y, gx: door.x, gy: door.y }; st.towerDoorAt = 0; logEvent('爬塔：房间门未触发 → 走开再走回'); }
+              else safeWalkTo(door.x, door.y);
+            }
+          }
+          return;
+        }
+        if (isReachable(door.x, door.y)) {
+          if (!st.move) st.towerRoomTries = (st.towerRoomTries || 0) + 1;
+          st.target = null;
+          startMove(door.x, door.y, 'tower', '房间门');
+          return;
+        }
+      }
+      st.phase = 'idle';
+      setStatus('爬塔：还剩 ' + unreachableEnemies() + ' 只怪在另一侧，但找不到过去的门…');
+      return;
+    }
+    st.towerRoomTries = 0;   /* 本层清完 → 重置过门计数（unreachableEnemies()===0 才会走到这里） */
 
     /* 2) 本层清完 → 去下一层入口 */
     const gate = towerNextGate();
@@ -9026,24 +9133,49 @@
      为什么需要守卫：换图那一瞬间 window.map / window.door_tiles 可能还是上一张图的，
      不校验就会把旧图的数据写到新图的 id 上。 */
   let _liveSkipLogAt = 0;
-  let _liveLastId = 0, _liveLastIdAt = 0;
-  /* ★ v2.6.65：同一张图连续「名字不符」的次数 —— 到上限就判定「登记名写错了」，
-     改用实测名继续学习（否则种子名字一旦写错，这张图的学习会被永久卡死）。 */
-  let _liveNameMiss = 0, _liveNameMissId = 0;
-  const LIVE_NAME_MISS_MAX = 5;
+  /* ★ v2.6.106：_liveLastId/_liveLastIdAt/_liveNameMiss/LIVE_NAME_MISS_MAX 已删除 ——
+     id 直接取 window.map.id，不再需要「等 id 稳定」和「按名字兜底」。 */
   /* ★ v2.6.98：出口类格子（含门 / 传送站 / 走私路线 / 秘密通路 / 副本入口 …）。
      这些是静态地图要素，进图就实测，随地图数据一起共享。 */
   const EXIT_TILE_ACTIONS = ['gate', 'waygate', 'entrance', 'event_gate', 'smugglers_route', 'dungeon',
                              'portal', 'teleport', 'secret', 'secret_passage', 'passage', 'stairs', 'tunnel', 'cave', 'exit'];
+  /* ★★ v2.6.106：地图渲染的「身份 id」—— 学地图数据时唯一可靠的 key。
+     实测（2026-10-22，证据 tmp/_render_body.xml + tmp/probe_maptrace2.log）：
+     换图时服务端 /includes/do/travel.php 的响应里有一段脚本**原子地**设置
+       character.current_map = N;  map = {..., "id": N};  window.walkable_tiles = ...;  door_tiles = ...;
+     但 character.current_map 还会被另一条通道（角色状态推送）先改掉 ——
+     100ms 采样 513 次里有 264 次（51%）出现 character.current_map != window.map.id。
+     所以「这份 door_tiles / points / DOM 属于哪张图」的唯一可靠答案 = window.map.id。
+     用 character.current_map 当 key，就会把上一张图的门写到新图名下
+     （实测：Ururg 229 被写进 Trescan 281 的 4 扇门 280/323/324/342 → 回图时被传到 Ururg 原地打转）。 */
+  let _rmIdWarnAt = 0;
+  function renderMapId() {
+    try {
+      const wm = window.map;
+      const id = +((wm && wm.id) || 0);
+      if (id > 0) return id;
+      /* 诊断：window.map 在、但没有 id（游戏改版？）→ 60 秒最多报一次，别静默失去学习能力 */
+      if (wm && now() - _rmIdWarnAt > 60000) {
+        _rmIdWarnAt = now();
+        try { logEvent('地图渲染 id 读不到（window.map 没有 id 字段）→ 这一拍不学地图数据'); } catch (e) { /* ignore */ }
+      }
+      return 0;
+    } catch (e) { return 0; }
+  }
+  /* 渲染是否「已经跟上角色状态」：两边一致 = 这次换图彻底走完（可以放心用 door_tiles） */
+  function renderSynced() {
+    const rid = renderMapId();
+    if (!(rid > 0)) return false;
+    try { return +character.current_map === rid; } catch (e) { return false; }
+  }
   function liveMapSnapshot() {
     if (!inGame()) return null;
-    let id = 0; try { id = +character.current_map; } catch (e) { return null; }
+    /* ★ v2.6.106：key 改成「渲染自己的 id」（window.map.id），不再用 character.current_map。
+       两者是同一段脚本原子赋值的，但 character.current_map 会被另一条通道先改掉 →
+       用它当 key 就会把上一张图的门写到新图名下（假门）。
+       因为 id 与 door_tiles 同源，这里也不再需要「等 id 稳定 3 秒」那道闸。 */
+    const id = renderMapId();
     if (!(id > 0)) return null;
-    /* ★ v2.6.22：换图瞬间 character.current_map 会先变，而 window.map / DOM / door_tiles 还是上一张图的
-       → 会把旧图数据写到新 id 上（实测：map5 一度被写成「Elena's Crossroad」+ 11 的采集点/怪，下一拍才纠正）。
-       要求 map id 稳定 ≥3 秒才学习。 */
-    if (id !== _liveLastId) { _liveLastId = id; _liveLastIdAt = now(); return null; }
-    if (now() - _liveLastIdAt < 3000) return null;
     const pts = window.points || [];
     if (!pts.length || !document.querySelector('.map_table')) return null;   /* 地图还没渲染完 */
     const poiEls = $$q('.map_table .tile_poi[action]');
@@ -9100,34 +9232,14 @@
     });
     const wm = window.map || {};
     const wmName = String(wm.name || '').trim();
-    /* ★ v2.6.62：换图瞬间 character.current_map 会先变，而 window.map / DOM / door_tiles 还是上一张图的。
-       实测：11（Elena's Crossroad）的名字/采集点被写到 5 上；也出现过面板里的挂机地图显示成别的图。
-       原来的守卫只比 door_tiles 坐标 vs DOM —— 两者同为旧图时恰好一致，拦不住。
-       这里再加一道：实测名必须和「种子里的登记名」一致，不一致就整份快照作废。 */
-    const seed = MAPDB_SEED.maps[String(id)];
-    /* ★ v2.6.65：参考名优先用「世界地图字典」（游戏自己的 /modal/world_map，运行时权威），
-       字典还没加载时才退回内置种子的登记名 —— 种子名字写错时不会把整张图的学习永久卡死。 */
+    /* ★ v2.6.106：删掉 v2.6.62/65 那套「等 3 秒 + 名字不符就作废」的守卫。
+       原因：id 现在直接取 window.map.id，名字和 id 同源，不可能再串图；
+       而「Dark Boreal」这种同名图有 12 张（324-327/342-347/349/350），按名字校验反而会误判。
+       名字只用来兜底：实测名优先，读不到才退回登记名。 */
     let refName = '';
     try { if (mapDict && mapDict.byId) refName = String(mapDict.byId[id] || '').trim(); } catch (e) { refName = ''; }
-    if (!refName && seed && seed.name) refName = String(seed.name).trim();
-    let nameOk = true;
-    if (refName && wmName && normName(wmName) !== normName(refName)) {
-      _liveNameMiss = (_liveNameMissId === id) ? (_liveNameMiss + 1) : 1;
-      _liveNameMissId = id;
-      if (_liveNameMiss <= LIVE_NAME_MISS_MAX) {
-        if (now() - _liveSkipLogAt > 60000) {
-          _liveSkipLogAt = now();
-          logEvent('地图实测跳过：window.map 名字「' + wmName + '」与地图 ' + id + ' 的登记名「' + refName + '」不符（换图还没完成，第 ' + _liveNameMiss + ' 次）');
-        }
-        return null;
-      }
-      if (now() - _liveSkipLogAt > 60000) {
-        _liveSkipLogAt = now();
-        logEvent('地图实测：地图 ' + id + ' 连续 ' + _liveNameMiss + ' 次名字不符（登记「' + refName + '」/ 实测「' + wmName + '」）→ 判定登记名有误，改用实测名继续学习');
-      }
-      nameOk = false;
-    } else { _liveNameMiss = 0; _liveNameMissId = 0; }
-    return { id: id, name: nameOk ? (refName || wmName) : wmName, type: String(wm.type || '').trim(), g: g, gt: gt, m: m, mon: mon, edges: edges, exits: exits };
+    if (!refName) { const seed = MAPDB_SEED.maps[String(id)]; if (seed && seed.name) refName = String(seed.name).trim(); }
+    return { id: id, name: wmName || refName, type: String(wm.type || '').trim(), g: g, gt: gt, m: m, mon: mon, edges: edges, exits: exits };
   }
 
   /* ---- 到图即刷新：每到一张图 / 每 2.5 秒，用实测数据更新该 map id 的记录 ---- */
@@ -9269,20 +9381,25 @@
   /* 自动学习：每次换图把当前图的 door_tiles 并进图里 */
   function navLearn() {
     try {
-      const id = character.current_map;
+      /* ★ v2.6.106：key 用「渲染自己的 id」。用 character.current_map 会在换图瞬间
+         把上一张图的门写到新图名下（假门，实测踩过）。 */
+      const id = renderMapId();
+      if (!(id > 0)) return;
       const dt = window.door_tiles || {};
-      if (!id || id < 0) return;
       const store = JSON.parse(localStorage.getItem(NAV_LEARN_KEY) || '{}');
       let ch = false;
       Object.keys(dt).forEach(function (to) {
         const p = String(dt[to]).replace('ID', '').split('-');
         const x = +p[0], y = +p[1];
         if (isNaN(x) || isNaN(y)) return;
+        /* ★ v2.6.106：门坐标必须真的出现在当前地图的 DOM 里才认。
+           读不到格子 = 这份 door_tiles 不属于当前渲染（换图空窗）→ 整条跳过，绝不写。 */
+        const el = document.querySelector('.map_table .tile_poi[coords="' + x + '-' + y + '"]');
+        if (!el) return;
         const k = id + '>' + to;
         if (!store[k]) { store[k] = [x, y]; ch = true; }
         /* ★ v2.6.104：读格子 action 给边打类型（读不到 = 保留原类型，不降级） */
-        const el = document.querySelector('.map_table .tile_poi[coords="' + x + '-' + y + '"]');
-        const act = el ? String(el.getAttribute('action') || '') : '';
+        const act = String(el.getAttribute('action') || '');
         const kind = (act === 'smugglers_route') ? 'smugglers' : (act === 'gate' ? 'gate' : (act ? 'other' : undefined));
         if (MapDB.addEdge(id, +to, x, y, kind)) ch = true;
       });
@@ -10048,6 +10165,9 @@
     const homeName = townName(home);
     const alive = function () { return seq === navAutoSeq && running && cfg.autoMapSwitch; };
     try {
+      /* ★ v2.6.106：door_tiles 必须属于当前渲染（window.map.id == character.current_map）才敢用，
+         否则换图空窗会拿到上一张图的门。 */
+      if (!renderSynced()) return false;
       const dt = window.door_tiles || {};
       const all = Object.keys(dt).map(Number).filter(function (k) { return k !== home; });
       /* ★ 唯一硬条件：门格子的 action 必须是 gate。
@@ -11129,7 +11249,7 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
     event: { tick: eventTick, reset: eventReset, activitiesHasJoin: eventActivitiesHasJoin, enterGate: eventEnterGate, pickPoint: eventPickPoint, typeOf: eventTypeOf, res: function () { return st.event; }, mapId: EVENT_MAP_ID, combatMaps: EVENT_COMBAT_MAPS, combatTargetId: eventCombatTargetId, combatGate: eventCombatGate, combatActive: eventCombatActive, levelRange: eventLevelRange, dumpTiles: eventDumpTiles },
     mc: { serviceTownNow: activeServiceTown, toggle: mcToggle, togglePause: mcTogglePause, syncBtns: syncMcBtns, queue: mcQueue, profLevels: mcProfLevels, profLevelsCached: mcProfLevelsCached, idleInfo: mcIdleInfo, startIdle: mcStartIdle, switch: mcSwitch, readChars: mcReadChars, setOn: mcSetOn, startAll: mcStartAll, stopAll: mcStopAll, validateAll: mcValidateAll, canGather: mcCanGather, render: mcRender, tick: mcTick, fillCurrent: mcFillCurrent, runTrip: mcRunTrip, beginTrip: mcBeginTrip, runRepairAndDeposit: runRepairAndDeposit, nearestGatherTile: nearestGatherTile, idleRaw: function () { return _mcGatherRaw; }, loadRot: mcLoadRot, saveRot: mcSaveRot, rot: function () { return rot; }, due: mcDue, chars: function () { return cfg.mcChars; }, queueCache: function () { return _mcQueueCache; }, claimIdleRewards: claimIdleRewards, closeIdleDialog: closeIdleResultDialog, refreshStatus: mcRefreshStatus, applyQueue: mcApplyQueue },
     start: () => beginRun('battle'), stop: stop, cfg: cfg, st: st, step: step,
-    startTower: () => beginRun('tower'), stepTower: stepTower, isTowerMap: isTowerMap, towerTiles: towerTiles, towerNextGate: towerNextGate, towerGateCandidates: towerGateCandidates, towerAdjacentTile: towerAdjacentTile, openTower: openTower, nearestTowerTown: nearestTowerTown,
+    startTower: () => beginRun('tower'), stepTower: stepTower, isTowerMap: isTowerMap, towerTiles: towerTiles, towerNextGate: towerNextGate, towerGateCandidates: towerGateCandidates, towerAdjacentTile: towerAdjacentTile, towerRoomDoor: towerRoomDoor, openTower: openTower, nearestTowerTown: nearestTowerTown,
     bestiary: { scan: bestiaryScan, ids: bestiaryIds, sync: syncBestiary, token: ghCommunityToken, loadToken: loadCommunityToken, clearLegacyToken: clearLegacyToken, cancel: function(){ _bestCancel = true; } },
     scanEnemies: scanEnemies, attackableEnemies: attackableEnemies, pickTarget: pickTarget,
     rankWeight: rankWeight, nameWeight: nameWeight, detectRank: detectRank, whyText: whyText,
