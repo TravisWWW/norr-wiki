@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.97
+// @version      2.6.98
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -184,7 +184,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.97';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
+  const SCRIPT_VER = '2.6.98';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -2354,7 +2354,7 @@
     const EDGE_MISS = 3;
 
     function blank(id) {
-      return { id: +id, name: '', type: '', g: [], gt: [], m: [], visited: false, smith: false, at: 0 };
+      return { id: +id, name: '', type: '', g: [], gt: [], m: [], ex: [], visited: false, smith: false, at: 0 };
     }
     function rec(id) { const k = String(id); return maps[k] || (maps[k] = blank(k)); }
     function rebuildAdj() {
@@ -2405,6 +2405,7 @@
         (s.g || []).forEach(function (x) { if (x && r.g.indexOf(x) < 0) r.g.push(x); });
         (s.gt || []).forEach(function (t) { if (t && +t[0] > 0 && +t[1] > 0 && !(r.gt || []).some(function (q) { return q[0] === +t[0] && q[1] === +t[1]; })) r.gt.push([+t[0], +t[1], String(t[2] || '')]); });
         (s.m || []).forEach(function (x) { if (x && r.m.indexOf(x) < 0) r.m.push(x); });
+        (s.ex || []).forEach(function (t) { if (t && +t[0] > 0 && +t[1] > 0 && !(r.ex || []).some(function (q) { return q[0] === +t[0] && q[1] === +t[1] && q[2] === String(t[2] || ''); })) r.ex.push([+t[0], +t[1], String(t[2] || ''), String(t[3] || '')]); });
       });
       if (o.updated) updated = o.updated;
     }
@@ -2424,7 +2425,7 @@
         const out = { v: 1, updated: new Date().toISOString(), cities: cities, edges: edges, mon: mon, maps: {} };
         Object.keys(maps).forEach(function (k) {
           const r = maps[k];
-          out.maps[k] = { visited: !!r.visited, smith: !!r.smith, at: r.at || 0, g: r.g || [], gt: r.gt || [], m: r.m || [] };
+          out.maps[k] = { visited: !!r.visited, smith: !!r.smith, at: r.at || 0, g: r.g || [], gt: r.gt || [], m: r.m || [], ex: r.ex || [] };
         });
         localStorage.setItem(MAPDB_KEY, JSON.stringify(out));
         updated = out.updated; dirty = false;
@@ -2446,6 +2447,7 @@
       mon: function (nm) { return mon[nm]; },
       monAll: function () { return mon; },
       edges: function () { return edges; },
+      exits: function (id) { const r = maps[String(id)]; return (r && r.ex) || []; },
       adj: function (id) { return adj[String(id)] || []; },
       cities: function () { return cities; },
       list: function () { return Object.keys(maps).map(function (k) { return maps[k]; }); },
@@ -2543,6 +2545,13 @@
         if (live.m) {
           (live.m || []).forEach(function (x) { if (x && r.m.indexOf(x) < 0) { r.m.push(x); diff.push('怪物 +' + x); } });
         }
+        /* ★ v2.6.98：出口类格子（门 / 传送站 / 走私路线 / 秘密通路 / 副本入口 …）——静态要素，实测即事实 */
+        if (live.exits && live.exits.length) {
+          const normEx = live.exits.map(function (t) { return [+t[0], +t[1], String(t[2] || ''), String(t[3] || '')]; })
+            .filter(function (t) { return t[0] > 0 && t[1] > 0; });
+          const keyEx = function (a) { return a.map(function (t) { return t.join(','); }).sort().join('|'); };
+          if (keyEx(normEx) !== keyEx(r.ex || [])) { r.ex = normEx; diff.push('出口 ' + normEx.length + ' 个'); }
+        }
         (live.mon || []).forEach(function (p) {
           if (p && p[0] && mon[p[0]] !== p[1]) { mon[p[0]] = p[1]; diff.push('图鉴 ' + p[0]); }
         });
@@ -2579,8 +2588,58 @@
             }
           }
         }
-        if (diff.length) dirty = true;
+        /* ★ v2.6.98：数据有变化就刷新 at —— at 现在表示「这张图的数据最后更新于」，用于公共地图库按图取最新 */
+        if (diff.length) { dirty = true; r.at = now(); }
         return diff;
+      },
+      /* ★ v2.6.98：导出「可共享的地图数据」——每张图一条记录（自带 at 与该图的出边），
+         供公共地图库按「每张图取 at 最新」合并。 */
+      exportSync: function () {
+        const out = {};
+        const byFrom = {};
+        edges.forEach(function (e) { (byFrom[e[0]] = byFrom[e[0]] || []).push([e[0], e[1], e[2], e[3]]); });
+        Object.keys(maps).forEach(function (k) {
+          const r = maps[k];
+          const o = { at: r.at || 0 };
+          if (r.name) o.name = r.name;
+          if (r.type) o.type = r.type;
+          if ((r.g || []).length) o.g = r.g;
+          if ((r.gt || []).length) o.gt = r.gt;
+          if ((r.m || []).length) o.m = r.m;
+          if ((r.ex || []).length) o.ex = r.ex;
+          if (r.visited) o.visited = true;
+          if (r.smith) o.smith = true;
+          if (byFrom[+k]) o.edges = byFrom[+k];
+          out[k] = o;
+        });
+        return out;
+      },
+      /* ★ v2.6.98：并入公共地图数据 —— 每张图以 at 更新的那份为准（整条替换，含门与出口格） */
+      applyRemote: function (payload) {
+        const rmap = (payload && payload.maps) || {};
+        let changed = 0;
+        Object.keys(rmap).forEach(function (k) {
+          const s = rmap[k]; if (!s) return;
+          const r = rec(k);
+          const at = +s.at || 0;
+          if (at <= (r.at || 0)) return;                 /* 本地更新 → 保留本地 */
+          if (s.name) r.name = String(s.name);
+          if (s.type) r.type = String(s.type);
+          if (Array.isArray(s.g)) r.g = s.g.slice();
+          if (Array.isArray(s.gt)) r.gt = s.gt.map(function (t) { return [+t[0], +t[1], String(t[2] || '')]; });
+          if (Array.isArray(s.m)) r.m = s.m.slice();
+          if (Array.isArray(s.ex)) r.ex = s.ex.map(function (t) { return [+t[0], +t[1], String(t[2] || ''), String(t[3] || '')]; });
+          if (s.visited) r.visited = true;
+          if (s.smith) r.smith = true;
+          r.at = at;
+          if (Array.isArray(s.edges)) {
+            for (let i = edges.length - 1; i >= 0; i--) { if (edges[i][0] === +k) edges.splice(i, 1); }
+            s.edges.forEach(function (e) { addEdge(e[0], e[1], e[2], e[3]); });
+          }
+          changed++;
+        });
+        if (changed) { rebuildAdj(); dirty = true; save(); }
+        return changed;
       },
       /* 导入「地图记录器」导出的 JSON（maps + edges） */
       importRecorder: function (o) {
@@ -7422,6 +7481,16 @@
 
           <div class="divblock_dark" style="margin-top:4px">
             <div class="nr-srow">
+              <span class="nr-sl" style="flex:none" title="上传本地地图数据（每张图的名字/类型/采集点/怪物/门/走私路线/秘密通路等出口格 + 该图最后更新时间），并拉取公共地图数据合并进本地；每张图以「更新时间最新」的那份为准。静默完成，不需要令牌、不会打开任何网页。">地图同步</span>
+              <button class="mini" id="nr-mapsync" type="button" style="flex:1" title="上传本地地图数据 + 拉取公共地图数据">同步地图数据</button>
+            </div>
+            <div class="nr-srow" style="margin-top:4px">
+              <span id="nr-mapsyncstate" style="flex:1;color:#9aa4b2;font-size:10.5px">上传本地 + 拉取公共（静默，无需令牌）</span>
+            </div>
+          </div>
+
+          <div class="divblock_dark" style="margin-top:4px">
+            <div class="nr-srow">
               <span class="nr-sl" style="flex:none" title="脚本托管在 GitHub Pages：元数据里的 @updateURL / @downloadURL 指向同一地址，Tampermonkey 会按自己的周期（默认每天，可在设置里调短）静默自动升级。这里额外做一次「进游戏就查」的轻量检查，发现新版本时右上角版本号会变成金色角标，点一下即可更新。">在线更新</span>
               <span id="nr-updstate" style="flex:1;color:#9aa4b2;font-size:10.5px">当前 v${SCRIPT_VER}</span>
               <button class="mini" id="nr-updcheck" type="button" title="立即检查远端是否有新版本（绕过 5 分钟节流）">检查更新</button>
@@ -7880,6 +7949,8 @@
     if (bestCancelEl) bestCancelEl.addEventListener('click', function () { _bestCancel = true; });
     const bestSyncEl = panel.querySelector('#nr-bestsync');
     if (bestSyncEl) bestSyncEl.addEventListener('click', function () { syncBestiary(); });
+    const mapSyncEl = panel.querySelector('#nr-mapsync');
+    if (mapSyncEl) mapSyncEl.addEventListener('click', function () { syncMaps(); });
     /* 图鉴同步：静默 —— 令牌由 Pages 上的 norroth-gh-token.txt 提供，界面不暴露任何令牌输入 */
     // 详细统计：点标题栏展开/收起，点「清空」清零
     const detbar = panel.querySelector('#nr-detbar');
@@ -8837,6 +8908,10 @@
      改用实测名继续学习（否则种子名字一旦写错，这张图的学习会被永久卡死）。 */
   let _liveNameMiss = 0, _liveNameMissId = 0;
   const LIVE_NAME_MISS_MAX = 5;
+  /* ★ v2.6.98：出口类格子（含门 / 传送站 / 走私路线 / 秘密通路 / 副本入口 …）。
+     这些是静态地图要素，进图就实测，随地图数据一起共享。 */
+  const EXIT_TILE_ACTIONS = ['gate', 'waygate', 'entrance', 'event_gate', 'smugglers_route', 'dungeon',
+                             'portal', 'teleport', 'secret', 'secret_passage', 'passage', 'stairs', 'tunnel', 'cave', 'exit'];
   function liveMapSnapshot() {
     if (!inGame()) return null;
     let id = 0; try { id = +character.current_map; } catch (e) { return null; }
@@ -8878,6 +8953,16 @@
       const gx = +cd[0], gy = +cd[1];
       if (n && gx > 0 && gy > 0) gt.push([gx, gy, n]);
     });
+    /* ★ v2.6.98：出口类格子（走私路线 / 秘密通路 / 副本入口 / 传送站 …） */
+    const exits = [];
+    poiEls.forEach(function (el) {
+      const a = String(el.getAttribute('action') || '');
+      if (EXIT_TILE_ACTIONS.indexOf(a) < 0) return;
+      const cd = (el.getAttribute('coords') || '').split('-');
+      const ex = +cd[0], ey = +cd[1];
+      if (!(ex > 0 && ey > 0)) return;
+      exits.push([ex, ey, a, String(el.getAttribute('name') || '').trim()]);
+    });
     const m = [], mon = [];
     let es = []; try { es = scanEnemies(); } catch (e) { /* ignore */ }
     es.forEach(function (e) {
@@ -8914,7 +8999,7 @@
       }
       nameOk = false;
     } else { _liveNameMiss = 0; _liveNameMissId = 0; }
-    return { id: id, name: nameOk ? (refName || wmName) : wmName, type: String(wm.type || '').trim(), g: g, gt: gt, m: m, mon: mon, edges: edges };
+    return { id: id, name: nameOk ? (refName || wmName) : wmName, type: String(wm.type || '').trim(), g: g, gt: gt, m: m, mon: mon, edges: edges, exits: exits };
   }
 
   /* ---- 到图即刷新：每到一张图 / 每 2.5 秒，用实测数据更新该 map id 的记录 ---- */
@@ -10594,6 +10679,69 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
     }
   }
 
+  /* ======================= 地图数据同步（公共地图库） =======================
+     ① 上传：把本地 MapDB 里每张图的记录（自带 at = 该图数据最后更新时间）推到 nor-database/maps-contrib/
+     ② 拉取：从 Pages 取 norroth-maps.json，按「每张图取 at 最新」合并进本地
+     ③ 通知：触发 norr-wiki 立刻合并（失败就等 5 分钟定时兜底）
+     全程静默：不需要令牌、不打开任何网页。 */
+  let _mapSyncBusy = false;
+  async function syncMaps() {
+    if (_mapSyncBusy) return;
+    const panel = els.panel;
+    const stEl = panel && panel.querySelector('#nr-mapsyncstate');
+    const btn = panel && panel.querySelector('#nr-mapsync');
+    const say = s => { if (stEl) stEl.textContent = s; };
+    _mapSyncBusy = true;
+    if (btn) { btn.disabled = true; btn.textContent = '同步中…'; }
+    const t0 = Date.now();
+    let token = '';
+    try {
+      const c = (typeof character === 'object' && character) || {};
+      const mapsObj = MapDB.exportSync();
+      const n = Object.keys(mapsObj).length;
+      const payload = { meta: { char: c.name || ('#' + (c.id || '?')), charId: c.id || 0, level: c.level || '?',
+        time: new Date().toISOString(), count: n, scriptVersion: SCRIPT_VER, source: 'MapDB' }, maps: mapsObj };
+      const fname = 'maps-' + (c.id || 'unknown') + '.json';
+      const fpath = 'maps-contrib/' + fname;
+      token = await ghToken();
+      if (!token) { say('未配置社区令牌，已跳过'); setStatus('地图同步：未配置令牌'); return; }
+      say('上传中… ' + fname + '（' + n + ' 张图）');
+      let sha = null;
+      try {
+        const cur = await ghApi('GET', '/repos/' + GH_REPO + '/contents/' + fpath + '?ref=' + GH_BRANCH, null, token);
+        if (cur && cur.sha) sha = cur.sha;
+      } catch (e) { if (e.status !== 404) throw e; }
+      const body = { message: '地图数据：' + payload.meta.char + '（' + n + ' 张图）', content: b64utf8(JSON.stringify(payload)), branch: GH_BRANCH };
+      if (sha) body.sha = sha;
+      await ghApi('PUT', '/repos/' + GH_REPO + '/contents/' + fpath, body, token);
+      say('已上传，正在拉取公共地图数据…');
+      let merged = 0;
+      try {
+        const r = await fetch(UPD_BASE + 'norroth-maps.json', { cache: 'no-store' });
+        if (r.ok) { const j = await r.json(); merged = MapDB.applyRemote(j); }
+      } catch (e) { /* ignore */ }
+      let notified = false;
+      try {
+        await ghApi('POST', '/repos/' + GH_WIKI_REPO + '/actions/workflows/' + GH_WIKI_MERGE_WF + '/dispatches', { ref: GH_WIKI_BRANCH }, token);
+        notified = true;
+      } catch (e) { /* ignore */ }
+      const secs = Math.round((Date.now() - t0) / 1000);
+      say('已同步 ' + n + ' 张图' + (merged ? '，本地更新了 ' + merged + ' 张' : '') + '（' + secs + 's）');
+      setStatus('地图已同步：上传 ' + n + ' 张' + (merged ? '，合并 ' + merged + ' 张' : '') + '，' + secs + 's');
+      logEvent('地图同步：上传 ' + n + ' 张 / 合并 ' + merged + ' 张 / ' + secs + 's' + (notified ? '' : '（未通知到服务器，等定时兜底）'));
+    } catch (e) {
+      let msg = (e && e.message) ? e.message : String(e);
+      if (e && e.status === 404) msg += '（数据仓库 ' + GH_REPO + ' 不存在，或令牌无权访问）';
+      else if (e && (e.status === 401 || e.status === 403)) msg += '（令牌无效或权限不足）';
+      say('同步失败：' + msg);
+      setStatus('地图同步失败(v' + SCRIPT_VER + ')：' + msg);
+      logEvent('地图同步失败 v' + SCRIPT_VER + ' / ' + msg);
+    } finally {
+      _mapSyncBusy = false;
+      if (btn) { btn.disabled = false; btn.textContent = '同步地图数据'; }
+    }
+  }
+
   window.__norrothFarm = {
     event: { tick: eventTick, reset: eventReset, activitiesHasJoin: eventActivitiesHasJoin, enterGate: eventEnterGate, pickPoint: eventPickPoint, typeOf: eventTypeOf, res: function () { return st.event; }, mapId: EVENT_MAP_ID },
     mc: { serviceTownNow: activeServiceTown, toggle: mcToggle, togglePause: mcTogglePause, syncBtns: syncMcBtns, queue: mcQueue, profLevels: mcProfLevels, profLevelsCached: mcProfLevelsCached, idleInfo: mcIdleInfo, startIdle: mcStartIdle, switch: mcSwitch, readChars: mcReadChars, setOn: mcSetOn, startAll: mcStartAll, stopAll: mcStopAll, validateAll: mcValidateAll, canGather: mcCanGather, render: mcRender, tick: mcTick, fillCurrent: mcFillCurrent, runTrip: mcRunTrip, beginTrip: mcBeginTrip, runRepairAndDeposit: runRepairAndDeposit, nearestGatherTile: nearestGatherTile, idleRaw: function () { return _mcGatherRaw; }, loadRot: mcLoadRot, saveRot: mcSaveRot, rot: function () { return rot; }, due: mcDue, chars: function () { return cfg.mcChars; }, queueCache: function () { return _mcQueueCache; }, claimIdleRewards: claimIdleRewards, closeIdleDialog: closeIdleResultDialog, refreshStatus: mcRefreshStatus, applyQueue: mcApplyQueue },
@@ -10608,7 +10756,7 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
     readEquipDur: readEquipDur, parseEquipDur: parseEquipDur, durWorst: durWorst, durText: durText, repairNeeded: repairNeeded, gatherDurNow: gatherDurNow, lastGatherDur: lastGatherDur, renderDurInfo: renderDurInfo,
     getMapDict: getMapDict, startRestock: startRestock, repairSellNow: repairSellNow,
     nrPost: nrPost, apiRepairRows: apiRepairRows, stashDeposit: stashDeposit, stashWithdraw: stashWithdraw, stashCount: stashCount, clickEquipSell: clickEquipSell, sellEquips: sellEquips, findBank: findBank, doBankDeposit: doBankDeposit, runDeposit: runDeposit, ensureBankFrame: ensureBankFrame, bankFreeSlots: bankFreeSlots, readBagEquipItems: readBagEquipItems, depositBagEquips: depositBagEquips, serviceTowns: serviceTowns, waygateReachable: waygateReachable, navRoute: navRoute, renderTownSelect: renderTownSelect, verifyPath: verifyPath, resolveRepairRoute: resolveRepairRoute,
-    verifyPath: verifyPath, refreshCurMap: refreshCurMap, detectGatherPoints: detectGatherPoints, liveMapSnapshot: liveMapSnapshot, poiLearnNow: poiLearnNow, MapDB: MapDB,
+    verifyPath: verifyPath, refreshCurMap: refreshCurMap, detectGatherPoints: detectGatherPoints, liveMapSnapshot: liveMapSnapshot, poiLearnNow: poiLearnNow, MapDB: MapDB, syncMaps: syncMaps,
     comboInfo: comboInfo, pollCombo: pollCombo, readComboInfo: readComboInfo,
     gatheringSpots: gatheringSpots, findGatheringSpot: findGatheringSpot, stepGather: stepGather, effectiveGatherPoint: effectiveGatherPoint,
     reachableSet: reachableSet, isReachable: isReachable, unreachableEnemies: unreachableEnemies,

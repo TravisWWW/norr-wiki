@@ -1,8 +1,8 @@
 {
-  "version": "2.6.97",
+  "version": "2.6.98",
   "date": "2026-10-22",
-  "notes": "v2.6.97：修「人已经在 Owranbu 还要跑传送站/往 Owranbu 传」——步行 ≤3 跳就能到目标时直接走，完全不碰传送点；传送站算不出任何「候选→目标」路线时不再乱传第一个城市，直接放弃。",
+  "notes": "v2.6.98：地图数据同步（静默）——进游戏自动把本地 MapDB 每张图的记录（采集点/怪物/出口格/门，自带 at）上传到 nor-database/maps-contrib/，再拉取公共地图库 norroth-maps.json 按「每张图取 at 最新」合并；出口格记录 gate/waygate/smugglers_route/secret_passage/dungeon 等；门以最新为准（可删）。全程无需令牌、不打开网页。",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 706915,
-  "sha256": "8ee9080e1b0855826470fd4a8f72abbeec8a042597aa51e1a12f66a6884005e0"
+  "size": 716245,
+  "sha256": "3b8b5f821b28c09936e99b60d4a2e679c833983ae69465356c91bc9ece6bfa2d"
 }
