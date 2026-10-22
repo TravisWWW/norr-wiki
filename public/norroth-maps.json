@@ -1,7 +1,7 @@
 {
  "meta": {
   "source": "小伴侣地图数据（MapDB）· 3 位贡献者合并",
-  "updated": "2026-10-22T23:54:56.621Z",
+  "updated": "2026-10-22T23:58:15.420Z",
   "version": "1.0",
   "contributors": [
    {
@@ -16,7 +16,7 @@
     "file": "maps-1330.json",
     "char": "#1330",
     "level": 44,
-    "time": "2026-10-22T23:54:35.414Z",
+    "time": "2026-10-22T23:57:51.672Z",
     "count": 339,
     "mergedAt": "2026-10-22"
    },
@@ -6901,7 +6901,7 @@
    ]
   },
   "326": {
-   "at": 1792713272344,
+   "at": 1792713467203,
    "name": "Dark Boreal",
    "type": "Normal",
    "g": [
@@ -6941,6 +6941,7 @@
      "Dark Boreal (Lv.41)"
     ]
    ],
+   "visited": true,
    "edges": [
     [
      326,
