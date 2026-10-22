@@ -16,8 +16,8 @@
    {
     "file": "char-1151.json",
     "char": "#1151",
-    "level": 43,
-    "time": "2026-10-22T10:44:51.845Z",
+    "level": 45,
+    "time": "2026-10-22T16:52:24.954Z",
     "count": 193,
     "recorded": 99,
     "mergedAt": "2026-10-22"
@@ -26,8 +26,8 @@
   "count": 199,
   "recordedCount": 121,
   "withLore": 198,
-  "withStats": 66,
-  "withSkills": 82,
+  "withStats": 68,
+  "withSkills": 83,
   "withBg": 183,
   "tabs": {
    "normal": 163,
@@ -7331,6 +7331,28 @@
      "res": "scrap_tail",
      "pct": "14%"
     }
+   ],
+   "skills": [
+    {
+     "name": "bite",
+     "id": 10009,
+     "level": 4
+    },
+    {
+     "name": "lethal_bite",
+     "id": 10019,
+     "level": 4
+    },
+    {
+     "name": "chitin_armor",
+     "id": 10146,
+     "level": 4
+    },
+    {
+     "name": "split_in_two",
+     "id": 10145,
+     "level": 4
+    }
    ]
   },
   {
@@ -9379,7 +9401,22 @@
      "id": 10120,
      "level": 8
     }
-   ]
+   ],
+   "stats": {
+    "Base Damage": 10,
+    "Physical Damage": 3,
+    "Blunt Damage": 0,
+    "Spell Damage": 0,
+    "Bleed Damage": 0,
+    "Arcane Damage": 0,
+    "Cold Damage": 0,
+    "Dark Damage": 0,
+    "Fire Damage": 0,
+    "Light Damage": 0,
+    "Lightning Damage": 0,
+    "Poison Damage": 0,
+    "Thorn Damage": 0
+   }
   },
   {
    "id": 222,
@@ -9709,7 +9746,43 @@
      "id": 10009,
      "level": 8
     }
-   ]
+   ],
+   "stats": {
+    "Base Damage": 15,
+    "Physical Damage": 3,
+    "Blunt Damage": 0,
+    "Spell Damage": 0,
+    "Bleed Damage": 0,
+    "Arcane Damage": 0,
+    "Cold Damage": 0,
+    "Dark Damage": 0,
+    "Fire Damage": 0,
+    "Light Damage": 0,
+    "Lightning Damage": 0,
+    "Poison Damage": 5,
+    "Thorn Damage": 0,
+    "Defense": 40,
+    "Block Chance": 10,
+    "Block Rating": 1,
+    "Arcane Resist": 10,
+    "Cold Resist": 10,
+    "Dark Resist": 10,
+    "Fire Resist": 10,
+    "Light Resist": 10,
+    "Lightning Resist": 10,
+    "Poison Resist": 10,
+    "Evasion": 2,
+    "Critical Chance": 4,
+    "Critical Strike": 5,
+    "Hit Rating": 20,
+    "Attack Speed": 2,
+    "Armor Penetration": 1,
+    "Life Steal": 0,
+    "Mana Steal": 2,
+    "Life Regeneration": 0,
+    "Mana Regeneration": 0,
+    "Maximum Life": 90
+   }
   },
   {
    "id": 226,
