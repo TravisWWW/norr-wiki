@@ -1,14 +1,14 @@
 {
  "meta": {
   "source": "小伴侣地图数据（MapDB）· 2 位贡献者合并",
-  "updated": "2026-10-22T05:58:25.393Z",
+  "updated": "2026-10-22T06:00:43.675Z",
   "version": "1.0",
   "contributors": [
    {
     "file": "maps-1151.json",
     "char": "#1151",
     "level": 42,
-    "time": "2026-10-22T05:58:11.771Z",
+    "time": "2026-10-22T06:00:30.163Z",
     "count": 338,
     "mergedAt": "2026-10-22"
    },
@@ -3697,7 +3697,7 @@
    ]
   },
   "180": {
-   "at": 1792644036619,
+   "at": 1792648776962,
    "name": "Caeltys’ Causeway",
    "type": "Normal",
    "g": [
