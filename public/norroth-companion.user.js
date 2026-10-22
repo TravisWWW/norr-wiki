@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.100
+// @version      2.6.101
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -184,7 +184,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.100';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
+  const SCRIPT_VER = '2.6.101';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -250,7 +250,8 @@
     gatherIdleSince: 0, gatherResync: 0,   // ★ 采集看门狗：进度条不转的累计时间 / 重试次数
     /* ★ 活动自动进入（采集）：phase = idle | enter | in | return */
     event: { on: false, phase: 'idle', busy: false, homeMap: 0, homePoint: '', homeRes: '', homeType: '', pointName: '', enteredAt: 0, lastCheckAt: 0, timeLeft: null, score: null,
-             busyAt: 0, checkAt: 0, checkFails: 0, combatSkipAt: 0, lastLogAt: 0, lastHas: null },   /* ★ v2.6.73：检查超时 / 兜底 / 诊断用 */
+             busyAt: 0, checkAt: 0, checkFails: 0, combatSkipAt: 0, lastLogAt: 0, lastHas: null,
+             gateBusy: false, gateLogAt: 0, combatMap: 0 },   /* ★ v2.6.101：战斗型活动的「进战斗区」状态 */
     tripManual: false, tripOrigin: null,
     gatherFighting: false,   // 采集模式里"正在打怪"的标记
     repair: { active: false, cooldownUntil: 0, failCount: 0, smith: null, route: null },
@@ -404,7 +405,7 @@
     c.gatherScrap = (c.gatherScrap === undefined) ? true : !!c.gatherScrap;
     c.gatherFlee = !!c.gatherFlee;                                    // ★ 融合：默认关
     c.autoEvent = !!c.autoEvent;                                      // ★ 自动进活动（默认关；战斗/采集/爬塔都生效）
-    c.eventRes = (['fishing', 'mining', 'chopping', 'farming', 'quarrying', 'foraging'].indexOf(String(o.eventRes || '')) >= 0) ? String(o.eventRes) : '';
+    c.eventRes = (['fishing', 'mining', 'chopping', 'farming', 'quarrying', 'foraging', 'combat'].indexOf(String(o.eventRes || '')) >= 0) ? String(o.eventRes) : '';
     c.highlightSelf = (c.highlightSelf === undefined) ? true : !!c.highlightSelf;   // ★ 融合：默认开
     /* ★ 旧版「顺路拾取」(collectInBattle) 已并入「拾取地面资源」：显式关过它 → 地面拾取一起关（一次性迁移） */
     if (c.collectInBattle === false) c.gatherScrap = false;
@@ -4804,10 +4805,90 @@
     const p = s.split(/\s+/);
     return p[p.length - 1].toLowerCase();
   }
+  /* ★ v2.6.101：活动「战斗型」—— 大厅（1183）里有按等级分的战斗区入口，进「当前等级」对应的那个。
+     等级区间来自官方 Wiki / map_db：1184=1-9 / 1185=10-19 / 1186=20-29 / 1187=30-39 / 1188=40-49 / 1189=50-59。 */
+  const EVENT_COMBAT_MAPS = { '1184': [1, 9], '1185': [10, 19], '1186': [20, 29], '1187': [30, 39], '1188': [40, 49], '1189': [50, 59] };
+  function eventCombatTargetId() {
+    const lv = +((typeof character === 'object' && character && character.level) || 0);
+    if (!(lv > 0)) return 0;
+    const ids = Object.keys(EVENT_COMBAT_MAPS);
+    for (let i = 0; i < ids.length; i++) { const r = EVENT_COMBAT_MAPS[ids[i]]; if (lv >= r[0] && lv <= r[1]) return +ids[i]; }
+    return 0;
+  }
+  /* 从门名里解析等级区间："The Sacred Wilds (Lv.10-19)" / "Lv. 10 - 19" / "10-19" / "Lv.10" */
+  function eventLevelRange(name) {
+    const t = String(name || '');
+    let m = /Lv\.?\s*(\d+)\s*[-\u2013~\u81f3]\s*(\d+)/i.exec(t);
+    if (!m) m = /(\d+)\s*[-\u2013~]\s*(\d+)/.exec(t);
+    if (m) return [+m[1], +m[2]];
+    m = /Lv\.?\s*(\d+)\b/i.exec(t);
+    if (m) return [+m[1], +m[1]];
+    return null;
+  }
+  /* 诊断：列出本图所有 tile_poi（action:名字@坐标），找不到门时写进日志 */
+  function eventDumpTiles() {
+    try {
+      const els = $$q('.map_table .tile_poi[action]');
+      const seen = {}, out = [];
+      for (let i = 0; i < els.length; i++) {
+        const a = String(els[i].getAttribute('action') || '');
+        const n = String(els[i].getAttribute('name') || '').trim();
+        const c = String(els[i].getAttribute('coords') || '');
+        const k = a + '|' + n + '|' + c;
+        if (seen[k]) continue; seen[k] = 1;
+        out.push(a + ':' + n + '@' + c);
+      }
+      return out.slice(0, 40).join(' / ') || '(本图没有 tile_poi)';
+    } catch (e) { return '(dump 失败：' + (e && e.message ? e.message : e) + ')'; }
+  }
+  /* 找大厅里「当前等级该走的那道门」：返回 {x,y,name,id} 或 null */
+  function eventCombatGate() {
+    const lv = +((typeof character === 'object' && character && character.level) || 0);
+    const want = eventCombatTargetId();
+    /* ① door_tiles 里直接指向战斗区的门（最可靠） */
+    const dt = window.door_tiles || {};
+    const keys = Object.keys(dt);
+    for (let i = 0; i < keys.length; i++) {
+      const to = keys[i], r = EVENT_COMBAT_MAPS[String(to)];
+      if (!r) continue;
+      if (want && +to !== want) continue;
+      if (!want && !(lv >= r[0] && lv <= r[1])) continue;
+      const p = String(dt[to]).replace('ID', '').split('-');
+      const x = +p[0], y = +p[1];
+      if (x > 0 && y > 0) return { x: x, y: y, name: 'The Sacred Wilds (Lv.' + r[0] + '-' + r[1] + ')', id: +to };
+    }
+    /* ② 本图所有 tile_poi（不限 action），按名字里的等级区间匹配 */
+    const els = $$q('.map_table .tile_poi[action]');
+    const cands = [];
+    for (let i = 0; i < els.length; i++) {
+      const nm = String(els[i].getAttribute('name') || '').trim();
+      const r = eventLevelRange(nm);
+      if (!r) continue;
+      const cd = String(els[i].getAttribute('coords') || '').split('-');
+      const x = +cd[0], y = +cd[1];
+      if (!(x > 0 && y > 0)) continue;
+      cands.push({ x: x, y: y, name: nm, action: String(els[i].getAttribute('action') || ''), r: r, wilds: /wilds/i.test(nm) });
+    }
+    const inLv = cands.filter(function (c) { return lv >= c.r[0] && lv <= c.r[1]; });
+    /* 优先「名字带 Wilds」的；再优先「真区间(a<b)」的（排除 "Elundi (Lv.10)" 这种单点出口） */
+    let hit = inLv.filter(function (c) { return c.wilds; })[0];
+    if (!hit) hit = inLv.filter(function (c) { return c.r[0] < c.r[1]; })[0];
+    if (!hit && want) hit = inLv[0];
+    return hit || null;
+  }
+  /* 当前是否在「活动战斗区」里（主循环据此强制走战斗逻辑） */
+  function eventCombatActive() {
+    try {
+      if (!cfg.autoEvent || cfg.eventRes !== 'combat') return false;
+      const E = st.event; if (!E || !E.on) return false;
+      return !!EVENT_COMBAT_MAPS[String(character.current_map)];
+    } catch (e) { return false; }
+  }
   function eventReset() {
     const E = st.event; if (!E) return;
     E.on = false; E.phase = 'idle'; E.busy = false; E.pointName = ''; E.enteredAt = 0;
     E.busyAt = 0; E.checkAt = 0; E.checkFails = 0; E.combatSkipAt = 0; E.lastHas = null;   /* ★ v2.6.73：清掉检查态，避免残留 busy 卡死 */
+    E.gateBusy = false; E.gateLogAt = 0; E.combatMap = 0;   /* ★ v2.6.101 */
   }
   /* 活动是否开启：/modal/activities 里有没有 Event Gate 的 Join 按钮（实测：活动结束按钮消失） */
   async function eventActivitiesHasJoin() {
@@ -4877,8 +4958,41 @@
        进出活动会从第 1 层重新开始。已在活动图里时仍按原逻辑处理（正常采集 / 结束返回）。 */
     if (st.mode === 'tower' && !E.on) { if (E.phase !== 'idle') eventReset(); return false; }
 
-    /* ① 已在活动图 → 交给正常采集（effectiveGatherPoint 会返回活动点） */
-    if (onEventMap) {
+    /* ① 已在活动里（大厅 1183 或 战斗区 1184~1189） */
+    const onCombatArea = !!EVENT_COMBAT_MAPS[String(character.current_map)];
+    if (onEventMap || onCombatArea) {
+      /* ★ v2.6.101：战斗型 —— 大厅里走到「当前等级对应的战斗区」入口；战斗区里就正常开打 */
+      if (cfg.eventRes === 'combat') {
+        if (onCombatArea) {
+          if (!E.on) {
+            E.on = true; E.phase = 'in'; E.enteredAt = now(); E.combatMap = +character.current_map;
+            logEvent('活动：已进入战斗区「' + currentMapName() + '」（角色 Lv ' + (character.level || '?') + '）→ 开始战斗');
+            setStatus('活动：在战斗区战斗（' + currentMapName() + '）…');
+          }
+          return false;   /* 交给主循环的战斗逻辑 */
+        }
+        /* 在大厅（刚进来 / 从战斗区退回来）→ 选门 + 走过去（异步，走的过程中接管本 tick） */
+        if (E.gateBusy) return true;
+        const gate = eventCombatGate();
+        if (!gate) {
+          if (now() - (E.gateLogAt || 0) > 20000) {
+            E.gateLogAt = now();
+            logEvent('活动：大厅里没找到等级 ' + (character.level || '?') + ' 的战斗区入口 → tile_poi：' + eventDumpTiles() + ' ｜ door_tiles：' + (function(){ try { const d=window.door_tiles||{}; return Object.keys(d).map(function(k){return k+'='+d[k];}).join(',')||'(空)'; } catch(e){ return '(读不到)'; } })());
+          }
+          setStatus('活动：等待战斗区入口（Lv ' + (character.level || '?') + '）…');
+          return true;
+        }
+        E.gateBusy = true; if (gate.id) E.combatMap = gate.id;
+        logEvent('活动：前往战斗区「' + gate.name + '」@' + gate.x + ',' + gate.y + '（角色 Lv ' + (character.level || '?') + '）');
+        setStatus('活动：进入战斗区（' + gate.name + '）…');
+        (async function () {
+          try { await navWalkToTile(gate.x, gate.y, 60000, function () { return running && cfg.autoEvent; }); }
+          catch (e) { /* ignore */ }
+          finally { E.gateBusy = false; }
+        })();
+        return true;
+      }
+      /* 采集型 */
       if (!E.on) {
         /* ★ 刚进活动图时 .map_table 可能还没渲染完 → eventPickPoint() 返回空。
            这时**先别定采集点**（否则 effectiveGatherPoint 会退回下拉里第一个 Quarry），
@@ -6727,7 +6841,7 @@
 
     // 战利品窗口放在最前面且战斗中也不跳过（塔里进层的掉落曾因「战斗中先 return」被清掉）
     if (hasFrame('frame_Loot')) takeAllLoot();
-    if (!(st.mode === 'gather' && cfg.gatherFlee)) ensureAutoBattle();   // ★ 新前端：确保游戏自动战斗处于开启状态（只采集+遇怪逃跑时不接管）
+    if (eventCombatActive() || !(st.mode === 'gather' && cfg.gatherFlee)) ensureAutoBattle();   // ★ 新前端：确保游戏自动战斗处于开启状态（只采集+遇怪逃跑时不接管；活动战斗区强制开）
 
     // 维修 / 清包流程进行中：由 runRepair / runSell 接管
     if (st.repair.active || st.sell.active) { supply(); return; }
@@ -6769,11 +6883,15 @@
     /* ★ 活动自动进入：战斗 / 采集 / 爬塔 都生效。进入 / 返回期间接管本 tick；
        在活动图里 → 强制走采集逻辑（无论当前任务是什么），出来后再继续原任务。 */
     if (eventTick()) return;
-    if (cfg.autoEvent && st.event && st.event.on && String(character.current_map) === String(EVENT_MAP_ID)) { stepGather(); return; }
-
-    if (st.mode === 'gather') { stepGather(); return; }
-    if (st.mode === 'auto') { stepAuto(); return; }
-    if (st.mode === 'tower') { stepTower(); return; }
+    /* ★ v2.6.101：活动战斗区里 → 不管当前任务是什么，都走下面的战斗逻辑 */
+    if (eventCombatActive()) {
+      ensureAutoBattle();
+    } else {
+      if (cfg.autoEvent && st.event && st.event.on && String(character.current_map) === String(EVENT_MAP_ID)) { stepGather(); return; }
+      if (st.mode === 'gather') { stepGather(); return; }
+      if (st.mode === 'auto') { stepAuto(); return; }
+      if (st.mode === 'tower') { stepTower(); return; }
+    }
 
     if (hasFrame('frame_Combat')) {
       noteCombat();
@@ -7225,7 +7343,7 @@
             </div>
             <div class="opts" style="margin-top:5px">
               <label style="flex:0 0 calc(50% - 3px);max-width:calc(50% - 3px)" title="检测到活动开启就自动进入活动地图采集；活动结束被弹出后自动回原图继续当前任务（战斗 / 采集生效，爬塔时不进）。"><input type="checkbox" class="chk" id="nr-autoevent">自动进活动</label>
-              <select id="nr-eventres" style="flex:1 1 0;min-width:0" title="活动图里要采的资源类型；「自动」= 按外面的采集点类型匹配">
+              <select id="nr-eventres" style="flex:1 1 0;min-width:0" title="活动图里做什么：采集类型 = 采对应资源；「⚔ 战斗」= 进活动大厅后走到「当前等级对应」的战斗区打怪">
                 <option value="">自动（同外面）</option>
                 <option value="mining">采矿</option>
                 <option value="quarrying">采石</option>
@@ -7233,6 +7351,7 @@
                 <option value="farming">耕种</option>
                 <option value="fishing">钓鱼</option>
                 <option value="foraging">觅食</option>
+                <option value="combat">⚔ 战斗（按等级进战斗区）</option>
               </select>
               <button class="mini" id="nr-fmlock" style="flex:0 0 64px;white-space:nowrap" title="锁定「当前所在地图」为挂机地图（再点一下 = 释放）">🔒 锁定</button>
             </div>
@@ -7639,7 +7758,7 @@
     bindCheck('nr-autoevent', 'autoEvent');
     (function () {
       const er = document.getElementById('nr-eventres');
-      if (er) { er.value = cfg.eventRes || ''; er.addEventListener('change', () => { cfg.eventRes = (['fishing','mining','chopping','farming','quarrying','foraging'].indexOf(er.value) >= 0) ? er.value : ''; saveCfg(); }); }
+      if (er) { er.value = cfg.eventRes || ''; er.addEventListener('change', () => { cfg.eventRes = (['fishing','mining','chopping','farming','quarrying','foraging','combat'].indexOf(er.value) >= 0) ? er.value : ''; saveCfg(); }); }
     })();
     bindCheck('nr-gatherflee', 'gatherFlee');
     /* ★ 多角色轮转 */
@@ -10786,7 +10905,7 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
   }
 
   window.__norrothFarm = {
-    event: { tick: eventTick, reset: eventReset, activitiesHasJoin: eventActivitiesHasJoin, enterGate: eventEnterGate, pickPoint: eventPickPoint, typeOf: eventTypeOf, res: function () { return st.event; }, mapId: EVENT_MAP_ID },
+    event: { tick: eventTick, reset: eventReset, activitiesHasJoin: eventActivitiesHasJoin, enterGate: eventEnterGate, pickPoint: eventPickPoint, typeOf: eventTypeOf, res: function () { return st.event; }, mapId: EVENT_MAP_ID, combatMaps: EVENT_COMBAT_MAPS, combatTargetId: eventCombatTargetId, combatGate: eventCombatGate, combatActive: eventCombatActive, levelRange: eventLevelRange, dumpTiles: eventDumpTiles },
     mc: { serviceTownNow: activeServiceTown, toggle: mcToggle, togglePause: mcTogglePause, syncBtns: syncMcBtns, queue: mcQueue, profLevels: mcProfLevels, profLevelsCached: mcProfLevelsCached, idleInfo: mcIdleInfo, startIdle: mcStartIdle, switch: mcSwitch, readChars: mcReadChars, setOn: mcSetOn, startAll: mcStartAll, stopAll: mcStopAll, validateAll: mcValidateAll, canGather: mcCanGather, render: mcRender, tick: mcTick, fillCurrent: mcFillCurrent, runTrip: mcRunTrip, beginTrip: mcBeginTrip, runRepairAndDeposit: runRepairAndDeposit, nearestGatherTile: nearestGatherTile, idleRaw: function () { return _mcGatherRaw; }, loadRot: mcLoadRot, saveRot: mcSaveRot, rot: function () { return rot; }, due: mcDue, chars: function () { return cfg.mcChars; }, queueCache: function () { return _mcQueueCache; }, claimIdleRewards: claimIdleRewards, closeIdleDialog: closeIdleResultDialog, refreshStatus: mcRefreshStatus, applyQueue: mcApplyQueue },
     start: () => beginRun('battle'), stop: stop, cfg: cfg, st: st, step: step,
     startTower: () => beginRun('tower'), stepTower: stepTower, isTowerMap: isTowerMap, towerTiles: towerTiles, towerNextGate: towerNextGate, towerGateCandidates: towerGateCandidates, towerAdjacentTile: towerAdjacentTile, openTower: openTower, nearestTowerTown: nearestTowerTown,
