@@ -1,7 +1,7 @@
 {
  "meta": {
-  "source": "小伴侣地图数据（MapDB）· 1 位贡献者合并",
-  "updated": "2026-10-22T03:06:27.332Z",
+  "source": "小伴侣地图数据（MapDB）· 2 位贡献者合并",
+  "updated": "2026-10-22T04:30:48.187Z",
   "version": "1.0",
   "contributors": [
    {
@@ -11,9 +11,17 @@
     "time": "2026-10-22T03:06:15.292Z",
     "count": 337,
     "mergedAt": "2026-10-22"
+   },
+   {
+    "file": "maps-1330.json",
+    "char": "#1330",
+    "level": 38,
+    "time": "2026-10-22T04:30:26.541Z",
+    "count": 330,
+    "mergedAt": "2026-10-22"
    }
   ],
-  "count": 337
+  "count": 338
  },
  "maps": {
   "1": {
@@ -80,13 +88,13 @@
    ]
   },
   "5": {
-   "at": 1792634615854,
+   "at": 1792643396536,
    "name": "El Caspar",
    "type": "City",
    "g": [
     "Minnow Pier",
-    "Mucky Patch",
-    "Combat Training"
+    "Combat Training",
+    "Mucky Patch"
    ],
    "gt": [
     [
@@ -103,6 +111,55 @@
      48,
      26,
      "Combat Training"
+    ]
+   ],
+   "m": [
+    "Hare",
+    "Snake",
+    "Wild Dog"
+   ],
+   "ex": [
+    [
+     38,
+     16,
+     "gate",
+     "Elena’s Crossroad (Lv.1)"
+    ],
+    [
+     39,
+     28,
+     "gate",
+     "Sewers (Lv.1)"
+    ],
+    [
+     53,
+     31,
+     "gate",
+     "Windy Fields (Lv.1)"
+    ],
+    [
+     11,
+     32,
+     "gate",
+     "Brisban Pond (Lv.1)"
+    ],
+    [
+     28,
+     32,
+     "waygate",
+     "Waygate"
+    ],
+    [
+     18,
+     49,
+     "gate",
+     "Upper Fountain’s Descent (Lv.1)"
+    ],
+    [
+     41,
+     50,
+     "gate",
+     "Southern Foothill (Lv.1)"
     ]
    ],
    "visited": true,
@@ -554,15 +611,13 @@
    ]
   },
   "16": {
-   "at": 1792636054702,
+   "at": 1792638726887,
    "name": "Elundi",
    "type": "City",
    "g": [
     "Shrimp Pier",
-    "Silk Field",
-    "Shrimp 码头",
-    "战斗训练",
-    "Silk 田野"
+    "Combat Training",
+    "Silk Field"
    ],
    "gt": [
     [
@@ -579,6 +634,32 @@
      16,
      29,
      "Combat Training"
+    ]
+   ],
+   "ex": [
+    [
+     29,
+     7,
+     "gate",
+     "Elundi Garden (Lv.10)"
+    ],
+    [
+     38,
+     10,
+     "event_gate",
+     "Event Gate"
+    ],
+    [
+     34,
+     22,
+     "waygate",
+     "Waygate"
+    ],
+    [
+     29,
+     60,
+     "gate",
+     "Arodas Beach (Lv.7)"
     ]
    ],
    "visited": true,
@@ -599,14 +680,15 @@
    ]
   },
   "17": {
-   "at": 0,
+   "at": 1792292242515,
    "name": "Southern Foothill",
    "type": "Normal",
    "g": [
     "Copper Mine",
     "Aspen Grove",
     "Cotton Field",
-    "Mucky Patch"
+    "Mucky Patch",
+    "Minnow Pier"
    ],
    "gt": [
     [
@@ -638,6 +720,11 @@
      54,
      53,
      "Copper Mine"
+    ],
+    [
+     30,
+     42,
+     "Minnow Pier"
     ]
    ],
    "m": [
@@ -759,7 +846,7 @@
    ]
   },
   "20": {
-   "at": 0,
+   "at": 1792292303717,
    "name": "Windy Fields",
    "type": "Normal",
    "g": [
@@ -865,7 +952,7 @@
    ]
   },
   "22": {
-   "at": 0,
+   "at": 1792464670426,
    "name": "Owranbu River",
    "type": "Normal",
    "g": [
@@ -3007,7 +3094,7 @@
    ]
   },
   "119": {
-   "at": 1792285395954,
+   "at": 1792480151755,
    "name": "Swamp",
    "m": [
     "Wisp Phantom",
@@ -3032,7 +3119,7 @@
    ]
   },
   "120": {
-   "at": 0,
+   "at": 1792474682684,
    "name": "Swamp",
    "type": "Normal",
    "m": [
@@ -3601,8 +3688,30 @@
    "name": "Caeltys’ Causeway"
   },
   "182": {
-   "at": 0,
-   "name": "Caeltys’ Causeway"
+   "at": 1792577502051,
+   "name": "Caeltys’ Causeway",
+   "m": [
+    "Wendigo",
+    "Ankheg",
+    "Drow",
+    "Forest Guardian",
+    "Cockatrice"
+   ],
+   "visited": true,
+   "edges": [
+    [
+     182,
+     181,
+     6,
+     34
+    ],
+    [
+     182,
+     183,
+     61,
+     36
+    ]
+   ]
   },
   "183": {
    "at": 1792614963013,
@@ -4658,6 +4767,10 @@
     ]
    ]
   },
+  "230": {
+   "at": 0,
+   "name": "Red Desert"
+  },
   "231": {
    "at": 0,
    "name": "Old Graveyard"
@@ -5407,14 +5520,12 @@
    ]
   },
   "291": {
-   "at": 1792629522010,
+   "at": 1792643417987,
    "name": "Itham’s Anchorage",
    "type": "Normal",
    "g": [
     "Coal Mine",
-    "Smallmouth Bass Pier",
-    "Coal 采矿",
-    "Smallmouth Bass 码头"
+    "Smallmouth Bass Pier"
    ],
    "gt": [
     [
@@ -5432,6 +5543,20 @@
     "Merfolk",
     "Faery",
     "Oculus"
+   ],
+   "ex": [
+    [
+     37,
+     2,
+     "gate",
+     "Itham’s Old Bay (Lv.34)"
+    ],
+    [
+     51,
+     21,
+     "waygate",
+     "Waygate"
+    ]
    ],
    "visited": true,
    "edges": [
@@ -6034,8 +6159,9 @@
    "name": "Sleepy Hollow"
   },
   "1183": {
-   "at": 1792634621245,
+   "at": 1792638637756,
    "name": "The Sacred Wilds Lobby",
+   "type": "Secret",
    "g": [
     "Quarry",
     "Grove",
@@ -6076,14 +6202,16 @@
      "Patch"
     ]
    ],
+   "ex": [
+    [
+     24,
+     35,
+     "gate",
+     "Elundi (Lv.10)"
+    ]
+   ],
    "visited": true,
    "edges": [
-    [
-     1183,
-     5,
-     24,
-     35
-    ],
     [
      1183,
      16,
