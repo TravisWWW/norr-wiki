@@ -1,7 +1,7 @@
 {
  "meta": {
   "source": "小伴侣地图数据（MapDB）· 3 位贡献者合并",
-  "updated": "2026-10-22T23:42:59.005Z",
+  "updated": "2026-10-22T23:54:56.621Z",
   "version": "1.0",
   "contributors": [
    {
@@ -15,9 +15,9 @@
    {
     "file": "maps-1330.json",
     "char": "#1330",
-    "level": 38,
-    "time": "2026-10-22T04:30:26.541Z",
-    "count": 330,
+    "level": 44,
+    "time": "2026-10-22T23:54:35.414Z",
+    "count": 339,
     "mergedAt": "2026-10-22"
    },
    {
@@ -29,7 +29,7 @@
     "mergedAt": "2026-10-22"
    }
   ],
-  "count": 338
+  "count": 339
  },
  "maps": {
   "1": {
@@ -110,13 +110,13 @@
    ]
   },
   "5": {
-   "at": 1792702629212,
+   "at": 1792706391671,
    "name": "El Caspar",
    "type": "City",
    "g": [
     "Minnow Pier",
-    "Combat Training",
-    "Mucky Patch"
+    "Mucky Patch",
+    "Combat Training"
    ],
    "gt": [
     [
@@ -222,11 +222,17 @@
      34,
      39,
      28
+    ],
+    [
+     5,
+     998,
+     39,
+     30
     ]
    ]
   },
   "6": {
-   "at": 1792702602287,
+   "at": 1792706358142,
    "name": "Brisban Pond",
    "type": "Normal",
    "g": [
@@ -436,7 +442,7 @@
    ]
   },
   "11": {
-   "at": 1792702656032,
+   "at": 1792706416768,
    "name": "Elena’s Crossroad",
    "type": "Normal",
    "g": [
@@ -522,7 +528,7 @@
    ]
   },
   "12": {
-   "at": 1792710230421,
+   "at": 1792710541921,
    "name": "Forested Canyon",
    "type": "Normal",
    "m": [
@@ -622,13 +628,16 @@
    ]
   },
   "14": {
-   "at": 1792702564596,
+   "at": 1792706323778,
    "name": "Arodas Lakeshore",
    "type": "Normal",
    "g": [
     "Mucky Patch",
     "Cotton Field",
-    "Minnow Pier"
+    "Minnow Pier",
+    "Mucky 修正档",
+    "Cotton 田野",
+    "Minnow 码头"
    ],
    "gt": [
     [
@@ -687,11 +696,12 @@
    ]
   },
   "15": {
-   "at": 1792702526561,
+   "at": 1792706290153,
    "name": "Arodas Beach",
    "type": "Normal",
    "g": [
-    "Shrimp Pier"
+    "Shrimp Pier",
+    "Shrimp 码头"
    ],
    "gt": [
     [
@@ -739,7 +749,7 @@
    ]
   },
   "16": {
-   "at": 1792702483953,
+   "at": 1792706256538,
    "name": "Elundi",
    "type": "City",
    "g": [
@@ -976,7 +986,7 @@
    ]
   },
   "20": {
-   "at": 1792292303717,
+   "at": 1792681044528,
    "name": "Windy Fields",
    "type": "Normal",
    "g": [
@@ -1017,6 +1027,26 @@
     "Deer",
     "Snake",
     "Hare"
+   ],
+   "ex": [
+    [
+     28,
+     3,
+     "gate",
+     "Manor’s Courtyard (Lv.4)"
+    ],
+    [
+     16,
+     30,
+     "gate",
+     "El Caspar (Lv.1)"
+    ],
+    [
+     57,
+     47,
+     "gate",
+     "Forest Of Owranbu (Lv.4)"
+    ]
    ],
    "visited": true,
    "edges": [
@@ -1222,7 +1252,7 @@
    ]
   },
   "24": {
-   "at": 0,
+   "at": 1792681074573,
    "name": "Manor’s Courtyard",
    "type": "Normal",
    "m": [
@@ -1230,6 +1260,20 @@
     "Bison",
     "Wolf",
     "Goblin Soldier"
+   ],
+   "ex": [
+    [
+     34,
+     32,
+     "gate",
+     "Manor Main Floor (Lv.4)"
+    ],
+    [
+     9,
+     47,
+     "gate",
+     "Windy Fields (Lv.1)"
+    ]
    ],
    "visited": true,
    "edges": [
@@ -1537,9 +1581,44 @@
    ]
   },
   "34": {
-   "at": 0,
+   "at": 1792683347859,
    "name": "Sewers",
-   "type": "Normal"
+   "type": "Normal",
+   "m": [
+    "Eel",
+    "Cockroach",
+    "Leech",
+    "Rat"
+   ],
+   "ex": [
+    [
+     54,
+     16,
+     "gate",
+     "El Caspar (Lv.1)"
+    ],
+    [
+     38,
+     18,
+     "entrance",
+     "Entrance"
+    ]
+   ],
+   "visited": true,
+   "edges": [
+    [
+     34,
+     5,
+     54,
+     16
+    ],
+    [
+     34,
+     35,
+     38,
+     18
+    ]
+   ]
   },
   "35": {
    "at": 0,
@@ -1611,7 +1690,7 @@
    ]
   },
   "41": {
-   "at": 0,
+   "at": 1792683438767,
    "name": "Owranbu Drylands",
    "type": "Normal",
    "m": [
@@ -1621,6 +1700,20 @@
     "Nomadic Cleric",
     "Raider",
     "Cassowary"
+   ],
+   "ex": [
+    [
+     44,
+     7,
+     "gate",
+     "Sandstorm Pass (Lv.11)"
+    ],
+    [
+     24,
+     57,
+     "gate",
+     "Owranbu (Lv.10)"
+    ]
    ],
    "visited": true,
    "edges": [
@@ -2082,7 +2175,7 @@
    "name": "Abandoned Mine"
   },
   "61": {
-   "at": 0,
+   "at": 1792680209329,
    "name": "Sandstorm Pass",
    "type": "Normal",
    "m": [
@@ -2092,6 +2185,26 @@
     "Bone Scarab",
     "Nomadic Cleric",
     "Scorpion"
+   ],
+   "ex": [
+    [
+     43,
+     9,
+     "gate",
+     "Sun-Scorched Plateau (Lv.11)"
+    ],
+    [
+     58,
+     38,
+     "gate",
+     "Mesa Mine Area (Lv.11)"
+    ],
+    [
+     36,
+     60,
+     "gate",
+     "Owranbu Drylands (Lv.10)"
+    ]
    ],
    "visited": true,
    "edges": [
@@ -2116,7 +2229,7 @@
    ]
   },
   "62": {
-   "at": 0,
+   "at": 1792680241868,
    "name": "Sun-Scorched Plateau",
    "type": "Normal",
    "m": [
@@ -2126,6 +2239,26 @@
     "Scorpion",
     "Raider",
     "Bone Scarab"
+   ],
+   "ex": [
+    [
+     47,
+     7,
+     "gate",
+     "Sandspire Summit (Lv.13)"
+    ],
+    [
+     17,
+     8,
+     "smugglers_route",
+     "Smugglers Route"
+    ],
+    [
+     36,
+     60,
+     "gate",
+     "Sandstorm Pass (Lv.11)"
+    ]
    ],
    "visited": true,
    "edges": [
@@ -2140,6 +2273,12 @@
      63,
      47,
      7
+    ],
+    [
+     62,
+     11,
+     0,
+     0
     ]
    ]
   },
@@ -2653,7 +2792,7 @@
    ]
   },
   "90": {
-   "at": 0,
+   "at": 1792676822392,
    "name": "Whispering Sands",
    "type": "Normal",
    "m": [
@@ -2663,6 +2802,26 @@
     "Bone Scarab",
     "Nomadic Cleric",
     "Scorpion"
+   ],
+   "ex": [
+    [
+     28,
+     7,
+     "gate",
+     "Drouver (Lv.15)"
+    ],
+    [
+     22,
+     59,
+     "gate",
+     "Dust Outskirts (Lv.14)"
+    ],
+    [
+     45,
+     60,
+     "smugglers_route",
+     "Smugglers Route"
+    ]
    ],
    "visited": true,
    "edges": [
@@ -2677,13 +2836,51 @@
      100,
      22,
      59
+    ],
+    [
+     90,
+     76,
+     0,
+     0
     ]
    ]
   },
   "91": {
-   "at": 1792327909229,
+   "at": 1792676807368,
    "name": "Drouver",
    "type": "City",
+   "ex": [
+    [
+     28,
+     7,
+     "gate",
+     "Savanna (Lv.16)"
+    ],
+    [
+     54,
+     22,
+     "gate",
+     "Savanna (Lv.15)"
+    ],
+    [
+     33,
+     34,
+     "waygate",
+     "Waygate"
+    ],
+    [
+     13,
+     35,
+     "gate",
+     "Savanna (Lv.14)"
+    ],
+    [
+     34,
+     60,
+     "gate",
+     "Whispering Sands (Lv.14)"
+    ]
+   ],
    "visited": true,
    "smith": true,
    "edges": [
@@ -3681,9 +3878,29 @@
    ]
   },
   "134": {
-   "at": 0,
+   "at": 1792685421952,
    "name": "Sanjuo",
    "type": "City",
+   "ex": [
+    [
+     24,
+     13,
+     "gate",
+     "Magic Plains (Lv.19)"
+    ],
+    [
+     20,
+     27,
+     "waygate",
+     "Waygate"
+    ],
+    [
+     54,
+     54,
+     "gate",
+     "Magic Plains (Lv.40)"
+    ]
+   ],
    "edges": [
     [
      134,
@@ -4712,7 +4929,7 @@
    ]
   },
   "211": {
-   "at": 0,
+   "at": 1792680301950,
    "name": "Taiga",
    "type": "Normal",
    "m": [
@@ -4722,6 +4939,20 @@
     "Cougar",
     "Berserker",
     "Yak"
+   ],
+   "ex": [
+    [
+     33,
+     2,
+     "gate",
+     "Taiga (Lv.41)"
+    ],
+    [
+     62,
+     59,
+     "smugglers_route",
+     "Smugglers Route"
+    ]
    ],
    "visited": true,
    "edges": [
@@ -4734,12 +4965,111 @@
    ]
   },
   "212": {
-   "at": 0,
-   "name": "Taiga"
+   "at": 1792685230846,
+   "name": "Taiga",
+   "g": [
+    "Mithril Mine"
+   ],
+   "gt": [
+    [
+     20,
+     45,
+     "Mithril Mine"
+    ]
+   ],
+   "m": [
+    "Cougar",
+    "Frostbinder",
+    "Polar Bear",
+    "Valkyrie",
+    "Yak",
+    "Berserker"
+   ],
+   "ex": [
+    [
+     47,
+     2,
+     "gate",
+     "Taiga (Lv.43)"
+    ],
+    [
+     58,
+     43,
+     "waygate",
+     "Waygate"
+    ],
+    [
+     54,
+     64,
+     "gate",
+     "Taiga (Lv.40)"
+    ]
+   ],
+   "visited": true,
+   "edges": [
+    [
+     212,
+     211,
+     54,
+     64
+    ],
+    [
+     212,
+     213,
+     47,
+     2
+    ]
+   ]
   },
   "213": {
-   "at": 0,
-   "name": "Taiga"
+   "at": 1792680764184,
+   "name": "Taiga",
+   "g": [
+    "Ramie Field"
+   ],
+   "gt": [
+    [
+     26,
+     25,
+     "Ramie Field"
+    ]
+   ],
+   "m": [
+    "Cougar",
+    "Frostbinder",
+    "Polar Bear",
+    "Valkyrie",
+    "Berserker",
+    "Yak"
+   ],
+   "ex": [
+    [
+     28,
+     5,
+     "gate",
+     "Taiga (Lv.45)"
+    ],
+    [
+     32,
+     64,
+     "gate",
+     "Taiga (Lv.41)"
+    ]
+   ],
+   "edges": [
+    [
+     213,
+     212,
+     32,
+     64
+    ],
+    [
+     213,
+     214,
+     28,
+     5
+    ]
+   ]
   },
   "214": {
    "at": 0,
@@ -5557,8 +5887,56 @@
    "name": "Taiga"
   },
   "269": {
-   "at": 0,
-   "name": "Orc’s Bone Road"
+   "at": 1792676451940,
+   "name": "Orc’s Bone Road",
+   "g": [
+    "Ramie Field"
+   ],
+   "gt": [
+    [
+     50,
+     39,
+     "Ramie Field"
+    ]
+   ],
+   "m": [
+    "Terastodon (?)",
+    "Orc Warrior (?)",
+    "Orc Hunter (?)",
+    "Orc Warlock (?)",
+    "Orc Hunter",
+    "Orc Warrior",
+    "Orc Warlock",
+    "Terastodon"
+   ],
+   "ex": [
+    [
+     39,
+     5,
+     "gate",
+     "Ururg (Lv.20)"
+    ],
+    [
+     37,
+     65,
+     "gate",
+     "Orc’s Bone Road (Lv.41)"
+    ]
+   ],
+   "edges": [
+    [
+     269,
+     229,
+     39,
+     5
+    ],
+    [
+     269,
+     270,
+     37,
+     65
+    ]
+   ]
   },
   "270": {
    "at": 0,
@@ -5581,7 +5959,7 @@
    "name": "Shrubland"
   },
   "275": {
-   "at": 1792521703892,
+   "at": 1792676416897,
    "name": "Shrubland",
    "type": "Normal",
    "m": [
@@ -5591,6 +5969,20 @@
     "Orc Hunter",
     "Orc Warlock",
     "Terastodon"
+   ],
+   "ex": [
+    [
+     55,
+     6,
+     "gate",
+     "Shrubland (Lv.24)"
+    ],
+    [
+     11,
+     47,
+     "gate",
+     "Ururg (Lv.20)"
+    ]
    ],
    "visited": true,
    "edges": [
@@ -5796,7 +6188,7 @@
    ]
   },
   "281": {
-   "at": 1792695350747,
+   "at": 1792712772070,
    "name": "Trescan",
    "type": "City",
    "g": [
@@ -6142,7 +6534,7 @@
    ]
   },
   "291": {
-   "at": 1792665289709,
+   "at": 1792669384258,
    "name": "Itham’s Anchorage",
    "type": "Normal",
    "g": [
@@ -6417,15 +6809,15 @@
    ]
   },
   "324": {
-   "at": 1792712187710,
+   "at": 1792713213821,
    "name": "Dark Boreal",
    "type": "Normal",
    "m": [
-    "Armored Ram",
-    "Dwarven Hunter",
-    "Dwarven Caster",
     "Dwarven Guard",
-    "Komodo Basilisk"
+    "Dwarven Caster",
+    "Komodo Basilisk",
+    "Armored Ram",
+    "Dwarven Hunter"
    ],
    "ex": [
     [
@@ -6454,35 +6846,11 @@
      325,
      39,
      1
-    ],
-    [
-     324,
-     280,
-     23,
-     56
-    ],
-    [
-     324,
-     323,
-     10,
-     18
-    ],
-    [
-     324,
-     324,
-     22,
-     4
-    ],
-    [
-     324,
-     342,
-     51,
-     54
     ]
    ]
   },
   "325": {
-   "at": 1792712271377,
+   "at": 1792713239281,
    "name": "Dark Boreal",
    "type": "Normal",
    "g": [
@@ -6498,9 +6866,9 @@
    "m": [
     "Dwarven Guard",
     "Armored Ram",
-    "Dwarven Caster",
+    "Komodo Basilisk",
     "Dwarven Hunter",
-    "Komodo Basilisk"
+    "Dwarven Caster"
    ],
    "ex": [
     [
@@ -6533,7 +6901,7 @@
    ]
   },
   "326": {
-   "at": 1792712304319,
+   "at": 1792713272344,
    "name": "Dark Boreal",
    "type": "Normal",
    "g": [
@@ -6550,8 +6918,8 @@
     "Dwarven Caster",
     "Dwarven Guard",
     "Armored Ram",
-    "Dwarven Hunter",
-    "Komodo Basilisk"
+    "Komodo Basilisk",
+    "Dwarven Hunter"
    ],
    "ex": [
     [
@@ -6573,7 +6941,6 @@
      "Dark Boreal (Lv.41)"
     ]
    ],
-   "visited": true,
    "edges": [
     [
      326,
@@ -6713,33 +7080,357 @@
    "name": "The Ember Forge"
   },
   "342": {
-   "at": 0,
-   "name": "Dark Boreal"
+   "at": 1792676606112,
+   "name": "Dark Boreal",
+   "m": [
+    "Armored Ram",
+    "Dwarven Guard",
+    "Dwarven Caster",
+    "Dwarven Hunter",
+    "Komodo Basilisk"
+   ],
+   "ex": [
+    [
+     5,
+     9,
+     "gate",
+     "Trescan (Lv.30)"
+    ],
+    [
+     64,
+     60,
+     "gate",
+     "Dark Boreal (Lv.41)"
+    ]
+   ],
+   "visited": true,
+   "edges": [
+    [
+     342,
+     281,
+     5,
+     9
+    ],
+    [
+     342,
+     343,
+     64,
+     60
+    ]
+   ]
   },
   "343": {
-   "at": 0,
-   "name": "Dark Boreal"
+   "at": 1792675821121,
+   "name": "Dark Boreal",
+   "m": [
+    "Dwarven Guard",
+    "Armored Ram",
+    "Komodo Basilisk",
+    "Dwarven Caster",
+    "Dwarven Hunter"
+   ],
+   "ex": [
+    [
+     5,
+     9,
+     "gate",
+     "Dark Boreal (Lv.40)"
+    ],
+    [
+     63,
+     59,
+     "gate",
+     "Dark Boreal (Lv.43)"
+    ]
+   ],
+   "edges": [
+    [
+     343,
+     342,
+     5,
+     9
+    ],
+    [
+     343,
+     344,
+     63,
+     59
+    ]
+   ]
   },
   "344": {
-   "at": 0,
-   "name": "Dark Boreal"
+   "at": 1792675856166,
+   "name": "Dark Boreal",
+   "m": [
+    "Dwarven Guard",
+    "Armored Ram",
+    "Komodo Basilisk",
+    "Dwarven Hunter",
+    "Dwarven Caster"
+   ],
+   "ex": [
+    [
+     4,
+     5,
+     "gate",
+     "Dark Boreal (Lv.41)"
+    ],
+    [
+     63,
+     64,
+     "gate",
+     "Dark Boreal (Lv.45)"
+    ]
+   ],
+   "edges": [
+    [
+     344,
+     343,
+     4,
+     5
+    ],
+    [
+     344,
+     345,
+     63,
+     64
+    ]
+   ]
   },
   "345": {
-   "at": 0,
-   "name": "Dark Boreal"
+   "at": 1792675916240,
+   "name": "Dark Boreal",
+   "m": [
+    "Armored Ram",
+    "Dwarven Guard",
+    "Dwarven Caster",
+    "Komodo Basilisk",
+    "Dwarven Hunter"
+   ],
+   "ex": [
+    [
+     4,
+     8,
+     "gate",
+     "Dark Boreal (Lv.43)"
+    ],
+    [
+     63,
+     59,
+     "gate",
+     "Dark Boreal (Lv.47)"
+    ]
+   ],
+   "edges": [
+    [
+     345,
+     344,
+     4,
+     8
+    ],
+    [
+     345,
+     346,
+     63,
+     59
+    ]
+   ]
   },
   "346": {
-   "at": 0,
-   "name": "Dark Boreal"
+   "at": 1792675976307,
+   "name": "Dark Boreal",
+   "g": [
+    "Laterite Quarry",
+    "Ramie Field",
+    "Quality Patch"
+   ],
+   "gt": [
+    [
+     27,
+     32,
+     "Laterite Quarry"
+    ],
+    [
+     32,
+     49,
+     "Ramie Field"
+    ],
+    [
+     37,
+     49,
+     "Quality Patch"
+    ]
+   ],
+   "m": [
+    "Armored Ram",
+    "Dwarven Guard",
+    "Dwarven Hunter",
+    "Dwarven Caster",
+    "Komodo Basilisk"
+   ],
+   "ex": [
+    [
+     1,
+     23,
+     "gate",
+     "Dark Boreal (Lv.45)"
+    ],
+    [
+     63,
+     36,
+     "gate",
+     "Dark Boreal (Lv.48)"
+    ]
+   ],
+   "edges": [
+    [
+     346,
+     293,
+     0,
+     0
+    ],
+    [
+     346,
+     345,
+     1,
+     23
+    ],
+    [
+     346,
+     347,
+     63,
+     36
+    ]
+   ]
   },
   "347": {
-   "at": 0,
-   "name": "Dark Boreal"
+   "at": 1792676126528,
+   "name": "Dark Boreal",
+   "g": [
+    "Beech Grove"
+   ],
+   "gt": [
+    [
+     20,
+     11,
+     "Beech Grove"
+    ]
+   ],
+   "m": [
+    "Armored Ram",
+    "Dwarven Guard",
+    "Dwarven Hunter",
+    "Komodo Basilisk",
+    "Dwarven Caster"
+   ],
+   "ex": [
+    [
+     65,
+     36,
+     "gate",
+     "Laen Dorei (Lv.50)"
+    ],
+    [
+     2,
+     37,
+     "gate",
+     "Dark Boreal (Lv.47)"
+    ]
+   ],
+   "edges": [
+    [
+     347,
+     346,
+     2,
+     37
+    ],
+    [
+     347,
+     348,
+     65,
+     36
+    ]
+   ]
   },
   "348": {
-   "at": 0,
+   "at": 1792676184096,
    "name": "Laen Dorei",
-   "type": "City"
+   "type": "City",
+   "ex": [
+    [
+     35,
+     36,
+     "waygate",
+     "Waygate"
+    ],
+    [
+     59,
+     58,
+     "gate",
+     "Dark Boreal (Lv.50)"
+    ],
+    [
+     10,
+     59,
+     "gate",
+     "Dark Boreal (Lv.48)"
+    ]
+   ],
+   "edges": [
+    [
+     348,
+     347,
+     10,
+     59
+    ],
+    [
+     348,
+     349,
+     59,
+     58
+    ]
+   ]
+  },
+  "349": {
+   "at": 1792679974017,
+   "name": "Dark Boreal",
+   "m": [
+    "Dwarven Guard (?)",
+    "Dwarven Guard",
+    "Dwarven Caster",
+    "Komodo Basilisk",
+    "Dwarven Hunter",
+    "Armored Ram",
+    "Armored Ram (?)"
+   ],
+   "ex": [
+    [
+     15,
+     8,
+     "gate",
+     "Laen Dorei (Lv.50)"
+    ],
+    [
+     41,
+     65,
+     "gate",
+     "Dark Boreal (Lv.51)"
+    ]
+   ],
+   "edges": [
+    [
+     349,
+     348,
+     15,
+     8
+    ],
+    [
+     349,
+     350,
+     41,
+     65
+    ]
+   ]
   },
   "352": {
    "at": 0,
@@ -6752,11 +7443,20 @@
    "type": "City"
   },
   "900": {
-   "at": 0,
-   "name": "Abyssal Tower Entrance"
+   "at": 1792696897849,
+   "name": "Abyssal Tower Entrance",
+   "ex": [
+    [
+     31,
+     40,
+     "waygate",
+     "Waygate"
+    ]
+   ],
+   "visited": true
   },
   "901": {
-   "at": 0,
+   "at": 1792693910962,
    "name": "Abyssal Tower",
    "m": [
     "Snake",
@@ -6768,6 +7468,27 @@
     "Bison",
     "Wasp"
    ],
+   "ex": [
+    [
+     26,
+     32,
+     "gate",
+     "Abyssal Tower (Lv.1)"
+    ],
+    [
+     26,
+     36,
+     "entrance",
+     "Entrance"
+    ],
+    [
+     42,
+     41,
+     "gate",
+     "Abyssal Tower Entrance (Lv.1)"
+    ]
+   ],
+   "visited": true,
    "edges": [
     [
      901,
@@ -6784,7 +7505,7 @@
    ]
   },
   "902": {
-   "at": 0,
+   "at": 1792697248434,
    "name": "Abyssal Tower",
    "m": [
     "Knight",
@@ -6792,8 +7513,42 @@
     "Lightning Elemental",
     "Wizard",
     "Arcane Imp",
-    "Ogre Mage"
+    "Ogre Mage",
+    "Kraken Mother"
    ],
+   "ex": [
+    [
+     28,
+     26,
+     "gate",
+     "Abyssal Tower (Lv.10)"
+    ],
+    [
+     44,
+     31,
+     "gate",
+     "Abyssal Tower (Lv.10)"
+    ],
+    [
+     26,
+     32,
+     "gate",
+     "Abyssal Tower (Lv.10)"
+    ],
+    [
+     26,
+     36,
+     "gate",
+     "Abyssal Tower (Lv.10)"
+    ],
+    [
+     42,
+     41,
+     "gate",
+     "Abyssal Tower Entrance (Lv.1)"
+    ]
+   ],
+   "visited": true,
    "edges": [
     [
      902,
@@ -6900,7 +7655,7 @@
    "name": "Fountain of Rebirth"
   },
   "1000": {
-   "at": 1792657249728,
+   "at": 1792675523207,
    "name": "Fountain of Rebirth",
    "type": "Normal",
    "ex": [
@@ -7162,7 +7917,7 @@
    ]
   },
   "1188": {
-   "at": 1792701031795,
+   "at": 1792706222984,
    "name": "The Sacred Wilds",
    "m": [
     "Wyvern"
