@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.112
+// @version      2.6.113
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -184,7 +184,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.112';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
+  const SCRIPT_VER = '2.6.113';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -869,14 +869,23 @@
     return true;
   }
   /* ★ v2.6.111：屏幕上**真正画出来**的地图 id —— 读 .map_table 的底图 URL。
-     比 window.map.id 更贴近「画面」：window.map 可能已经被响应脚本改掉，但 DOM 还是旧的。 */
+     比 window.map.id 更贴近「画面」：window.map 可能已经被响应脚本改掉，但 DOM 还是旧的。
+     ★ v2.6.113 真机实测修正：.map_table 的**计算样式** background-image 被游戏的网格线
+       （repeating-linear-gradient）覆盖了 → getComputedStyle 拿不到底图，必须读**内联 style**
+       （实测 map 1183：inline = "background-image: url(\"/images/maps/map_1183.jpg\")"，
+        computed = repeating-linear-gradient(...)）。两个都试，谁有算谁。 */
   function renderedMapId() {
     try {
       const el = document.querySelector('#map_container .map_table') || document.querySelector('.map_table');
       if (!el) return 0;
-      const bg = window.getComputedStyle ? window.getComputedStyle(el).backgroundImage : '';
-      const m = /map_(\d+)\.(?:jpg|jpeg|png)/i.exec(bg || '');
-      if (m) return +m[1];
+      const src = [
+        el.getAttribute('style') || '',
+        (window.getComputedStyle ? window.getComputedStyle(el).backgroundImage : '')
+      ];
+      for (let i = 0; i < src.length; i++) {
+        const m = /maps\/map_(\d+)\.(?:jpg|jpeg|png|webp)/i.exec(src[i]) || /map_(\d+)\.(?:jpg|jpeg|png|webp)/i.exec(src[i]);
+        if (m) return +m[1];
+      }
     } catch (e) { /* ignore */ }
     return 0;
   }

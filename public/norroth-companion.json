@@ -1,8 +1,8 @@
 {
-  "version": "2.6.112",
+  "version": "2.6.113",
   "date": "2026-10-23",
-  "notes": "v2.6.112 调试接口补齐：__norrothFarm 暴露 softReloadMap / softRefreshEntities / renderedMapId / recenterCamera / scheduleRenderCheck / checkMapRender / checkEntityFresh（便于真机验收「换图没重画」与「怪物列表过期」）",
+  "notes": "v2.6.113 真机实测修正：renderedMapId() 改读 .map_table 的内联 style（计算样式的 background-image 被游戏网格线 repeating-linear-gradient 覆盖，读不到底图）—— 实测 map 1183 内联 style 才有 map_1183.jpg",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 764600,
-  "sha256": "42e0618daa1b4243fdc3aa220b28232473f7e9595afbd8139834d103922f4fc8"
+  "size": 765182,
+  "sha256": "6045dcb42735f8a0471c23949ab8d178c58bfd638fe9ac5d28accbff31618099"
 }
