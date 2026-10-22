@@ -1,8 +1,8 @@
 {
-  "version": "2.6.107",
+  "version": "2.6.108",
   "date": "2026-10-23",
-  "notes": "v2.6.107 修复：导航途中击杀怪物后 frame_Loot 掉落窗死锁（角色原地卡死 20 分钟）→ 导航期间主动全部拾取/超时强关；爬塔每层两个房间必须都清完才下楼（新增 towerRoomDoor 用自环门判定房间门；塔门提示还剩 N 只怪时不点 Enter 先回去清）",
+  "notes": "v2.6.108 修复：① 爬塔一层被多道门切成多区域时，通用「清区域→过门→重复→全清才下楼」（房间门=door_tiles 自环门，记已走过的门）；② 活动大厅等级门识别：旧逻辑会误把回城出口 Elundi(Lv.10) 当战斗区入口，改为只认 action=level_gate + 实测「门→目标图」映射（env_<id>.jpg），内置 6 门映射 + 运行时学习；③ 副本/塔里不能进活动（Failed: Inside Event）→ 先出副本再进",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 744935,
-  "sha256": "b840b33843bddcc42097141a1a84122244fd82560c11a6a462c0214cb854bcb7"
+  "size": 751556,
+  "sha256": "2bb6b119e6c3c75545d7c3577e473e14fa3b23ec66bb74051b730eef5c977309"
 }

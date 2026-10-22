@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.107
+// @version      2.6.108
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -184,7 +184,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.107';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
+  const SCRIPT_VER = '2.6.108';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -281,6 +281,7 @@
     towerGateAt: 0, towerOff: null, tq: null,                   // 爬塔：塔门重触发时间 / 走开再走回 / 前置任务跟随
     towerNavAt: 0, towerOpenAt: 0, towerQuestLogAt: 0,          // 爬塔：去城镇节流 / 开塔节流 / 任务提示日志节流
     towerRoomTries: 0, towerDoorAt: 0, towerRemainLogAt: 0,     // ★ v2.6.107：过房间门次数 / 房间门重触发节流 / 「还剩 N 只」日志节流
+    towerDoorsUsed: {}, towerDoorLogAt: 0,                      // ★ v2.6.108：本层已走过的房间门 / 「门都试过了」日志节流
     idleActAt: 0, idleActBusy: false,                           // 随机浏览面板：下次允许 / 正在浏览
     mapSwitch: { active: false, lastAt: 0, idleSince: 0 },    // 自动切图刷怪
     paused: false,                                            // ★ 已暂停（统计保留，可继续）
@@ -4824,6 +4825,15 @@
   /* ★ v2.6.101：活动「战斗型」—— 大厅（1183）里有按等级分的战斗区入口，进「当前等级」对应的那个。
      等级区间来自官方 Wiki / map_db：1184=1-9 / 1185=10-19 / 1186=20-29 / 1187=30-39 / 1188=40-49 / 1189=50-59。 */
   const EVENT_COMBAT_MAPS = { '1184': [1, 9], '1185': [10, 19], '1186': [20, 29], '1187': [30, 39], '1188': [40, 49], '1189': [50, 59] };
+  /* ★ v2.6.108：活动大厅（1183）的「等级门」—— 格子 action='level_gate'，name 只有 'Level Gate'，
+     **等级不在格子上**，要踩上去看弹出的 #frame_LevelGate：
+       <h1>The Sacred Wilds (Level 10-19)</h1> + <img src="/images/maps/ambient/env_1185.jpg">
+     → env_<目标图id>.jpg 就是这道门通向哪张图。踩对等级的门会**直接进图**（不弹窗）；
+        踩错才弹这个窗（"A strong force is holding you back"）。
+     实测 2026-10-23（Doubledawn 活动 / 角色 Lv10，大厅 1183）：
+       17-13→1186(20-29) · 38-13→1187(30-39) · 52-12→1188(40-49) · 54-26→1189(50-60) · 11-25→1185(10-19) · 14-41 未测(应为 1184)。
+     用法：① 优先用「本次活动实测学到」的门→图映射；② 否则用下面这张内置表；③ 都对不上就逐个试（踩错就关窗换下一道）。 */
+  const EVENT_LOBBY_GATE_MAP = { '17-13': 1186, '38-13': 1187, '52-12': 1188, '54-26': 1189, '11-25': 1185, '14-41': 1184 };
   function eventCombatTargetId() {
     const lv = +((typeof character === 'object' && character && character.level) || 0);
     if (!(lv > 0)) return 0;
@@ -4864,40 +4874,36 @@
   }
   /* 找大厅里「当前等级该走的那道门」：返回 {x,y,name,id} 或 null */
   function eventCombatGate() {
-    const lv = +((typeof character === 'object' && character && character.level) || 0);
     const want = eventCombatTargetId();
-    /* ★ v2.6.106：door_tiles 属于当前渲染才敢用（换图空窗会拿到上一张图的门） */
-    if (!renderSynced()) return null;
-    /* ① door_tiles 里直接指向战斗区的门（最可靠） */
-    const dt = window.door_tiles || {};
-    const keys = Object.keys(dt);
-    for (let i = 0; i < keys.length; i++) {
-      const to = keys[i], r = EVENT_COMBAT_MAPS[String(to)];
-      if (!r) continue;
-      if (want && +to !== want) continue;
-      if (!want && !(lv >= r[0] && lv <= r[1])) continue;
-      const p = String(dt[to]).replace('ID', '').split('-');
-      const x = +p[0], y = +p[1];
-      if (x > 0 && y > 0) return { x: x, y: y, name: 'The Sacred Wilds (Lv.' + r[0] + '-' + r[1] + ')', id: +to };
+    if (!want) return null;
+    const rng = EVENT_COMBAT_MAPS[String(want)] || [0, 0];
+    const mk = function (g) { return { x: g.x, y: g.y, name: 'The Sacred Wilds (Lv.' + rng[0] + '-' + rng[1] + ')', id: want }; };
+    /* ① 本图所有「等级门」格子 */
+    const gates = $$q('.map_table .tile_poi[action="level_gate"]').map(function (el) {
+      const c = (el.getAttribute('coords') || '').split('-');
+      return { x: +c[0], y: +c[1], key: c[0] + '-' + c[1] };
+    }).filter(function (t) { return t.x > 0 && t.y > 0; });
+    if (!gates.length) return null;
+    const E = st.event;
+    const learned = E.gateMap || {};
+    const tried = E.gateTried || {};
+    /* ★ v2.6.108：旧逻辑「按格子名字里的等级区间匹配」是错的 —— 大厅里唯一带 "(Lv.10)" 的格子是
+       **回城出口** 'Elundi (Lv.10)'，会被误当成战斗区入口（实测踩过）。现在只认 level_gate 格子 +
+       实测/内置的「门→目标图」映射。 */
+    const idOf = function (key) { return (learned[key] !== undefined) ? learned[key] : EVENT_LOBBY_GATE_MAP[key]; };
+    /* ② 已知通向目标图、且没被实测否掉的门 → 取最近的一道 */
+    const good = gates.filter(function (g) { return idOf(g.key) === want && learned[g.key] !== -1; });
+    if (good.length) {
+      const cx = character.x, cy = character.y;
+      good.sort(function (a, b) { return manhattan(cx, cy, a.x, a.y) - manhattan(cx, cy, b.x, b.y); });
+      return mk(good[0]);
     }
-    /* ② 本图所有 tile_poi（不限 action），按名字里的等级区间匹配 */
-    const els = $$q('.map_table .tile_poi[action]');
-    const cands = [];
-    for (let i = 0; i < els.length; i++) {
-      const nm = String(els[i].getAttribute('name') || '').trim();
-      const r = eventLevelRange(nm);
-      if (!r) continue;
-      const cd = String(els[i].getAttribute('coords') || '').split('-');
-      const x = +cd[0], y = +cd[1];
-      if (!(x > 0 && y > 0)) continue;
-      cands.push({ x: x, y: y, name: nm, action: String(els[i].getAttribute('action') || ''), r: r, wilds: /wilds/i.test(nm) });
-    }
-    const inLv = cands.filter(function (c) { return lv >= c.r[0] && lv <= c.r[1]; });
-    /* 优先「名字带 Wilds」的；再优先「真区间(a<b)」的（排除 "Elundi (Lv.10)" 这种单点出口） */
-    let hit = inLv.filter(function (c) { return c.wilds; })[0];
-    if (!hit) hit = inLv.filter(function (c) { return c.r[0] < c.r[1]; })[0];
-    if (!hit && want) hit = inLv[0];
-    return hit || null;
+    /* ③ 映射对不上 → 逐个试「还没试过的门」（踩错会弹 #frame_LevelGate，eventTick 读到目标图后记进 E.gateMap） */
+    const fresh = gates.filter(function (g) { return !tried[g.key] && (learned[g.key] === undefined || learned[g.key] === want); });
+    if (!fresh.length) return null;
+    const cx = character.x, cy = character.y;
+    fresh.sort(function (a, b) { return manhattan(cx, cy, a.x, a.y) - manhattan(cx, cy, b.x, b.y); });
+    return mk(fresh[0]);
   }
   /* 当前是否在「活动战斗区」里（主循环据此强制走战斗逻辑） */
   function eventCombatActive() {
@@ -4912,6 +4918,8 @@
     E.on = false; E.phase = 'idle'; E.busy = false; E.pointName = ''; E.enteredAt = 0;
     E.busyAt = 0; E.checkAt = 0; E.checkFails = 0; E.combatSkipAt = 0; E.lastHas = null;   /* ★ v2.6.73：清掉检查态，避免残留 busy 卡死 */
     E.gateBusy = false; E.gateLogAt = 0; E.combatMap = 0;   /* ★ v2.6.101 */
+    E.dungeonLogAt = 0;                                     /* ★ v2.6.108 */
+    E.gateMap = {}; E.gateTried = {};                       /* ★ v2.6.108：大厅等级门「门→目标图」实测表 / 已试过的门 */
   }
   /* 活动是否开启：/modal/activities 里有没有 Event Gate 的 Join 按钮（实测：活动结束按钮消失） */
   async function eventActivitiesHasJoin() {
@@ -4946,6 +4954,13 @@
   async function eventEnterGate() {
     try {
       if (typeof window.createDialog !== 'function') return false;
+      /* ★ v2.6.108：先探一次响应，识别「Failed: Inside Event」这类服务端拒绝并写清楚日志
+         （原来 createDialog 是 fire-and-forget，失败静默 → 看着像「进活动没反应」）。 */
+      try {
+        const r = await fetch('/modal/event_gate', { credentials: 'same-origin', headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+        const t = await r.text();
+        if (/Failed\s*:\s*Inside Event/i.test(t)) { logEvent('活动：进入被拒（Failed: Inside Event）→ 当前在副本 / 塔里，先出副本再进'); return false; }
+      } catch (e) { /* 探测失败不阻塞，继续走 createDialog */ }
       humanDialog('Event Gate', '', 'ajax', '/modal/event_gate');
       return true;
     } catch (e) { return false; }
@@ -4969,6 +4984,22 @@
     }
     tiles.sort(byDist);
     return tiles[0].name;
+  }
+  /* ★ v2.6.108：当前是否在「副本 / 塔」里 —— 这种地方**不能进活动**。
+     实测（2026-10-23）：角色在深渊塔（map 901）里点 Event Gate，服务端直接返回
+       <script>quickNote('Failed: Inside Event','red'); closeFrame(...)</script>
+     → 白白浪费整个 20 分钟活动窗口。所以进活动前先判这个。
+     判据：① 深渊塔地图（900-911）；② MapDB 类型是 Dungeon / Secret 的图。 */
+  function inDungeonOrTower() {
+    try {
+      const m = +character.current_map;
+      if (!(m > 0)) return '';
+      if (isTowerMap(m)) return '深渊塔';
+      const t = String((MapDB && typeof MapDB.type === 'function' ? MapDB.type(m) : '') || '');
+      if (t === 'Dungeon') return '副本';
+      if (t === 'Secret') return '秘境';
+    } catch (e) { /* ignore */ }
+    return '';
   }
   /* 主循环钩子：true = 本 tick 已被活动逻辑接管（进入 / 返回期间） */
   function eventTick() {
@@ -4994,6 +5025,22 @@
           }
           return false;   /* 交给主循环的战斗逻辑 */
         }
+        /* ★ v2.6.108：踩到「等级不对」的门会弹 #frame_LevelGate（"A strong force is holding you back"）。
+           从里面的 env_<目标图id>.jpg 读出这道门通向哪张图 → 记进 E.gateMap（本次实测），关窗换下一道。
+           踩对等级的门是**直接进图**、不会弹这个窗。 */
+        const lgf = document.getElementById('frame_LevelGate');
+        if (lgf) {
+          const img = lgf.querySelector('img');
+          const src = img ? (img.getAttribute('src') || '') : '';
+          const m = /env_(\d+)\.jpg/.exec(src);
+          const key = character.x + '-' + character.y;
+          E.gateTried = E.gateTried || {}; E.gateTried[key] = 1;
+          if (m) { E.gateMap = E.gateMap || {}; E.gateMap[key] = +m[1]; }
+          logEvent('活动：等级门 ' + key + ' 通向「' + (m ? navMapName(+m[1]) + '（' + m[1] + '）' : '?') + '」—— 等级不符 → 换下一道门');
+          try { closeFrameById('frame_LevelGate'); } catch (e) { /* ignore */ }
+          E.gateBusy = false;
+          return true;
+        }
         /* 在大厅（刚进来 / 从战斗区退回来）→ 选门 + 走过去（异步，走的过程中接管本 tick） */
         if (E.gateBusy) return true;
         const gate = eventCombatGate();
@@ -5009,8 +5056,16 @@
         logEvent('活动：前往战斗区「' + gate.name + '」@' + gate.x + ',' + gate.y + '（角色 Lv ' + (character.level || '?') + '）');
         setStatus('活动：进入战斗区（' + gate.name + '）…');
         (async function () {
-          try { await navWalkTile(gate.x, gate.y, { until: 'mapChange', timeoutMs: 60000, alive: function () { return running && cfg.autoEvent; } }); }
-          catch (e) { /* ignore */ }
+          const from = character.current_map;
+          try {
+            await navWalkTile(gate.x, gate.y, {
+              retrigger: true,
+              /* ★ v2.6.108：踩对 → 换图；踩错 → 弹 #frame_LevelGate。两种都立刻结束，别干等超时。 */
+              cond: function () { return !!document.getElementById('frame_LevelGate') || +character.current_map !== +from; },
+              timeoutMs: 60000,
+              alive: function () { return running && cfg.autoEvent; }
+            });
+          } catch (e) { /* ignore */ }
           finally { E.gateBusy = false; }
         })();
         return true;
@@ -5060,6 +5115,14 @@
        打完这一场（战斗窗口消失）后的第一个 tick 再查，避免战斗中切图 / 打断战斗。
        检查带超时（EVENT_CHECK_TIMEOUT_MS）+ 兜底（E.busy 超过 EVENT_CHECK_STUCK_MS 强制释放）+ 诊断日志。 */
     if (inCombatNow()) { E.combatSkipAt = now(); return false; }   /* 战斗中：本 tick 不查，等打完这一场 */
+    /* ★ v2.6.108：在副本 / 塔里不能进活动（服务端返回 Failed: Inside Event）→ 先不查，
+       也不推进 lastCheckAt，出副本后第一个 tick 立刻能查。 */
+    const _dz = inDungeonOrTower();
+    if (_dz) {
+      if (now() - (E.dungeonLogAt || 0) > 120000) { E.dungeonLogAt = now(); logEvent('活动：当前在「' + currentMapName() + '」（' + _dz + '）里 —— 副本内不能进活动，先出副本再进'); }
+      setStatus('活动开启中，但当前在' + _dz + '里 → 先出副本再进活动');
+      return false;
+    }
     if (now() - (E.lastCheckAt || 0) < EVENT_CHECK_INTERVAL_MS) return false;
     /* ★ 兜底：上一轮检查卡死（fetch 挂死 / 页面被切走）→ 超过 EVENT_CHECK_STUCK_MS 强制释放 busy 重查 */
     if (E.busy) {
@@ -5696,8 +5759,14 @@
     /* 兜底：door_tiles 还没读到自环门时，用本层的 entrance 格 */
     if (!out.length) towerTiles().forEach(function (t) { if (t.action === 'entrance') out.push(t); });
     if (!out.length) return null;
-    const reach = out.filter(function (t) { return isReachable(t.x, t.y); });
-    const list = reach.length ? reach : out;
+    /* ★ v2.6.108：优先「本层还没走过的门」—— 一层可能被多道门切成多个区域，
+       要「清一个区域 → 过一道没走过的门 → 再清」反复，直到本层清空。
+       门都走过了还够不到怪 → 返回 null（上层报状态，不再来回穿门）。 */
+    const used = st.towerDoorsUsed || {};
+    const fresh = out.filter(function (t) { return !used[t.x + '-' + t.y]; });
+    if (!fresh.length) return null;
+    const reach = fresh.filter(function (t) { return isReachable(t.x, t.y); });
+    const list = reach.length ? reach : fresh;
     let best = null, bd = Infinity;
     list.forEach(function (t) { const d = manhattan(character.x, character.y, t.x, t.y); if (d < bd) { bd = d; best = t; } });
     return best;
@@ -5870,7 +5939,7 @@
     }
     st.towerEntered = 0;
     /* ★ frame_TowerGate 关掉了 = 成功进下一层 → 层数 +1 */
-    if (st.towerGateSeen) { st.towerGateSeen = false; st.towerFloor = (st.towerFloor || 1) + 1; st.towerRoomTries = 0; logEvent('爬塔：进入第 ' + st.towerFloor + ' 层'); }
+    if (st.towerGateSeen) { st.towerGateSeen = false; st.towerFloor = (st.towerFloor || 1) + 1; st.towerRoomTries = 0; st.towerDoorsUsed = {}; logEvent('爬塔：进入第 ' + st.towerFloor + ' 层'); }
     const healing = supply();
     if (st.repair.active || st.sell.active) return;
     if (st.mapSwitch.active || navBusy) { setStatus(st.statusText); return; }
@@ -5912,47 +5981,58 @@
        pickTarget 会跳过它们 → 脚本误以为本层清完去下楼，结果被塔门拦住。
        所以只要还有走不到的怪，就先去把「房间门」踩一遍（过门到另一侧），清完才能下楼。
        用 st.towerRoomTries 限制次数，避免门踩不动时死循环。 */
-    if (unreachableEnemies() > 0 && (st.towerRoomTries || 0) < 6) {
+    /* ★ v2.6.108：一层塔被若干道「房间门」切成多个区域 —— 别的区域的怪「走不到」，
+       pickTarget 会跳过它们 → 脚本会误以为本层清完去下楼。
+       通用做法（不假定只有 2 个房间）：只要还有够不到的怪，就去踩一道「本层还没走过的」房间门，
+       过门继续清；反复「清区域 → 过门」直到本层一只怪都不剩，才去下一层入口。
+       房间门判据 = door_tiles 里「目的地 = 本图自己」的自环门（实测 map 901：901→901 @26,36）。 */
+    if (unreachableEnemies() > 0) {
       const door = towerRoomDoor();
-      if (door) {
-        /* 第 1 层的门是 entrance，可能被前置任务锁住 → 交给 stepTowerQuest */
-        if (door.action === 'entrance') {
-          const ef = document.getElementById('frame_Entrance');
-          if (ef && ef.querySelector('a[onclick*="guidePath"]')) {
-            st.phase = 'quest';
-            if (stepTowerQuest()) return;
-          }
-        }
-        if (character.x === door.x && character.y === door.y) {
-          st.phase = 'wait'; setStatus('爬塔：过房间门 → 另一侧…');
-          if (!st.towerDoorAt) st.towerDoorAt = now();
-          if (now() - st.towerDoorAt > 2500) {
-            st.towerDoorAt = now();
-            let done = false;
-            try {
-              const act = (typeof window.getTileActionAt === 'function') ? window.getTileActionAt(door.x, door.y) : null;
-              if (act && typeof window.execTileAction === 'function') { window.execTileAction(act, false); logEvent('爬塔：触发房间门（' + act + '）'); done = true; }
-            } catch (e) { /* ignore */ }
-            if (!done) {
-              const off = towerAdjacentTile(door.x, door.y);
-              if (off) { st.towerOff = { x: off.x, y: off.y, gx: door.x, gy: door.y }; st.towerDoorAt = 0; logEvent('爬塔：房间门未触发 → 走开再走回'); }
-              else safeWalkTo(door.x, door.y);
-            }
-          }
-          return;
-        }
-        if (isReachable(door.x, door.y)) {
-          if (!st.move) st.towerRoomTries = (st.towerRoomTries || 0) + 1;
-          st.target = null;
-          startMove(door.x, door.y, 'tower', '房间门');
-          return;
+      if (!door) {
+        st.phase = 'idle';
+        setStatus('爬塔：还剩 ' + unreachableEnemies() + ' 只怪够不到（本层房间门都走过了）…');
+        if (now() - (st.towerDoorLogAt || 0) > 30000) { st.towerDoorLogAt = now(); logEvent('爬塔：本层还有 ' + unreachableEnemies() + ' 只怪够不到，房间门都试过了 → 这层可能有走不到的区域'); }
+        return;
+      }
+      /* 第 1 层的房间门是 entrance，可能被前置任务锁住 → 交给 stepTowerQuest */
+      if (door.action === 'entrance') {
+        const ef = document.getElementById('frame_Entrance');
+        if (ef && ef.querySelector('a[onclick*="guidePath"]')) {
+          st.phase = 'quest';
+          if (stepTowerQuest()) return;
         }
       }
+      if (character.x === door.x && character.y === door.y) {
+        st.phase = 'wait'; setStatus('爬塔：过房间门 → 下一个区域…');
+        if (!st.towerDoorAt) st.towerDoorAt = now();
+        if (now() - st.towerDoorAt > 2500) {
+          st.towerDoorAt = now();
+          const dk = door.x + '-' + door.y;
+          st.towerDoorsUsed = st.towerDoorsUsed || {};
+          st.towerDoorsUsed[dk] = 1;                 /* 这道门走过了 → 下次换别的门 */
+          let done = false;
+          try {
+            const act = (typeof window.getTileActionAt === 'function') ? window.getTileActionAt(door.x, door.y) : null;
+            if (act && typeof window.execTileAction === 'function') { window.execTileAction(act, false); logEvent('爬塔：触发房间门（' + act + ' @' + dk + '）'); done = true; }
+          } catch (e) { /* ignore */ }
+          if (!done) {
+            const off = towerAdjacentTile(door.x, door.y);
+            if (off) { st.towerOff = { x: off.x, y: off.y, gx: door.x, gy: door.y }; st.towerDoorAt = 0; logEvent('爬塔：房间门未触发 → 走开再走回'); }
+            else safeWalkTo(door.x, door.y);
+          }
+        }
+        return;
+      }
+      if (isReachable(door.x, door.y)) {
+        st.target = null;
+        startMove(door.x, door.y, 'tower', '房间门');
+        return;
+      }
       st.phase = 'idle';
-      setStatus('爬塔：还剩 ' + unreachableEnemies() + ' 只怪在另一侧，但找不到过去的门…');
+      setStatus('爬塔：房间门（' + door.x + '-' + door.y + '）走不到…');
       return;
     }
-    st.towerRoomTries = 0;   /* 本层清完 → 重置过门计数（unreachableEnemies()===0 才会走到这里） */
+    st.towerDoorsUsed = {};   /* 本层清空 → 清掉「已走过的门」，下一层重新开始 */
 
     /* 2) 本层清完 → 去下一层入口 */
     const gate = towerNextGate();
@@ -11249,7 +11329,7 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
     event: { tick: eventTick, reset: eventReset, activitiesHasJoin: eventActivitiesHasJoin, enterGate: eventEnterGate, pickPoint: eventPickPoint, typeOf: eventTypeOf, res: function () { return st.event; }, mapId: EVENT_MAP_ID, combatMaps: EVENT_COMBAT_MAPS, combatTargetId: eventCombatTargetId, combatGate: eventCombatGate, combatActive: eventCombatActive, levelRange: eventLevelRange, dumpTiles: eventDumpTiles },
     mc: { serviceTownNow: activeServiceTown, toggle: mcToggle, togglePause: mcTogglePause, syncBtns: syncMcBtns, queue: mcQueue, profLevels: mcProfLevels, profLevelsCached: mcProfLevelsCached, idleInfo: mcIdleInfo, startIdle: mcStartIdle, switch: mcSwitch, readChars: mcReadChars, setOn: mcSetOn, startAll: mcStartAll, stopAll: mcStopAll, validateAll: mcValidateAll, canGather: mcCanGather, render: mcRender, tick: mcTick, fillCurrent: mcFillCurrent, runTrip: mcRunTrip, beginTrip: mcBeginTrip, runRepairAndDeposit: runRepairAndDeposit, nearestGatherTile: nearestGatherTile, idleRaw: function () { return _mcGatherRaw; }, loadRot: mcLoadRot, saveRot: mcSaveRot, rot: function () { return rot; }, due: mcDue, chars: function () { return cfg.mcChars; }, queueCache: function () { return _mcQueueCache; }, claimIdleRewards: claimIdleRewards, closeIdleDialog: closeIdleResultDialog, refreshStatus: mcRefreshStatus, applyQueue: mcApplyQueue },
     start: () => beginRun('battle'), stop: stop, cfg: cfg, st: st, step: step,
-    startTower: () => beginRun('tower'), stepTower: stepTower, isTowerMap: isTowerMap, towerTiles: towerTiles, towerNextGate: towerNextGate, towerGateCandidates: towerGateCandidates, towerAdjacentTile: towerAdjacentTile, towerRoomDoor: towerRoomDoor, openTower: openTower, nearestTowerTown: nearestTowerTown,
+    startTower: () => beginRun('tower'), stepTower: stepTower, isTowerMap: isTowerMap, towerTiles: towerTiles, towerNextGate: towerNextGate, towerGateCandidates: towerGateCandidates, towerAdjacentTile: towerAdjacentTile, towerRoomDoor: towerRoomDoor, inDungeonOrTower: inDungeonOrTower, openTower: openTower, nearestTowerTown: nearestTowerTown,
     bestiary: { scan: bestiaryScan, ids: bestiaryIds, sync: syncBestiary, token: ghCommunityToken, loadToken: loadCommunityToken, clearLegacyToken: clearLegacyToken, cancel: function(){ _bestCancel = true; } },
     scanEnemies: scanEnemies, attackableEnemies: attackableEnemies, pickTarget: pickTarget,
     rankWeight: rankWeight, nameWeight: nameWeight, detectRank: detectRank, whyText: whyText,
