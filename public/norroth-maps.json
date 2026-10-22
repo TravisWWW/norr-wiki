@@ -1,14 +1,14 @@
 {
  "meta": {
   "source": "小伴侣地图数据（MapDB）· 3 位贡献者合并",
-  "updated": "2026-10-22T10:35:50.496Z",
+  "updated": "2026-10-22T10:45:07.804Z",
   "version": "1.0",
   "contributors": [
    {
     "file": "maps-1151.json",
     "char": "#1151",
     "level": 43,
-    "time": "2026-10-22T07:35:10.234Z",
+    "time": "2026-10-22T10:44:56.818Z",
     "count": 338,
     "mergedAt": "2026-10-22"
    },
@@ -982,7 +982,7 @@
    ]
   },
   "22": {
-   "at": 1792642240877,
+   "at": 1792660896720,
    "name": "Owranbu River",
    "type": "Normal",
    "g": [
@@ -3880,9 +3880,35 @@
    ]
   },
   "183": {
-   "at": 1792614963013,
+   "at": 1792657262068,
    "name": "Caeltys",
    "type": "City",
+   "ex": [
+    [
+     21,
+     12,
+     "waygate",
+     "Waygate"
+    ],
+    [
+     46,
+     12,
+     "gate",
+     "Caeltys’ Yarden (Lv.30)"
+    ],
+    [
+     7,
+     41,
+     "gate",
+     "Caeltys’ Causeway (Lv.31)"
+    ],
+    [
+     61,
+     42,
+     "gate",
+     "Caeltys’ Yarden (Lv.31)"
+    ]
+   ],
    "visited": true,
    "smith": true,
    "edges": [
@@ -4008,7 +4034,7 @@
    ]
   },
   "187": {
-   "at": 1792607471094,
+   "at": 1792657612559,
    "name": "Caeltys’ Yarden",
    "m": [
     "Drow",
@@ -4016,6 +4042,26 @@
     "Ankheg",
     "Wendigo",
     "Cockatrice"
+   ],
+   "ex": [
+    [
+     9,
+     21,
+     "gate",
+     "Caeltys’ Yarden (Lv.34)"
+    ],
+    [
+     36,
+     27,
+     "dungeon",
+     "Guardian Queen Hive (Lv.39)"
+    ],
+    [
+     25,
+     62,
+     "gate",
+     "Caeltys’ Yarden (Lv.38)"
+    ]
    ],
    "visited": true,
    "edges": [
@@ -4040,7 +4086,7 @@
    ]
   },
   "188": {
-   "at": 0,
+   "at": 1792657470404,
    "name": "Caeltys’ Yarden",
    "m": [
     "Forest Guardian",
@@ -4049,6 +4095,21 @@
     "Cockatrice",
     "Drow"
    ],
+   "ex": [
+    [
+     62,
+     22,
+     "gate",
+     "Caeltys’ Yarden (Lv.38)"
+    ],
+    [
+     7,
+     48,
+     "gate",
+     "Caeltys’ Yarden (Lv.30)"
+    ]
+   ],
+   "visited": true,
    "edges": [
     [
      188,
@@ -4065,7 +4126,7 @@
    ]
   },
   "189": {
-   "at": 0,
+   "at": 1792657328730,
    "name": "Caeltys’ Yarden",
    "m": [
     "Drow",
@@ -4074,6 +4135,21 @@
     "Ankheg",
     "Forest Guardian"
    ],
+   "ex": [
+    [
+     57,
+     10,
+     "gate",
+     "Caeltys’ Yarden (Lv.34)"
+    ],
+    [
+     14,
+     63,
+     "gate",
+     "Caeltys (Lv.30)"
+    ]
+   ],
+   "visited": true,
    "edges": [
     [
      189,
@@ -5452,7 +5528,7 @@
    ]
   },
   "280": {
-   "at": 1792613267675,
+   "at": 1792657849784,
    "name": "Shrubland",
    "m": [
     "Orc Warrior",
@@ -5460,6 +5536,20 @@
     "Warg",
     "Orc Warlock",
     "Terastodon"
+   ],
+   "ex": [
+    [
+     49,
+     11,
+     "gate",
+     "Trescan (Lv.30)"
+    ],
+    [
+     21,
+     61,
+     "gate",
+     "Ancient Worm Tunnel (Lv.34)"
+    ]
    ],
    "visited": true,
    "edges": [
@@ -5478,7 +5568,7 @@
    ]
   },
   "281": {
-   "at": 1792649200483,
+   "at": 1792659105749,
    "name": "Trescan",
    "type": "City",
    "g": [
@@ -5623,9 +5713,29 @@
    ]
   },
   "284": {
-   "at": 1792608501408,
+   "at": 1792657892981,
    "name": "Stogow",
    "type": "City",
+   "ex": [
+    [
+     60,
+     6,
+     "gate",
+     "Taiga (Lv.33)"
+    ],
+    [
+     33,
+     29,
+     "waygate",
+     "Waygate"
+    ],
+    [
+     34,
+     60,
+     "gate",
+     "Taiga (Lv.31)"
+    ]
+   ],
    "visited": true,
    "smith": true,
    "edges": [
@@ -5644,7 +5754,7 @@
    ]
   },
   "285": {
-   "at": 1792608482727,
+   "at": 1792658330978,
    "name": "Taiga",
    "m": [
     "Berserker",
@@ -5653,6 +5763,20 @@
     "Polar Bear",
     "Yak",
     "Cougar"
+   ],
+   "ex": [
+    [
+     55,
+     16,
+     "gate",
+     "Taiga (Lv.34)"
+    ],
+    [
+     8,
+     58,
+     "gate",
+     "Stogow (Lv.30)"
+    ]
    ],
    "visited": true,
    "edges": [
@@ -5671,7 +5795,7 @@
    ]
   },
   "286": {
-   "at": 1792608462953,
+   "at": 1792658583062,
    "name": "Taiga",
    "m": [
     "Berserker",
@@ -5680,6 +5804,20 @@
     "Polar Bear",
     "Frostbinder",
     "Cougar"
+   ],
+   "ex": [
+    [
+     60,
+     8,
+     "dungeon",
+     "Yeti’s Cave (Lv.35)"
+    ],
+    [
+     5,
+     56,
+     "gate",
+     "Taiga (Lv.33)"
+    ]
    ],
    "visited": true,
    "edges": [
@@ -6026,8 +6164,45 @@
    ]
   },
   "324": {
-   "at": 0,
-   "name": "Dark Boreal"
+   "at": 1792665890295,
+   "name": "Dark Boreal",
+   "type": "Normal",
+   "m": [
+    "Armored Ram",
+    "Dwarven Hunter",
+    "Dwarven Caster",
+    "Dwarven Guard",
+    "Komodo Basilisk"
+   ],
+   "ex": [
+    [
+     39,
+     1,
+     "gate",
+     "Dark Boreal (Lv.41)"
+    ],
+    [
+     31,
+     61,
+     "gate",
+     "Trescan (Lv.30)"
+    ]
+   ],
+   "visited": true,
+   "edges": [
+    [
+     324,
+     281,
+     31,
+     61
+    ],
+    [
+     324,
+     325,
+     39,
+     1
+    ]
+   ]
   },
   "325": {
    "at": 0,
@@ -6289,9 +6464,23 @@
    "name": "Fountain of Rebirth"
   },
   "1000": {
-   "at": 1792451279173,
+   "at": 1792657249728,
    "name": "Fountain of Rebirth",
    "type": "Normal",
+   "ex": [
+    [
+     39,
+     30,
+     "entrance",
+     "Entrance"
+    ],
+    [
+     17,
+     38,
+     "waygate",
+     "Waygate"
+    ]
+   ],
    "visited": true,
    "edges": [
     [
