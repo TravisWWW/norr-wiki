@@ -1,10 +1,93 @@
 {
  "meta": {
-  "source": "小伴侣地图数据（MapDB）· 0 位贡献者合并",
-  "updated": "2026-10-22T01:33:20.978Z",
+  "source": "小伴侣地图数据（MapDB）· 1 位贡献者合并",
+  "updated": "2026-10-22T01:36:31.808Z",
   "version": "1.0",
-  "contributors": [],
-  "count": 0
+  "contributors": [
+   {
+    "file": "maps-999001.json",
+    "char": "E2E-Test",
+    "level": 38,
+    "time": "2026-10-22T01:40:00.000Z",
+    "count": 2,
+    "mergedAt": "2026-10-22"
+   }
+  ],
+  "count": 2
  },
- "maps": {}
+ "maps": {
+  "5": {
+   "at": 1792632000000,
+   "name": "Elena's Crossroad",
+   "type": "Wilderness",
+   "visited": true,
+   "m": [
+    "Wolf"
+   ],
+   "ex": [
+    [
+     3,
+     4,
+     "gate",
+     "Gate to Owranbu"
+    ]
+   ],
+   "edges": [
+    [
+     5,
+     23,
+     1,
+     1
+    ]
+   ]
+  },
+  "23": {
+   "at": 1792632621285,
+   "name": "Owranbu",
+   "type": "City",
+   "visited": true,
+   "g": [
+    "Copper Ore"
+   ],
+   "gt": [
+    [
+     12,
+     9,
+     "Copper Ore"
+    ]
+   ],
+   "m": [
+    "Rat"
+   ],
+   "ex": [
+    [
+     5,
+     5,
+     "smugglers_route",
+     "Smugglers Route"
+    ],
+    [
+     7,
+     8,
+     "secret_passage",
+     "Secret Passage"
+    ]
+   ],
+   "smith": true,
+   "edges": [
+    [
+     23,
+     22,
+     9,
+     34
+    ],
+    [
+     23,
+     28,
+     59,
+     48
+    ]
+   ]
+  }
+ }
 }
