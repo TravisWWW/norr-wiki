@@ -1,8 +1,8 @@
 {
-  "version": "2.6.110",
+  "version": "2.6.111",
   "date": "2026-10-23",
-  "notes": "v2.6.110 换图没重画 / 怪物列表过期：换图后客户端没重画时改调游戏 loadTravel() 只重画画面（不再整页刷新，连续 4 次无效才刷新，带 3 分钟防刷新循环）；挂机中每 20s 强制 fetchTravelData() 重拉实体，清掉人多抢怪时画面上残留的「别人已打死的怪」（Enemy Not Found）；脚下的怪点了没反应时先刷新实体再拉黑",
+  "notes": "v2.6.111 换图没重画改成「换图后立刻核对」：换图 2.2s 后读屏幕上真正画出来的底图（.map_table 的 background-image），没画对就调游戏 loadTravel() 重画 + 重新对准镜头（只刷新画面，不刷新网页）；进入活动图同理（先 loadTravel，3s 后仍没画出才整页刷新）；看门狗判据也从 window.map.id 换成 DOM 底图 id",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 760708,
-  "sha256": "3bdd3039d17d51e5edd26d8dae947fef157e6ff1133599ae395dcf3a90090926"
+  "size": 764356,
+  "sha256": "ea2c6a2fcc62c01371c790a6126e3aff48348da3d9663bdde48c50669ee8f3b1"
 }

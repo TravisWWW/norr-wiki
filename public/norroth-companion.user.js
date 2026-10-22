@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.110
+// @version      2.6.111
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -184,7 +184,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.110';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
+  const SCRIPT_VER = '2.6.111';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -311,7 +311,7 @@
    *
    *  [位置同步] syncServerPos()        · 状态 _posSyncAt              · 判据「没有正在走的队列」            · 动作「重发空 walk queue（零移动）」 · 节流 800ms（便宜但通常不够）
    *  [落位]     settleServerPos()      · 状态 st.pos / st.settling    · 判据「走位被打断过 或 调用方 force」· 动作「走开一格再走回（重发寻路）」 · 单次上限 walkTileCore 超时
-   *  [换图没重画] checkMapRender()   · 状态 st.render               · 判据「换图后 8s window.map.id 仍 != current_map」· 动作「调游戏 loadTravel() 只重画画面」 · 4 次 → 整页刷新
+   *  [换图没重画] scheduleRenderCheck()· 状态 st.render             · 判据「换图后 2.2s .map_table 底图 id != current_map」· 动作「调游戏 loadTravel() 只重画画面 + 对准镜头」 · 看门狗 8s/4 次 → 整页刷新
    *  [怪物列表过期] checkEntityFresh()· 状态 st.entity.at            · 判据「距上次强制拉取 >20s」          · 动作「调游戏 fetchTravelData() 重拉实体」 · 不停止（节流 20s）
    *  [切图卡住] checkMapLoad()         · 状态 st.mapload              · 判据「#transition_container 停留 >12s」 · 动作「点游戏 [RETRY] / 预热底图」  · 3 次 → 整页刷新
    *  [活动]     eventTick 步骤④        · 状态 st.event.busy/busyAt    · 判据「检查卡住 >20s 或 fetch 超时 8s」 · 动作「AbortController 中断 + 强制释放 busy 重查」 · 不停止（节流 30s）
@@ -868,6 +868,51 @@
     setStatus('切图卡住：正在重试加载地图底图…（第 ' + M.hits + ' 次）');
     return true;
   }
+  /* ★ v2.6.111：屏幕上**真正画出来**的地图 id —— 读 .map_table 的底图 URL。
+     比 window.map.id 更贴近「画面」：window.map 可能已经被响应脚本改掉，但 DOM 还是旧的。 */
+  function renderedMapId() {
+    try {
+      const el = document.querySelector('#map_container .map_table') || document.querySelector('.map_table');
+      if (!el) return 0;
+      const bg = window.getComputedStyle ? window.getComputedStyle(el).backgroundImage : '';
+      const m = /map_(\d+)\.(?:jpg|jpeg|png)/i.exec(bg || '');
+      if (m) return +m[1];
+    } catch (e) { /* ignore */ }
+    return 0;
+  }
+  /* 把镜头对准角色（游戏自己的 centerCurrentLocation）。换图后 #map_container 的 top/left
+     没对准角色 = 老 bug「画面看着没变 / 卡在 Traveling」的直接原因。 */
+  function recenterCamera() {
+    try {
+      const jq = window.jQuery;
+      const c = (typeof character === 'object' && character) ? character : null;
+      if (!jq || !c || typeof window.centerCurrentLocation !== 'function') return false;
+      const el = jq('#map_container');
+      if (!el.length) return false;
+      if (!(el.outerWidth() > 0)) return false;      /* 底图还没撑开 → 算了，别把镜头算歪 */
+      window.centerCurrentLocation(el, ((c.x + 2) * 48) + '/' + ((c.y + 2) * 48));
+      return true;
+    } catch (e) { return false; }
+  }
+  /* ★ v2.6.111：换图后「立刻」核对一次（用户要求把动作放在换图之后，而不是只等 8 秒看门狗）。
+     2.2s 后（够客户端把 map DOM 换完）读屏幕上真正画出来的底图：
+       · 画对了 → 顺手把镜头对准角色
+       · 没画对 → 调游戏 loadTravel() 重画（只刷新画面，不刷新网页）
+     加载页在转（mapLoadStuck）时不插一脚，交给 checkMapLoad。 */
+  function scheduleRenderCheck(fromMap, toMap) {
+    setTimeout(function () {
+      try {
+        if (!inGame()) return;
+        if (+character.current_map !== +toMap) return;      /* 又换图了 → 交给新的一次检查 */
+        if (mapLoadStuck()) return;                         /* 正在加载 → 别插一脚 */
+        const drawn = renderedMapId() || renderMapId();
+        if (drawn === +toMap) { recenterCamera(); return; } /* 画对了 → 只把镜头对准 */
+        logEvent('换图后没重画（应画 ' + toMap + '，画面还是 ' + (drawn || '?') + '）→ 调游戏 loadTravel() 重画');
+        setStatus('换图没重画：正在重画地图…');
+        softReloadMap();
+      } catch (e) { /* ignore */ }
+    }, 2200);
+  }
   /* ── 兜底[换图没重画] ───────────────────────────────────────────
    * 症状：服务端已经把角色移到新图（character.current_map 变了、角色贴图也挪过去了），
    *       但客户端**没有重画地图** → 画面还停在上一张图（旧的门 / 旧的怪 / 旧的地形）。
@@ -903,7 +948,9 @@
     const R = st.render;
     if (!inGame()) { R.map = 0; R.at = 0; R.hits = 0; return false; }
     const cm = +character.current_map || 0;
-    const rid = renderMapId();
+    /* ★ v2.6.111：判据优先用「屏幕上真正画出来的底图」（.map_table 的 background-image），
+       读不到再退回 window.map.id（响应脚本会原子地同时改 window.map 和 DOM，但 DOM 才是画面）。 */
+    const rid = renderedMapId() || renderMapId();
     /* 读不到「渲染 id」就不猜（登录页 / 加载中 / 游戏改版）—— 交给 checkMapLoad 兜底 */
     if (!(cm > 0) || !(rid > 0)) { R.map = 0; R.at = 0; R.hits = 0; return false; }
     if (cm === rid) { R.map = 0; R.at = 0; R.hits = 0; return false; }            /* 渲染已跟上 → 正常 */
@@ -5269,12 +5316,24 @@
         await eventEnterGate();
         for (let i = 0; i < 30; i++) { await sleep(1000); if (String(character.current_map) === String(EVENT_MAP_ID)) break; if (!running) break; }
         if (String(character.current_map) === String(EVENT_MAP_ID)) {
-          /* ★ v2.6.10：服务端已把角色移进活动图，但客户端地图常常不重新渲染
-             （#map_container 的 top/left 没对准角色 → 画面看着没变 / 卡在 Traveling）——实测必须刷新一次才正常。
-             刷新后脚本会自动续挂（tryResumeAfterReload），eventTick 会在活动图上重新接管。 */
-          logEvent('活动：已进入活动图 → 刷新页面以完成渲染');
+          /* ★ v2.6.111：先试「只刷新画面」—— 调游戏 loadTravel() 重画地图 + 对准镜头；
+             3 秒后还是没画出活动图（或 loadTravel 被客户端 retryCount>=5 卡成 no-op）→ 退回整页刷新。
+             （v2.6.10 的老办法是直接 location.reload()，能修但太重。） */
+          logEvent('活动：已进入活动图 → 先调游戏 loadTravel() 重画（不刷新网页）');
           E.phase = 'idle';
-          try { location.reload(); return; } catch (e) { /* ignore */ }
+          softReloadMap();
+          setTimeout(function () {
+            try {
+              if (!running || !inGame()) return;
+              if (+character.current_map !== +EVENT_MAP_ID) return;   /* 又离开活动图 → 不管 */
+              const drawn = renderedMapId() || renderMapId();
+              if (drawn === +EVENT_MAP_ID) { recenterCamera(); return; }
+              logEvent('活动：loadTravel() 后仍未画出活动图（画面还是 ' + (drawn || '?') + '）→ 刷新页面');
+              saveCfgNow();
+              location.reload();
+            } catch (e) { /* ignore */ }
+          }, 3000);
+          return;
         }
         E.phase = 'idle'; logEvent('活动：进入失败（没切到活动图）');
       } catch (e) {
@@ -7159,6 +7218,8 @@
       detectGatherPoints(true);
       renderRankList();
       if (from != null) { logEvent('换图 → ' + currentMapName()); st.watch.at = now(); }
+      /* ★ v2.6.111：换图后立刻核对「客户端到底画没画新图」，没画就调游戏 loadTravel() 重画 */
+      scheduleRenderCheck(from, character.current_map);
       recordVisit();
       /* ★ 到图即刷新：换图瞬间 DOM 还没渲染完，快照守卫会拒绝；2.5 秒后再实测一次 */
       try { poiLearnNow(); } catch (e) { /* ignore */ }
