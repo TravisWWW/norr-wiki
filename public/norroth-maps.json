@@ -1,14 +1,14 @@
 {
  "meta": {
   "source": "小伴侣地图数据（MapDB）· 2 位贡献者合并",
-  "updated": "2026-10-22T04:30:48.187Z",
+  "updated": "2026-10-22T04:37:20.916Z",
   "version": "1.0",
   "contributors": [
    {
     "file": "maps-1151.json",
     "char": "#1151",
     "level": 42,
-    "time": "2026-10-22T03:06:15.292Z",
+    "time": "2026-10-22T04:37:06.548Z",
     "count": 337,
     "mergedAt": "2026-10-22"
    },
@@ -611,13 +611,15 @@
    ]
   },
   "16": {
-   "at": 1792638726887,
+   "at": 1792640351443,
    "name": "Elundi",
    "type": "City",
    "g": [
     "Shrimp Pier",
-    "Combat Training",
-    "Silk Field"
+    "Silk Field",
+    "Shrimp 码头",
+    "战斗训练",
+    "Silk 田野"
    ],
    "gt": [
     [
@@ -952,7 +954,7 @@
    ]
   },
   "22": {
-   "at": 1792464670426,
+   "at": 1792642240877,
    "name": "Owranbu River",
    "type": "Normal",
    "g": [
@@ -998,6 +1000,20 @@
     "Wild Hog",
     "Woodland Snake"
    ],
+   "ex": [
+    [
+     9,
+     33,
+     "gate",
+     "Forest Of Owranbu (Lv.4)"
+    ],
+    [
+     58,
+     35,
+     "gate",
+     "Owranbu (Lv.10)"
+    ]
+   ],
    "visited": true,
    "edges": [
     [
@@ -1015,7 +1031,7 @@
    ]
   },
   "23": {
-   "at": 1792614652404,
+   "at": 1792642040793,
    "name": "Owranbu",
    "type": "City",
    "g": [
@@ -1026,6 +1042,32 @@
      31,
      28,
      "Combat Training"
+    ]
+   ],
+   "ex": [
+    [
+     52,
+     12,
+     "gate",
+     "Owranbu Drylands (Lv.10)"
+    ],
+    [
+     33,
+     30,
+     "waygate",
+     "Waygate"
+    ],
+    [
+     9,
+     34,
+     "gate",
+     "Owranbu River (Lv.7)"
+    ],
+    [
+     59,
+     48,
+     "gate",
+     "Dying Forest (Lv.10)"
     ]
    ],
    "visited": true,
@@ -1715,7 +1757,7 @@
    ]
   },
   "53": {
-   "at": 0,
+   "at": 1792643701793,
    "name": "Deep Forest",
    "type": "Normal",
    "g": [
@@ -1736,6 +1778,32 @@
     "Werewolf",
     "Goblin Pyro",
     "Goblin Soldier"
+   ],
+   "ex": [
+    [
+     39,
+     7,
+     "gate",
+     "Way to Morwen (Lv.14)"
+    ],
+    [
+     51,
+     23,
+     "waygate",
+     "Waygate"
+    ],
+    [
+     53,
+     34,
+     "gate",
+     "Deep Forest (Lv.14)"
+    ],
+    [
+     14,
+     47,
+     "gate",
+     "Deep Forest (Lv.14)"
+    ]
    ],
    "visited": true,
    "edges": [
@@ -3586,7 +3654,7 @@
    "name": "Dying Forest"
   },
   "179": {
-   "at": 0,
+   "at": 1792643716623,
    "name": "Deep Forest",
    "type": "Normal",
    "m": [
@@ -3597,6 +3665,20 @@
     "Goblin Soldier",
     "Wandering Ent",
     "Werewolf"
+   ],
+   "ex": [
+    [
+     14,
+     25,
+     "gate",
+     "Deep Forest (Lv.14)"
+    ],
+    [
+     57,
+     28,
+     "gate",
+     "Caeltys’ Causeway (Lv.31)"
+    ]
    ],
    "visited": true,
    "edges": [
@@ -3615,7 +3697,7 @@
    ]
   },
   "180": {
-   "at": 1792624910909,
+   "at": 1792643792658,
    "name": "Caeltys’ Causeway",
    "type": "Normal",
    "g": [
@@ -3666,6 +3748,20 @@
     "Wendigo",
     "Ankheg",
     "Cockatrice"
+   ],
+   "ex": [
+    [
+     55,
+     30,
+     "gate",
+     "Caeltys’ Causeway (Lv.31)"
+    ],
+    [
+     16,
+     47,
+     "gate",
+     "Deep Forest (Lv.14)"
+    ]
    ],
    "visited": true,
    "edges": [
@@ -6159,9 +6255,8 @@
    "name": "Sleepy Hollow"
   },
   "1183": {
-   "at": 1792638637756,
+   "at": 1792639125195,
    "name": "The Sacred Wilds Lobby",
-   "type": "Secret",
    "g": [
     "Quarry",
     "Grove",
@@ -6214,6 +6309,12 @@
    "edges": [
     [
      1183,
+     5,
+     24,
+     35
+    ],
+    [
+     1183,
      16,
      24,
      35
@@ -6263,9 +6364,8 @@
    ]
   },
   "1188": {
-   "at": 1792638321628,
+   "at": 1792640336835,
    "name": "The Sacred Wilds",
-   "type": "Secret",
    "m": [
     "Wyvern"
    ],
