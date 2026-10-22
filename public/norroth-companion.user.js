@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.114
+// @version      2.6.115
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -184,7 +184,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.114';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
+  const SCRIPT_VER = '2.6.115';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -314,6 +314,7 @@
    *  [换图没重画] scheduleRenderCheck()· 状态 st.render             · 判据「换图后 2.2s .map_table 底图 id != current_map」· 动作「调游戏 loadTravel() 只重画画面 + 对准镜头」 · 看门狗 8s/4 次 → 整页刷新
    *  [怪物列表过期] checkEntityFresh()· 状态 st.entity.at            · 判据「距上次强制拉取 >20s」          · 动作「调游戏 fetchTravelData() 重拉实体」 · 不停止（节流 20s）
    *  [抢怪·出发前确认] startMove 入口  · 状态 st.entity.at            · 判据「去打 >3 格外的怪 且 距上次刷新 >6s」· 动作「先 fetchTravelData() 重拉实体，本 tick 不动」 · 不停止（节流 6s）
+   *  [到位没触发动作] scheduleArriveAction()· 状态 无（一次性）        · 判据「到位 1.3s 后格子还有 action 且没出对应窗口」· 动作「补一次 execTileAction(action)」 · 每次到位 1 次
    *  [切图卡住] checkMapLoad()         · 状态 st.mapload              · 判据「#transition_container 停留 >12s」 · 动作「点游戏 [RETRY] / 预热底图」  · 3 次 → 整页刷新
    *  [活动]     eventTick 步骤④        · 状态 st.event.busy/busyAt    · 判据「检查卡住 >20s 或 fetch 超时 8s」 · 动作「AbortController 中断 + 强制释放 busy 重查」 · 不停止（节流 30s）
    *  [走位重试] checkMove !started    · 状态 st.move.retryAt/retries · 判据「900ms 还没发起」               · 动作「abortWalk + 重发 walkTo」     · 上限 8 次 → 拉黑该格 30s
@@ -953,6 +954,49 @@
       if (typeof window.fetchTravelData === 'function') { window.fetchTravelData(); return true; }
     } catch (e) { /* ignore */ }
     return false;
+  }
+  /* ── 兜底[到位没触发 action] ─────────────────────────────────────
+   * 症状：走到目标格了，但格子上的动作没触发（怪没开打 / 资源没拾取 / 门没切图）。
+   * 根因（读 1.0 客户端 nextStep 的走格动画完成回调，2026-10-23 复核）：
+   *   格子动作只在「动画完成的那一刻 character.x+'-'+character.y === character.walk_to」时才执行
+   *   （else if(character['x']+'-'+character['y']==character['walk_to']){ execTileAction(tileAction) }）。
+   *   而脚本自己会 abortWalk()（把 walk_to 清成 null：分段导航 / 重发走位 / 落位 / 卡住自愈），
+   *   只要清空的那一刻正好落在目标格上，动作就永远不会触发；另外「本来就在格上」也不会触发。
+   * 判据：到位后 ARRIVE_ACTION_MS 内，格子还有 action、角色还站在格上、且没有出现对应的窗口。
+   * 动作：显式调游戏自己的 execTileAction(action)（和爬塔门 / 采集点 / 传送站一样的做法）。
+   * 上限：每次到位只补触发 1 次（避免和游戏抢动作）。
+   * 高级参数：不受影响。
+   * ───────────────────────────────────────────────────────────── */
+  const ARRIVE_ACTION_MS = 1300;
+  function tileActionAt(x, y) {
+    try { if (typeof window.getTileActionAt === 'function') return String(window.getTileActionAt(x, y) || ''); } catch (e) { /* ignore */ }
+    try { const el = document.querySelector('.map_table #ID' + x + '-' + y); return el ? String(el.getAttribute('action') || '') : ''; } catch (e) { /* ignore */ }
+    return '';
+  }
+  /* 这个动作是不是「已经触发了」（出现对应窗口 / 已经在加载战斗） */
+  function arriveActionFired(act) {
+    if (act === 'combat' || act === 'boss') return hasFrame('frame_Combat') || window.pendingCombatLoad === true;
+    if (act === 'collect_scrap') return hasFrame('frame_CollectScrap');
+    if (act === 'pick_up') return hasFrame('frame_Loot');
+    if (act === 'gathering') return hasFrame('frame_Gathering');
+    return false;
+  }
+  function scheduleArriveAction(x, y, kind) {
+    if (kind === 'gather' || kind === 'tower') return;   /* 这两类脚本自己会显式触发（stepGather / 爬塔） */
+    setTimeout(function () {
+      try {
+        if (!inGame()) return;
+        if (+character.x !== +x || +character.y !== +y) return;   /* 已经走开了 → 不管 */
+        if (mapLoadStuck()) return;                               /* 正在换图 → 别插一脚 */
+        const act = tileActionAt(x, y);
+        if (!act) return;                                         /* 格子上没有动作 */
+        if (arriveActionFired(act)) return;                       /* 已经触发了 */
+        if (character.current_action && character.current_action !== 'Traveling') return;   /* 游戏正忙 */
+        logEvent('到位没触发动作（' + act + ' @' + x + '-' + y + '）→ 补一次 execTileAction');
+        setStatus('到位没触发动作，正在补触发…');
+        if (typeof window.execTileAction === 'function') window.execTileAction(act, false);
+      } catch (e) { /* ignore */ }
+    }, ARRIVE_ACTION_MS);
   }
   function checkMapRender() {
     const R = st.render;
@@ -1693,6 +1737,9 @@
          直接做一次真·落位（走开一格再走回）。 */
       if (!m.after) settleServerPos(m.tx, m.ty, '到位');
       st.move = null;
+      /* ★ v2.6.115：到位后核对「格子动作到底触发了没」，没触发就补一次 execTileAction
+         （abortWalk 会把 character.walk_to 清成 null → 游戏就永远不会执行格子动作）。 */
+      scheduleArriveAction(m.tx, m.ty, m.kind);
       if (m.after) {   /* ★ 失误绕路：到了错格 → 稍微停一下再走真目标 */
         const a = m.after;
         setTimeout(function () { try { if (canAct()) startMove(a.tx, a.ty, a.kind, a.label); } catch (e) { /* ignore */ } }, 400 + Math.floor(Math.random() * 900));
@@ -11552,7 +11599,7 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
     takeAllLoot: takeAllLoot, readPetInfo: readPetInfo, readPetFood: readPetFood, checkAndFeedPet: checkAndFeedPet,
     togglePetFeed: togglePetFeed, feedPetNowManual: feedPetNowManual, petTick: petTick,
     placePanel: placePanel, syncUI: syncUI, renderRankList: renderRankList,
-    gatherInterruptTarget: gatherInterruptTarget, combatTarget: combatTarget, makeRetarget: makeRetarget, retargetCombat: retargetCombat, retargetGather: retargetGather, targetDiag: targetDiag, targetDiagText: targetDiagText, closeGatheringWindows: closeGatheringWindows, syncServerPos: syncServerPos, settleServerPos: settleServerPos, settleAtSpot: settleAtSpot, checkMapLoad: checkMapLoad, mapLoadStuck: mapLoadStuck, softReloadMap: softReloadMap, softRefreshEntities: softRefreshEntities, renderedMapId: renderedMapId, recenterCamera: recenterCamera, scheduleRenderCheck: scheduleRenderCheck, checkMapRender: checkMapRender, checkEntityFresh: checkEntityFresh,
+    gatherInterruptTarget: gatherInterruptTarget, combatTarget: combatTarget, makeRetarget: makeRetarget, retargetCombat: retargetCombat, retargetGather: retargetGather, targetDiag: targetDiag, targetDiagText: targetDiagText, closeGatheringWindows: closeGatheringWindows, syncServerPos: syncServerPos, settleServerPos: settleServerPos, settleAtSpot: settleAtSpot, checkMapLoad: checkMapLoad, mapLoadStuck: mapLoadStuck, softReloadMap: softReloadMap, softRefreshEntities: softRefreshEntities, scheduleArriveAction: scheduleArriveAction, tileActionAt: tileActionAt, arriveActionFired: arriveActionFired, renderedMapId: renderedMapId, recenterCamera: recenterCamera, scheduleRenderCheck: scheduleRenderCheck, checkMapRender: checkMapRender, checkEntityFresh: checkEntityFresh,
     installSpeedPatch: installSpeedPatch, applySpeedK: applySpeedK, applyWinScale: applyWinScale, isNoAccelEl: isNoAccelEl,
     speedAllowed: speedAllowed, inCombatNow: inCombatNow,
     stepAuto: stepAuto, checkStuck: checkStuck, updatePerf: updatePerf, perfText: perfText, logEvent: logEvent,
