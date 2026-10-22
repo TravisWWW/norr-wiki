@@ -1,8 +1,8 @@
 {
-  "version": "2.6.102",
+  "version": "2.6.103",
   "date": "2026-10-22",
-  "notes": "v2.6.102：把活动大厅「找不到战斗区入口」时的诊断 dump 做全面 —— 现在按 action 归类列出本图所有 POI（含非标准 action / 无 action 但有 onclick 的点），并给出 tile_poi 总数。用于定位战斗区入口的真实 DOM。战斗区入口的匹配本身已支持任意 action（只要名字里有等级区间）。",
+  "notes": "v2.6.103 新增 rideSmugglers()：走私路线付费换图（实测确认面板 DOM / 无二次确认）",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 725926,
-  "sha256": "a992f372ec8c1c133daf3cce134c3f0ae3037f38261e07a4ad0748c122670635"
+  "size": 730884,
+  "sha256": "865c2a212f9d43430a7fcc710920e20dc0c5423b2223510cf177a9aa21a63167"
 }

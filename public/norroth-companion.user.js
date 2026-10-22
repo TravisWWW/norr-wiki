@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.102
+// @version      2.6.103
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -184,7 +184,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.102';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
+  const SCRIPT_VER = '2.6.103';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -9303,6 +9303,90 @@
     return character.current_map === destId;
   }
 
+  /* ======================= Smugglers Route（走私路线：付金币换图） =======================
+   * 实测（2026-10-22，map 90 格子 45-60 → 目的地 Sirocco Springs #76）：
+   *   格子 action = 'smugglers_route'。走到格上 → execTileAction('smugglers_route')
+   *   → createDialog('Smugglers Route','','ajax','/modal/smugglers_route') → 面板 #frame_SmugglersRoute。
+   *   面板内容：
+   *     · 目的地 id  = .avatar 的 style 里 world_map_<id>_<wx>_<wy>.jpg（兜底 [data-map-info-id]）
+   *     · 目的地名/等级 = .frame-content h2 两行
+   *     · Ride 按钮 = .frame-content button.btn-danger，onclick = createDialog(...,'/modal/smugglers_route?ride',true)
+   *   点 Ride **直接换图，没有二次确认**（用户确认）。
+   *   花费 = 目的地等级下界 × 80 铜；脚本**不预检**金币，交给游戏 —— 没换图 = 失败 → 报错停止（不回退）。
+   * ================================================================================== */
+
+  /* 找本图的 smugglers 格子（action=smugglers_route） */
+  function findSmugglersTile() {
+    let el = document.querySelector('.map_table [action=smugglers_route]');
+    if (el) return el;
+    const tiles = Array.prototype.slice.call(document.querySelectorAll('.map_table .tile_poi'));
+    return tiles.find(function (e) { return /smugglers?_route/i.test(e.getAttribute('action') || ''); }) || null;
+  }
+
+  /* 读面板里的目的地地图 id（0 = 读不到） */
+  function smugglersDestId(frame) {
+    if (!frame) return 0;
+    try {
+      const av = frame.querySelector('.avatar');
+      const bg = av ? (av.getAttribute('style') || '') : '';
+      const m = /world_map_(\d+)_/.exec(bg);
+      if (m) return +m[1];
+      const blk = frame.querySelector('[data-map-info-id]');
+      if (blk) return (+blk.getAttribute('data-map-info-id')) || 0;
+    } catch (e) { /* ignore */ }
+    return 0;
+  }
+
+  /* 走到本图 smugglers 格子 → 开面板 → 点 Ride → 等换图。
+     返回换图后的 id（失败 0）。destId 只用于「校验面板目的地是否一致」，不匹配就放弃（不乱传）。 */
+  async function rideSmugglers(destId, alive) {
+    if (!inGame()) return 0;
+    const from = character.current_map;
+    const tile = findSmugglersTile();
+    if (!tile) { logEvent('走私路线：本图没有 smugglers_route 格子'); return 0; }
+    const c = (tile.getAttribute('coords') || '').split('-');
+    const gx = +c[0], gy = +c[1];
+    if (!(gx > 0 && gy > 0)) { logEvent('走私路线：格子坐标读不到'); return 0; }
+    if (!(character.x === gx && character.y === gy)) {
+      await navWalkToTile(gx, gy, 70000, alive);
+      if (alive && !alive()) return 0;
+      if (!(character.x === gx && character.y === gy)) {
+        logEvent('走私路线：走不到格子 ' + gx + '-' + gy + '（当前 ' + character.x + '-' + character.y + '），放弃');
+        return 0;
+      }
+    }
+    /* 开面板（可能已经开着） */
+    let frame = document.getElementById('frame_SmugglersRoute');
+    if (!frame) {
+      humanDefer(function () { try { window.execTileAction('smugglers_route'); } catch (e) { /* ignore */ } });
+      for (let i = 0; i < 30 && !frame; i++) { await sleep(300); frame = document.getElementById('frame_SmugglersRoute'); }
+    }
+    if (!frame) { logEvent('走私路线：面板没打开（#frame_SmugglersRoute）'); return 0; }
+    await sleep(500);
+    if (alive && !alive()) return 0;
+
+    const panelDest = smugglersDestId(frame);
+    if (destId && panelDest && +destId !== +panelDest) {
+      logEvent('走私路线：面板目的地是「' + navMapName(panelDest) + '」，与预期「' + navMapName(destId) + '」不符 → 放弃（不乱传）');
+      try { closeFrameById('frame_SmugglersRoute'); } catch (e) { /* ignore */ }
+      return 0;
+    }
+    const btn = Array.prototype.slice.call(frame.querySelectorAll('button, a, input[type=button]'))
+      .find(function (b) { return /ride/i.test((b.textContent || b.value || '').trim()); });
+    if (!btn) { logEvent('走私路线：面板里没找到 Ride 按钮'); return 0; }
+
+    setStatus('走私路线：付费前往「' + navMapName(panelDest || destId) + '」…');
+    logEvent('走私路线 Ride → ' + navMapName(panelDest || destId) + '（' + (panelDest || '?') + '）');
+    try { humanClick(btn); } catch (e) { /* ignore */ }
+    for (let i = 0; i < 30; i++) { await sleep(500); if (character.current_map !== from) break; }
+    if (character.current_map === from) {
+      logEvent('走私路线：点了 Ride 但没换图（金币不够 / 未解锁？）→ 停止');
+      try { closeFrameById('frame_SmugglersRoute'); } catch (e) { /* ignore */ }
+      return 0;
+    }
+    logEvent('走私路线：已到达 ' + currentMapName());
+    return character.current_map;
+  }
   /* 传送门回主城（死亡恢复） */
   /* ======================= 世界地图传送（野外 → 城镇） =======================
    * 实测 2026-10-19：世界地图 = #world_map_container（openWorldMap() 打开），
@@ -10922,7 +11006,7 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
     applySkin: applySkin, setSkin: setSkin, skinOn: skinOn,
     readEquipDur: readEquipDur, parseEquipDur: parseEquipDur, durWorst: durWorst, durText: durText, repairNeeded: repairNeeded, gatherDurNow: gatherDurNow, lastGatherDur: lastGatherDur, renderDurInfo: renderDurInfo,
     getMapDict: getMapDict, startRestock: startRestock, repairSellNow: repairSellNow,
-    nrPost: nrPost, apiRepairRows: apiRepairRows, stashDeposit: stashDeposit, stashWithdraw: stashWithdraw, stashCount: stashCount, clickEquipSell: clickEquipSell, sellEquips: sellEquips, findBank: findBank, doBankDeposit: doBankDeposit, runDeposit: runDeposit, ensureBankFrame: ensureBankFrame, bankFreeSlots: bankFreeSlots, readBagEquipItems: readBagEquipItems, depositBagEquips: depositBagEquips, serviceTowns: serviceTowns, waygateReachable: waygateReachable, navRoute: navRoute, renderTownSelect: renderTownSelect, verifyPath: verifyPath, resolveRepairRoute: resolveRepairRoute,
+    nrPost: nrPost, apiRepairRows: apiRepairRows, stashDeposit: stashDeposit, stashWithdraw: stashWithdraw, stashCount: stashCount, clickEquipSell: clickEquipSell, sellEquips: sellEquips, findBank: findBank, doBankDeposit: doBankDeposit, runDeposit: runDeposit, ensureBankFrame: ensureBankFrame, bankFreeSlots: bankFreeSlots, readBagEquipItems: readBagEquipItems, depositBagEquips: depositBagEquips, serviceTowns: serviceTowns, waygateReachable: waygateReachable, navRoute: navRoute, rideSmugglers: rideSmugglers, findSmugglersTile: findSmugglersTile, smugglersDestId: smugglersDestId, renderTownSelect: renderTownSelect, verifyPath: verifyPath, resolveRepairRoute: resolveRepairRoute,
     verifyPath: verifyPath, refreshCurMap: refreshCurMap, detectGatherPoints: detectGatherPoints, liveMapSnapshot: liveMapSnapshot, poiLearnNow: poiLearnNow, MapDB: MapDB, syncMaps: syncMaps,
     comboInfo: comboInfo, pollCombo: pollCombo, readComboInfo: readComboInfo,
     gatheringSpots: gatheringSpots, findGatheringSpot: findGatheringSpot, stepGather: stepGather, effectiveGatherPoint: effectiveGatherPoint,
