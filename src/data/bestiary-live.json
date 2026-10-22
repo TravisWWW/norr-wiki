@@ -7,10 +7,10 @@
    {
     "file": "char-1330.json",
     "char": "#1330",
-    "level": 38,
-    "time": "2026-10-21T19:34:29.563Z",
+    "level": 41,
+    "time": "2026-10-22T17:40:23.092Z",
     "count": 193,
-    "recorded": 102,
+    "recorded": 114,
     "mergedAt": "2026-10-22"
    },
    {
@@ -24,10 +24,10 @@
    }
   ],
   "count": 199,
-  "recordedCount": 121,
+  "recordedCount": 122,
   "withLore": 198,
-  "withStats": 68,
-  "withSkills": 83,
+  "withStats": 70,
+  "withSkills": 87,
   "withBg": 183,
   "tabs": {
    "normal": 163,
@@ -46,7 +46,67 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_1.gif",
    "bg": "sewers.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "1 - 4",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "Low",
+   "defense": "High",
+   "resistance": "Low",
+   "scavenging": [
+    {
+     "name": "Mucky Meat",
+     "res": "mucky_meat",
+     "pct": "14%"
+    },
+    {
+     "name": "Mucky Hide",
+     "res": "mucky_hide",
+     "pct": "32%"
+    },
+    {
+     "name": "Mucky Tooth",
+     "res": "mucky_tooth",
+     "pct": "9%"
+    },
+    {
+     "name": "Mucky Bone",
+     "res": "mucky_bone",
+     "pct": "9%"
+    },
+    {
+     "name": "Mucky Tendon",
+     "res": "mucky_tendon",
+     "pct": "18%"
+    },
+    {
+     "name": "Mucky Skull",
+     "res": "mucky_skull",
+     "pct": "5%"
+    },
+    {
+     "name": "Mucky Eye",
+     "res": "mucky_eye",
+     "pct": "9%"
+    },
+    {
+     "name": "Mucky Tail",
+     "res": "mucky_tail",
+     "pct": "5%"
+    }
+   ],
+   "skills": [
+    {
+     "name": "poison_bite",
+     "id": 10007,
+     "level": 1
+    },
+    {
+     "name": "bite",
+     "id": 10009,
+     "level": 1
+    }
+   ]
   },
   {
    "id": 2,
@@ -2247,7 +2307,34 @@
      "res": "mucky_tail",
      "pct": "11%"
     }
-   ]
+   ],
+   "skills": [
+    {
+     "name": "bite",
+     "id": 10009,
+     "level": 1
+    },
+    {
+     "name": "vampiric_bite",
+     "id": 10021,
+     "level": 1
+    }
+   ],
+   "stats": {
+    "Base Damage": 10,
+    "Physical Damage": 0,
+    "Blunt Damage": 0,
+    "Spell Damage": 3,
+    "Bleed Damage": 0,
+    "Arcane Damage": 0,
+    "Cold Damage": 0,
+    "Dark Damage": 0,
+    "Fire Damage": 0,
+    "Light Damage": 0,
+    "Lightning Damage": 0,
+    "Poison Damage": 0,
+    "Thorn Damage": 0
+   }
   },
   {
    "id": 47,
@@ -8578,7 +8665,55 @@
      "res": "scrap_tail",
      "pct": "4%"
     }
-   ]
+   ],
+   "skills": [
+    {
+     "name": "lethal_bite",
+     "id": 10019,
+     "level": 4
+    },
+    {
+     "name": "aerial_claw_assault",
+     "id": 10062,
+     "level": 4
+    },
+    {
+     "name": "scratch",
+     "id": 10008,
+     "level": 4
+    }
+   ],
+   "stats": {
+    "Base Damage": 15,
+    "Physical Damage": 3,
+    "Blunt Damage": 0,
+    "Spell Damage": 0,
+    "Bleed Damage": 0,
+    "Arcane Damage": 0,
+    "Cold Damage": 0,
+    "Dark Damage": 0,
+    "Fire Damage": 5,
+    "Light Damage": 0,
+    "Lightning Damage": 0,
+    "Poison Damage": 0,
+    "Thorn Damage": 0,
+    "Defense": 20,
+    "Block Chance": 0,
+    "Block Rating": 0,
+    "Arcane Resist": 5,
+    "Cold Resist": 5,
+    "Dark Resist": 5,
+    "Fire Resist": 5,
+    "Light Resist": 5,
+    "Lightning Resist": 5,
+    "Poison Resist": 5,
+    "Evasion": 2,
+    "Critical Chance": 2,
+    "Critical Strike": 4,
+    "Hit Rating": 40,
+    "Attack Speed": 2,
+    "Armor Penetration": 1
+   }
   },
   {
    "id": 186,
@@ -9458,6 +9593,28 @@
      "name": "Beech Rod",
      "res": "beech_rod",
      "pct": "7%"
+    }
+   ],
+   "skills": [
+    {
+     "name": "overwhelming_dark",
+     "id": 41,
+     "level": 8
+    },
+    {
+     "name": "fearing_touch",
+     "id": 51,
+     "level": 8
+    },
+    {
+     "name": "dark_strike",
+     "id": 10038,
+     "level": 8
+    },
+    {
+     "name": "unholy_barrier",
+     "id": 54,
+     "level": 8
     }
    ]
   },
