@@ -1,14 +1,14 @@
 {
  "meta": {
   "source": "小伴侣地图数据（MapDB）· 2 位贡献者合并",
-  "updated": "2026-10-22T06:02:10.020Z",
+  "updated": "2026-10-22T07:35:27.935Z",
   "version": "1.0",
   "contributors": [
    {
     "file": "maps-1151.json",
     "char": "#1151",
-    "level": 42,
-    "time": "2026-10-22T06:01:55.386Z",
+    "level": 43,
+    "time": "2026-10-22T07:35:10.234Z",
     "count": 338,
     "mergedAt": "2026-10-22"
    },
@@ -88,13 +88,13 @@
    ]
   },
   "5": {
-   "at": 1792643396536,
+   "at": 1792654437449,
    "name": "El Caspar",
    "type": "City",
    "g": [
     "Minnow Pier",
-    "Combat Training",
-    "Mucky Patch"
+    "Mucky Patch",
+    "Combat Training"
    ],
    "gt": [
     [
@@ -611,7 +611,7 @@
    ]
   },
   "16": {
-   "at": 1792640351443,
+   "at": 1792652773445,
    "name": "Elundi",
    "type": "City",
    "g": [
@@ -3697,7 +3697,7 @@
    ]
   },
   "180": {
-   "at": 1792648776962,
+   "at": 1792648946722,
    "name": "Caeltys’ Causeway",
    "type": "Normal",
    "g": [
@@ -5350,7 +5350,7 @@
    ]
   },
   "281": {
-   "at": 1792521125675,
+   "at": 1792649200483,
    "name": "Trescan",
    "type": "City",
    "g": [
@@ -5367,6 +5367,38 @@
      18,
      38,
      "Medium Quality Patch"
+    ]
+   ],
+   "ex": [
+    [
+     22,
+     4,
+     "gate",
+     "Dark Boreal (Lv.40)"
+    ],
+    [
+     10,
+     18,
+     "gate",
+     "Trescan’s Dock (Lv.34)"
+    ],
+    [
+     36,
+     26,
+     "waygate",
+     "Waygate"
+    ],
+    [
+     51,
+     54,
+     "gate",
+     "Dark Boreal (Lv.40)"
+    ],
+    [
+     23,
+     56,
+     "gate",
+     "Shrubland (Lv.36)"
     ]
    ],
    "visited": true,
@@ -5616,7 +5648,7 @@
    ]
   },
   "291": {
-   "at": 1792643417987,
+   "at": 1792654506089,
    "name": "Itham’s Anchorage",
    "type": "Normal",
    "g": [
@@ -6255,7 +6287,7 @@
    "name": "Sleepy Hollow"
   },
   "1183": {
-   "at": 1792639125195,
+   "at": 1792649550989,
    "name": "The Sacred Wilds Lobby",
    "g": [
     "Quarry",
@@ -6364,7 +6396,7 @@
    ]
   },
   "1188": {
-   "at": 1792640336835,
+   "at": 1792652702465,
    "name": "The Sacred Wilds",
    "m": [
     "Wyvern"
@@ -6388,7 +6420,7 @@
    ]
   },
   "2001": {
-   "at": 0,
+   "at": 1792651469518,
    "name": "Overgrown Land",
    "type": "Secret",
    "visited": true
