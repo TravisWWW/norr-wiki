@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.120
+// @version      2.6.121
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -186,7 +186,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.120';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
+  const SCRIPT_VER = '2.6.121';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -290,6 +290,7 @@
     mapSwitch: { active: false, lastAt: 0, idleSince: 0 },    // 自动切图刷怪
     paused: false,                                            // ★ 已暂停（统计保留，可继续）
     returning: false,                                         // 阵亡后正在导航回挂机地图
+    retargetHist: {},                                         // ★ v2.6.121：本次移动期间已锁定过的怪（禁止切回去，避免 A→B→A→B 横跳）
     visitedAt: 0,                                             // 拜访地图记录节流
     killsByName: {},                                          // ★ 详细统计：每种怪击杀数
     gathersByKind: {},                                        // ★ 详细统计：各类采集次数
@@ -1626,15 +1627,32 @@
       tick: function () {
         if (!running || st.paused || !inGame()) return false;
         const m = st.move;
-        if (!m) return false;                                  /* 没在走 → 交给正常选目标流程 */
+        if (!m) { st.retargetHist = {}; return false; }        /* 没在走 → 清空「已锁定过」历史，交给正常选目标流程 */
         if (!allow()) return false;
         if (now() - at < intervalMs) return false;             /* 节流 */
         at = now();
         if (hasFrame('frame_Combat') || hasFrame('frame_Scavenge') || hasFrame('frame_Loot')) return false;
         if (!canAct()) return false;
-        const t = pick();
+        /* ★ v2.6.121：把「本次移动期间已经锁定过」的怪记下来（含当前目标），禁止再切回去 ——
+           否则两个怪互相「更优」时会 A→B→A→B 来回横跳，人永远走不到其中任何一只。 */
+        if (!st.retargetHist) st.retargetHist = {};
+        if (st.target && st.target.key) st.retargetHist[st.target.key] = 1;
+        let t = pick();
         if (!t || !t.enemy) return false;                      /* 只处理「换成某只怪」 */
         if (t.x === m.tx && t.y === m.ty) { lastKey = t.enemy.key; return false; }   /* 就是当前目标 */
+        /* ★ v2.6.121：本次移动「已经锁定过」的怪不再切回去（否则 A→B→A→B 来回横跳，永远走不到）。
+           最优目标被禁时 → 顺位取「还没锁定过」的最优怪；都锁过就不切。 */
+        if (st.retargetHist[t.enemy.key]) {
+          const list = attackableEnemies();
+          let alt = null;
+          for (let i = 0; i < list.length; i++) {
+            if (st.retargetHist[list[i].key]) continue;
+            alt = enemyTargetOf(list[i]);
+            if (alt) break;
+          }
+          if (!alt) return false;
+          t = alt;
+        }
         /* 当前目标也是怪 → 只有严格更优才切 */
         if (m.kind === 'enemy' && st.target) {
           const list = attackableEnemies();
@@ -1644,6 +1662,7 @@
         }
         if (startMove(t.x, t.y, t.kind, t.label) === false) return false;
         st.target = t.enemy;
+        st.retargetHist[t.enemy.key] = 1;                      /* ★ 记入「已锁定过」历史 */
         lastKey = t.enemy.key;
         logEvent(tag + '：途中发现更优目标 → 切换（' + (t.enemy.name || t.enemy.key) + '）');
         return true;
@@ -1668,6 +1687,7 @@
 
   function startMove(x, y, kind, label) {
     if (!canAct()) return false;
+    if (!st.move) st.retargetHist = {};   /* ★ v2.6.121：新一段移动开始 → 清空「已锁定过」历史 */
     /* ── 兜底[抢怪·出发前确认] ───────────────────────────────────
      * 症状：同一张图很多人一起打怪时，画面上还挂着**已经被别人杀掉**的怪 →
      *       走过去 / 点它 → 服务端回 "Enemy Not Found"（这次是真的没怪，不是位置不同步）。
