@@ -7,10 +7,10 @@
    {
     "file": "char-1330.json",
     "char": "#1330",
-    "level": 47,
-    "time": "2026-10-23T14:48:28.120Z",
+    "level": 48,
+    "time": "2026-10-23T21:46:27.387Z",
     "count": 193,
-    "recorded": 115,
+    "recorded": 120,
     "mergedAt": "2026-10-23"
    },
    {
@@ -24,7 +24,7 @@
    }
   ],
   "count": 199,
-  "recordedCount": 123,
+  "recordedCount": 128,
   "withLore": 198,
   "withStats": 74,
   "withSkills": 89,
@@ -9521,7 +9521,42 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_213.gif",
    "bg": "underground.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "40 - 49",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "High",
+   "defense": "High",
+   "resistance": "Medium",
+   "scavenging": [
+    {
+     "name": "Quality Chitin",
+     "res": "quality_chitin",
+     "pct": "9%"
+    },
+    {
+     "name": "Quality Tendon",
+     "res": "quality_tendon",
+     "pct": "45%"
+    },
+    {
+     "name": "Quality Skull",
+     "res": "quality_skull",
+     "pct": "27%"
+    },
+    {
+     "name": "Quality Eye",
+     "res": "quality_eye",
+     "pct": "18%"
+    }
+   ],
+   "drops": [
+    {
+     "name": "Rust Monster Pet Egg",
+     "res": "rust_monster_pet_egg",
+     "pct": "0.4%"
+    }
+   ]
   },
   {
    "id": 214,
@@ -9532,7 +9567,24 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_214.gif",
    "bg": "underground.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "40 - 49",
+   "alignment": "Light",
+   "health": "Medium",
+   "defense": "High",
+   "resistance": "Low",
+   "drops": [
+    {
+     "name": "Bronze Sestertii",
+     "res": "coin_bronze",
+     "pct": "100%"
+    },
+    {
+     "name": "Spirit Essence",
+     "res": "spirit_essence",
+     "pct": "100%"
+    }
+   ]
   },
   {
    "id": 215,
@@ -9543,7 +9595,25 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_215.gif",
    "bg": "underground.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "40 - 49",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "Medium",
+   "defense": "High",
+   "resistance": "Medium",
+   "scavenging": [
+    {
+     "name": "Laterite",
+     "res": "laterite",
+     "pct": "80%"
+    },
+    {
+     "name": "Spirit Stone",
+     "res": "spirit_stone",
+     "pct": "20%"
+    }
+   ]
   },
   {
    "id": 216,
@@ -9554,7 +9624,52 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_216.gif",
    "bg": "underground.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "40 - 49",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "Low",
+   "defense": "High",
+   "resistance": "Low",
+   "scavenging": [
+    {
+     "name": "Quality Meat",
+     "res": "quality_meat",
+     "pct": "19%"
+    },
+    {
+     "name": "Quality Fang",
+     "res": "quality_fang",
+     "pct": "13%"
+    },
+    {
+     "name": "Quality Wing",
+     "res": "quality_wing",
+     "pct": "13%"
+    },
+    {
+     "name": "Quality Tendon",
+     "res": "quality_tendon",
+     "pct": "38%"
+    },
+    {
+     "name": "Quality Eye",
+     "res": "quality_eye",
+     "pct": "13%"
+    },
+    {
+     "name": "Quality Tail",
+     "res": "quality_tail",
+     "pct": "6%"
+    }
+   ],
+   "drops": [
+    {
+     "name": "Werebat Pet Egg",
+     "res": "werebat_pet_egg",
+     "pct": "0.5%"
+    }
+   ]
   },
   {
    "id": 217,
@@ -9565,7 +9680,35 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_217.gif",
    "bg": "underground.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "40 - 60",
+   "alignment": "Dark",
+   "specials": "-",
+   "health": "Low",
+   "defense": "Medium",
+   "resistance": "High",
+   "drops": [
+    {
+     "name": "Bronze Sestertii",
+     "res": "coin_bronze",
+     "pct": "100%"
+    },
+    {
+     "name": "Mithril Wire",
+     "res": "mithril_wire",
+     "pct": "9%"
+    },
+    {
+     "name": "Mithril Nails",
+     "res": "mithril_nails",
+     "pct": "8%"
+    },
+    {
+     "name": "Quality Goblin Ear",
+     "res": "quality_goblin_ear",
+     "pct": "6%"
+    }
+   ]
   },
   {
    "id": 218,

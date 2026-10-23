@@ -1,7 +1,7 @@
 {
  "meta": {
   "source": "小伴侣地图数据（MapDB）· 4 位贡献者合并",
-  "updated": "2026-10-23T21:11:37.188Z",
+  "updated": "2026-10-23T21:46:54.142Z",
   "version": "1.0",
   "contributors": [
    {
@@ -16,8 +16,8 @@
     "file": "maps-1330.json",
     "char": "#1330",
     "level": 48,
-    "time": "2026-10-23T21:11:20.977Z",
-    "count": 340,
+    "time": "2026-10-23T21:46:22.152Z",
+    "count": 339,
     "mergedAt": "2026-10-23"
    },
    {
@@ -7686,7 +7686,7 @@
    ]
   },
   "324": {
-   "at": 1792789754783,
+   "at": 1792791977574,
    "name": "Dark Boreal",
    "type": "Normal",
    "m": [
@@ -7727,9 +7727,8 @@
    ]
   },
   "325": {
-   "at": 1792789789828,
+   "at": 1792791395461,
    "name": "Dark Boreal",
-   "type": "Normal",
    "g": [
     "Mithril Mine"
    ],
@@ -7778,9 +7777,8 @@
    ]
   },
   "326": {
-   "at": 1792789875239,
+   "at": 1792791359719,
    "name": "Dark Boreal",
-   "type": "Normal",
    "g": [
     "Largemouth Bass Pier"
    ],
