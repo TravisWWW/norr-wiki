@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.126
+// @version      2.6.127
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -186,7 +186,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.126';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
+  const SCRIPT_VER = '2.6.127';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -4280,17 +4280,18 @@
     const wantClear = (opts.sell === false) ? false : true;
     if (wantClear && clearFilterActive() && (manual || cfg.sellOn || st.sell.force)) {
       bag = await readBag();
-      /* ★ v2.6.78：用触发这次行程时的同一个阈值（st.sell.freeAt），不要再摇一次随机数 */
-      const thr = (st.sell.freeAt > 0) ? st.sell.freeAt : cfg.sellFreeMin;
-      out.needSell = !!bag && (st.sell.force || manual || bag.free <= thr);
+      /* ★ v2.6.127：只要这次休整到了铁匠、清包开关开着、且设了过滤条件，就无条件按过滤条件清一次。
+         旧实现 needSell = bag.free <= 阈值（st.sell.freeAt 或 cfg.sellFreeMin），而 freeAt 只在
+         「背包快满」触发时赋值 → 「耐久不足」触发的休整（freeAt=0 → 回落 sellFreeMin）常常
+         整段跳过清包，普通装备越攒越多。格数现在只用于「是否触发一次休整」。 */
+      out.needSell = !!bag;
     }
     if (!out.needRepair && !out.needSell) {
       const _durList = (st.dur && st.dur.list) || [];
       const bits = [reason ? ('装备需维修（' + (REPAIR_REASON_CN[reason] || reason) + (durText() ? '：' + durText() : '') + '），但自动维修未开启') : (_durList.length ? '装备无损坏' : '读不到装备耐久（已强制读取仍为空）')];
       if (opts.sell !== false) {
         if (!clearFilterActive()) bits.push('自动清包未设过滤（等级上限 0 且品质不限 → 不处理装备）');
-        else if (!bag) bits.push('自动清包未开启');
-        else bits.push('背包剩 ' + bag.free + ' 格，未到阈值 ' + cfg.sellFreeMin);
+        else if (!bag) bits.push('自动清包未开启（开关关闭或读不到背包）');
       }
       out.note = bits.join('；');
       return out;
