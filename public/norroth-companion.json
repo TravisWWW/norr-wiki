@@ -1,8 +1,8 @@
 {
-  "version": "2.6.122",
+  "version": "2.6.123",
   "date": "2026-10-23",
-  "notes": "v2.6.122 宠物蛋保护：自动清包（出售 / 拆解）一律不碰宠物蛋。判据 = 条目里出现 pet egg / pet_egg（名字、res、hover_title、图标 alt、tooltip 名字）。拆解列表本身只列装备（实测抓包确认），这里再加一道兜底，防止游戏以后把蛋列进来或前端改版。日志会显示「宠物蛋 N 件已保护」。",
+  "notes": "v2.6.123 撤销 v2.6.122 的「宠物蛋保护」：实测确认自动清包（出售/拆解）本来就不会碰宠物蛋（用户仓库里已有一枚蛋）。本版内容与 v2.6.121 完全一致，仅版本号 +1 以便客户端回退更新。",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 784963,
-  "sha256": "cf9d0aab6787f5660449be7475facf69cff2b1be346a596578a3ea70d19c79e6"
+  "size": 783286,
+  "sha256": "b78fc21145b05cb000f60d1efbd9741eba79982e9bd6e774e5c661d705f51565"
 }
