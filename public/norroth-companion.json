@@ -1,8 +1,8 @@
 {
-  "version": "2.6.132",
+  "version": "2.6.133",
   "date": "2026-10-24",
-  "notes": "v2.6.132：分段导航的「段间停顿」不再单独一行/单独开关，直接放到「格」右边的输入框（最短~最长 ms，默认 1000~3000ms）。每次在区间内随机取一个毫秒数再走最后一段。",
+  "notes": "v2.6.133：分段导航的「段间停顿」改成固定值（不随机），默认 300ms，可改（「格」右边一个输入框）。",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 790070,
-  "sha256": "3db1c9bb97c3fd07913c34e390b5ce0bdea1346e2787630bb60a092cf8a6eb2b"
+  "size": 789431,
+  "sha256": "9140bfdd583ad20d9b2bb93e3e426b55f23b664e39ae4a5b6dbeb2ca29b205a4"
 }
