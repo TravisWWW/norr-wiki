@@ -1,8 +1,8 @@
 {
-  "version": "2.6.124",
+  "version": "2.6.125",
   "date": "2026-10-23",
-  "notes": "v2.6.124 两处修复：① 恢复导航「第 N/M 跳」进度显示 —— v2.6.104 把 Move 按钮导航统一到 navToMap() 时，原来内联在 navTravelTo 里的「(i+1)/plan.length 当前：A → B」进度条被一起删掉了；现在放回统一路径 navWalkPlanTo()，只在导航条已存在时更新（世界地图「导航」按钮发起），阵亡回图等后台导航不弹条。② 「遇敌逃跑」改为勾上即生效 —— 不再需要开始挂机，也不只在采集任务可用；仅在「战斗 / 爬塔」任务运行中自动屏蔽，多角色副角色页让路给原有策略。",
+  "notes": "v2.6.125 补药自动选择排序修复：选中的食物吃完后回到「自动选择（数量最多）」时，把「战斗中可用」的药水（tooltip 写 can be used during battle 的 health/mana/rejuv potion，共 22 种）排到最后 —— 那是应急物资，平时回血优先吃食物/料理；同组内再按「数量多 → 补得少（省药）」挑。若背包里只剩战斗药水，照旧按数量挑。",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 785487,
-  "sha256": "54fb9d44857530c8265829fa349550d825353e0f5ec1e599b993818b906cb4d6"
+  "size": 786341,
+  "sha256": "ad13f362afb2253c6a3ce6ef032999d0401e5b947b16d7300ded135d5a21aacc"
 }

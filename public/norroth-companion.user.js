@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.124
+// @version      2.6.125
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -186,7 +186,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.124';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
+  const SCRIPT_VER = '2.6.125';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -2130,11 +2130,26 @@
 
   const bagPotions = kind => (cfg.bagList || []).filter(i => heals(i, kind));
 
+  /* ★ v2.6.125：这件物品是不是「战斗中可用」的药水。
+     判据 = 游戏自带 tooltip 描述里写着 "can be used during battle"
+     （实测 22 条：tiny/small/…/sacred 的 health / mana / rejuv potion + starter_rejuv_potion；
+       食物 / 料理 / 生鱼一律没有这句）。 */
+  function combatUsable(key) {
+    const db = ttDB(); if (!db) return false;
+    const e = db[key];
+    return !!(e && e.description && /can be used during battle/i.test(e.description));
+  }
+
   function autoPotionKey(kind) {
     const list = bagPotions(kind);
     if (!list.length) return '';
     const amt = k => { const h = healInfo(k); return kind === 'hp' ? h.life : h.mana; };
-    list.sort((a, b) => (b.count - a.count) || (amt(a.key) - amt(b.key)));   // 数量多的优先，其次补得少的（省药）
+    /* ★ v2.6.125：选中的食物吃完了 → 回到这里自动挑。
+       战斗药水（能在战斗中用的）排到最后 —— 那是应急物资，平时回血优先吃食物 / 料理；
+       同组内再按「数量多 → 补得少（省药）」挑。全部都是战斗药水时照旧按数量挑。 */
+    list.sort((a, b) =>
+      (combatUsable(a.key) ? 1 : 0) - (combatUsable(b.key) ? 1 : 0) ||
+      (b.count - a.count) || (amt(a.key) - amt(b.key)));
     return list[0].key;
   }
 
