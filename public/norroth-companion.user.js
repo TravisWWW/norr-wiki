@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.127
+// @version      2.6.129
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -115,9 +115,8 @@
     humanIdleActMax: 12,        // 间隔最长（分钟）
     humanMistakeOn: false,      // ★ 移动偶发失误：先走错一格再走真目标
     humanMistakePct: 3,         // 失误概率（%）
-    navSegOn: false,            // ★ 分段导航：长距离移动拆成多段（每段重新向服务器请求路径）
-    navSegMin: 15,              // 每段最少格数
-    navSegMax: 30,              // 每段最多格数
+    navSegOn: false,            // ★ 分段导航（v2.6.129）：长距离移动改两段式（先到目标前一格，再到目标点位）
+    navSegDist: 15,             // 多少格算「长距离」（超过才启用两段式）
 
 
     /* 维修 / 清包 */
@@ -186,7 +185,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.127';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
+  const SCRIPT_VER = '2.6.129';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -400,8 +399,9 @@
     c.humanMistakeOn = !!c.humanMistakeOn;
     c.humanMistakePct = Math.max(0, Math.min(50, Math.round(+c.humanMistakePct || 0)));
     c.navSegOn = !!c.navSegOn;
-    c.navSegMin = Math.max(3, Math.min(200, Math.round(+c.navSegMin || 15)));
-    c.navSegMax = Math.max(c.navSegMin, Math.min(200, Math.round(+c.navSegMax || 30)));
+    c.navSegDist = Math.max(3, Math.min(200, Math.round(+c.navSegDist || 15)));
+    delete c.navSegMin;   /* ★ v2.6.129：分段导航改成「目标前一格」两段式，不再按段长 */
+    delete c.navSegMax;
     /* ★ v2.6.17：打断门槛由「任意怪 / ★1星以上 / ★2星以上 / ★3星」四档；旧值 champion 迁移为 r1 */
     {
       const _gir = c.gatherInterruptRank;
@@ -3517,26 +3517,19 @@
       const n = nb(character.x, character.y)[0];
       if (n) { try { safeWalkTo(n[0], n[1]); } catch (e) { /* ignore */ } await sleep(2600); }
     };
-    /* ★ 分段导航：把一次长距离寻路拆成 15~30 格一段。
-       原理：服务器把整条路径放在 window.walkQueue[charId]，我们数着走过多少格；
-             走到一段长度就 abortWalk 停下 → 随机停顿 → 重新 walkTo(同一目标)。
-       因为停下的位置本来就落在服务器原本的最优路径上，重新请求得到的还是同一条剩余路线 → 路线不变。
+    /* ★ v2.6.129：分段导航改成「两段式」——长距离移动时，先走到目标「前一格」停下喘口气，再走到目标点位。
+       触发：本次移动开始时，角色到目标的曼哈顿距离 > cfg.navSegDist（「多少格算长距离」）。
+       原理：服务器把整条路径放在 window.walkQueue[charId]；角色贴着目标（曼哈顿 ≤1）时
+             abortWalk 停下 → 随机停顿 → 再 walkTo(同一目标)。停下的位置本来就在服务器原路径上，
+             重新请求得到同一条剩余路线 → 路线不变。
        注：走路期间游戏把 can_travel 置 false，中途重新请求会被丢弃，所以必须「先停再请求」。 */
     const segOn = function () { return !!cfg.navSegOn && !retrigger; };
-    const segLen = function () {
-      const a = Math.max(3, Math.round(+cfg.navSegMin || 15));
-      const b = Math.max(a, Math.round(+cfg.navSegMax || 30));
-      /* ★ 阈值抖动：段长也在配置幅度内随机漂移 */
-      return Math.max(3, jitterVal(a + Math.floor(Math.random() * (b - a + 1))));
-    };
-    const queueLen = function () {
-      try { const q = (window.walkQueue && window.walkQueue[character.id]) || []; return q.length; } catch (e) { return 0; }
-    };
+    const segDist = function () { return Math.max(3, Math.round(+cfg.navSegDist || 15)); };
     const onPoiTile = function () {
       try { const k = character.x + '-' + character.y;
         return $$q('.map_table .tile_poi').some(function (el) { return (el.getAttribute('coords') || '') === k; }); } catch (e) { return false; }
     };
-    let seg = null;   /* { start: 本段开始时剩余格数, budget: 本段要走几格 } */
+    let seg = null;   /* null = 本次移动不走两段式；{dist0} = 已武装，等角色贴到目标前一格 */
 
     const blockers = ['frame_Quest', 'frame_CollectScrap', 'frame_Scavenge', 'frame_Gate'];
     const clearBlockers = function () {
@@ -3553,6 +3546,11 @@
        要白等一轮卡住自愈才恢复。 */
     try { abortWalk(); } catch (e) { /* ignore */ }
     if (retrigger && onTile()) await stepAside();
+    /* ★ v2.6.129：只有「长距离」移动才启用两段式 */
+    if (segOn()) {
+      const d0 = Math.abs(character.x - gx) + Math.abs(character.y - gy);
+      if (d0 > segDist()) seg = { dist0: d0 };
+    }
 
     /* ★ 走到目标格后先原地同步一次服务端位置，再交给调用方做交互（换图/采集/维修） */
     const okOut = function () { syncServerPos(); return 'ok'; };
@@ -3618,29 +3616,21 @@
         await sleep(retrigger ? 1600 : 1500);
         continue;
       }
-      /* ★ 分段导航：走满一段就停下、随机停顿、再请求下一段 */
+      /* ★ v2.6.129：两段式分段导航 —— 贴到目标「前一格」（曼哈顿 ≤1）就停下、喘口气、再走到目标点位 */
       if (mapChanged()) seg = null;
-      if (segOn()) {
-        const qn = queueLen();
-        if (!seg) {
-          if (qn > 0) {
-            const L = segLen();
-            if (qn > L + 2) seg = { start: qn, budget: L };   /* 剩余路径明显长于一段才切 */
-          }
-        } else if ((seg.start - qn) >= seg.budget && !onPoiTile()) {
-          seg = null;
-          try { abortWalk(); } catch (e) { /* ignore */ }
-          const p0 = now();
-          /* ★ 段间停顿：基础随机 + 节拍抖动(rhythm) + 阈值抖动(jitterVal) + 真人化动作间隔 + 微停顿 */
-          await sleep(rhythm(jitterVal(200 + Math.floor(Math.random() * 500))));
-          await humanPause();                                   /* ★ 真人化动作间隔 + 微停顿 */
-          paused += now() - p0;
-          if (!alive()) { try { abortWalk(); } catch (e) { /* ignore */ } return 'cancel'; }
-          lastMove = now(); bestAt = now();                     /* 别把停顿误判成卡住 */
-          safeWalkTo(gx, gy);
-          await sleep(500);
-          continue;
-        }
+      if (seg && !onTile() && !onPoiTile() && (Math.abs(character.x - gx) + Math.abs(character.y - gy)) <= 1) {
+        seg = null;
+        try { abortWalk(); } catch (e) { /* ignore */ }
+        const p0 = now();
+        /* ★ 段间停顿：基础随机 + 节拍抖动(rhythm) + 阈值抖动(jitterVal) + 真人化动作间隔 + 微停顿 */
+        await sleep(rhythm(jitterVal(200 + Math.floor(Math.random() * 500))));
+        await humanPause();                                   /* ★ 真人化动作间隔 + 微停顿 */
+        paused += now() - p0;
+        if (!alive()) { try { abortWalk(); } catch (e) { /* ignore */ } return 'cancel'; }
+        lastMove = now(); bestAt = now();                     /* 别把停顿误判成卡住 */
+        safeWalkTo(gx, gy);
+        await sleep(500);
+        continue;
       }
       /* 重发走路指令的两个禁区：
        * 1) 已经站在目标格上 —— 对传送门来说重复请求同一格会再次触发该门，表现是「刚换图又被弹回去」
@@ -8053,9 +8043,7 @@
           <div class="divblock_dark" style="margin-top:4px">
             <div class="nr-srow">
               <label title="给脚本内部的定时器 / 轮询加随机波动，避免固定节拍。动作级间隔（<2s，如主循环 400ms、吃药检查 500ms）按上面「随机间隔」的毫秒范围加（只会更晚）；轮询级间隔（≥2s）按「阈值抖动 幅度%」双向抖动。影响：装备耐久 30s、宠物能量 30s、背包剩余 30s / 重扫背包 60s、任务怪 60s、连击 60s、维修冷却 60s / 20s、清包失败冷却 120s、多角色队列 15s、随机浏览面板 30s、耐久面板刷新 30s。需同时开「随机间隔」。"><input type="checkbox" class="chk" id="nr-humrhythm">节拍抖动</label>
-            </div>
-            <div class="nr-srow">
-              <label title="每次判断时把这些阈值在原值上下随机漂移 ±幅度%（小整数至少 ±1）：补血阈值、补蓝阈值、喂食阈值、维修阈值、背包剩余格数、卡住自愈秒数、分段导航每段格数。这个「幅度%」同时用作「节拍抖动」里轮询级间隔的抖动比例（填 0 时按 10% 兜底）。"><input type="checkbox" class="chk" id="nr-humjitter">阈值抖动</label>
+              <label title="每次判断时把这些阈值在原值上下随机漂移 ±幅度%（小整数至少 ±1）：补血阈值、补蓝阈值、喂食阈值、维修阈值、背包剩余格数、卡住自愈秒数、分段导航长距离格数。这个「幅度%」同时用作「节拍抖动」里轮询级间隔的抖动比例（填 0 时按 10% 兜底）。"><input type="checkbox" class="chk" id="nr-humjitter">阈值抖动</label>
               <span class="nr-sl">幅度</span><input type="number" id="nr-humjitterpct" min="0" max="50" step="1" class="nr-snum">
               <span class="nr-sl">%</span>
             </div>
@@ -8091,9 +8079,8 @@
 
           <div class="divblock_dark" style="margin-top:4px">
             <div class="nr-srow">
-              <label title="把行程中的长距离走位拆成「每段 最小~最大 格」，走完一段停一下再继续（路线不变，只是重新请求剩余路径）。当前生效范围：休整行程（走到 smith / 银行）、多角色行程走位。普通打怪 / 采集的图内移动与跨图导航走门不适用。"><input type="checkbox" class="chk" id="nr-navseg">分段导航</label>
-              <span class="nr-sl">每段</span><input type="number" id="nr-navseg_min" min="3" max="200" step="1" class="nr-snum">
-              <span class="nr-sl">~</span><input type="number" id="nr-navseg_max" min="3" max="200" step="1" class="nr-snum">
+              <label title="长距离移动时改成「两段式」：先走到目标「前一格」停下喘口气，再走到目标点位（路线不变，只是重新请求剩余路径）。当前生效范围：休整行程（走到 smith / 银行）、多角色行程走位。普通打怪 / 采集的图内移动与跨图导航走门不适用。"><input type="checkbox" class="chk" id="nr-navseg">分段导航</label>
+              <span class="nr-sl">长距离</span><input type="number" id="nr-navseg_dist" min="3" max="200" step="1" class="nr-snum">
               <span class="nr-sl">格</span>
             </div>
           </div>
@@ -8108,20 +8095,13 @@
             <div class="nr-srow">
               <span class="nr-sl" style="flex:none" title="扫描本账号的图鉴记录，然后【静默上传】到公共图鉴数据仓库（TravisWWW/nor-database）；norr-wiki 会自动拉取并并入唯一一份权威图鉴文档，所有用小伴侣的人共享同一份数据。全程不需要填令牌、不会打开任何网页，约 20 秒，可随时取消。">图鉴同步</span>
               <button class="mini" id="nr-bestsync" type="button" style="flex:1" title="扫描并静默上传到公共图鉴">同步到公共图鉴</button>
-            </div>
-            <div class="nr-srow" style="margin-top:4px">
-              <span id="nr-bestsyncstate" style="flex:1;color:#9aa4b2;font-size:10.5px">点「同步到公共图鉴」（静默上传，无需令牌）</span>
-              <button class="mini" id="nr-bestcancel" type="button" style="display:none">取消</button>
-            </div>
-          </div>
-
-          <div class="divblock_dark" style="margin-top:4px">
-            <div class="nr-srow">
               <span class="nr-sl" style="flex:none" title="上传本地地图数据（每张图的名字/类型/采集点/怪物/门/走私路线/秘密通路等出口格 + 该图最后更新时间），并拉取公共地图数据合并进本地；每张图以「更新时间最新」的那份为准。静默完成，不需要令牌、不会打开任何网页。">地图同步</span>
               <button class="mini" id="nr-mapsync" type="button" style="flex:1" title="上传本地地图数据 + 拉取公共地图数据">同步地图数据</button>
             </div>
             <div class="nr-srow" style="margin-top:4px">
-              <span id="nr-mapsyncstate" style="flex:1;color:#9aa4b2;font-size:10.5px">上传本地 + 拉取公共（静默，无需令牌）</span>
+              <span id="nr-bestsyncstate" style="flex:1;min-width:0;color:#9aa4b2;font-size:10.5px;white-space:normal;line-height:1.3">点「同步到公共图鉴」（静默上传，无需令牌）</span>
+              <button class="mini" id="nr-bestcancel" type="button" style="display:none">取消</button>
+              <span id="nr-mapsyncstate" style="flex:1;min-width:0;color:#9aa4b2;font-size:10.5px;white-space:normal;line-height:1.3">上传本地 + 拉取公共（静默，无需令牌）</span>
             </div>
           </div>
 
@@ -8562,8 +8542,7 @@
     bindCheck('nr-hummistake', 'humanMistakeOn');
     bindNum('nr-hummistake_pct', 'humanMistakePct', 0);
     bindCheck('nr-navseg', 'navSegOn');
-    bindNum('nr-navseg_min', 'navSegMin', 3);
-    bindNum('nr-navseg_max', 'navSegMax', 3);
+    bindNum('nr-navseg_dist', 'navSegDist', 3);
 
     panel.querySelector('#nr-start').addEventListener('click', () => {
       /* ★ v2.6.13：未运行时，先把「查看中的任务」应用为当前任务再开始；
@@ -8803,7 +8782,7 @@
     set('nr-humrotwait', cfg.humanRotWaitOn); num('nr-humrotwait_min', cfg.humanRotWaitMin); num('nr-humrotwait_max', cfg.humanRotWaitMax);
     set('nr-humidleact', cfg.humanIdleActOn); num('nr-humidleact_min', cfg.humanIdleActMin); num('nr-humidleact_max', cfg.humanIdleActMax);
     set('nr-hummistake', cfg.humanMistakeOn); num('nr-hummistake_pct', cfg.humanMistakePct);
-    set('nr-navseg', cfg.navSegOn); num('nr-navseg_min', cfg.navSegMin); num('nr-navseg_max', cfg.navSegMax);
+    set('nr-navseg', cfg.navSegOn); num('nr-navseg_dist', cfg.navSegDist);
     try { syncFarmMapUI(); } catch (e) { /* ignore */ }
     num('nr-sellfree', cfg.sellFreeMin); num('nr-sellmaxlv', cfg.sellEquipMaxLv);
     num('nr-repairdurpct', cfg.repairDurPct);
