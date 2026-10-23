@@ -1,14 +1,14 @@
 {
  "meta": {
   "source": "小伴侣地图数据（MapDB）· 3 位贡献者合并",
-  "updated": "2026-10-23T04:07:28.553Z",
+  "updated": "2026-10-23T04:27:28.387Z",
   "version": "1.0",
   "contributors": [
    {
     "file": "maps-1151.json",
     "char": "#1151",
     "level": 46,
-    "time": "2026-10-23T04:06:11.102Z",
+    "time": "2026-10-23T04:27:16.757Z",
     "count": 340,
     "mergedAt": "2026-10-23"
    },
@@ -7035,9 +7035,8 @@
    ]
   },
   "327": {
-   "at": 1792728329265,
+   "at": 1792728987312,
    "name": "Dark Boreal",
-   "type": "Normal",
    "g": [
     "Beech Grove"
    ],
@@ -7217,7 +7216,7 @@
    "name": "The Ember Forge"
   },
   "342": {
-   "at": 1792676606112,
+   "at": 1792729023190,
    "name": "Dark Boreal",
    "m": [
     "Armored Ram",
@@ -7257,7 +7256,7 @@
    ]
   },
   "343": {
-   "at": 1792675821121,
+   "at": 1792729135121,
    "name": "Dark Boreal",
    "m": [
     "Dwarven Guard",
@@ -7296,7 +7295,7 @@
    ]
   },
   "344": {
-   "at": 1792675856166,
+   "at": 1792729204349,
    "name": "Dark Boreal",
    "m": [
     "Dwarven Guard",
@@ -7335,8 +7334,9 @@
    ]
   },
   "345": {
-   "at": 1792675916240,
+   "at": 1792729354854,
    "name": "Dark Boreal",
+   "type": "Normal",
    "m": [
     "Armored Ram",
     "Dwarven Guard",
@@ -7358,6 +7358,7 @@
      "Dark Boreal (Lv.47)"
     ]
    ],
+   "visited": true,
    "edges": [
     [
      345,
@@ -7374,8 +7375,9 @@
    ]
   },
   "346": {
-   "at": 1792675976307,
+   "at": 1792729423183,
    "name": "Dark Boreal",
+   "type": "Normal",
    "g": [
     "Laterite Quarry",
     "Ramie Field",
@@ -7419,13 +7421,8 @@
      "Dark Boreal (Lv.48)"
     ]
    ],
+   "visited": true,
    "edges": [
-    [
-     346,
-     293,
-     0,
-     0
-    ],
     [
      346,
      345,
@@ -7441,8 +7438,9 @@
    ]
   },
   "347": {
-   "at": 1792676126528,
+   "at": 1792729448348,
    "name": "Dark Boreal",
+   "type": "Normal",
    "g": [
     "Beech Grove"
    ],
