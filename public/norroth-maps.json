@@ -1,7 +1,7 @@
 {
  "meta": {
-  "source": "小伴侣地图数据（MapDB）· 3 位贡献者合并",
-  "updated": "2026-10-23T05:45:58.554Z",
+  "source": "小伴侣地图数据（MapDB）· 4 位贡献者合并",
+  "updated": "2026-10-23T08:08:34.379Z",
   "version": "1.0",
   "contributors": [
    {
@@ -26,6 +26,14 @@
     "level": 5,
     "time": "2026-10-22T10:35:36.389Z",
     "count": 330,
+    "mergedAt": "2026-10-23"
+   },
+   {
+    "file": "maps-2838.json",
+    "char": "#2838",
+    "level": 19,
+    "time": "2026-10-23T08:08:17.333Z",
+    "count": 329,
     "mergedAt": "2026-10-23"
    }
   ],
@@ -1106,7 +1114,7 @@
    ]
   },
   "22": {
-   "at": 1792689260495,
+   "at": 1792725496323,
    "name": "Owranbu River",
    "type": "Normal",
    "g": [
@@ -1114,7 +1122,12 @@
     "Scrap Patch",
     "Iron Mine",
     "Shrimp Pier",
-    "Elm Grove"
+    "Elm Grove",
+    "Silk 田野",
+    "Scrap 修正檔",
+    "Iron 採礦",
+    "Shrimp 碼頭",
+    "Elm 樹林"
    ],
    "gt": [
     [
@@ -1183,17 +1196,17 @@
    ]
   },
   "23": {
-   "at": 1792689212708,
+   "at": 1792725013040,
    "name": "Owranbu",
    "type": "City",
    "g": [
-    "Combat Training"
+    "戰鬥訓練"
    ],
    "gt": [
     [
      31,
      28,
-     "Combat Training"
+     "戰鬥訓練"
     ]
    ],
    "ex": [
@@ -1207,7 +1220,7 @@
      33,
      30,
      "waygate",
-     "Waygate"
+     "傳送門"
     ],
     [
      9,
@@ -4048,9 +4061,23 @@
    "type": "City"
   },
   "169": {
-   "at": 1792406269130,
+   "at": 1792742664608,
    "name": "Bungavik",
    "type": "City",
+   "ex": [
+    [
+     41,
+     25,
+     "waygate",
+     "傳送門"
+    ],
+    [
+     31,
+     57,
+     "gate",
+     "Savanna (Lv.19)"
+    ]
+   ],
    "visited": true,
    "smith": true,
    "edges": [
@@ -4588,8 +4615,9 @@
    ]
   },
   "192": {
-   "at": 1792327218257,
+   "at": 1792742380811,
    "name": "Savanna",
+   "type": "Normal",
    "m": [
     "Terastodon",
     "Scorpion",
@@ -4597,6 +4625,20 @@
     "Arynx",
     "Gnoll Warrior",
     "Gnoll Warlock"
+   ],
+   "ex": [
+    [
+     14,
+     19,
+     "gate",
+     "Savanna (Lv.17)"
+    ],
+    [
+     53,
+     47,
+     "gate",
+     "Savanna (Lv.16)"
+    ]
    ],
    "visited": true,
    "edges": [
@@ -4615,8 +4657,9 @@
    ]
   },
   "193": {
-   "at": 1792327184282,
+   "at": 1792742400894,
    "name": "Savanna",
+   "type": "Normal",
    "m": [
     "Gnoll Warrior",
     "Terastodon",
@@ -4624,6 +4667,20 @@
     "Carrion Harpy",
     "Scorpion",
     "Gnoll Warlock"
+   ],
+   "ex": [
+    [
+     14,
+     11,
+     "gate",
+     "Savanna (Lv.18)"
+    ],
+    [
+     53,
+     49,
+     "gate",
+     "Savanna (Lv.17)"
+    ]
    ],
    "visited": true,
    "edges": [
@@ -4642,7 +4699,7 @@
    ]
   },
   "194": {
-   "at": 1792327141828,
+   "at": 1792742488721,
    "name": "Savanna",
    "type": "Normal",
    "m": [
@@ -4652,6 +4709,20 @@
     "Carrion Harpy",
     "Scorpion",
     "Gnoll Warlock"
+   ],
+   "ex": [
+    [
+     20,
+     7,
+     "gate",
+     "Savanna (Lv.19)"
+    ],
+    [
+     44,
+     60,
+     "gate",
+     "Savanna (Lv.17)"
+    ]
    ],
    "visited": true,
    "edges": [
@@ -4670,23 +4741,23 @@
    ]
   },
   "195": {
-   "at": 1792359735399,
+   "at": 1792742895273,
    "name": "Savanna",
    "type": "Normal",
    "g": [
-    "Tin Mine",
-    "Soapstone Quarry"
+    "Tin 採礦",
+    "Soapstone 採石場"
    ],
    "gt": [
     [
-     27,
-     28,
-     "Soapstone Quarry"
-    ],
-    [
      38,
      25,
-     "Tin Mine"
+     "Tin 採礦"
+    ],
+    [
+     27,
+     28,
+     "Soapstone 採石場"
     ]
    ],
    "m": [
@@ -4696,6 +4767,20 @@
     "Gnoll Warrior",
     "Gnoll Warlock",
     "Carrion Harpy"
+   ],
+   "ex": [
+    [
+     45,
+     7,
+     "gate",
+     "Savanna (Lv.19)"
+    ],
+    [
+     19,
+     60,
+     "gate",
+     "Savanna (Lv.18)"
+    ]
    ],
    "visited": true,
    "edges": [
@@ -4714,7 +4799,7 @@
    ]
   },
   "196": {
-   "at": 1792344121414,
+   "at": 1792742624406,
    "name": "Savanna",
    "type": "Normal",
    "m": [
@@ -4724,6 +4809,26 @@
     "Gnoll Warlock",
     "Terastodon",
     "Arynx"
+   ],
+   "ex": [
+    [
+     15,
+     9,
+     "gate",
+     "Bungavik (Lv.20)"
+    ],
+    [
+     53,
+     38,
+     "smugglers_route",
+     "走私者路線"
+    ],
+    [
+     34,
+     60,
+     "gate",
+     "Savanna (Lv.19)"
+    ]
    ],
    "visited": true,
    "edges": [
@@ -4738,6 +4843,12 @@
      195,
      34,
      60
+    ],
+    [
+     196,
+     209,
+     0,
+     0
     ]
    ]
   },
