@@ -1,7 +1,7 @@
 {
  "meta": {
   "source": "小伴侣地图数据（MapDB）· 4 位贡献者合并",
-  "updated": "2026-10-23T08:08:34.379Z",
+  "updated": "2026-10-23T08:29:29.409Z",
   "version": "1.0",
   "contributors": [
    {
@@ -32,8 +32,8 @@
     "file": "maps-2838.json",
     "char": "#2838",
     "level": 19,
-    "time": "2026-10-23T08:08:17.333Z",
-    "count": 329,
+    "time": "2026-10-23T08:29:11.845Z",
+    "count": 340,
     "mergedAt": "2026-10-23"
    }
   ],
@@ -4741,10 +4741,12 @@
    ]
   },
   "195": {
-   "at": 1792742895273,
+   "at": 1792744121633,
    "name": "Savanna",
    "type": "Normal",
    "g": [
+    "Tin Mine",
+    "Soapstone Quarry",
     "Tin 採礦",
     "Soapstone 採石場"
    ],
@@ -4799,7 +4801,7 @@
    ]
   },
   "196": {
-   "at": 1792742624406,
+   "at": 1792744078247,
    "name": "Savanna",
    "type": "Normal",
    "m": [
