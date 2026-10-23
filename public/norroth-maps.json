@@ -1,7 +1,7 @@
 {
  "meta": {
   "source": "小伴侣地图数据（MapDB）· 4 位贡献者合并",
-  "updated": "2026-10-23T19:29:22.114Z",
+  "updated": "2026-10-23T21:11:37.188Z",
   "version": "1.0",
   "contributors": [
    {
@@ -15,9 +15,9 @@
    {
     "file": "maps-1330.json",
     "char": "#1330",
-    "level": 47,
-    "time": "2026-10-23T14:48:06.815Z",
-    "count": 339,
+    "level": 48,
+    "time": "2026-10-23T21:11:20.977Z",
+    "count": 340,
     "mergedAt": "2026-10-23"
    },
    {
@@ -751,7 +751,7 @@
    ]
   },
   "16": {
-   "at": 1792764256713,
+   "at": 1792788484943,
    "name": "Elundi",
    "type": "City",
    "g": [
@@ -2102,7 +2102,7 @@
    ]
   },
   "55": {
-   "at": 0,
+   "at": 1792788757431,
    "name": "Way to Morwen",
    "type": "Normal",
    "g": [
@@ -2124,6 +2124,20 @@
     "Wandering Ent",
     "Owlbear"
    ],
+   "ex": [
+    [
+     26,
+     17,
+     "gate",
+     "Abandoned Mine (Lv.41)"
+    ],
+    [
+     40,
+     60,
+     "gate",
+     "Deep Forest (Lv.14)"
+    ]
+   ],
    "visited": true,
    "edges": [
     [
@@ -2141,7 +2155,7 @@
    ]
   },
   "56": {
-   "at": 0,
+   "at": 1792788797531,
    "name": "Abandoned Mine",
    "type": "Normal",
    "g": [
@@ -2167,6 +2181,20 @@
     "Phantom Miner",
     "Werebat"
    ],
+   "ex": [
+    [
+     9,
+     25,
+     "gate",
+     "Abandoned Mine (Lv.41)"
+    ],
+    [
+     31,
+     63,
+     "gate",
+     "Way to Morwen (Lv.14)"
+    ]
+   ],
    "visited": true,
    "edges": [
     [
@@ -2184,16 +2212,185 @@
    ]
   },
   "57": {
-   "at": 0,
-   "name": "Abandoned Mine"
+   "at": 1792788837590,
+   "name": "Abandoned Mine",
+   "g": [
+    "Laterite Quarry"
+   ],
+   "gt": [
+    [
+     20,
+     17,
+     "Laterite Quarry"
+    ],
+    [
+     45,
+     38,
+     "Laterite Quarry"
+    ]
+   ],
+   "m": [
+    "Drow",
+    "Rust Monster",
+    "Phantom Miner",
+    "Goblin Engineer",
+    "Xorn",
+    "Werebat"
+   ],
+   "ex": [
+    [
+     1,
+     29,
+     "gate",
+     "Abandoned Mine (Lv.41)"
+    ],
+    [
+     66,
+     46,
+     "gate",
+     "Abandoned Mine (Lv.41)"
+    ]
+   ],
+   "edges": [
+    [
+     57,
+     56,
+     66,
+     46
+    ],
+    [
+     57,
+     58,
+     1,
+     29
+    ]
+   ]
   },
   "58": {
-   "at": 0,
-   "name": "Abandoned Mine"
+   "at": 1792788918719,
+   "name": "Abandoned Mine",
+   "type": "Normal",
+   "g": [
+    "Laterite Quarry",
+    "Largemouth Bass Pier"
+   ],
+   "gt": [
+    [
+     56,
+     35,
+     "Laterite Quarry"
+    ],
+    [
+     22,
+     37,
+     "Largemouth Bass Pier"
+    ]
+   ],
+   "m": [
+    "Goblin Engineer",
+    "Phantom Miner",
+    "Xorn",
+    "Rust Monster",
+    "Drow",
+    "Werebat"
+   ],
+   "ex": [
+    [
+     3,
+     15,
+     "gate",
+     "Abandoned Mine (Lv.43)"
+    ],
+    [
+     50,
+     35,
+     "waygate",
+     "Waygate"
+    ],
+    [
+     65,
+     40,
+     "gate",
+     "Abandoned Mine (Lv.41)"
+    ],
+    [
+     9,
+     46,
+     "gate",
+     "Abandoned Mine (Lv.41)"
+    ]
+   ],
+   "edges": [
+    [
+     58,
+     57,
+     65,
+     40
+    ],
+    [
+     58,
+     59,
+     9,
+     46
+    ],
+    [
+     58,
+     138,
+     3,
+     15
+    ]
+   ]
   },
   "59": {
-   "at": 0,
-   "name": "Abandoned Mine"
+   "at": 1792789459383,
+   "name": "Abandoned Mine",
+   "type": "Normal",
+   "g": [
+    "Laterite Quarry"
+   ],
+   "gt": [
+    [
+     25,
+     29,
+     "Laterite Quarry"
+    ]
+   ],
+   "m": [
+    "Drow",
+    "Goblin Engineer",
+    "Rust Monster",
+    "Xorn",
+    "Phantom Miner",
+    "Werebat"
+   ],
+   "ex": [
+    [
+     1,
+     33,
+     "gate",
+     "Abandoned Mine (Lv.41)"
+    ],
+    [
+     65,
+     33,
+     "gate",
+     "Abandoned Mine (Lv.41)"
+    ]
+   ],
+   "edges": [
+    [
+     59,
+     58,
+     65,
+     33
+    ],
+    [
+     59,
+     141,
+     1,
+     33
+    ]
+   ]
   },
   "61": {
    "at": 1792680209329,
@@ -2805,7 +3002,7 @@
    ]
   },
   "77": {
-   "at": 1792723621742,
+   "at": 1792772462085,
    "name": "Guardian Queen Hive",
    "m": [
     "Forest Guardian",
@@ -2889,7 +3086,7 @@
    ]
   },
   "78": {
-   "at": 1792723651629,
+   "at": 1792772492133,
    "name": "Guardian Queen Hive",
    "m": [
     "Queen Acasia"
@@ -4194,25 +4391,159 @@
    ]
   },
   "138": {
-   "at": 0,
-   "name": "Abandoned Mine"
+   "at": 1792789366474,
+   "name": "Abandoned Mine",
+   "type": "Normal",
+   "m": [
+    "Phantom Miner",
+    "Xorn",
+    "Werebat",
+    "Rust Monster",
+    "Drow",
+    "Goblin Engineer"
+   ],
+   "ex": [
+    [
+     35,
+     15,
+     "dungeon",
+     "Ghrorak’s Prison (Lv.49)"
+    ],
+    [
+     59,
+     65,
+     "gate",
+     "Abandoned Mine (Lv.41)"
+    ]
+   ],
+   "visited": true,
+   "edges": [
+    [
+     138,
+     58,
+     59,
+     65
+    ],
+    [
+     138,
+     139,
+     35,
+     15
+    ]
+   ]
   },
   "139": {
    "at": 0,
    "name": "Ghrorak’s Prison"
   },
   "141": {
-   "at": 0,
-   "name": "Abandoned Mine"
+   "at": 1792789499435,
+   "name": "Abandoned Mine",
+   "type": "Normal",
+   "m": [
+    "Goblin Engineer",
+    "Rust Monster",
+    "Xorn",
+    "Drow",
+    "Phantom Miner",
+    "Werebat"
+   ],
+   "ex": [
+    [
+     65,
+     33,
+     "gate",
+     "Abandoned Mine (Lv.41)"
+    ],
+    [
+     1,
+     34,
+     "gate",
+     "Abandoned Mine (Lv.41)"
+    ]
+   ],
+   "edges": [
+    [
+     141,
+     59,
+     65,
+     33
+    ],
+    [
+     141,
+     142,
+     1,
+     34
+    ]
+   ]
   },
   "142": {
-   "at": 0,
-   "name": "Abandoned Mine"
+   "at": 1792789592051,
+   "name": "Abandoned Mine",
+   "type": "Normal",
+   "m": [
+    "Drow",
+    "Goblin Engineer",
+    "Xorn",
+    "Rust Monster",
+    "Phantom Miner",
+    "Werebat"
+   ],
+   "ex": [
+    [
+     5,
+     36,
+     "gate",
+     "Nythrendal (Lv.40)"
+    ],
+    [
+     66,
+     36,
+     "gate",
+     "Abandoned Mine (Lv.41)"
+    ]
+   ],
+   "edges": [
+    [
+     142,
+     141,
+     66,
+     36
+    ],
+    [
+     142,
+     143,
+     5,
+     36
+    ]
+   ]
   },
   "143": {
-   "at": 0,
+   "at": 1792789652155,
    "name": "Nythrendal",
-   "type": "City"
+   "type": "City",
+   "ex": [
+    [
+     8,
+     54,
+     "waygate",
+     "Waygate"
+    ],
+    [
+     57,
+     60,
+     "gate",
+     "Abandoned Mine (Lv.41)"
+    ]
+   ],
+   "edges": [
+    [
+     143,
+     142,
+     57,
+     60
+    ]
+   ]
   },
   "169": {
    "at": 1792742664608,
@@ -4398,11 +4729,7 @@
    ]
   },
   "181": {
-   "at": 0,
-   "name": "Caeltys’ Causeway"
-  },
-  "182": {
-   "at": 1792597129717,
+   "at": 1792788629785,
    "name": "Caeltys’ Causeway",
    "m": [
     "Wendigo",
@@ -4410,6 +4737,59 @@
     "Ankheg",
     "Drow",
     "Forest Guardian"
+   ],
+   "ex": [
+    [
+     58,
+     26,
+     "gate",
+     "Caeltys’ Causeway (Lv.31)"
+    ],
+    [
+     11,
+     31,
+     "gate",
+     "Caeltys’ Causeway (Lv.31)"
+    ]
+   ],
+   "edges": [
+    [
+     181,
+     180,
+     11,
+     31
+    ],
+    [
+     181,
+     182,
+     58,
+     26
+    ]
+   ]
+  },
+  "182": {
+   "at": 1792788592227,
+   "name": "Caeltys’ Causeway",
+   "m": [
+    "Wendigo",
+    "Cockatrice",
+    "Ankheg",
+    "Drow",
+    "Forest Guardian"
+   ],
+   "ex": [
+    [
+     6,
+     34,
+     "gate",
+     "Caeltys’ Causeway (Lv.31)"
+    ],
+    [
+     61,
+     36,
+     "gate",
+     "Caeltys (Lv.30)"
+    ]
    ],
    "visited": true,
    "edges": [
@@ -4582,7 +4962,7 @@
    ]
   },
   "187": {
-   "at": 1792723589631,
+   "at": 1792772359459,
    "name": "Caeltys’ Yarden",
    "m": [
     "Drow",
@@ -4634,7 +5014,7 @@
    ]
   },
   "188": {
-   "at": 1792723564093,
+   "at": 1792772279350,
    "name": "Caeltys’ Yarden",
    "m": [
     "Forest Guardian",
@@ -4674,7 +5054,7 @@
    ]
   },
   "189": {
-   "at": 1792723556681,
+   "at": 1792772241804,
    "name": "Caeltys’ Yarden",
    "m": [
     "Drow",
@@ -6685,7 +7065,7 @@
    ]
   },
   "281": {
-   "at": 1792763098742,
+   "at": 1792787255533,
    "name": "Trescan",
    "type": "City",
    "g": [
@@ -7306,8 +7686,9 @@
    ]
   },
   "324": {
-   "at": 1792763132383,
+   "at": 1792789754783,
    "name": "Dark Boreal",
+   "type": "Normal",
    "m": [
     "Dwarven Guard",
     "Dwarven Caster",
@@ -7346,8 +7727,9 @@
    ]
   },
   "325": {
-   "at": 1792763203200,
+   "at": 1792789789828,
    "name": "Dark Boreal",
+   "type": "Normal",
    "g": [
     "Mithril Mine"
    ],
@@ -7396,7 +7778,7 @@
    ]
   },
   "326": {
-   "at": 1792766884665,
+   "at": 1792789875239,
    "name": "Dark Boreal",
    "type": "Normal",
    "g": [
@@ -7640,7 +8022,7 @@
    "name": "The Ember Forge"
   },
   "342": {
-   "at": 1792729023190,
+   "at": 1792776711891,
    "name": "Dark Boreal",
    "m": [
     "Armored Ram",
@@ -7680,7 +8062,7 @@
    ]
   },
   "343": {
-   "at": 1792729135121,
+   "at": 1792776754446,
    "name": "Dark Boreal",
    "m": [
     "Dwarven Guard",
@@ -7719,7 +8101,7 @@
    ]
   },
   "344": {
-   "at": 1792729204349,
+   "at": 1792777551898,
    "name": "Dark Boreal",
    "m": [
     "Dwarven Guard",
@@ -7742,6 +8124,7 @@
      "Dark Boreal (Lv.45)"
     ]
    ],
+   "visited": true,
    "edges": [
     [
      344,
@@ -8214,7 +8597,7 @@
    "name": "Fountain of Rebirth"
   },
   "1000": {
-   "at": 1792675523207,
+   "at": 1792780143428,
    "name": "Fountain of Rebirth",
    "type": "Normal",
    "ex": [
@@ -8354,7 +8737,7 @@
    "name": "Sleepy Hollow"
   },
   "1183": {
-   "at": 1792763271126,
+   "at": 1792787305681,
    "name": "The Sacred Wilds Lobby",
    "g": [
     "Quarry",
@@ -8476,7 +8859,7 @@
    ]
   },
   "1188": {
-   "at": 1792764239361,
+   "at": 1792788476878,
    "name": "The Sacred Wilds",
    "m": [
     "Wyvern"
