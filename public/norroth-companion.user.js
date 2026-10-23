@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.129
+// @version      2.6.130
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -116,7 +116,7 @@
     humanMistakeOn: false,      // ★ 移动偶发失误：先走错一格再走真目标
     humanMistakePct: 3,         // 失误概率（%）
     navSegOn: false,            // ★ 分段导航（v2.6.129）：长距离移动改两段式（先到目标前一格，再到目标点位）
-    navSegDist: 15,             // 多少格算「长距离」（超过才启用两段式）
+    navSegDist: 5,              // 多少格算「长距离」（超过才启用两段式；默认 5）
 
 
     /* 维修 / 清包 */
@@ -185,7 +185,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.129';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
+  const SCRIPT_VER = '2.6.130';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -399,7 +399,7 @@
     c.humanMistakeOn = !!c.humanMistakeOn;
     c.humanMistakePct = Math.max(0, Math.min(50, Math.round(+c.humanMistakePct || 0)));
     c.navSegOn = !!c.navSegOn;
-    c.navSegDist = Math.max(3, Math.min(200, Math.round(+c.navSegDist || 15)));
+    c.navSegDist = Math.max(3, Math.min(200, Math.round(+c.navSegDist || 5)));
     delete c.navSegMin;   /* ★ v2.6.129：分段导航改成「目标前一格」两段式，不再按段长 */
     delete c.navSegMax;
     /* ★ v2.6.17：打断门槛由「任意怪 / ★1星以上 / ★2星以上 / ★3星」四档；旧值 champion 迁移为 r1 */
@@ -3524,12 +3524,39 @@
              重新请求得到同一条剩余路线 → 路线不变。
        注：走路期间游戏把 can_travel 置 false，中途重新请求会被丢弃，所以必须「先停再请求」。 */
     const segOn = function () { return !!cfg.navSegOn && !retrigger; };
-    const segDist = function () { return Math.max(3, Math.round(+cfg.navSegDist || 15)); };
+    const segDist = function () { return Math.max(3, Math.round(+cfg.navSegDist || 5)); };
     const onPoiTile = function () {
       try { const k = character.x + '-' + character.y;
         return $$q('.map_table .tile_poi').some(function (el) { return (el.getAttribute('coords') || '') === k; }); } catch (e) { return false; }
     };
     let seg = null;   /* null = 本次移动不走两段式；{dist0} = 已武装，等角色贴到目标前一格 */
+    let segDone = false;   /* ★ v2.6.130：两段式的第二段（走向目标点位）已发出 → 到位后要确认动作是否触发 */
+
+    /* ★ v2.6.130：两段式导航到位后，若目标格有 action 但没触发，走开一格再走回重触发。
+       根因：两段式会在目标前一格 abortWalk()（清掉 character.walk_to），若这次清空正好落在
+       目标格上，游戏就不会执行 execTileAction（见上方「兜底[到位没触发 action]」）→ 动作点不开。
+       这里在「两段式到位」后主动确认一次，没触发就走开一格再走回（最多 2 次）。 */
+    const actionOpened = function (act) {
+      if (arriveActionFired(act)) return true;
+      const ids = ['frame_Gate', 'frame_Quest', 'frame_SmugglersRoute', 'frame_CollectScrap', 'frame_Scavenge', 'frame_Gathering'];
+      for (let i = 0; i < ids.length; i++) if (hasFrame(ids[i])) return true;
+      return false;
+    };
+    const settleArriveAction = async function () {
+      if (!segDone) return;                                  /* 只有两段式才确认 */
+      if (!tileActionAt(gx, gy)) return;                     /* 目标格没有 action → 不用管 */
+      for (let k = 0; k < 2; k++) {
+        await sleep(ARRIVE_ACTION_MS);
+        if (!alive() || !inGame() || !onTile()) return;
+        const act = tileActionAt(gx, gy);
+        if (!act || actionOpened(act)) return;
+        logEvent('两段式到位没触发动作（' + act + ' @' + gx + '-' + gy + '）→ 走开一格再走回');
+        setStatus('到位没触发动作，走开再走回重触发…');
+        await stepAside();
+        try { safeWalkTo(gx, gy); } catch (e) { /* ignore */ }
+        await sleep(1200);
+      }
+    };
 
     const blockers = ['frame_Quest', 'frame_CollectScrap', 'frame_Scavenge', 'frame_Gate'];
     const clearBlockers = function () {
@@ -3566,7 +3593,7 @@
     /* ★ paused 上限：避免“永远在等”（死循环） —— 真实时间超过 timeoutMs 且 paused 也超过 5 分钟就放弃 */
     while (now() - t0 - paused < timeoutMs && paused < 300000) {
       if (!alive()) { try { abortWalk(); } catch (e) { /* ignore */ } return 'cancel'; }
-      if (cond()) return okOut();
+      if (cond()) { await settleArriveAction(); return okOut(); }
       if (!inGame()) return 'cancel';
 
       /* 阵亡：点复活，等待期间不计入超时 */
@@ -3601,7 +3628,7 @@
       const pos = character.x + ',' + character.y;
       if (pos !== lastPos) { lastPos = pos; lastMove = now(); }
       if (onTile()) {
-        if (!retrigger) return okOut();              /* 非重触发：站上目标格即成功 */
+        if (!retrigger) { await settleArriveAction(); return okOut(); }   /* 非重触发：站上目标格即成功 */
         if (cond()) return okOut();
         break;                                       /* 重触发：已到门口但条件未成立 → 跳出，走开再走回 */
       }
@@ -3629,6 +3656,7 @@
         if (!alive()) { try { abortWalk(); } catch (e) { /* ignore */ } return 'cancel'; }
         lastMove = now(); bestAt = now();                     /* 别把停顿误判成卡住 */
         safeWalkTo(gx, gy);
+        segDone = true;                                       /* ★ v2.6.130：第二段已发出 */
         await sleep(500);
         continue;
       }
@@ -8093,15 +8121,15 @@
 
           <div class="divblock_dark" style="margin-top:4px">
             <div class="nr-srow">
-              <span class="nr-sl" style="flex:none" title="扫描本账号的图鉴记录，然后【静默上传】到公共图鉴数据仓库（TravisWWW/nor-database）；norr-wiki 会自动拉取并并入唯一一份权威图鉴文档，所有用小伴侣的人共享同一份数据。全程不需要填令牌、不会打开任何网页，约 20 秒，可随时取消。">图鉴同步</span>
-              <button class="mini" id="nr-bestsync" type="button" style="flex:1" title="扫描并静默上传到公共图鉴">同步到公共图鉴</button>
-              <span class="nr-sl" style="flex:none" title="上传本地地图数据（每张图的名字/类型/采集点/怪物/门/走私路线/秘密通路等出口格 + 该图最后更新时间），并拉取公共地图数据合并进本地；每张图以「更新时间最新」的那份为准。静默完成，不需要令牌、不会打开任何网页。">地图同步</span>
-              <button class="mini" id="nr-mapsync" type="button" style="flex:1" title="上传本地地图数据 + 拉取公共地图数据">同步地图数据</button>
+              <button class="mini" id="nr-bestsync" type="button" style="flex:1" title="扫描本账号的图鉴记录，然后【静默上传】到公共图鉴数据仓库（TravisWWW/nor-database）；norr-wiki 会自动拉取并并入唯一一份权威图鉴文档，所有用小伴侣的人共享同一份数据。全程不需要填令牌、不会打开任何网页，约 20 秒，可随时取消。">图鉴同步</button>
+              <button class="mini" id="nr-mapsync" type="button" style="flex:1" title="上传本地地图数据（每张图的名字/类型/采集点/怪物/门/走私路线/秘密通路等出口格 + 该图最后更新时间），并拉取公共地图数据合并进本地；每张图以「更新时间最新」的那份为准。静默完成，不需要令牌、不会打开任何网页。">地图同步</button>
             </div>
             <div class="nr-srow" style="margin-top:4px">
-              <span id="nr-bestsyncstate" style="flex:1;min-width:0;color:#9aa4b2;font-size:10.5px;white-space:normal;line-height:1.3">点「同步到公共图鉴」（静默上传，无需令牌）</span>
+              <span id="nr-bestsyncstate" style="flex:1;min-width:0;color:#9aa4b2;font-size:10.5px;white-space:normal;line-height:1.3">图鉴：点「图鉴同步」（静默上传，无需令牌）</span>
               <button class="mini" id="nr-bestcancel" type="button" style="display:none">取消</button>
-              <span id="nr-mapsyncstate" style="flex:1;min-width:0;color:#9aa4b2;font-size:10.5px;white-space:normal;line-height:1.3">上传本地 + 拉取公共（静默，无需令牌）</span>
+            </div>
+            <div class="nr-srow" style="margin-top:2px">
+              <span id="nr-mapsyncstate" style="flex:1;min-width:0;color:#9aa4b2;font-size:10.5px;white-space:normal;line-height:1.3">地图：点「地图同步」（上传本地 + 拉取公共）</span>
             </div>
           </div>
 
@@ -11724,7 +11752,7 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
     } finally {
       _bestBusy = false;
       if (cancelBtn) cancelBtn.style.display = 'none';
-      if (syncBtn) { syncBtn.disabled = false; syncBtn.textContent = '同步到公共图鉴'; }
+      if (syncBtn) { syncBtn.disabled = false; syncBtn.textContent = '图鉴同步'; }
     }
   }
 
@@ -11780,7 +11808,7 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
       logEvent('地图同步失败 v' + SCRIPT_VER + ' / ' + msg);
     } finally {
       _mapSyncBusy = false;
-      if (btn) { btn.disabled = false; btn.textContent = '同步地图数据'; }
+      if (btn) { btn.disabled = false; btn.textContent = '地图同步'; }
     }
   }
 
