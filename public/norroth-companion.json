@@ -1,8 +1,8 @@
 {
-  "version": "2.6.125",
-  "date": "2026-10-23",
-  "notes": "v2.6.125 补药自动选择排序修复：选中的食物吃完后回到「自动选择（数量最多）」时，把「战斗中可用」的药水（tooltip 写 can be used during battle 的 health/mana/rejuv potion，共 22 种）排到最后 —— 那是应急物资，平时回血优先吃食物/料理；同组内再按「数量多 → 补得少（省药）」挑。若背包里只剩战斗药水，照旧按数量挑。",
+  "version": "2.6.126",
+  "date": "2026-10-24",
+  "notes": "v2.6.126 世界地图 tooltip 采集点：真实点位名与 Wiki 层级合并显示 —— 本地扫到过的图，点位名后补上 T（按专业从 Wiki 数据匹配，例：Copper Mine T1）；Wiki 还列了别的专业也一并补上（例：map8 Copper Mine T1 + Quarrying T1 · Lv6-9）。未探索的图仍显示 Wiki 的「专业 T层级 · Lv等级」。",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 786341,
-  "sha256": "ad13f362afb2253c6a3ce6ef032999d0401e5b947b16d7300ded135d5a21aacc"
+  "size": 787305,
+  "sha256": "5645d569330a882edd100867f62abf24db0a02a8036768945c37e43d0f05fa21"
 }

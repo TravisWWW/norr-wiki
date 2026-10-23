@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.125
+// @version      2.6.126
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -186,7 +186,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.125';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
+  const SCRIPT_VER = '2.6.126';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -10978,10 +10978,30 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
       return '<span class="nr-wm-chip ' + cls + '">' +
              (icon ? '<img src="' + icon + '" alt="">' : '') + escapeHtml(name) + '</span>';
     };
-    /* 资源点：真实点位名优先；没有就用 Wiki 的「专业 + 层级 + 等级」 */
+    /* 资源点：真实点位名 + Wiki 层级（T）合并显示（v2.6.126）
+       · 本地扫到过 → 用真实点位名，并按「专业」从 Wiki 数据补上 T（例：Copper Mine T1）；
+       · 本地没扫到 → 用 Wiki 的「专业 T层级 · Lv等级」；
+       · 本地扫到过、但 Wiki 还列了别的专业 → 一并补上（不丢信息）。 */
     let gChips = '';
     if (gs.length) {
-      gChips = gs.map(function (nm) { return chip('g', '/images/icons/' + gatherIconOf(nm) + '.gif', nm); }).join('');
+      const wikiTierOf = function (prof) {
+        if (!wp || !wp.g) return '';
+        const hit = wp.g.find(function (x) { return x[0] === prof && x[1]; });
+        return hit ? hit[1] : '';
+      };
+      const realProfs = {};
+      gChips = gs.map(function (nm) {
+        const prof = gatherIconOf(nm);
+        realProfs[prof] = 1;
+        const t = wikiTierOf(prof);
+        return chip('g', '/images/icons/' + prof + '.gif', nm + (t ? ' T' + t : ''));
+      }).join('');
+      if (wp && wp.g) {
+        gChips += wp.g.filter(function (g) { return !realProfs[g[0]]; }).map(function (g) {
+          const lbl = (WM_PROF_EN[g[0]] || g[0]) + (g[1] ? ' T' + g[1] : '') + (g[2] ? ' · Lv' + g[2] : '');
+          return chip('g', '/images/icons/' + g[0] + '.gif', lbl);
+        }).join('');
+      }
     } else if (wp && wp.g) {
       gChips = wp.g.map(function (g) {
         const lbl = (WM_PROF_EN[g[0]] || g[0]) + (g[1] ? ' T' + g[1] : '') + (g[2] ? ' · Lv' + g[2] : '');
