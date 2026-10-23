@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.118
+// @version      2.6.119
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -186,7 +186,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.118';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
+  const SCRIPT_VER = '2.6.119';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -290,7 +290,6 @@
     mapSwitch: { active: false, lastAt: 0, idleSince: 0 },    // 自动切图刷怪
     paused: false,                                            // ★ 已暂停（统计保留，可继续）
     returning: false,                                         // 阵亡后正在导航回挂机地图
-    needReturn: false,                                        // ★ v2.6.118：死亡后「该回挂机图」标记（直到真的回到才清）
     visitedAt: 0,                                             // 拜访地图记录节流
     killsByName: {},                                          // ★ 详细统计：每种怪击杀数
     gathersByKind: {},                                        // ★ 详细统计：各类采集次数
@@ -7249,7 +7248,8 @@
     if (dead && cfg.autoRespawn) { handleDefeat(); return; }
     if (!dead && defeatAt) {
       resetDefeat(); logEvent('已复活，继续挂机'); setStatus('已复活，继续挂机');
-      st.needReturn = true;   /* ★ v2.6.118：死亡后要回挂机图（直到真的回到为止） */
+      /* ★ v2.6.119：死亡后登记「待办目的地 = 挂机图」→ 没到之前不开始任务，中途被带偏会自动重规划 */
+      if (cfg.farmMap) navSetPending(cfg.farmMap, '阵亡复活');
       // ★ 复活后若不在挂机地图，延迟几秒（等游戏刷新位置）再自动导航回去
       if (cfg.farmMap) setTimeout(() => {
         if (running && !st.returning && String(character.current_map) !== String(cfg.farmMap)) returnToFarm();
@@ -7271,20 +7271,8 @@
      * 上限：不停止；连续失败按 30s→60s→120s→240s→300s 退避（st.returnFails）。
      * 高级参数：不受影响。
      * ─────────────────────────────────────────────────────────── */
-    /* ★ v2.6.118：死亡后「该回挂机图」标记（st.needReturn）还在，但人已经不在挂机图了 →
-       持续重试回图（旧版只在「还在重生泉水」时重试；一旦被手动/意外带到别的图就放弃，
-       表现为「复活后没回 Dark Boreal，反而就地开打 / 在城市里采起布料」）。
-       在活动里 / 正在维修清包 / 正在切图导航时不干预。已经回到挂机图 → 清标记。 */
-    if (running && cfg.farmMap && String(cfg.farmMap) === String(character.current_map)) st.needReturn = false;
-    if (running && st.needReturn && cfg.farmMap && String(cfg.farmMap) !== String(character.current_map)
-        && !(st.event && st.event.on) && String(character.current_map) !== String(EVENT_MAP_ID)
-        && !st.repair.active && !st.sell.active && !st.mapSwitch.active && !navBusy
-        && now() - (st.returnRetryAt || 0) > Math.min(300000, 30000 * Math.pow(2, Math.min(4, st.returnFails || 0)))) {
-      st.returnRetryAt = now();
-      logEvent('还没回到挂机地图 ' + townName(cfg.farmMap) + '（当前 ' + currentMapName() + '）→ 重试回图' + (st.returnFails ? '（已失败 ' + st.returnFails + ' 次，退避中）' : ''));
-      returnToFarm();
-      return;
-    }
+    /* ★ v2.6.119：回图不再在这里写死 —— 统一由 nav 模块的「待办目的地」负责（见 navPendingTick）。
+       死亡时 navSetPending(挂机图)，没到之前不开始任务，中途被带偏会自动重规划。 */
 
     // ★ 兜底[切图卡住]：加载页卡住时接管本 tick（别在加载页上走位/交互）
     if (checkMapLoad()) return;
@@ -7367,6 +7355,8 @@
     /* ★ 活动自动进入：战斗 / 采集 / 爬塔 都生效。进入 / 返回期间接管本 tick；
        在活动图里 → 强制走采集逻辑（无论当前任务是什么），出来后再继续原任务。 */
     if (eventTick()) return;
+    /* ★ v2.6.119：导航「待办目的地」—— 没到目的地就不开始任务，中途偏离会自动重规划 */
+    if (navPendingTick()) return;
     /* ★ v2.6.101：活动战斗区里 → 不管当前任务是什么，都走下面的战斗逻辑 */
     if (eventCombatActive()) {
       ensureAutoBattle();
@@ -9238,7 +9228,7 @@
     st.paused = false;
     st.runElapsed = 0;
     st.mode = null;
-    st.needReturn = false;
+    navClearPending();
     st.tripManual = false;
     st.altTrip = false;
     st.target = null;
@@ -10004,6 +9994,58 @@
     return +character.current_map === +destId;
   }
 
+  /* ── 导航「待办目的地」（v2.6.119）─────────────────────────────
+   * 症状：导航没走到目的地就「就地开始任务」（采集 / 打怪）；或中途被带偏后不再回正。
+   * 做法：设一个待办目的地；主循环每 tick 调 navPendingTick()：
+   *   · 已到达 → 清除；
+   *   · 没到 → 从当前位置**重新规划**（navToMap 按当前图重算路线），期间**不开始挂机任务**；
+   *   · 连续失败 NAV_PENDING_MAX_TRIES 次 → 放弃并提示（避免永远不干活）。
+   * 说明：这是通用的导航意图，不再写死在「阵亡回图」里 —— 任何模块都能 navSetPending()。
+   * ─────────────────────────────────────────────────────────── */
+  const NAV_PENDING_MAX_TRIES = 5;
+  let navPending = null;   /* { dest, reason, tries, nextAt } */
+  function navPendingDest() { return navPending ? navPending.dest : 0; }
+  function navSetPending(dest, reason) {
+    const d = +dest;
+    if (!(d > 0)) return;
+    if (navPending && navPending.dest === d) { if (reason) navPending.reason = String(reason); return; }
+    navPending = { dest: d, reason: String(reason || ''), tries: 0, nextAt: 0 };
+    logEvent('导航待办：去「' + navMapName(d) + '」' + (reason ? '（' + reason + '）' : ''));
+  }
+  function navClearPending(why) {
+    if (!navPending) return;
+    if (why) logEvent('导航待办完成：' + why);
+    navPending = null;
+  }
+  /* 返回 true = 本 tick 被「待办导航」接管（主循环要 return，别开始任务） */
+  function navPendingTick() {
+    if (!navPending) return false;
+    if (!running || !inGame()) return false;
+    const p = navPending;
+    if (+character.current_map === p.dest) { navClearPending('已到达「' + navMapName(p.dest) + '」'); return false; }
+    /* 正在维修 / 清包 / 切图 / 导航 → 让路，不插手 */
+    if (navBusy || st.repair.active || st.sell.active || st.mapSwitch.active) return true;
+    if (now() < (p.nextAt || 0)) { setStatus('导航中 → ' + navMapName(p.dest) + '（等待重试）…'); return true; }
+    p.tries = (p.tries || 0) + 1;
+    if (p.tries > NAV_PENDING_MAX_TRIES) {
+      const nm = navMapName(p.dest);
+      navClearPending();
+      logEvent('导航待办：连续 ' + NAV_PENDING_MAX_TRIES + ' 次没到「' + nm + '」→ 放弃（先就地挂机）');
+      try { notify('导航放弃', '一直没到「' + nm + '」，先就地挂机'); } catch (e) { /* ignore */ }
+      return false;
+    }
+    p.nextAt = now() + Math.min(300000, 30000 * Math.pow(2, Math.min(4, p.tries - 1)));
+    logEvent('导航待办：还没到「' + navMapName(p.dest) + '」（当前 ' + currentMapName() + '）→ 重新规划（第 ' + p.tries + ' 次）');
+    setStatus('导航中 → ' + navMapName(p.dest) + '（第 ' + p.tries + ' 次）…');
+    (async function () {
+      try {
+        const ok = await navToMap(p.dest, { alive: function () { return running && navPending === p; }, allowCity: true, allowWild: true });
+        if (ok && navPending === p) navClearPending('已到达「' + navMapName(p.dest) + '」');
+      } catch (e) { /* ignore */ }
+    })();
+    return true;
+  }
+
   /* 传送站逻辑：dist(cur,最近传送站) + 5 < dist(cur,dest) 才绕去传送站 */
   async function navWaygateLogic(dest, page, alive) {
     const cur = +character.current_map;
@@ -10545,14 +10587,15 @@
   async function returnToFarm() {
     if (st.returning) return;
     const dest = +(cfg.farmMap || 0);
-    if (!dest || !inGame() || String(character.current_map) === String(dest)) return;
+    if (!dest || !inGame() || String(character.current_map) === String(dest)) { navClearPending(); return; }
+    navSetPending(dest, '阵亡复活');
     st.returning = true;
     try {
       setStatus('阵亡复活：导航回挂机地图「' + townName(dest) + '」…');
       logEvent('阵亡复活，导航回挂机地图 ' + townName(dest));
       const ok = await navToMap(dest, { alive: () => running, allowCity: true, allowWild: true });   // ★ 阵亡回图：必须允许传送出来
       st.returnFails = ok ? 0 : ((st.returnFails || 0) + 1);
-      if (ok) st.needReturn = false;
+      if (ok) navClearPending('已到达「' + navMapName(dest) + '」');
       logEvent(ok ? '已回到挂机地图 ' + townName(dest) : '回挂机地图失败（第 ' + st.returnFails + ' 次），当前在 ' + currentMapName());
       setStatus(ok ? '已回到挂机地图，继续挂机' : '回挂机地图失败：当前在 ' + currentMapName());
     } catch (e) {
@@ -11715,7 +11758,7 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
     applyBagDiff: applyBagDiff, parseInvItems: parseInvItems, initBagSnap: initBagSnap,
     pause: pause, resume: resume, toggleRun: toggleRun, runElapsedMs: runElapsedMs, pollBagGain: pollBagGain,
     startRoundTrip: function () { const seq = ++navAutoSeq; st.mapSwitch.active = true; return navRoundTrip(seq); },
-    returnToFarm: returnToFarm, navToMap: navToMap, navGoTo: navToMap, navWalkTile: navWalkTile, navDist: navDist, escapeTarget: escapeTarget, navTeleportNear: navTeleportNear, nearestWaygateMap: nearestWaygateMap, waygateMaps: waygateMaps, isWildAnchor: isWildAnchor, isTownMap: isTownMap, suppliesEmpty: suppliesEmpty, rideSmugglers: rideSmugglers, navWaygateOut: navWaygateOut, navWorldTeleport: navWorldTeleport, worldTeleportTarget: worldTeleportTarget, findMapDetailsTeleport: findMapDetailsTeleport, navWalkToAnyExit: navWalkToAnyExit, townName: townName,
+    returnToFarm: returnToFarm, navToMap: navToMap, navGoTo: navToMap, navWalkTile: navWalkTile, navDist: navDist, escapeTarget: escapeTarget, navTeleportNear: navTeleportNear, navSetPending: navSetPending, navClearPending: navClearPending, navPendingTick: navPendingTick, navPendingDest: navPendingDest, nearestWaygateMap: nearestWaygateMap, waygateMaps: waygateMaps, isWildAnchor: isWildAnchor, isTownMap: isTownMap, suppliesEmpty: suppliesEmpty, rideSmugglers: rideSmugglers, navWaygateOut: navWaygateOut, navWorldTeleport: navWorldTeleport, worldTeleportTarget: worldTeleportTarget, findMapDetailsTeleport: findMapDetailsTeleport, navWalkToAnyExit: navWalkToAnyExit, townName: townName,
     navImportRecorder: navImportRecorder,
     mapDB: MapDB,
     nav: { graph: MapDB, route: navRoute, travelTo: navTravelTo, hop: navHop, learn: navLearn,
