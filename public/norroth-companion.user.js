@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.128
+// @version      2.6.127
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -186,7 +186,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.128';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
+  const SCRIPT_VER = '2.6.127';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -4061,13 +4061,10 @@
     return m ? m[1].trim() : '';
   }
   function isToolBlock(block) {
-    /* ★ v2.6.128：先读游戏自己的类型文案（tooltip content 里 <h2> 的第一段）。
-       旧实现“没有 img[alt] 就当工具”→ 收购列表里用背景图 div 渲染的装备
-       （没有 <img>）会被当成工具排除 → 永远不会被卖。现在只要能读到类型文案就以它为准。 */
-    const typeTxt = itemTypeText(block);
-    if (typeTxt) return TOOL_TYPES.test(typeTxt);
     const img = block.querySelector('img[alt]');
-    if (!img) return true;                            // 既无类型文案又无图标 → 非装备（资源等）
+    if (!img) return true;
+    const typeTxt = itemTypeText(block);
+    if (typeTxt) return TOOL_TYPES.test(typeTxt);      // ★ v2.6.78：以游戏类型文案为准
     const txt = ((img.getAttribute('alt') || '') + ' ' + (img.getAttribute('hover_title') || '')).replace(/_/g, ' ');
     return TOOL_WORDS.test(txt);
   }
@@ -4258,22 +4255,9 @@
     try { closeFrameById('frame_' + smith.action.charAt(0).toUpperCase() + smith.action.slice(1)); } catch (e) { /* ignore */ }
     return r;
   }
-  /** 自动清包：按 cfg.clearAction 走出售或拆解。
-   *  ★ v2.6.128：拆解是「按 NPC 分」的（武器商只拆武器、防具商只拆防具、珠宝商只拆首饰……），
-   *  不在当前 NPC 拆解列表里的装备会被静默跳过 → 永远清不掉（用户报的「普通武器/耳环清不掉」）。
-   *  所以「拆解」模式下，拆完再用「出售」把剩下的符合条件装备兜底清一遍
-   *  （出售在任何工匠那里都收任何装备）。 */
+  /** 自动清包：按 cfg.clearAction 走出售或拆解 */
   async function clearBagAtSmith(smith, bag) {
-    if (cfg.clearAction !== 'salvage') return await sellAtSmith(smith, bag);
-    const r1 = await salvageAtSmith(smith, bag);
-    let sold = r1.sold || 0, free = r1.free || 0;
-    try {
-      const r2 = await sellAtSmith(smith, bag);
-      if (r2.sold) logEvent('清包兜底：拆解列表外的 ' + r2.sold + ' 件改用出售清掉');
-      sold += r2.sold || 0;
-      if (r2.free) free = r2.free;
-    } catch (e) { /* 出售兜底失败不影响拆解结果 */ }
-    return { sold: sold, free: free };
+    return (cfg.clearAction === 'salvage') ? await salvageAtSmith(smith, bag) : await sellAtSmith(smith, bag);
   }
 
   /** 到 smith 后的统一处理：需要修就修、需要清就清，两件事各自独立 */
