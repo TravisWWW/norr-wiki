@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.131
+// @version      2.6.132
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -117,8 +117,7 @@
     humanMistakePct: 3,         // 失误概率（%）
     navSegOn: false,            // ★ 分段导航（v2.6.129）：长距离移动改两段式（先到目标前一格，再到目标点位）
     navSegDist: 5,              // 多少格算「长距离」（超过才启用两段式；默认 5）
-    /* ★ v2.6.131：段间停顿单独控制（不再只靠「真人化动作间隔」）*/
-    navSegPauseOn: true,        // 段间停顿开关（默认开）
+    /* ★ v2.6.132：段间停顿（没有单独开关，直接填 最短~最长 ms）*/
     navSegPauseMin: 1000,       // 段间停顿最短(ms)
     navSegPauseMax: 3000,       // 段间停顿最长(ms)
 
@@ -189,7 +188,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.131';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
+  const SCRIPT_VER = '2.6.132';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -406,8 +405,8 @@
     c.navSegDist = Math.max(3, Math.min(200, Math.round(+c.navSegDist || 5)));
     delete c.navSegMin;   /* ★ v2.6.129：分段导航改成「目标前一格」两段式，不再按段长 */
     delete c.navSegMax;
-    /* ★ v2.6.131：段间停顿单独控制 */
-    c.navSegPauseOn = (c.navSegPauseOn === undefined || c.navSegPauseOn === null) ? true : !!c.navSegPauseOn;
+    /* ★ v2.6.132：段间停顿（没有单独开关）*/
+    delete c.navSegPauseOn;
     c.navSegPauseMin = Math.max(0, Math.min(60000, Math.round(+c.navSegPauseMin || 1000)));
     c.navSegPauseMax = Math.max(c.navSegPauseMin, Math.min(60000, Math.round(+c.navSegPauseMax || 3000)));
     /* ★ v2.6.17：打断门槛由「任意怪 / ★1星以上 / ★2星以上 / ★3星」四档；旧值 champion 迁移为 r1 */
@@ -3657,17 +3656,10 @@
         seg = null;
         try { abortWalk(); } catch (e) { /* ignore */ }
         const p0 = now();
-        /* ★ v2.6.131：段间停顿。
-           开着「段间停顿」→ 按设定的 min~max 随机停（单独控制，默认 1000~3000ms）；
-           关掉 → 用原来那套真人化停顿（基础随机 + 节拍抖动 + 阈值抖动 + 真人化动作间隔 + 微停顿）。 */
-        if (cfg.navSegPauseOn) {
-          const _a = Math.max(0, Math.round(+cfg.navSegPauseMin || 0));
-          const _b = Math.max(_a, Math.round(+cfg.navSegPauseMax || 0));
-          await sleep(_a + Math.floor(Math.random() * (_b - _a + 1)));
-        } else {
-          await sleep(rhythm(jitterVal(200 + Math.floor(Math.random() * 500))));
-          await humanPause();                                 /* ★ 真人化动作间隔 + 微停顿 */
-        }
+        /* ★ v2.6.132：段间停顿 = 设定的 min~max 随机（直接在「格」右边填，没有单独开关）。 */
+        const _a = Math.max(0, Math.round(+cfg.navSegPauseMin || 0));
+        const _b = Math.max(_a, Math.round(+cfg.navSegPauseMax || 0));
+        await sleep(_a + Math.floor(Math.random() * (_b - _a + 1)));
         paused += now() - p0;
         if (!alive()) { try { abortWalk(); } catch (e) { /* ignore */ } return 'cancel'; }
         lastMove = now(); bestAt = now();                     /* 别把停顿误判成卡住 */
@@ -8126,12 +8118,10 @@
               <label title="长距离移动时改成「两段式」：先走到目标「前一格」停下喘口气，再走到目标点位（路线不变，只是重新请求剩余路径）。当前生效范围：休整行程（走到 smith / 银行）、多角色行程走位。普通打怪 / 采集的图内移动与跨图导航走门不适用。"><input type="checkbox" class="chk" id="nr-navseg">分段导航</label>
               <span class="nr-sl">长距离</span><input type="number" id="nr-navseg_dist" min="3" max="200" step="1" class="nr-snum">
               <span class="nr-sl">格</span>
-            </div>
-            <div class="nr-srow" style="margin-top:4px">
-              <label title="两段式导航在目标「前一格」停下后，等多久再走最后一段。开着时：每次在下面的「最短 ~ 最长」里随机取一个毫秒数（默认 1000~3000ms）。关掉时：用原来那套「真人化动作间隔 + 节拍/阈值抖动 + 微停顿」（真人化关时只有 200~699ms，就是觉得短的原因）。"><input type="checkbox" class="chk" id="nr-navseg_pause">段间停顿</label>
-              <input type="number" id="nr-navseg_pause_min" min="0" max="60000" step="100" class="nr-snum">
+              <span class="nr-sl" title="两段式导航在目标「前一格」停下后，等多久再走最后一段（每次在 最短~最长 里随机取一个毫秒数，默认 1000~3000ms）。">停顿</span>
+              <input type="number" id="nr-navseg_pause_min" min="0" max="60000" step="100" class="nr-snum" title="段间停顿最短(ms)">
               <span class="nr-sl">~</span>
-              <input type="number" id="nr-navseg_pause_max" min="0" max="60000" step="100" class="nr-snum">
+              <input type="number" id="nr-navseg_pause_max" min="0" max="60000" step="100" class="nr-snum" title="段间停顿最长(ms)">
               <span class="nr-sl">ms</span>
             </div>
           </div>
@@ -8594,7 +8584,6 @@
     bindNum('nr-hummistake_pct', 'humanMistakePct', 0);
     bindCheck('nr-navseg', 'navSegOn');
     bindNum('nr-navseg_dist', 'navSegDist', 3);
-    bindCheck('nr-navseg_pause', 'navSegPauseOn');
     bindNum('nr-navseg_pause_min', 'navSegPauseMin', 0);
     bindNum('nr-navseg_pause_max', 'navSegPauseMax', 0);
 
@@ -8837,7 +8826,7 @@
     set('nr-humidleact', cfg.humanIdleActOn); num('nr-humidleact_min', cfg.humanIdleActMin); num('nr-humidleact_max', cfg.humanIdleActMax);
     set('nr-hummistake', cfg.humanMistakeOn); num('nr-hummistake_pct', cfg.humanMistakePct);
     set('nr-navseg', cfg.navSegOn); num('nr-navseg_dist', cfg.navSegDist);
-    set('nr-navseg_pause', cfg.navSegPauseOn); num('nr-navseg_pause_min', cfg.navSegPauseMin); num('nr-navseg_pause_max', cfg.navSegPauseMax);
+    num('nr-navseg_pause_min', cfg.navSegPauseMin); num('nr-navseg_pause_max', cfg.navSegPauseMax);
     try { syncFarmMapUI(); } catch (e) { /* ignore */ }
     num('nr-sellfree', cfg.sellFreeMin); num('nr-sellmaxlv', cfg.sellEquipMaxLv);
     num('nr-repairdurpct', cfg.repairDurPct);
