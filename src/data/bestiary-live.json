@@ -16,17 +16,17 @@
    {
     "file": "char-1151.json",
     "char": "#1151",
-    "level": 45,
-    "time": "2026-10-22T16:52:24.954Z",
+    "level": 46,
+    "time": "2026-10-23T02:33:35.910Z",
     "count": 193,
-    "recorded": 99,
+    "recorded": 100,
     "mergedAt": "2026-10-23"
    }
   ],
   "count": 199,
-  "recordedCount": 122,
+  "recordedCount": 123,
   "withLore": 198,
-  "withStats": 70,
+  "withStats": 71,
   "withSkills": 87,
   "withBg": 183,
   "tabs": {
@@ -9550,7 +9550,28 @@
     "Light Damage": 0,
     "Lightning Damage": 0,
     "Poison Damage": 0,
-    "Thorn Damage": 0
+    "Thorn Damage": 0,
+    "Defense": 40,
+    "Block Chance": 10,
+    "Block Rating": 3,
+    "Arcane Resist": 5,
+    "Cold Resist": 5,
+    "Dark Resist": 5,
+    "Fire Resist": 5,
+    "Light Resist": 5,
+    "Lightning Resist": 5,
+    "Poison Resist": 5,
+    "Evasion": 2,
+    "Critical Chance": 2,
+    "Critical Strike": 15,
+    "Hit Rating": 20,
+    "Attack Speed": 2,
+    "Armor Penetration": 1,
+    "Life Steal": 0,
+    "Mana Steal": 0,
+    "Life Regeneration": 0,
+    "Mana Regeneration": 0,
+    "Maximum Life": 90
    }
   },
   {
@@ -9616,7 +9637,22 @@
      "id": 54,
      "level": 8
     }
-   ]
+   ],
+   "stats": {
+    "Base Damage": 10,
+    "Physical Damage": 3,
+    "Blunt Damage": 0,
+    "Spell Damage": 0,
+    "Bleed Damage": 0,
+    "Arcane Damage": 0,
+    "Cold Damage": 0,
+    "Dark Damage": 5,
+    "Fire Damage": 0,
+    "Light Damage": 0,
+    "Lightning Damage": 0,
+    "Poison Damage": 0,
+    "Thorn Damage": 5
+   }
   },
   {
    "id": 223,
@@ -9976,7 +10012,19 @@
    "lore": "Grimble is not a myth, but a madness made flesh. Shadow pulses from its hide, and silence follows its tread. Its voice? A memory best forgotten.",
    "tab": "boss",
    "icon": "https://www.norroth.com/images/maps/items/enemy_229.gif",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "45 - 45",
+   "alignment": "Neutral",
+   "health": "Medium",
+   "defense": "High",
+   "resistance": "Medium",
+   "drops": [
+    {
+     "name": "Bronze Sestertii",
+     "res": "coin_bronze",
+     "pct": "100%"
+    }
+   ]
   },
   {
    "id": 230,
