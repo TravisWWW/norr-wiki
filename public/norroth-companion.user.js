@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.121
+// @version      2.6.122
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -186,7 +186,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.121';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
+  const SCRIPT_VER = '2.6.122';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -4055,6 +4055,25 @@
   }
   const isEquipBlock = block => !isToolBlock(block);
 
+  /* ★ v2.6.122：宠物蛋保护 —— 自动清包（出售/拆解）一律不碰「宠物蛋」。
+     判据：条目里任何一处出现 pet egg / pet_egg（名字、res、hover_title、图标 alt、tooltip 名字）。
+     拆解列表本身只列装备（实测），这里再加一道，防止游戏以后把蛋列进来 / 前端改版。 */
+  const PET_EGG_RE = /pet[\s_-]*egg/i;
+  function isPetEggBlock(block) {
+    if (!block) return false;
+    const parts = [];
+    const nm = block.querySelector('.item_name');
+    if (nm) parts.push(nm.textContent || '');
+    const els = block.querySelectorAll('[name],[res],[hover_title],[alt]');
+    for (let i = 0; i < els.length; i++) {
+      parts.push(els[i].getAttribute('name') || '', els[i].getAttribute('res') || '',
+                 els[i].getAttribute('hover_title') || '', els[i].getAttribute('alt') || '');
+    }
+    const c = block.querySelector('[content]');
+    if (c) parts.push((c.getAttribute('content') || '').slice(0, 600));   /* tooltip 顶部就是物品名 */
+    return PET_EGG_RE.test(parts.join(' '));
+  }
+
   function equipLevelOf(block) {
     const el = block.querySelector('.label-left-top');
     if (el) { const m = el.textContent.match(/(\d+)/); if (m) return parseInt(m[1], 10); }
@@ -4147,20 +4166,22 @@
     /* ★ v2.6.78：把「被判定为采集工具而跳过」的件数也报出来 —— 斧类武器误判就是这么被发现的 */
     const allRows = Array.from(box.children).filter(b => b.id && /^sell_/.test(b.id));
     const toolRows = allRows.filter(b => b.querySelector('img[alt]') && isToolBlock(b));   // 有图标但被判成工具（资源条目没有 img）
+    const eggRows = allRows.filter(b => isPetEggBlock(b));                 /* ★ v2.6.122：宠物蛋不卖 */
     const allEq = allRows
-      .filter(b => isEquipBlock(b))
+      .filter(b => isEquipBlock(b) && !isPetEggBlock(b))
       .map(b => { const img = b.querySelector('img[alt]'); return { id: b.id, lv: equipLevelOf(b), rarity: equipRarityOf(b), name: img ? img.getAttribute('alt') : '' }; });
     const list = allEq
       .filter(it => clearEligible(it.lv, it.rarity))
       .sort((a, b) => a.lv - b.lv);                         // 先淘汰低等级装备
     /* ★ v2.6.76：清包诊断 —— 收购列表里有多少装备、其中多少件读不到品质（读不到就不会被清） */
-    if (allEq.length) {
+    if (allRows.length) {
       const unk = allEq.filter(it => !it.rarity).length;
       const bits = [];
       if (unk) bits.push(unk + ' 件读不到品质');
       if (toolRows.length) bits.push(toolRows.length + ' 件采集工具');
-      const nonEquip = allRows.length - allEq.length - toolRows.length;
+      const nonEquip = allRows.length - allEq.length - toolRows.length - eggRows.length;
       if (nonEquip > 0) bits.push(nonEquip + ' 件非装备（资源等）');
+      if (eggRows.length) bits.push(eggRows.length + ' 件宠物蛋已保护');
       logEvent('清包：收购列表装备 ' + allEq.length + ' 件，符合条件 ' + list.length + ' 件' + (bits.length ? ('（跳过：' + bits.join('、') + '）') : ''));
     }
     let free = bag ? bag.free : 0, sold = 0;
@@ -4204,9 +4225,11 @@
        v2.6.76 以为主结构是 <input name='item_list[]'> —— 那个在「修理」和「拆解」列表里都不存在，
        于是主分支永远 0 行，只靠下面的兼容分支在工作，而且诊断日志永远不打（排查时看不到任何线索）。 */
     const picked = [];
+    let eggs = 0;
     const rows = Array.prototype.slice.call(box.querySelectorAll('.smithing_bulk_row'));
     rows.forEach(function (r) {
       const id = r.getAttribute('data-id'); if (!id) return;
+      if (isPetEggBlock(r)) { eggs++; return; }              /* ★ v2.6.122：宠物蛋一律不拆 */
       const rar = equipRarityOf(r);
       if (clearEligible(equipLevelOf(r), rar)) picked.push({ id: id, rarity: rar || '未知' });
     });
@@ -4217,13 +4240,14 @@
         if (!id) return;
         const lab = (inp.id ? box.querySelector("label[for='" + inp.id + "']") : null) || box.querySelector('#item_block_' + id) || inp.parentNode;
         const blk = lab || inp;
+        if (isPetEggBlock(blk)) { eggs++; return; }          /* ★ v2.6.122：宠物蛋一律不拆 */
         const rar = equipRarityOf(blk);
         if (clearEligible(equipLevelOf(blk), rar)) picked.push({ id: id, rarity: rar || '未知' });
       });
     }
     if (rows.length) {
-      const unk = rows.length - picked.length;
-      logEvent('拆解：列表 ' + rows.length + ' 件，符合条件 ' + picked.length + ' 件' + (unk ? ('（跳过 ' + unk + ' 件）') : ''));
+      const unk = rows.length - picked.length - eggs;
+      logEvent('拆解：列表 ' + rows.length + ' 件，符合条件 ' + picked.length + ' 件' + (unk ? ('（跳过 ' + unk + ' 件）') : '') + (eggs ? ('（宠物蛋 ' + eggs + ' 件已保护）') : ''));
     }
     let free = bag ? bag.free : 0;
     if (!picked.length) return { sold: 0, free: free };
@@ -11752,7 +11776,7 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
     applySkin: applySkin, setSkin: setSkin, skinOn: skinOn,
     readEquipDur: readEquipDur, parseEquipDur: parseEquipDur, durWorst: durWorst, durText: durText, repairNeeded: repairNeeded, gatherDurNow: gatherDurNow, lastGatherDur: lastGatherDur, renderDurInfo: renderDurInfo,
     getMapDict: getMapDict, startRestock: startRestock, repairSellNow: repairSellNow,
-    nrPost: nrPost, apiRepairRows: apiRepairRows, stashDeposit: stashDeposit, stashWithdraw: stashWithdraw, stashCount: stashCount, clickEquipSell: clickEquipSell, sellEquips: sellEquips, findBank: findBank, doBankDeposit: doBankDeposit, runDeposit: runDeposit, ensureBankFrame: ensureBankFrame, bankFreeSlots: bankFreeSlots, readBagEquipItems: readBagEquipItems, depositBagEquips: depositBagEquips, serviceTowns: serviceTowns, waygateReachable: waygateReachable, navRoute: navRoute, rideSmugglers: rideSmugglers, findSmugglersTile: findSmugglersTile, smugglersDestId: smugglersDestId, renderTownSelect: renderTownSelect, verifyPath: verifyPath, resolveRepairRoute: resolveRepairRoute,
+    nrPost: nrPost, apiRepairRows: apiRepairRows, stashDeposit: stashDeposit, stashWithdraw: stashWithdraw, stashCount: stashCount, clickEquipSell: clickEquipSell, sellEquips: sellEquips, salvageEquips: salvageEquips, isPetEggBlock: isPetEggBlock, findBank: findBank, doBankDeposit: doBankDeposit, runDeposit: runDeposit, ensureBankFrame: ensureBankFrame, bankFreeSlots: bankFreeSlots, readBagEquipItems: readBagEquipItems, depositBagEquips: depositBagEquips, serviceTowns: serviceTowns, waygateReachable: waygateReachable, navRoute: navRoute, rideSmugglers: rideSmugglers, findSmugglersTile: findSmugglersTile, smugglersDestId: smugglersDestId, renderTownSelect: renderTownSelect, verifyPath: verifyPath, resolveRepairRoute: resolveRepairRoute,
     verifyPath: verifyPath, refreshCurMap: refreshCurMap, detectGatherPoints: detectGatherPoints, liveMapSnapshot: liveMapSnapshot, poiLearnNow: poiLearnNow, MapDB: MapDB, syncMaps: syncMaps,
     comboInfo: comboInfo, pollCombo: pollCombo, readComboInfo: readComboInfo,
     gatheringSpots: gatheringSpots, findGatheringSpot: findGatheringSpot, stepGather: stepGather, effectiveGatherPoint: effectiveGatherPoint,
