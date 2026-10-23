@@ -1,15 +1,15 @@
 {
  "meta": {
   "source": "小伴侣地图数据（MapDB）· 3 位贡献者合并",
-  "updated": "2026-10-23T02:35:49.256Z",
+  "updated": "2026-10-23T04:06:23.812Z",
   "version": "1.0",
   "contributors": [
    {
     "file": "maps-1151.json",
     "char": "#1151",
     "level": 46,
-    "time": "2026-10-23T02:35:36.559Z",
-    "count": 338,
+    "time": "2026-10-23T04:06:11.102Z",
+    "count": 340,
     "mergedAt": "2026-10-23"
    },
    {
@@ -29,7 +29,7 @@
     "mergedAt": "2026-10-23"
    }
   ],
-  "count": 339
+  "count": 340
  },
  "maps": {
   "1": {
@@ -110,7 +110,7 @@
    ]
   },
   "5": {
-   "at": 1792706391671,
+   "at": 1792724208525,
    "name": "El Caspar",
    "type": "City",
    "g": [
@@ -222,12 +222,6 @@
      34,
      39,
      28
-    ],
-    [
-     5,
-     998,
-     39,
-     30
     ]
    ]
   },
@@ -2644,11 +2638,67 @@
    ]
   },
   "77": {
-   "at": 0,
+   "at": 1792723621742,
    "name": "Guardian Queen Hive",
    "m": [
     "Forest Guardian",
     "Loot Goblin"
+   ],
+   "ex": [
+    [
+     26,
+     15,
+     "gate",
+     "Guardian Queen Hive (Lv.39)"
+    ],
+    [
+     51,
+     17,
+     "gate",
+     "Guardian Queen Hive (Lv.39)"
+    ],
+    [
+     15,
+     26,
+     "gate",
+     "Guardian Queen Hive (Lv.39)"
+    ],
+    [
+     55,
+     36,
+     "gate",
+     "Guardian Queen Hive (Lv.39)"
+    ],
+    [
+     38,
+     37,
+     "gate",
+     "Guardian Queen Hive (Lv.39)"
+    ],
+    [
+     25,
+     44,
+     "gate",
+     "Guardian Queen Hive (Lv.39)"
+    ],
+    [
+     48,
+     52,
+     "gate",
+     "Guardian Queen Hive (Lv.39)"
+    ],
+    [
+     49,
+     57,
+     "gate",
+     "Caeltys’ Yarden (Lv.38)"
+    ],
+    [
+     15,
+     58,
+     "gate",
+     "Guardian Queen Hive (Lv.39)"
+    ]
    ],
    "edges": [
     [
@@ -2672,7 +2722,7 @@
    ]
   },
   "78": {
-   "at": 0,
+   "at": 1792723651629,
    "name": "Guardian Queen Hive",
    "m": [
     "Queen Acasia"
@@ -4351,7 +4401,7 @@
    ]
   },
   "187": {
-   "at": 1792657612559,
+   "at": 1792723589631,
    "name": "Caeltys’ Yarden",
    "m": [
     "Drow",
@@ -4403,7 +4453,7 @@
    ]
   },
   "188": {
-   "at": 1792657470404,
+   "at": 1792723564093,
    "name": "Caeltys’ Yarden",
    "m": [
     "Forest Guardian",
@@ -4443,7 +4493,7 @@
    ]
   },
   "189": {
-   "at": 1792657328730,
+   "at": 1792723556681,
    "name": "Caeltys’ Yarden",
    "m": [
     "Drow",
@@ -6188,7 +6238,7 @@
    ]
   },
   "281": {
-   "at": 1792717113400,
+   "at": 1792723156323,
    "name": "Trescan",
    "type": "City",
    "g": [
@@ -6809,7 +6859,7 @@
    ]
   },
   "324": {
-   "at": 1792717157401,
+   "at": 1792723193684,
    "name": "Dark Boreal",
    "m": [
     "Armored Ram",
@@ -6873,7 +6923,7 @@
    ]
   },
   "325": {
-   "at": 1792717210240,
+   "at": 1792723247307,
    "name": "Dark Boreal",
    "g": [
     "Mithril Mine"
@@ -6923,9 +6973,8 @@
    ]
   },
   "326": {
-   "at": 1792722486241,
+   "at": 1792728079142,
    "name": "Dark Boreal",
-   "type": "Normal",
    "g": [
     "Largemouth Bass Pier"
    ],
@@ -6986,7 +7035,7 @@
    ]
   },
   "327": {
-   "at": 1792722870862,
+   "at": 1792728329265,
    "name": "Dark Boreal",
    "type": "Normal",
    "g": [
@@ -7045,6 +7094,46 @@
   "328": {
    "at": 0,
    "name": "The Ghost Shore"
+  },
+  "329": {
+   "at": 1792728221728,
+   "name": "Dark Boreal",
+   "m": [
+    "Dwarven Guard",
+    "Dwarven Hunter",
+    "Armored Ram",
+    "Dwarven Caster",
+    "Komodo Basilisk"
+   ],
+   "ex": [
+    [
+     4,
+     37,
+     "gate",
+     "Dark Boreal (Lv.45)"
+    ],
+    [
+     60,
+     40,
+     "gate",
+     "Dark Boreal (Lv.49)"
+    ]
+   ],
+   "visited": true,
+   "edges": [
+    [
+     329,
+     327,
+     4,
+     37
+    ],
+    [
+     329,
+     330,
+     60,
+     40
+    ]
+   ]
   },
   "332": {
    "at": 1792720128038,
