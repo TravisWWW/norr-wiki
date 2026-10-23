@@ -1,7 +1,7 @@
 {
  "meta": {
   "source": "小伴侣地图数据（MapDB）· 4 位贡献者合并",
-  "updated": "2026-10-23T10:33:49.839Z",
+  "updated": "2026-10-23T14:48:22.487Z",
   "version": "1.0",
   "contributors": [
    {
@@ -15,8 +15,8 @@
    {
     "file": "maps-1330.json",
     "char": "#1330",
-    "level": 44,
-    "time": "2026-10-23T02:28:10.597Z",
+    "level": 47,
+    "time": "2026-10-23T14:48:06.815Z",
     "count": 339,
     "mergedAt": "2026-10-23"
    },
@@ -751,7 +751,7 @@
    ]
   },
   "16": {
-   "at": 1792706256538,
+   "at": 1792764256713,
    "name": "Elundi",
    "type": "City",
    "g": [
@@ -988,7 +988,7 @@
    ]
   },
   "20": {
-   "at": 1792681044528,
+   "at": 1792753467632,
    "name": "Windy Fields",
    "type": "Normal",
    "g": [
@@ -1073,7 +1073,7 @@
    ]
   },
   "21": {
-   "at": 0,
+   "at": 1792753494411,
    "name": "Forest Of Owranbu",
    "type": "Normal",
    "g": [
@@ -1096,6 +1096,20 @@
     "Wild Hog",
     "Peasant",
     "Bear"
+   ],
+   "ex": [
+    [
+     9,
+     27,
+     "gate",
+     "Windy Fields (Lv.1)"
+    ],
+    [
+     58,
+     44,
+     "gate",
+     "Owranbu River (Lv.7)"
+    ]
    ],
    "visited": true,
    "edges": [
@@ -1196,17 +1210,17 @@
    ]
   },
   "23": {
-   "at": 1792725013040,
+   "at": 1792755199089,
    "name": "Owranbu",
    "type": "City",
    "g": [
-    "戰鬥訓練"
+    "Combat Training"
    ],
    "gt": [
     [
      31,
      28,
-     "戰鬥訓練"
+     "Combat Training"
     ]
    ],
    "ex": [
@@ -1220,7 +1234,7 @@
      33,
      30,
      "waygate",
-     "傳送門"
+     "Waygate"
     ],
     [
      9,
@@ -1697,7 +1711,7 @@
    ]
   },
   "41": {
-   "at": 1792683438767,
+   "at": 1792755727635,
    "name": "Owranbu Drylands",
    "type": "Normal",
    "m": [
@@ -2347,7 +2361,7 @@
    ]
   },
   "65": {
-   "at": 0,
+   "at": 1792753246582,
    "name": "Mesa Mine Area",
    "type": "Normal",
    "g": [
@@ -2374,6 +2388,20 @@
     "Bone Scarab",
     "Nomadic Cleric"
    ],
+   "ex": [
+    [
+     53,
+     26,
+     "gate",
+     "Rock Valley (Lv.11)"
+    ],
+    [
+     10,
+     34,
+     "gate",
+     "Sandstorm Pass (Lv.11)"
+    ]
+   ],
    "visited": true,
    "edges": [
     [
@@ -2391,7 +2419,7 @@
    ]
   },
   "66": {
-   "at": 0,
+   "at": 1792755873372,
    "name": "Rock Valley",
    "type": "Normal",
    "m": [
@@ -2401,6 +2429,20 @@
     "Nomadic Cleric",
     "Dune Glider",
     "Bone Scarab"
+   ],
+   "ex": [
+    [
+     53,
+     31,
+     "gate",
+     "Mirage Mountains (Lv.13)"
+    ],
+    [
+     14,
+     37,
+     "gate",
+     "Mesa Mine Area (Lv.11)"
+    ]
    ],
    "visited": true,
    "edges": [
@@ -2419,7 +2461,7 @@
    ]
   },
   "67": {
-   "at": 0,
+   "at": 1792755895899,
    "name": "Mirage Mountains",
    "type": "Normal",
    "m": [
@@ -2429,6 +2471,32 @@
     "Raider",
     "Nomadic Cleric",
     "Dune Glider"
+   ],
+   "ex": [
+    [
+     44,
+     15,
+     "smugglers_route",
+     "Smugglers Route"
+    ],
+    [
+     53,
+     29,
+     "gate",
+     "Shifting Sands (Lv.13)"
+    ],
+    [
+     14,
+     32,
+     "gate",
+     "Rock Valley (Lv.11)"
+    ],
+    [
+     31,
+     33,
+     "waygate",
+     "Waygate"
+    ]
    ],
    "visited": true,
    "edges": [
@@ -2443,6 +2511,12 @@
      72,
      53,
      29
+    ],
+    [
+     67,
+     99,
+     0,
+     0
     ]
    ]
   },
@@ -2505,7 +2579,7 @@
    ]
   },
   "72": {
-   "at": 0,
+   "at": 1792755918429,
    "name": "Shifting Sands",
    "type": "Normal",
    "m": [
@@ -2515,6 +2589,20 @@
     "Dune Glider",
     "Nomadic Cleric",
     "Bone Scarab"
+   ],
+   "ex": [
+    [
+     53,
+     23,
+     "gate",
+     "Radiant Heat Flats (Lv.13)"
+    ],
+    [
+     18,
+     34,
+     "gate",
+     "Mirage Mountains (Lv.13)"
+    ]
    ],
    "visited": true,
    "edges": [
@@ -2533,7 +2621,7 @@
    ]
   },
   "73": {
-   "at": 0,
+   "at": 1792756006017,
    "name": "Radiant Heat Flats",
    "type": "Normal",
    "m": [
@@ -2543,6 +2631,20 @@
     "Dune Glider",
     "Bone Scarab",
     "Nomadic Cleric"
+   ],
+   "ex": [
+    [
+     53,
+     23,
+     "gate",
+     "Sunken Sands (Lv.14)"
+    ],
+    [
+     19,
+     35,
+     "gate",
+     "Shifting Sands (Lv.13)"
+    ]
    ],
    "visited": true,
    "edges": [
@@ -2561,7 +2663,7 @@
    ]
   },
   "74": {
-   "at": 0,
+   "at": 1792756038559,
    "name": "Sunken Sands",
    "type": "Normal",
    "m": [
@@ -2571,6 +2673,20 @@
     "Raider",
     "Nomadic Cleric",
     "Bone Scarab"
+   ],
+   "ex": [
+    [
+     53,
+     25,
+     "gate",
+     "The Shifting Tides (Lv.14)"
+    ],
+    [
+     14,
+     35,
+     "gate",
+     "Radiant Heat Flats (Lv.13)"
+    ]
    ],
    "visited": true,
    "edges": [
@@ -2589,7 +2705,7 @@
    ]
   },
   "75": {
-   "at": 0,
+   "at": 1792756066101,
    "name": "The Shifting Tides",
    "type": "Normal",
    "m": [
@@ -2599,6 +2715,38 @@
     "Raider",
     "Dune Glider",
     "Cassowary"
+   ],
+   "ex": [
+    [
+     23,
+     12,
+     "gate",
+     "Sirocco Springs (Lv.14)"
+    ],
+    [
+     48,
+     13,
+     "smugglers_route",
+     "Smugglers Route"
+    ],
+    [
+     36,
+     32,
+     "waygate",
+     "Waygate"
+    ],
+    [
+     16,
+     34,
+     "gate",
+     "Sunken Sands (Lv.14)"
+    ],
+    [
+     49,
+     42,
+     "gate",
+     "Desert of Lost Hope (Lv.14)"
+    ]
    ],
    "visited": true,
    "edges": [
@@ -2619,6 +2767,12 @@
      218,
      49,
      42
+    ],
+    [
+     75,
+     226,
+     0,
+     0
     ]
    ]
   },
@@ -5251,7 +5405,7 @@
    "name": "Taiga"
   },
   "218": {
-   "at": 0,
+   "at": 1792756521678,
    "name": "Desert of Lost Hope",
    "type": "Normal",
    "g": [
@@ -5272,6 +5426,20 @@
     "Cassowary",
     "Dune Glider"
    ],
+   "ex": [
+    [
+     19,
+     7,
+     "gate",
+     "The Shifting Tides (Lv.14)"
+    ],
+    [
+     37,
+     60,
+     "gate",
+     "Sandstorm Ridge (Lv.14)"
+    ]
+   ],
    "visited": true,
    "edges": [
     [
@@ -5289,7 +5457,7 @@
    ]
   },
   "219": {
-   "at": 0,
+   "at": 1792756569234,
    "name": "Sandstorm Ridge",
    "type": "Normal",
    "m": [
@@ -5299,6 +5467,20 @@
     "Raider",
     "Nomadic Cleric",
     "Scorpion"
+   ],
+   "ex": [
+    [
+     22,
+     11,
+     "gate",
+     "Desert of Lost Hope (Lv.14)"
+    ],
+    [
+     32,
+     60,
+     "gate",
+     "Burning Moon Sands (Lv.16)"
+    ]
    ],
    "visited": true,
    "edges": [
@@ -5317,7 +5499,7 @@
    ]
   },
   "220": {
-   "at": 0,
+   "at": 1792758685496,
    "name": "Burning Moon Sands",
    "m": [
     "Nomadic Cleric",
@@ -5327,6 +5509,20 @@
     "Phoenix",
     "Bone Scarab",
     "Dune Glider"
+   ],
+   "ex": [
+    [
+     23,
+     7,
+     "gate",
+     "Sandstorm Ridge (Lv.14)"
+    ],
+    [
+     28,
+     52,
+     "gate",
+     "Deserted Cavern (Lv.16)"
+    ]
    ],
    "visited": true,
    "edges": [
@@ -5345,7 +5541,7 @@
    ]
   },
   "221": {
-   "at": 0,
+   "at": 1792758718067,
    "name": "Deserted Cavern",
    "m": [
     "Monstrous Bat",
@@ -5353,6 +5549,26 @@
     "Purple Worm",
     "Goblin Pyro",
     "Stone Hulk"
+   ],
+   "ex": [
+    [
+     24,
+     7,
+     "gate",
+     "Burning Moon Sands (Lv.16)"
+    ],
+    [
+     52,
+     23,
+     "gate",
+     "The Living Desert (Lv.16)"
+    ],
+    [
+     39,
+     60,
+     "smugglers_route",
+     "Smugglers Route"
+    ]
    ],
    "visited": true,
    "edges": [
@@ -5367,11 +5583,17 @@
      222,
      52,
      23
+    ],
+    [
+     221,
+     288,
+     0,
+     0
     ]
    ]
   },
   "222": {
-   "at": 0,
+   "at": 1792758738090,
    "name": "The Living Desert",
    "g": [
     "Fieldstone Quarry"
@@ -5392,6 +5614,20 @@
     "Scorpion",
     "Nomadic Cleric"
    ],
+   "ex": [
+    [
+     53,
+     20,
+     "gate",
+     "Desert of Illusions (Lv.18)"
+    ],
+    [
+     14,
+     42,
+     "gate",
+     "Deserted Cavern (Lv.16)"
+    ]
+   ],
    "visited": true,
    "edges": [
     [
@@ -5409,7 +5645,7 @@
    ]
   },
   "224": {
-   "at": 1792686208666,
+   "at": 1792758770623,
    "name": "Desert of Illusions",
    "m": [
     "Cassowary",
@@ -5469,7 +5705,7 @@
    ]
   },
   "225": {
-   "at": 0,
+   "at": 1792756746945,
    "name": "Devil’s Gulch",
    "type": "Normal",
    "m": [
@@ -5480,6 +5716,20 @@
     "Phoenix",
     "Bone Scarab",
     "Dune Glider"
+   ],
+   "ex": [
+    [
+     53,
+     22,
+     "gate",
+     "Desert of the Damned (Lv.19)"
+    ],
+    [
+     16,
+     46,
+     "gate",
+     "Desert of Illusions (Lv.18)"
+    ]
    ],
    "visited": true,
    "edges": [
@@ -5521,7 +5771,7 @@
    ]
   },
   "227": {
-   "at": 1792583125780,
+   "at": 1792756982247,
    "name": "Shrubland",
    "type": "Normal",
    "g": [
@@ -5540,7 +5790,27 @@
     "Carrion Harpy",
     "Terastodon",
     "Orc Warrior",
-    "Orc Warlock"
+    "Orc Warlock",
+    "Carrion Harpy (?)",
+    "Orc Warrior (?)",
+    "Orc Warlock (?)",
+    "Terastodon (?)",
+    "Catoblepas (?)",
+    "Orc Hunter (?)"
+   ],
+   "ex": [
+    [
+     38,
+     8,
+     "gate",
+     "Shrubland (Lv.21)"
+    ],
+    [
+     22,
+     59,
+     "gate",
+     "Shrubland (Lv.19)"
+    ]
    ],
    "visited": true,
    "edges": [
@@ -5559,7 +5829,7 @@
    ]
   },
   "228": {
-   "at": 1792712019425,
+   "at": 1792757121908,
    "name": "Shrubland",
    "type": "Normal",
    "g": [
@@ -5590,7 +5860,11 @@
     "Carrion Harpy",
     "Catoblepas",
     "Orc Warlock",
-    "Terastodon"
+    "Terastodon",
+    "Catoblepas (?)",
+    "Orc Warlock (?)",
+    "Terastodon (?)",
+    "Orc Warrior (?)"
    ],
    "ex": [
     [
@@ -5623,7 +5897,7 @@
    ]
   },
   "229": {
-   "at": 1792711378732,
+   "at": 1792759018421,
    "name": "Ururg",
    "type": "City",
    "ex": [
@@ -5632,6 +5906,12 @@
      13,
      "gate",
      "Shrubland (Lv.21)"
+    ],
+    [
+     51,
+     33,
+     "smugglers_route",
+     "Smugglers Route"
     ],
     [
      14,
@@ -5722,7 +6002,7 @@
    "name": "Medusa’s Chamber"
   },
   "239": {
-   "at": 0,
+   "at": 1792756924671,
    "name": "Orc Domain Entrance",
    "type": "Normal",
    "m": [
@@ -5733,6 +6013,26 @@
     "Cassowary",
     "Phoenix",
     "Scorpion"
+   ],
+   "ex": [
+    [
+     21,
+     13,
+     "smugglers_route",
+     "Smugglers Route"
+    ],
+    [
+     46,
+     29,
+     "gate",
+     "Shrubland (Lv.19)"
+    ],
+    [
+     15,
+     31,
+     "gate",
+     "Desert of the Damned (Lv.19)"
+    ]
    ],
    "visited": true,
    "edges": [
@@ -5747,11 +6047,17 @@
      241,
      15,
      31
+    ],
+    [
+     239,
+     110,
+     0,
+     0
     ]
    ]
   },
   "240": {
-   "at": 0,
+   "at": 1792756952209,
    "name": "Shrubland",
    "type": "Normal",
    "m": [
@@ -5760,6 +6066,20 @@
     "Orc Warlock",
     "Terastodon",
     "Carrion Harpy"
+   ],
+   "ex": [
+    [
+     51,
+     19,
+     "gate",
+     "Shrubland (Lv.21)"
+    ],
+    [
+     18,
+     43,
+     "gate",
+     "Orc Domain Entrance (Lv.19)"
+    ]
    ],
    "visited": true,
    "edges": [
@@ -5778,7 +6098,7 @@
    ]
   },
   "241": {
-   "at": 0,
+   "at": 1792756782001,
    "name": "Desert of the Damned",
    "type": "Normal",
    "m": [
@@ -5789,6 +6109,20 @@
     "Scorpion",
     "Nomadic Cleric",
     "Cassowary"
+   ],
+   "ex": [
+    [
+     52,
+     21,
+     "gate",
+     "Orc Domain Entrance (Lv.19)"
+    ],
+    [
+     14,
+     48,
+     "gate",
+     "Devil’s Gulch (Lv.18)"
+    ]
    ],
    "visited": true,
    "edges": [
@@ -6351,7 +6685,7 @@
    ]
   },
   "281": {
-   "at": 1792723156323,
+   "at": 1792763098742,
    "name": "Trescan",
    "type": "City",
    "g": [
@@ -6972,14 +7306,14 @@
    ]
   },
   "324": {
-   "at": 1792723193684,
+   "at": 1792763132383,
    "name": "Dark Boreal",
    "m": [
-    "Armored Ram",
-    "Dwarven Hunter",
-    "Dwarven Caster",
     "Dwarven Guard",
-    "Komodo Basilisk"
+    "Dwarven Caster",
+    "Komodo Basilisk",
+    "Armored Ram",
+    "Dwarven Hunter"
    ],
    "ex": [
     [
@@ -7008,35 +7342,11 @@
      325,
      39,
      1
-    ],
-    [
-     324,
-     280,
-     23,
-     56
-    ],
-    [
-     324,
-     323,
-     10,
-     18
-    ],
-    [
-     324,
-     324,
-     22,
-     4
-    ],
-    [
-     324,
-     342,
-     51,
-     54
     ]
    ]
   },
   "325": {
-   "at": 1792723247307,
+   "at": 1792763203200,
    "name": "Dark Boreal",
    "g": [
     "Mithril Mine"
@@ -7051,9 +7361,9 @@
    "m": [
     "Dwarven Guard",
     "Armored Ram",
-    "Dwarven Caster",
+    "Komodo Basilisk",
     "Dwarven Hunter",
-    "Komodo Basilisk"
+    "Dwarven Caster"
    ],
    "ex": [
     [
@@ -7086,8 +7396,9 @@
    ]
   },
   "326": {
-   "at": 1792728079142,
+   "at": 1792766884665,
    "name": "Dark Boreal",
+   "type": "Normal",
    "g": [
     "Largemouth Bass Pier"
    ],
@@ -7148,7 +7459,7 @@
    ]
   },
   "327": {
-   "at": 1792728987312,
+   "at": 1792764778416,
    "name": "Dark Boreal",
    "g": [
     "Beech Grove"
@@ -7248,7 +7559,7 @@
    ]
   },
   "332": {
-   "at": 1792720128038,
+   "at": 1792765249447,
    "name": "Grimble’s Camp",
    "m": [
     "Armored Ram",
@@ -8043,7 +8354,7 @@
    "name": "Sleepy Hollow"
   },
   "1183": {
-   "at": 1792705335004,
+   "at": 1792763271126,
    "name": "The Sacred Wilds Lobby",
    "g": [
     "Quarry",
@@ -8165,7 +8476,7 @@
    ]
   },
   "1188": {
-   "at": 1792706222984,
+   "at": 1792764239361,
    "name": "The Sacred Wilds",
    "m": [
     "Wyvern"
