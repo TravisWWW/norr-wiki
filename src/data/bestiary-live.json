@@ -7,10 +7,10 @@
    {
     "file": "char-1330.json",
     "char": "#1330",
-    "level": 41,
-    "time": "2026-10-22T17:40:23.092Z",
+    "level": 47,
+    "time": "2026-10-23T14:48:28.120Z",
     "count": 193,
-    "recorded": 114,
+    "recorded": 115,
     "mergedAt": "2026-10-23"
    },
    {
@@ -26,8 +26,8 @@
   "count": 199,
   "recordedCount": 123,
   "withLore": 198,
-  "withStats": 71,
-  "withSkills": 87,
+  "withStats": 74,
+  "withSkills": 89,
   "withBg": 183,
   "tabs": {
    "normal": 163,
@@ -686,7 +686,28 @@
     "Light Damage": 0,
     "Lightning Damage": 0,
     "Poison Damage": 0,
-    "Thorn Damage": 0
+    "Thorn Damage": 0,
+    "Defense": 10,
+    "Block Chance": 0,
+    "Block Rating": 0,
+    "Arcane Resist": 10,
+    "Cold Resist": 10,
+    "Dark Resist": 10,
+    "Fire Resist": 10,
+    "Light Resist": 10,
+    "Lightning Resist": 10,
+    "Poison Resist": 10,
+    "Evasion": 5,
+    "Critical Chance": 2,
+    "Critical Strike": 1,
+    "Hit Rating": 20,
+    "Attack Speed": 6,
+    "Armor Penetration": 1,
+    "Life Steal": 0,
+    "Mana Steal": 0,
+    "Life Regeneration": 0,
+    "Mana Regeneration": 0,
+    "Maximum Life": 60
    }
   },
   {
@@ -863,7 +884,50 @@
      "res": "mucky_tail",
      "pct": "4%"
     }
-   ]
+   ],
+   "skills": [
+    {
+     "name": "bite",
+     "id": 10009,
+     "level": 1
+    },
+    {
+     "name": "tail_slap",
+     "id": 10137,
+     "level": 1
+    }
+   ],
+   "stats": {
+    "Base Damage": 10,
+    "Physical Damage": 3,
+    "Blunt Damage": 0,
+    "Spell Damage": 0,
+    "Bleed Damage": 0,
+    "Arcane Damage": 0,
+    "Cold Damage": 0,
+    "Dark Damage": 0,
+    "Fire Damage": 0,
+    "Light Damage": 0,
+    "Lightning Damage": 0,
+    "Poison Damage": 0,
+    "Thorn Damage": 0,
+    "Defense": 10,
+    "Block Chance": 0,
+    "Block Rating": 0,
+    "Arcane Resist": 10,
+    "Cold Resist": 10,
+    "Dark Resist": 10,
+    "Fire Resist": 10,
+    "Light Resist": 10,
+    "Lightning Resist": 10,
+    "Poison Resist": 10,
+    "Evasion": 5,
+    "Critical Chance": 0,
+    "Critical Strike": 0,
+    "Hit Rating": 20,
+    "Attack Speed": 6,
+    "Armor Penetration": 1
+   }
   },
   {
    "id": 13,
@@ -914,7 +978,22 @@
      "id": 10049,
      "level": 1
     }
-   ]
+   ],
+   "stats": {
+    "Base Damage": 15,
+    "Physical Damage": 3,
+    "Blunt Damage": 0,
+    "Spell Damage": 0,
+    "Bleed Damage": 0,
+    "Arcane Damage": 0,
+    "Cold Damage": 0,
+    "Dark Damage": 0,
+    "Fire Damage": 0,
+    "Light Damage": 0,
+    "Lightning Damage": 0,
+    "Poison Damage": 0,
+    "Thorn Damage": 0
+   }
   },
   {
    "id": 14,
@@ -1002,7 +1081,44 @@
      "res": "mucky_tail",
      "pct": "6%"
     }
-   ]
+   ],
+   "skills": [
+    {
+     "name": "poison_bite",
+     "id": 10007,
+     "level": 1
+    },
+    {
+     "name": "bite",
+     "id": 10009,
+     "level": 1
+    }
+   ],
+   "stats": {
+    "Base Damage": 15,
+    "Physical Damage": 0,
+    "Blunt Damage": 0,
+    "Spell Damage": 3,
+    "Bleed Damage": 0,
+    "Arcane Damage": 0,
+    "Cold Damage": 0,
+    "Dark Damage": 0,
+    "Fire Damage": 0,
+    "Light Damage": 0,
+    "Lightning Damage": 0,
+    "Poison Damage": 5,
+    "Thorn Damage": 0,
+    "Defense": 20,
+    "Block Chance": 0,
+    "Block Rating": 0,
+    "Arcane Resist": 5,
+    "Cold Resist": 5,
+    "Dark Resist": 5,
+    "Fire Resist": 5,
+    "Light Resist": 5,
+    "Lightning Resist": 5,
+    "Poison Resist": 5
+   }
   },
   {
    "id": 16,
