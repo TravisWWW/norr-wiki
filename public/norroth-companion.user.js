@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.133
+// @version      2.6.134
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -187,7 +187,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.133';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
+  const SCRIPT_VER = '2.6.134';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -3583,6 +3583,10 @@
       const d0 = Math.abs(character.x - gx) + Math.abs(character.y - gy);
       if (d0 > segDist()) seg = { dist0: d0 };
     }
+    /* ★ v2.6.134：入口立刻发一次走位。
+       原来这里没有发走位，第一次 walkTo 要等 2.5s 的「重发走路指令」兜底才发出：
+       既白白卡 2.5s，而且那次重发会清掉两段式标记（seg=null）→ 分段导航永远不生效。 */
+    if (!cond()) { try { safeWalkTo(gx, gy); } catch (e) { /* ignore */ } }
 
     /* ★ 走到目标格后先原地同步一次服务端位置，再交给调用方做交互（换图/采集/维修） */
     const okOut = function () { syncServerPos(); return 'ok'; };
@@ -3644,7 +3648,7 @@
         lastMove = now(); bestAt = now(); stuck++;
         if (retrigger) setStatus('导航卡住，正在强恢复（第 ' + stuck + ' 次）…');
         try { onStuck(); } catch (e) { try { abortWalk(); } catch (e2) { /* ignore */ } }
-        seg = null;   /* ★ 卡住自愈会重发寻路 → 队列变了，重新数 */
+        /* ★ v2.6.134：卡住自愈不清 seg（新设计是几何判据，不依赖队列），否则两段式会被永久关掉 */
         await sleep(retrigger ? 1600 : 1500);
         continue;
       }
@@ -3654,6 +3658,8 @@
         seg = null;
         try { abortWalk(); } catch (e) { /* ignore */ }
         const p0 = now();
+        logEvent('分段导航：已到目标前一格（' + character.x + '-' + character.y + ' → ' + gx + '-' + gy + '），停顿 ' + Math.max(0, Math.round(+cfg.navSegPauseMs || 0)) + 'ms 再走最后一段');
+        setStatus('分段导航：到目标前一格，停顿中…');
         /* ★ v2.6.133：段间停顿 = 固定值（默认 300ms，不随机）。 */
         await sleep(Math.max(0, Math.round(+cfg.navSegPauseMs || 0)));
         paused += now() - p0;
@@ -3669,7 +3675,7 @@
        * 2) 已经换过图了 —— 旧地图的坐标在新地图上指向完全不同的地方
        * ★ 只在「位置真的不动了」才重发：无条件重发会 clearQueue 打断正在播的走格动画 */
       const stalled = now() - lastMove > 2500;
-      if (!onTile() && !mapChanged() && stalled && now() - lastTry > 2000) { lastTry = now(); safeWalkTo(gx, gy); seg = null; }
+      if (!onTile() && !mapChanged() && stalled && now() - lastTry > 2000) { lastTry = now(); safeWalkTo(gx, gy); }
       await sleep(300);
     }
     /* 重触发场景：站到目标格但条件仍未成立 → 走开一格再走回，试几次（门要重踩才触发） */

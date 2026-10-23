@@ -1,8 +1,8 @@
 {
-  "version": "2.6.133",
+  "version": "2.6.134",
   "date": "2026-10-24",
-  "notes": "v2.6.133：分段导航的「段间停顿」改成固定值（不随机），默认 300ms，可改（「格」右边一个输入框）。",
+  "notes": "v2.6.134：修「分段导航不生效」。根因：walkTileCore 入口从来没发过第一次走位，第一次 walkTo 是 2.5s 后由「重发走路指令」兜底发出的，而那次重发会清掉两段式标记 seg=null → 两段式永远不触发。现在入口立刻发一次走位，且重发/卡住自愈都不再清 seg；两段式触发时会写一条事件日志 + 状态提示，方便核对。",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 789431,
-  "sha256": "9140bfdd583ad20d9b2bb93e3e426b55f23b664e39ae4a5b6dbeb2ca29b205a4"
+  "size": 790115,
+  "sha256": "0ab426b06b57098852f8827cff898e2712d512d9b49e6beb5a503ee485c297ba"
 }
