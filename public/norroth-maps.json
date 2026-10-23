@@ -1,14 +1,14 @@
 {
  "meta": {
   "source": "小伴侣地图数据（MapDB）· 3 位贡献者合并",
-  "updated": "2026-10-23T02:33:49.644Z",
+  "updated": "2026-10-23T02:35:49.256Z",
   "version": "1.0",
   "contributors": [
    {
     "file": "maps-1151.json",
     "char": "#1151",
     "level": 46,
-    "time": "2026-10-22T23:42:44.732Z",
+    "time": "2026-10-23T02:35:36.559Z",
     "count": 338,
     "mergedAt": "2026-10-23"
    },
@@ -6188,7 +6188,7 @@
    ]
   },
   "281": {
-   "at": 1792712772070,
+   "at": 1792717113400,
    "name": "Trescan",
    "type": "City",
    "g": [
@@ -6809,15 +6809,14 @@
    ]
   },
   "324": {
-   "at": 1792713213821,
+   "at": 1792717157401,
    "name": "Dark Boreal",
-   "type": "Normal",
    "m": [
-    "Dwarven Guard",
-    "Dwarven Caster",
-    "Komodo Basilisk",
     "Armored Ram",
-    "Dwarven Hunter"
+    "Dwarven Hunter",
+    "Dwarven Caster",
+    "Dwarven Guard",
+    "Komodo Basilisk"
    ],
    "ex": [
     [
@@ -6846,13 +6845,36 @@
      325,
      39,
      1
+    ],
+    [
+     324,
+     280,
+     23,
+     56
+    ],
+    [
+     324,
+     323,
+     10,
+     18
+    ],
+    [
+     324,
+     324,
+     22,
+     4
+    ],
+    [
+     324,
+     342,
+     51,
+     54
     ]
    ]
   },
   "325": {
-   "at": 1792713239281,
+   "at": 1792717210240,
    "name": "Dark Boreal",
-   "type": "Normal",
    "g": [
     "Mithril Mine"
    ],
@@ -6866,9 +6888,9 @@
    "m": [
     "Dwarven Guard",
     "Armored Ram",
-    "Komodo Basilisk",
+    "Dwarven Caster",
     "Dwarven Hunter",
-    "Dwarven Caster"
+    "Komodo Basilisk"
    ],
    "ex": [
     [
@@ -6964,7 +6986,7 @@
    ]
   },
   "327": {
-   "at": 1792712560481,
+   "at": 1792722870862,
    "name": "Dark Boreal",
    "type": "Normal",
    "g": [
@@ -7025,8 +7047,33 @@
    "name": "The Ghost Shore"
   },
   "332": {
-   "at": 0,
-   "name": "Grimble’s Camp"
+   "at": 1792720128038,
+   "name": "Grimble’s Camp",
+   "m": [
+    "Armored Ram",
+    "Dwarven Guard",
+    "Dwarven Hunter",
+    "Dwarven Caster",
+    "Komodo Basilisk",
+    "Grimble"
+   ],
+   "ex": [
+    [
+     64,
+     43,
+     "gate",
+     "Dark Boreal (Lv.43)"
+    ]
+   ],
+   "visited": true,
+   "edges": [
+    [
+     332,
+     326,
+     64,
+     43
+    ]
+   ]
   },
   "333": {
    "at": 0,
