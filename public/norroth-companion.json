@@ -1,8 +1,8 @@
 {
-  "version": "2.6.119",
+  "version": "2.6.120",
   "date": "2026-10-23",
-  "notes": "v2.6.119 把「回图」下沉到 nav 模块：新增通用「导航待办目的地」（navSetPending/navPendingTick）—— 设了目的地后主循环每 tick 检查，没到目的地就不开始挂机任务（不采集/不打怪），中途被带偏会自动从当前位置重新规划路线（带退避），到达后自动清除；连续 5 次没到才放弃并提示。死亡回图改用它（不再写死在主循环里）。",
+  "notes": "v2.6.120 修「索敌不能全图跑」：可达性判据从 4 邻接改成 8 邻接，与游戏 findWalkPath 的移动规则（8 邻接 + 允许切角）逐字对齐。旧版 4 邻接在「只能斜着连通」的地形上会把整张图切成两块（如 Dark Boreal 327），人在上半区时下半区的怪全被判「不可达」→ 不索敌、不跑过去（上面不下去 / 下面不上来）。顺带把 walkTileCore 的 stepAside 邻格也对齐成 8 邻接。",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 781165,
-  "sha256": "3981bff6ead77a7e0cf43bedc7dc949029070ccfa98d2bc9978523009835ecf8"
+  "size": 781866,
+  "sha256": "62e8e52d6210db4c7e17783abcf865d6f20bb1e9898a4028e95abc5f0b7b528f"
 }

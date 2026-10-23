@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.119
+// @version      2.6.120
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -186,7 +186,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.119';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
+  const SCRIPT_VER = '2.6.120';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -1296,7 +1296,10 @@
     const queue = [[sx, sy]];
     while (queue.length) {
       const cur = queue.pop(), x = cur[0], y = cur[1];
-      const nbs = [[x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1]];
+      /* ★ v2.6.120：可达性必须和游戏寻路一致 —— 客户端 findWalkPath() 用 8 邻接（含斜向，允许切角），
+         旧版这里只做 4 邻接 → 在「只能斜着连通」的地形上会把整张图切成两块（人在上半区时下半区的怪
+         全被判「不可达」→ 不索敌、不跑过去，表现为「上面不下去 / 下面不上来」）。 */
+      const nbs = [[x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1], [x + 1, y + 1], [x + 1, y - 1], [x - 1, y + 1], [x - 1, y - 1]];
       for (const n of nbs) {
         const k = K(n[0], n[1]);
         if (set.has(k) || !grid.has(k)) continue;
@@ -3472,7 +3475,8 @@
     const onTile = function () { return character.x === gx && character.y === gy; };
     const mapChanged = function () { return character.current_map !== from; };
     const pts = window.points || [];
-    const nb = function (x, y) { return [[x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1]]
+    /* ★ v2.6.120：邻格也用 8 邻接（和游戏一致）；顺序仍是「右→左→下→上→斜」，stepAside 取第一个可走格的行为不变。 */
+    const nb = function (x, y) { return [[x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1], [x + 1, y + 1], [x + 1, y - 1], [x - 1, y + 1], [x - 1, y - 1]]
       .filter(function (p) { return pts.some(function (q) { return q.x === p[0] && q.y === p[1]; }); }); };
     const stepAside = async function () {
       const n = nb(character.x, character.y)[0];
