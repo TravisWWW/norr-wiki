@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.117
+// @version      2.6.118
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -186,7 +186,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.117';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
+  const SCRIPT_VER = '2.6.118';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -290,6 +290,7 @@
     mapSwitch: { active: false, lastAt: 0, idleSince: 0 },    // 自动切图刷怪
     paused: false,                                            // ★ 已暂停（统计保留，可继续）
     returning: false,                                         // 阵亡后正在导航回挂机地图
+    needReturn: false,                                        // ★ v2.6.118：死亡后「该回挂机图」标记（直到真的回到才清）
     visitedAt: 0,                                             // 拜访地图记录节流
     killsByName: {},                                          // ★ 详细统计：每种怪击杀数
     gathersByKind: {},                                        // ★ 详细统计：各类采集次数
@@ -7248,6 +7249,7 @@
     if (dead && cfg.autoRespawn) { handleDefeat(); return; }
     if (!dead && defeatAt) {
       resetDefeat(); logEvent('已复活，继续挂机'); setStatus('已复活，继续挂机');
+      st.needReturn = true;   /* ★ v2.6.118：死亡后要回挂机图（直到真的回到为止） */
       // ★ 复活后若不在挂机地图，延迟几秒（等游戏刷新位置）再自动导航回去
       if (cfg.farmMap) setTimeout(() => {
         if (running && !st.returning && String(character.current_map) !== String(cfg.farmMap)) returnToFarm();
@@ -7269,12 +7271,17 @@
      * 上限：不停止；连续失败按 30s→60s→120s→240s→300s 退避（st.returnFails）。
      * 高级参数：不受影响。
      * ─────────────────────────────────────────────────────────── */
-    if (running && cfg.farmMap && String(cfg.farmMap) !== String(RESPAWN_MAP)
-        && String(character.current_map) === String(RESPAWN_MAP)
+    /* ★ v2.6.118：死亡后「该回挂机图」标记（st.needReturn）还在，但人已经不在挂机图了 →
+       持续重试回图（旧版只在「还在重生泉水」时重试；一旦被手动/意外带到别的图就放弃，
+       表现为「复活后没回 Dark Boreal，反而就地开打 / 在城市里采起布料」）。
+       在活动里 / 正在维修清包 / 正在切图导航时不干预。已经回到挂机图 → 清标记。 */
+    if (running && cfg.farmMap && String(cfg.farmMap) === String(character.current_map)) st.needReturn = false;
+    if (running && st.needReturn && cfg.farmMap && String(cfg.farmMap) !== String(character.current_map)
+        && !(st.event && st.event.on) && String(character.current_map) !== String(EVENT_MAP_ID)
         && !st.repair.active && !st.sell.active && !st.mapSwitch.active && !navBusy
         && now() - (st.returnRetryAt || 0) > Math.min(300000, 30000 * Math.pow(2, Math.min(4, st.returnFails || 0)))) {
       st.returnRetryAt = now();
-      logEvent('仍在重生泉水，重试回挂机地图 ' + townName(cfg.farmMap) + (st.returnFails ? '（已失败 ' + st.returnFails + ' 次，退避中）' : ''));
+      logEvent('还没回到挂机地图 ' + townName(cfg.farmMap) + '（当前 ' + currentMapName() + '）→ 重试回图' + (st.returnFails ? '（已失败 ' + st.returnFails + ' 次，退避中）' : ''));
       returnToFarm();
       return;
     }
@@ -9231,6 +9238,7 @@
     st.paused = false;
     st.runElapsed = 0;
     st.mode = null;
+    st.needReturn = false;
     st.tripManual = false;
     st.altTrip = false;
     st.target = null;
@@ -10037,7 +10045,7 @@
     if (!(target > 0) || target === cur) return false;
     const page = isTownMap(target) ? 'cities' : 'wilderness';
     logEvent('无通路：从传送站逃生 → 「' + navMapName(target) + '」');
-    let out = await navWaygateOut(target, alive, page, true);
+    let out = await navWaygateOut(target, alive, page, true, true);   /* ★ v2.6.118：卡住时允许退而求其次（随便出去一个） */
     if (!out) out = await navWalkToAnyExit(alive);        /* 本图没有传送站 → 走任意出口 */
     return !!out;
   }
@@ -10290,7 +10298,7 @@
       return /waygate/i.test(e.getAttribute('action') || '') || /waygate/i.test(e.getAttribute('name') || '');
     }) || null;
   }
-  async function navWaygateOut(destId, alive, tab, strict) {
+  async function navWaygateOut(destId, alive, tab, strict, anyOk) {
     const wg = findWaygateTile();
     if (!wg) return 0;
     if (alive && !alive()) return 0;
@@ -10361,11 +10369,13 @@
       return out;
     };
     let cands = collect();
-    /* ★ v2.6.104：strict = 只接受目标本身（否则回上层走陆路），绝不拿别的目的地乱传。 */
+    /* ★ v2.6.118：目标不在「本页可前往」列表里时，不再直接放弃。
+       旧版会误报「没解锁 / 精华不够」并卡在原地（用户实测：在泉水说精华不足，但精华是够的，
+       只是那个目的地没解锁）。现在：记清楚「本页可前往的有哪些」，再交给下面的评分逻辑
+       挑一个「能到目标、路线最短」的候选；连一个能算出路线的都没有才放弃（不乱传）。 */
     if (strict && cands.indexOf(+destId) < 0) {
-      logEvent('传送站：' + (tab || '?') + ' 页里没有「' + navMapName(destId) + '」（没解锁 / 精华不够）→ 放弃，改走陆路');
-      try { closeFrameById('frame_Waygate'); } catch (e) { /* ignore */ }
-      return 0;
+      logEvent('传送站：' + (tab || '?') + ' 页里没有「' + navMapName(destId) + '」→ 本页可前往：' +
+        (cands.length ? cands.map(function (id) { return navMapName(id) + '(' + id + ')'; }).join('、') : '(无)') + '；改挑一个能到目标的');
     }
     /* 城市页没东西 → 切到「野外」页再扫一次（仅在未指定页签时） */
     if (!cands.length && !tab && document.getElementById('tab_wilderness')) {
@@ -10413,9 +10423,16 @@
          原来会退回 cands[0] —— 表现就是「人明明在 Owranbu，却被传到随便一个城市」。
          现在直接放弃，让上层去走陆路 / 报错。 */
       if (!best) {
-        logEvent('传送站：' + cands.length + ' 个候选都算不出到「' + navMapName(destId) + '」的路线 → 放弃传送（不乱传）');
-        try { closeFrameById('frame_Waygate'); } catch (e) { /* ignore */ }
-        return 0;
+        if (anyOk) {
+          /* ★ v2.6.118：算不出路线（例如目的地只能靠传送站到达、没有陆路）→
+             卡在原地时「随便出去一个」也比困死强，取第一个可用目的地。 */
+          best = cands[0];
+          logEvent('传送站：都算不出到「' + navMapName(destId) + '」的路线 → 先传到「' + navMapName(best) + '」再想办法');
+        } else {
+          logEvent('传送站：' + cands.length + ' 个候选都算不出到「' + navMapName(destId) + '」的路线 → 放弃传送（不乱传）');
+          try { closeFrameById('frame_Waygate'); } catch (e) { /* ignore */ }
+          return 0;
+        }
       }
     }
     /* 候选顺序：先 best，再按评分顺序，最后兜底原顺序（去重、最多试 4 个） */
@@ -10464,7 +10481,7 @@
         await sleep(600);
       }
       if (character.current_map !== from) break;
-      logEvent('传送站：「' + navMapName(want) + '」没传送成功（可能精华不足 / 没解锁），换下一个');
+      logEvent('传送站：「' + navMapName(want) + '」点了没换图（按钮没生效 / 精华不足 / 未解锁），换下一个');
     }
     try { closeFrameById('frame_Waygate'); } catch (e) { /* ignore */ }
     if (character.current_map === from) logEvent('传送站：候选都没传送成功（当前在 ' + currentMapName() + '）');
@@ -10535,6 +10552,7 @@
       logEvent('阵亡复活，导航回挂机地图 ' + townName(dest));
       const ok = await navToMap(dest, { alive: () => running, allowCity: true, allowWild: true });   // ★ 阵亡回图：必须允许传送出来
       st.returnFails = ok ? 0 : ((st.returnFails || 0) + 1);
+      if (ok) st.needReturn = false;
       logEvent(ok ? '已回到挂机地图 ' + townName(dest) : '回挂机地图失败（第 ' + st.returnFails + ' 次），当前在 ' + currentMapName());
       setStatus(ok ? '已回到挂机地图，继续挂机' : '回挂机地图失败：当前在 ' + currentMapName());
     } catch (e) {
