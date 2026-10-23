@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.123
+// @version      2.6.124
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -186,7 +186,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.123';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
+  const SCRIPT_VER = '2.6.124';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -7834,7 +7834,7 @@
         <div class="pane on" data-pane="idle">
           <div class="divblock_dark" id="nr-common">
             <div class="opts" style="margin-top:0">
-              <label id="nr-flee-wrap" title="遇怪就点游戏自带「逃跑」，不还手。仅「采集」任务生效。"><input type="checkbox" class="chk" id="nr-gatherflee">遇敌逃跑</label>
+              <label id="nr-flee-wrap" title="遇怪就点游戏自带「逃跑」，不还手。勾上即生效，不需要开始挂机；「战斗 / 爬塔」任务运行中自动屏蔽。"><input type="checkbox" class="chk" id="nr-gatherflee">遇敌逃跑</label>
               <label><input type="checkbox" class="chk" id="nr-autorespawn">阵亡复活</label>
               <label title="自动关掉游戏因踩到 NPC / 服务格而弹出的挡路窗口；你自己开的窗口保留。"><input type="checkbox" class="chk" id="nr-sweepframes">自动关弹窗</label>
               <label title="给自己加金色描边，人多时一眼找到自己。"><input type="checkbox" class="chk" id="nr-highlight">高亮自己</label>
@@ -8612,11 +8612,12 @@
       x.classList.toggle('locked', locked);
       if (locked) x.setAttribute('data-lock', _lockMsg); else x.removeAttribute('data-lock');
     }); } catch (e) { /* ignore */ }
+    /* ★ v2.6.124：「遇敌逃跑」不再只在采集任务可用 —— 勾上即生效（不需要开始挂机），
+       只在「战斗 / 爬塔」任务运行中自动屏蔽。控件保持始终可用。 */
     const flee = document.getElementById('nr-gatherflee');
     if (flee) {
-      const on = (t === 'gather');
-      flee.disabled = !on;
-      try { const w = document.getElementById('nr-flee-wrap'); if (w) w.style.opacity = on ? '' : '.45'; } catch (e) { /* ignore */ }
+      flee.disabled = false;
+      try { const w = document.getElementById('nr-flee-wrap'); if (w) w.style.opacity = ''; } catch (e) { /* ignore */ }
     }
   }
   function onModeSwitch() { deriveRunMode(); renderTaskUI(); }
@@ -9661,6 +9662,7 @@
   }
 
   let navBusy = false;
+  let navBar = null;          /* ★ v2.6.124：导航状态条（提前声明，供 navWalkPlanTo 更新进度） */
 
   /* ★ 地图数据来源：内置种子 MAPDB_SEED 已把导航图 + 到访记录写死，开箱即用。
    *   下面的 navImportRecorder 只在玩家「手动」点「同步记录器 / 导入 JSON」时才读记录器数据。 */
@@ -10008,6 +10010,7 @@
       for (let i = 0; i < plan.length; i++) {
         if (alive && !alive()) return false;
         if (+character.current_map === +destId) return true;
+        navProgressHop(i, plan.length, destId, plan[i]);   /* ★ v2.6.124：第 N/M 跳进度 */
         const ok = await navHopStep(plan[i], alive);
         if (!ok) { failed = true; break; }
       }
@@ -10580,7 +10583,6 @@
   }
 
   /* ---- 导航状态条 ---- */
-  let navBar = null;
   function navStatus(txt, pct, showStop) {
     if (!navBar) {
       navBar = document.createElement('div');
@@ -10604,6 +10606,19 @@
     }
   }
   function navHideBar() { if (navBar) { navBar.remove(); navBar = null; } }
+
+  /* ★ v2.6.124：恢复「第 N/M 跳」进度显示。
+     v2.6.104 把 Move 按钮的导航统一到 navToMap() 时，原来内联在 navTravelTo 里的
+     「(i+1)/plan.length　当前：A → B」进度条被一起删掉了（用户反馈「导航之前都有显示 X/X，现在没了」）。
+     现在放回统一路径 navWalkPlanTo()：只在导航条已存在时更新（= 从世界地图「导航」按钮发起的），
+     阵亡回图 / 自动切图这类后台导航不弹条，避免打扰。 */
+  function navProgressHop(i, total, destId, nextId) {
+    if (!navBar) return;
+    const pct = (total > 0) ? Math.round((i / total) * 100) : null;
+    navStatus('🧭 导航中 → ' + navMapName(destId) + '<br><span style="color:#8fa3bd">' +
+      (i + 1) + '/' + total + '　当前：' + navMapName(character.current_map) + ' → ' + navMapName(nextId) + '</span>',
+      pct, true);
+  }
 
   /* ★ v2.6.104：navGoTo() 已删除 —— 统一用模块 A navToMap()。 */
 
@@ -11237,6 +11252,8 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
     }, 2000);
   })();
   rhythmTimer(function () { if (MapDB.isDirty()) MapDB.save(); }, 3000);
+  /* ★ v2.6.124：遇敌逃跑看门狗（勾上即生效，与是否开始挂机无关） */
+  rhythmTimer(function () { try { fleeWatchTick(); } catch (e) { /* ignore */ } }, 700);
   window.addEventListener('beforeunload', function () { if (MapDB.isDirty()) MapDB.save(); });
 
   /* 自动切图触发（带节流） */
@@ -11279,9 +11296,22 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
     const how = gameRunAway();
     if (!how) return false;
     _fleeAt = now();
-    logEvent('采集遇敌 → 逃跑' + (how === 'api' ? '（接口）' : ''));
-    setStatus('遇敌逃跑中…（仅采集模式）');
+    logEvent('遇敌逃跑 → ' + (how === 'api' ? '接口' : '点按钮'));
+    setStatus('遇敌逃跑中…');
     return true;
+  }
+
+  /* ★ v2.6.124：「遇敌逃跑」改成「勾上即生效」的独立看门狗 —— **不需要开始挂机**。
+     只在「战斗 / 爬塔」任务**运行中**自动屏蔽（那时候要打，不能逃）。
+     多角色副角色页有自己的策略（altPageCombatPolicy），这里让路，避免重复点。 */
+  const FLEE_MASK_TASKS = ['battle', 'tower'];
+  function fleeWatchTick() {
+    if (!cfg.gatherFlee) return;
+    if (!inGame()) return;
+    if (running && !st.paused && FLEE_MASK_TASKS.indexOf(String(cfg.task || 'battle')) >= 0) return;   /* 战斗 / 爬塔 → 屏蔽 */
+    if (st.altTrip) return;
+    if (!hasFrame('frame_Combat')) return;
+    tryGatherFlee();
   }
   /* ★ 多角色：副角色页「只采集、不打架」策略。
      副角色是来挂 idle 采集的，路上遇怪不该还手（会掉血 / 死亡 / 浪费时间）。
