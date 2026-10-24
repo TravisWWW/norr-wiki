@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.146
+// @version      2.6.147
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -189,7 +189,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.146';   // 与 @version 保持一致
+  const SCRIPT_VER = '2.6.147';   // 与 @version 保持一致
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -1764,23 +1764,32 @@
   }
 
   /* 普通挂机先把目的地设为真实路径的倒数第二格，不靠轮询抢在最后一步前刹车。
-     游戏 findWalkPath 返回逆序格子列表；也兼容终点在末尾的列表。 */
+     游戏 findWalkPath 返回逆序格子列表；也兼容终点在末尾的列表。
+     ★ v2.6.147：加诊断日志（按原因键去重，60s 内聚合成一条）——
+     用来区分「分段导航整个没生效」和「只是算不出前一格」。 */
+  function navSegDiag(msg) {
+    try { logEvent('分段导航：' + msg, { key: 'navseg:' + String(msg).replace(/[0-9]+/g, '#'), windowMs: 60000 }); } catch (e) { /* ignore */ }
+  }
   function regularSegmentPoint(x, y, kind) {
-    if (!cfg.navSegOn || st.mode === 'tower' || (st.ovl && st.ovl.on)) return null;
-    if (kind !== 'enemy' && kind !== 'gather' && kind !== 'res') return null;
-    if (typeof window.findWalkPath !== 'function') return null;
+    if (!cfg.navSegOn) return null;                                   /* 没开：静默（用户自己知道开关状态） */
+    if (st.mode === 'tower' || (st.ovl && st.ovl.on)) { navSegDiag('爬塔 / Overlord 不适用，跳过'); return null; }
+    if (kind !== 'enemy' && kind !== 'gather' && kind !== 'res') { navSegDiag('该移动类型（' + kind + '）不适用，跳过'); return null; }
+    if (typeof window.findWalkPath !== 'function') { navSegDiag('游戏未暴露 findWalkPath，算不出前一格'); return null; }
     try {
       const path = window.findWalkPath(character.x, character.y, x, y);
-      if (!Array.isArray(path) || path.length <= Math.max(3, +cfg.navSegDist || 5)) return null;
+      if (!Array.isArray(path)) { navSegDiag('findWalkPath 没算出路线，跳过'); return null; }
+      const need = Math.max(3, +cfg.navSegDist || 5);
+      if (path.length <= need) { navSegDiag('路径只有 ' + path.length + ' 步（≤ 长距离阈值 ' + need + '），跳过'); return null; }
       const goal = x + '-' + y;
       const raw = path[0] === goal ? path[1] : (path[path.length - 1] === goal ? path[path.length - 2] : null);
-      if (typeof raw !== 'string') return null;
+      if (typeof raw !== 'string') { navSegDiag('路线里找不到目标前一格，跳过'); return null; }
       const p = raw.split('-').map(Number);
-      if (!Number.isFinite(p[0]) || !Number.isFinite(p[1]) || Math.max(Math.abs(x - p[0]), Math.abs(y - p[1])) !== 1) return null;
-      if (tileActionAt(p[0], p[1])) return null;     // 不把临时停顿放在 NPC、门或采集格上
-      if (scanEnemies().some(e => e.x === p[0] && e.y === p[1])) return null;
+      if (!Number.isFinite(p[0]) || !Number.isFinite(p[1]) || Math.max(Math.abs(x - p[0]), Math.abs(y - p[1])) !== 1) { navSegDiag('前一格不紧邻目标，跳过'); return null; }
+      if (tileActionAt(p[0], p[1])) { navSegDiag('前一格 ' + p[0] + '-' + p[1] + ' 有交互（NPC/门/采集），跳过'); return null; }
+      if (scanEnemies().some(e => e.x === p[0] && e.y === p[1])) { navSegDiag('前一格 ' + p[0] + '-' + p[1] + ' 有怪，跳过'); return null; }
+      navSegDiag('已启用：先到前一格 ' + p[0] + '-' + p[1] + '（目标 ' + x + '-' + y + '，路径 ' + path.length + ' 步）');
       return { x: p[0], y: p[1] };
-    } catch (e) { return null; }
+    } catch (e) { navSegDiag('异常：' + (e && e.message ? e.message : e)); return null; }
   }
   function walkVisualArrived(x, y) {
     try {
