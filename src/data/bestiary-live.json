@@ -16,18 +16,18 @@
    {
     "file": "char-1151.json",
     "char": "#1151",
-    "level": 46,
-    "time": "2026-10-23T04:06:26.873Z",
+    "level": 55,
+    "time": "2026-10-24T20:03:37.677Z",
     "count": 193,
-    "recorded": 100,
+    "recorded": 111,
     "mergedAt": "2026-10-24"
    }
   ],
   "count": 199,
-  "recordedCount": 130,
+  "recordedCount": 134,
   "withLore": 198,
-  "withStats": 74,
-  "withSkills": 89,
+  "withStats": 75,
+  "withSkills": 94,
   "withBg": 183,
   "tabs": {
    "normal": 163,
@@ -9201,6 +9201,28 @@
      "res": "coin_bronze",
      "pct": "100%"
     }
+   ],
+   "skills": [
+    {
+     "name": "deadly_aroma",
+     "id": 10047,
+     "level": 8
+    },
+    {
+     "name": "sharp_leaf_strike",
+     "id": 10048,
+     "level": 8
+    },
+    {
+     "name": "root",
+     "id": 10086,
+     "level": 8
+    },
+    {
+     "name": "hex_of_rot",
+     "id": 122,
+     "level": 8
+    }
    ]
   },
   {
@@ -9595,6 +9617,28 @@
      "name": "Spirit Essence",
      "res": "spirit_essence",
      "pct": "100%"
+    }
+   ],
+   "skills": [
+    {
+     "name": "ale_consumption",
+     "id": 10037,
+     "level": 8
+    },
+    {
+     "name": "rock_splitter",
+     "id": 10176,
+     "level": 8
+    },
+    {
+     "name": "pick_swing",
+     "id": 10177,
+     "level": 8
+    },
+    {
+     "name": "spectral_fear",
+     "id": 10077,
+     "level": 8
     }
    ]
   },
@@ -10464,7 +10508,72 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_244.gif",
    "bg": "coastal.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "50 - 60",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "Medium",
+   "defense": "Medium",
+   "resistance": "Low",
+   "drops": [
+    {
+     "name": "Bronze Sestertii",
+     "res": "coin_bronze",
+     "pct": "100%"
+    },
+    {
+     "name": "Deepwater Cache",
+     "res": "deepwater_cache",
+     "pct": "5%"
+    },
+    {
+     "name": "Ash Rod",
+     "res": "ash_rod",
+     "pct": "12%"
+    },
+    {
+     "name": "High Quality Leather Belt Base",
+     "res": "high_quality_leather_belt_base",
+     "pct": "7%"
+    },
+    {
+     "name": "High Quality Leather Chest Base",
+     "res": "high_quality_leather_chest_base",
+     "pct": "5%"
+    },
+    {
+     "name": "High Quality Scale",
+     "res": "high_quality_scale",
+     "pct": "15%"
+    },
+    {
+     "name": "Valentaal Point",
+     "res": "valentaal_point",
+     "pct": "8%"
+    }
+   ],
+   "skills": [
+    {
+     "name": "javelin_throw",
+     "id": 218,
+     "level": 10
+    },
+    {
+     "name": "tail_sweep",
+     "id": 10149,
+     "level": 10
+    },
+    {
+     "name": "bite",
+     "id": 10009,
+     "level": 10
+    },
+    {
+     "name": "chitin_armor",
+     "id": 10146,
+     "level": 10
+    }
+   ]
   },
   {
    "id": 245,
@@ -10475,7 +10584,87 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_245.gif",
    "bg": "coastal.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "50 - 60",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "Medium",
+   "defense": "Medium",
+   "resistance": "Low",
+   "drops": [
+    {
+     "name": "Bronze Sestertii",
+     "res": "coin_bronze",
+     "pct": "100%"
+    },
+    {
+     "name": "Deepwater Cache",
+     "res": "deepwater_cache",
+     "pct": "5%"
+    },
+    {
+     "name": "Ash Rod",
+     "res": "ash_rod",
+     "pct": "12%"
+    },
+    {
+     "name": "High Quality Leather Belt Base",
+     "res": "high_quality_leather_belt_base",
+     "pct": "7%"
+    },
+    {
+     "name": "High Quality Leather Chest Base",
+     "res": "high_quality_leather_chest_base",
+     "pct": "5%"
+    },
+    {
+     "name": "High Quality Scale",
+     "res": "high_quality_scale",
+     "pct": "15%"
+    },
+    {
+     "name": "High Quality String",
+     "res": "high_quality_string",
+     "pct": "8%"
+    }
+   ],
+   "skills": [
+    {
+     "name": "poison_shot",
+     "id": 96,
+     "level": 10
+    },
+    {
+     "name": "critical_shot",
+     "id": 10029,
+     "level": 10
+    },
+    {
+     "name": "double_shot",
+     "id": 95,
+     "level": 10
+    },
+    {
+     "name": "dazing_trap",
+     "id": 106,
+     "level": 10
+    }
+   ],
+   "stats": {
+    "Base Damage": 20,
+    "Physical Damage": 3,
+    "Blunt Damage": 0,
+    "Spell Damage": 0,
+    "Bleed Damage": 0,
+    "Arcane Damage": 0,
+    "Cold Damage": 0,
+    "Dark Damage": 0,
+    "Fire Damage": 0,
+    "Light Damage": 0,
+    "Lightning Damage": 0,
+    "Poison Damage": 0,
+    "Thorn Damage": 0
+   }
   },
   {
    "id": 246,
@@ -10486,7 +10675,67 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_246.gif",
    "bg": "coastal.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "50 - 60",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "Medium",
+   "defense": "Low",
+   "resistance": "High",
+   "drops": [
+    {
+     "name": "Bronze Sestertii",
+     "res": "coin_bronze",
+     "pct": "100%"
+    },
+    {
+     "name": "Deepwater Cache",
+     "res": "deepwater_cache",
+     "pct": "5%"
+    },
+    {
+     "name": "Ash Rod",
+     "res": "ash_rod",
+     "pct": "12%"
+    },
+    {
+     "name": "High Quality Leather Belt Base",
+     "res": "high_quality_leather_belt_base",
+     "pct": "7%"
+    },
+    {
+     "name": "High Quality Leather Chest Base",
+     "res": "high_quality_leather_chest_base",
+     "pct": "5%"
+    },
+    {
+     "name": "High Quality Scale",
+     "res": "high_quality_scale",
+     "pct": "15%"
+    },
+    {
+     "name": "Octagon Sapphire",
+     "res": "octagon_sapphire",
+     "pct": "8%"
+    }
+   ],
+   "skills": [
+    {
+     "name": "tornado",
+     "id": 225,
+     "level": 10
+    },
+    {
+     "name": "rotting_grasp",
+     "id": 10156,
+     "level": 10
+    },
+    {
+     "name": "arcane_bolt",
+     "id": 68,
+     "level": 10
+    }
+   ]
   },
   {
    "id": 247,
@@ -10583,7 +10832,13 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_257.gif",
    "bg": "underground.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "50 - 60",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "Medium",
+   "defense": "Low",
+   "resistance": "High"
   },
   {
    "id": 261,
