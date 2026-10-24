@@ -1,8 +1,8 @@
 {
-  "version": "2.6.139",
+  "version": "2.6.141",
   "date": "2026-10-24",
-  "notes": "v2.6.139：① 按用户要求删掉「攻速→额外打击次数」整块功能（面板里本来就有，脚本重复算没必要）：移除 st.combo、机制表里的[连击读取]行、10.3 整节（COMBO_* / readComboInfo / comboInfo / pollCombo）、两处 pollCombo() 调用、统计行的「连击 … 攻速 …」、以及 comboInfo/pollCombo/readComboInfo 导出。② 修 v2.6.135 引入的 Overlord 致命 bug：ovlTick/ovlJoin/导出 res() 里写的是 st.event.ovl，但状态实际挂在 st.ovl（与 st.event 平级），导致 O 为 undefined、每 tick 抛错、Overlord 自动参战完全不工作 —— 改回 st.ovl。",
+  "notes": "v2.6.141：法国代理正式服实测修复四项既有问题：塔外入口计层偏移、快速滚轮取动画中间值、同图房间传送及多段退出重规划、分段到站误判传送站未打开。自动战斗/拾取、采集转战斗、维修、材料存取、多角色、爬塔及中英文导航已实测；73项隔离回归通过。",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 797132,
-  "sha256": "42a18bced43ebeb1fcaa6f9cbb2af1dd920b805d248c0a01b8b799235fbc5f50"
+  "size": 804307,
+  "sha256": "7631c30b238a2e9cffaa2353e63e4d5f72fb10e15be1168384310663b1b44ab5"
 }

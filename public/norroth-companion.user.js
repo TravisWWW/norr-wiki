@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.139
+// @version      2.6.141
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -189,7 +189,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.139';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
+  const SCRIPT_VER = '2.6.141';   // 与 @version 保持一致
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -234,6 +234,8 @@
   const RARITY_CN2 = { normal: '普通', magic: '魔法', rare: '稀有', epic: '史诗', mystical: '神秘', ascended: '飞升', legendary: '传说', relic: '遗物', unique: '独特' };
   let cfg = loadCfg();
   let running = false;
+  let runSeq = 0;             // 每次运行/暂停/停止换代，旧的异步结果不得发起新动作
+  let walkSeq = 0;            // abortWalk 使尚未发出的旧走位失效，独立于挂机开关
   let timer = null;
 
   const st = {
@@ -363,6 +365,11 @@
   function normalizeCfg(o) {
     o = (o && typeof o === 'object') ? o : {};
     const c = Object.assign({}, DEFAULTS, o);
+    // 与现有输入控件范围一致；损坏的持久化值不能直接进入补给决策。
+    [['hpPct', 1, 100], ['mpPct', 1, 100], ['petEnergyPct', 1, 100], ['potionDelayMs', 700, 10000]].forEach(function (r) {
+      const n = Number(c[r[0]]);
+      c[r[0]] = Number.isFinite(n) ? Math.min(r[2], Math.max(r[1], n)) : DEFAULTS[r[0]];
+    });
     delete c.panelSkin; // 清理旧版本配置：面板不再使用游戏边框皮肤
     // 归一化：星级顺序必须是 RANKS 的一个排列，且不能丢项
     const seen = [];
@@ -479,7 +486,9 @@
     c.sellRarity = (RARITY_ORDER.indexOf(String(o.sellRarity || '').toLowerCase()) >= 0) ? String(o.sellRarity).toLowerCase() : '';
     /* ★ 多角色轮转：角色名单归一化 */
     c.multiChar = !!c.multiChar;
-    c.mcChars = (Array.isArray(o.mcChars) ? o.mcChars : []).map(function (x) {
+    c.mcChars = (Array.isArray(o.mcChars) ? o.mcChars : []).filter(function (x) {
+      return x && typeof x === 'object' && !Array.isArray(x);
+    }).map(function (x) {
       return {
         id: +x.id || 0, name: String(x.name || ''),
         role: (x.role === 'main' ? 'main' : 'alt'),
@@ -546,18 +555,19 @@
     return a + Math.floor(Math.random() * (b - a + 1));
   }
   /* 同步调用点：把「发出动作」推到随机间隔之后 */
-  function humanDefer(fn) {
+  function humanDefer(fn, alive) {
     const d = (humanDelayOn() ? humanDelayMs() : 0) + humanMicroMs();   /* ★ 含微停顿 */
-    if (d <= 0) { try { fn(); } catch (e) { /* ignore */ } return; }
-    setTimeout(function () { try { fn(); } catch (e) { /* ignore */ } }, d);
+    const go = function () { try { if (!alive || alive()) fn(); } catch (e) { /* ignore */ } };
+    if (d <= 0) { go(); return; }
+    setTimeout(go, d);
   }
   /* 异步流程用：等一个随机间隔 */
   function humanPause() { const d = (humanDelayOn() ? humanDelayMs() : 0) + humanMicroMs(); return d > 0 ? sleep(d) : Promise.resolve(); }
   /* 点一个元素（带随机间隔） */
   function humanClick(el) { if (!el) return false; humanDefer(function () { try { el.click(); } catch (e) { /* ignore */ } }); return true; }
   /* 开一个游戏窗口（带随机间隔） */
-  function humanDialog(title, sub, mode, url, modal) {
-    humanDefer(function () { try { if (typeof window.createDialog === 'function') window.createDialog(title, sub, mode, url, modal); } catch (e) { /* ignore */ } });
+  function humanDialog(title, sub, mode, url, modal, alive) {
+    humanDefer(function () { try { if (typeof window.createDialog === 'function') window.createDialog(title, sub, mode, url, modal); } catch (e) { /* ignore */ } }, alive);
   }
   /* ★ 节拍抖动：内部定时器 / 节流阈值也加同一个 min~max 随机波动 */
   function humanRhythmOn() { return !!cfg.humanDelay && !!cfg.humanRhythm && (+cfg.humanDelayMax || 0) > 0; }
@@ -586,7 +596,7 @@
     loop();
     return h;
   }
-  function stopTimer(h) { if (h == null) return; try { clearInterval(h); } catch (e) { /* ignore */ } delete _rhythmLive[h]; }
+  function stopTimer(h) { if (h == null) return; delete _rhythmLive[h]; }
   /* ★ 阈值抖动：每次取值都在原值上下随机漂移（小整数至少 ±1） */
   function humanJitterOn() { return !!cfg.humanDelay && !!cfg.humanJitter && (+cfg.humanJitterPct || 0) > 0; }
   function jitterVal(v) {
@@ -679,7 +689,12 @@
      脚本什么都不做，只能干等 45 秒的 checkStuck 看门狗 —— 实测「打完怪发呆 45 秒」。
      cb 可选；不传就只当「已排队发出」（walkTileCore / nudgeRecover 这些不看返回值）。 */
   function safeWalkTo(x, y, cb) {
-    const go = function () { try { return typeof window.walkTo === 'function' ? window.walkTo(x, y) : false; } catch (e) { return false; } };
+    if (!inGame()) return false;
+    const seq = walkSeq, id = character.id, mapId = character.current_map;
+    const go = function () {
+      if (seq !== walkSeq || !inGame() || character.id !== id || character.current_map !== mapId) return false;
+      try { return typeof window.walkTo === 'function' ? window.walkTo(x, y) : false; } catch (e) { return false; }
+    };
     /* ★ 真人化：走格也算一个动作 → 随机间隔后再发出 */
     if (humanDelayOn()) {
       humanDefer(function () { const ok = go(); if (cb) { try { cb(ok); } catch (e) { /* ignore */ } } });
@@ -701,6 +716,7 @@
   // 中止移动：游戏自己的 clearQueue 只清 walkQueue，不清 character.walk_to；
   // 残留的 walk_to 会让后续 walkTo 变成 no-op（角色站着不动），所以必须一并清掉。
   function abortWalk() {
+    walkSeq++;
     try {
       /* ★ v2.6.70 兜底[落位]：中止一次「正在进行的走位」= 客户端动画停在半路，
          而服务端已经把整条路径走完（实测服务端推进远快于客户端 400ms/格的动画）→
@@ -991,6 +1007,7 @@
   /* 这个动作是不是「已经触发了」（出现对应窗口 / 已经在加载战斗） */
   function arriveActionFired(act) {
     if (act === 'combat' || act === 'boss') return hasFrame('frame_Combat') || window.pendingCombatLoad === true;
+    if (act === 'waygate') return !!document.querySelector('#frame_Waygate #tab_cities, #frame_Waygate #tab_wilderness');
     if (act === 'collect_scrap') return hasFrame('frame_CollectScrap');
     if (act === 'pick_up') return hasFrame('frame_Loot');
     if (act === 'gathering') return hasFrame('frame_Gathering');
@@ -998,8 +1015,10 @@
   }
   function scheduleArriveAction(x, y, kind) {
     if (kind === 'gather' || kind === 'tower') return;   /* 这两类脚本自己会显式触发（stepGather / 爬塔） */
+    const seq = runSeq, mapId = character.current_map;
     setTimeout(function () {
       try {
+        if (!running || seq !== runSeq || character.current_map !== mapId) return;
         if (!inGame()) return;
         if (+character.x !== +x || +character.y !== +y) return;   /* 已经走开了 → 不管 */
         if (mapLoadStuck()) return;                               /* 正在换图 → 别插一脚 */
@@ -1580,7 +1599,7 @@
 
     const enemies = attackableEnemies();
     /* ★ v1.7.1：资源拾取只看「拾取地面资源」这一个开关（旧「顺路拾取」已合并进来） */
-    const resources = cfg.gatherScrap ? scanResources().filter(r => isReachable(r.x, r.y)) : [];
+    const resources = cfg.gatherScrap ? scanResources().filter(r => !isBlacklisted(r.key) && isReachable(r.x, r.y)) : [];
 
     const eBest = enemies[0] || null;                 // 已按优先级排序
     const eD = eBest ? manhattan(cx, cy, eBest.x, eBest.y) : Infinity;
@@ -1798,7 +1817,8 @@
       scheduleArriveAction(m.tx, m.ty, m.kind);
       if (m.after) {   /* ★ 失误绕路：到了错格 → 稍微停一下再走真目标 */
         const a = m.after;
-        setTimeout(function () { try { if (canAct()) startMove(a.tx, a.ty, a.kind, a.label); } catch (e) { /* ignore */ } }, 400 + Math.floor(Math.random() * 900));
+        const seq = runSeq, mapId = character.current_map;
+        setTimeout(function () { try { if (running && seq === runSeq && character.current_map === mapId && canAct()) startMove(a.tx, a.ty, a.kind, a.label); } catch (e) { /* ignore */ } }, 400 + Math.floor(Math.random() * 900));
       }
       return true;
     }
@@ -2283,7 +2303,9 @@
     if (!cfg.autoPotion || !character || !st.pendingCheck) return;
     const p = st.pendingCheck;
     const maxHp = character.max_health || 0, maxMp = character.max_mana || 0;
-    const full = (maxHp && character.current_health >= maxHp) || (maxMp && character.current_mana >= maxMp);
+    const full = p.kind === 'mp'
+      ? (maxMp > 0 && character.current_mana >= maxMp)
+      : (maxHp > 0 && character.current_health >= maxHp);
     /* ★ 只统计「本次要补的那一项」的增量。
        之前把 HP/MP 增量相加 —— 双补药（如 Starter Rejuv +150HP/+50MP）光靠 MP 那部分
        就能骗过判定，导致战斗中一瓶接一瓶连吃（实测 130 秒吃了 29 瓶）。 */
@@ -2870,7 +2892,7 @@
       exportSync: function () {
         const out = {};
         const byFrom = {};
-        edges.forEach(function (e) { (byFrom[e[0]] = byFrom[e[0]] || []).push([e[0], e[1], e[2], e[3]]); });
+        edges.forEach(function (e) { (byFrom[e[0]] = byFrom[e[0]] || []).push([e[0], e[1], e[2], e[3], edgeKindOf(e)]); });
         Object.keys(maps).forEach(function (k) {
           const r = maps[k];
           const o = { at: r.at || 0 };
@@ -2906,8 +2928,15 @@
           if (s.smith) r.smith = true;
           r.at = at;
           if (Array.isArray(s.edges)) {
+            const oldKinds = {};
+            edges.forEach(function (e) { if (e[0] === +k) oldKinds[e[1]] = edgeKindOf(e); });
             for (let i = edges.length - 1; i >= 0; i--) { if (edges[i][0] === +k) edges.splice(i, 1); }
-            s.edges.forEach(function (e) { addEdge(e[0], e[1], e[2], e[3]); });
+            s.edges.forEach(function (e) {
+              if (!Array.isArray(e) || +e[0] !== +k || !(+e[1] > 0)) return;
+              // 旧共享数据没有类型时，保留本地已知类型；未知边不推断为普通门。
+              const kind = ['gate', 'smugglers', 'other'].indexOf(e[4]) >= 0 ? e[4] : (oldKinds[+e[1]] || 'other');
+              addEdge(e[0], e[1], e[2], e[3], kind);
+            });
           }
           changed++;
         });
@@ -3308,13 +3337,16 @@
   /* ★ v2.6.15：站在采集点上「开始 / 重新开始采集」必须走游戏自己的 execTileAction('gathering')
      （内部 → collectGathering()）。只 createDialog('/modal/gathering') 会开弹窗但进度条不转。 */
   function startGatheringHere() {
+    const seq = runSeq;
+    const alive = function () { return running && runSeq === seq; };
+    if (!alive()) return false;
     try {
       if (typeof window.execTileAction === 'function') {
-        humanDefer(function () { try { window.execTileAction('gathering'); } catch (e) { /* ignore */ } });
+        humanDefer(function () { try { window.execTileAction('gathering'); } catch (e) { /* ignore */ } }, alive);
         return true;
       }
       if (typeof window.createDialog === 'function') {
-        humanDialog('Gathering', '', 'ajax', '/modal/gathering', true);
+        humanDialog('Gathering', '', 'ajax', '/modal/gathering', true, alive);
         return true;
       }
     } catch (e) { /* ignore */ }
@@ -3449,6 +3481,7 @@
     if (!inGame()) return 'cancel';
     const timeoutMs = opts.timeoutMs || WALK_TIMEOUT_MIN;
     const alive = opts.alive || function () { return true; };
+    if (!alive()) return 'cancel';
     const cond = opts.cond || function () { return character.x === gx && character.y === gy; };
     const retrigger = !!opts.retrigger;
     const onStuck = opts.onStuck || nudgeRecover;
@@ -4708,77 +4741,88 @@
     const btn = document.getElementById('nr-scan');
     if (btn) { btn.disabled = true; btn.textContent = '扫描中…'; }
     const wasOpen = hasFrame('frame_Inventory');
-    if (!wasOpen) { const hd = document.getElementById('hud_Inventory'); if (hd) humanClick(hd); }
+    try {
+      if (!wasOpen) { const hd = document.getElementById('hud_Inventory'); if (hd) humanClick(hd); }
 
-    // ★ 修 bug：原版固定 sleep(1300)，网络慢时会读到空背包。
-    //   改成轮询等槽位出现（最多 5 秒）。
-    await ensureTTDB();   // ★ 先拿到物品效果库，才能精确分类补血/补蓝
+      // ★ 修 bug：原版固定 sleep(1300)，网络慢时会读到空背包。
+      //   改成轮询等槽位出现（最多 5 秒）。
+      await ensureTTDB();   // ★ 先拿到物品效果库，才能精确分类补血/补蓝
 
-    const inv = await waitUntil(() => {
-      const f = document.getElementById('frame_Inventory');
-      return (f && f.querySelector('.inv_slot')) ? f : null;
-    }, 5000) || document.getElementById('frame_Inventory');
-    // ★ 背包是分批渲染的：等槽位数量稳定下来再读，否则会漏物品
-    if (inv) {
-      let lastN = -1, stable = 0;
-      for (let i = 0; i < 24; i++) {
-        const n = $$q('.inv_slot', inv).length;
-        if (n === lastN && n > 0) { stable++; if (stable >= 3) break; } else stable = 0;
-        lastN = n;
-        await sleep(220);
+      const inv = await waitUntil(() => {
+        const f = document.getElementById('frame_Inventory');
+        return (f && f.querySelector('.inv_slot')) ? f : null;
+      }, 5000);
+      if (!inv) {
+        setStatus('背包扫描失败：窗口未就绪，已保留上次库存');
+        return false;
       }
-    }
+      // ★ 背包是分批渲染的：等槽位数量稳定下来再读，否则会漏物品
+      if (inv) {
+        let lastN = -1, stable = 0;
+        for (let i = 0; i < 24; i++) {
+          const n = $$q('.inv_slot', inv).length;
+          if (n === lastN && n > 0) { stable++; if (stable >= 3) break; } else stable = 0;
+          lastN = n;
+          await sleep(220);
+        }
+      }
 
-    const map = {};
-    const items = {};
-    if (inv) {
-      $$q('.inv_slot.full_inv', inv).forEach(slot => {
-        const d = slot.querySelector('div');
-        if (!d) return;
-        const key = d.getAttribute('res') || d.getAttribute('name') || '';
-        try { const bg = (d.style && d.style.backgroundImage) || ''; const im = /url\(["']?([^"')]+)["']?\)/.exec(bg); if (key && im) _iconCache.set(key, im[1]); } catch (e) { /* ignore */ }
-        const name = d.getAttribute('hover_title') || key;
-        const use = slot.getAttribute('use_name') || '';
-        if (!key || !use) return;
-        const rq = d.getAttribute('rarity');           // ★ 装备才有 rarity 属性
-        /* ★ 锁定物品的槽位里会多一个 <span class=locked>🔒</span>，它排在数量 span 前面，
-           原来的 querySelector('span') 会读到 🔒 → parseInt('🔒') = NaN → 数量被当成 0。
-           改成只认「纯数字」的 span（老版 parseInvItems 的正则天然跳过 🔒，这里是回归修复）。 */
-        let count = 0;
-        for (const s of slot.querySelectorAll('span')) {
-          const t = (s.textContent || '').replace(/,/g, '').trim();
-          if (/^\d+$/.test(t)) { count = parseInt(t, 10) || 0; break; }
-        }
-        if (!items[key]) items[key] = { key: key, name: name, rarity: rq || '', count: 0 };
-        items[key].count += count;
-        if (!map[key]) {
-          const hi = healInfo(key);
-          let kind = 'other';
-          if (hi.life > 0 && hi.mana > 0) kind = 'hpmp';
-          else if (hi.life > 0) kind = 'hp';
-          else if (hi.mana > 0) kind = 'mp';
-          map[key] = { key: key, name: name, kind: kind, healLife: hi.life, healMana: hi.mana, count: 0 };
-        }
-        map[key].count += count;
+      const map = {};
+      const items = {};
+      if (inv) {
+        $$q('.inv_slot.full_inv', inv).forEach(slot => {
+          const d = slot.querySelector('div');
+          if (!d) return;
+          const key = d.getAttribute('res') || d.getAttribute('name') || '';
+          try { const bg = (d.style && d.style.backgroundImage) || ''; const im = /url\(["']?([^"')]+)["']?\)/.exec(bg); if (key && im) _iconCache.set(key, im[1]); } catch (e) { /* ignore */ }
+          const name = d.getAttribute('hover_title') || key;
+          const use = slot.getAttribute('use_name') || '';
+          if (!key || !use) return;
+          const rq = d.getAttribute('rarity');           // ★ 装备才有 rarity 属性
+          /* ★ 锁定物品的槽位里会多一个 <span class=locked>🔒</span>，它排在数量 span 前面，
+             原来的 querySelector('span') 会读到 🔒 → parseInt('🔒') = NaN → 数量被当成 0。
+             改成只认「纯数字」的 span（老版 parseInvItems 的正则天然跳过 🔒，这里是回归修复）。 */
+          let count = 0;
+          for (const s of slot.querySelectorAll('span')) {
+            const t = (s.textContent || '').replace(/,/g, '').trim();
+            if (/^\d+$/.test(t)) { count = parseInt(t, 10) || 0; break; }
+          }
+          if (!items[key]) items[key] = { key: key, name: name, rarity: rq || '', count: 0 };
+          items[key].count += count;
+          if (!map[key]) {
+            const hi = healInfo(key);
+            let kind = 'other';
+            if (hi.life > 0 && hi.mana > 0) kind = 'hpmp';
+            else if (hi.life > 0) kind = 'hp';
+            else if (hi.mana > 0) kind = 'mp';
+            map[key] = { key: key, name: name, kind: kind, healLife: hi.life, healMana: hi.mana, count: 0 };
+          }
+          map[key].count += count;
+        });
+      }
+
+      const list = Object.keys(map).map(k => map[k]);
+      list.sort((a, b) => {
+        const r = x => x.kind === 'hp' ? 0 : (x.kind === 'hpmp' ? 1 : (x.kind === 'mp' ? 2 : 3));
+        return (r(a) - r(b)) || a.name.localeCompare(b.name);
       });
+      applyBagDiff(items);                              // ★ 详细统计：算「获得」增量 + 背包装备稀有度
+      cfg.bagList = list;
+      cfg.bagScanned = true;
+      if (cfg.hpPotion && !list.some(i => i.key === cfg.hpPotion)) cfg.hpPotion = '';
+      if (cfg.mpPotion && !list.some(i => i.key === cfg.mpPotion)) cfg.mpPotion = '';
+      saveCfg();
+
+      renderPotionSelects();
+      setStatus('背包扫描完成，发现 ' + list.length + ' 种可用物品');
+      return true;
+    } catch (e) {
+      setStatus('背包扫描失败：' + (e && e.message ? e.message : String(e)));
+      return false;
+    } finally {
+      if (!wasOpen) closeFrameById('frame_Inventory');
+      if (btn) { btn.disabled = false; btn.textContent = '重新扫描背包'; }
     }
-    if (!wasOpen) closeFrameById('frame_Inventory');
-
-    const list = Object.keys(map).map(k => map[k]);
-    list.sort((a, b) => {
-      const r = x => x.kind === 'hp' ? 0 : (x.kind === 'hpmp' ? 1 : (x.kind === 'mp' ? 2 : 3));
-      return (r(a) - r(b)) || a.name.localeCompare(b.name);
-    });
-    applyBagDiff(items);                              // ★ 详细统计：算「获得」增量 + 背包装备稀有度
-    cfg.bagList = list;
-    cfg.bagScanned = true;
-    if (cfg.hpPotion && !list.some(i => i.key === cfg.hpPotion)) cfg.hpPotion = '';
-    if (cfg.mpPotion && !list.some(i => i.key === cfg.mpPotion)) cfg.mpPotion = '';
-    saveCfg();
-
-    if (btn) { btn.disabled = false; btn.textContent = '重新扫描背包'; }
-    renderPotionSelects();
-    setStatus('背包扫描完成，发现 ' + list.length + ' 种可用物品');
   }
 
   /* ======================= 14. 采集 ======================= */
@@ -4876,9 +4920,38 @@
 
   /** 关掉游戏侧的采集窗口（采集点 / 废料），用于中断采集去打怪或去维修 */
   function closeGatheringWindows() {
+    // 正式服用独立 popup/计时器；只关旧 frame 不能停止采集。
+    try { if (typeof window.stopGathering === 'function') window.stopGathering(); } catch (e) { /* ignore */ }
+    try { if (typeof window.hideGatheringPopup === 'function') window.hideGatheringPopup(); } catch (e) { /* ignore */ }
+    _gatherProg = { key: '', at: 0 };
     closeFrameById('frame_Gathering');
     closeFrameById('frame_CollectScrap');
     abortWalk();
+  }
+
+  // 仅接管已在正式服确认的等级拒绝，不猜测其它业务错误的含义。
+  function installGatherResultHook() {
+    const $ = jq();
+    if (!$ || typeof $(document).on !== 'function') return false;
+    if ($.__nrGatherResultHook) return true;
+    $.__nrGatherResultHook = true;
+    const requests = new WeakMap();
+    $(document).on('ajaxSend.nrGatherResult', function (_ev, xhr, opts) {
+      if (!running || !inGame() || !/\/ajax_gathering\.php(?:\?|$)/.test(String(opts.url || ''))) return;
+      requests.set(xhr, { seq: runSeq, charId: character.id, mapId: character.current_map });
+    }).on('ajaxComplete.nrGatherResult', function (_ev, xhr) {
+      const request = requests.get(xhr);
+      if (!request) return;
+      requests.delete(xhr);
+      if (!running || request.seq !== runSeq || !inGame() || character.id !== request.charId || character.current_map !== request.mapId) return;
+      if (st.mode !== 'gather' && st.mode !== 'auto' && !st.event.on) return;
+      let xml = xhr.responseXML;
+      if (!xml && xhr.responseText) xml = new DOMParser().parseFromString(xhr.responseText, 'text/xml');
+      const root = xml && xml.querySelector('xmlresponse');
+      const error = root ? String(root.getAttribute('error') || '') : '';
+      if (/level too low to gather here/i.test(error)) stop('采集被拒：专业等级不足（' + error + '）');
+    });
+    return true;
   }
 
   /**
@@ -5205,7 +5278,7 @@
         }
       } catch (e) { /* ignore */ }
       return /Event\s*Gate[\s\S]{0,600}?(Join|加入)\s*<\/button>/i.test(t);
-    } catch (e) { return false; }
+    } catch (e) { throw e; }
     finally { if (timer) clearTimeout(timer); }
   }
   /* 进入活动：等价于游戏活动面板里「Event Gate」磁贴的 onclick ——
@@ -5213,8 +5286,10 @@
      ★ v2.6.9 修 bug：原来只 fetch('/modal/event_gate') 并用正则看返回里有没有 hud_portal/loadTravel，
        但**从不执行**服务端返回的那段脚本 → loadTravel() 永远不跑 → 永远「进入失败（没切到活动图）」。
        必须交给游戏自己的 createDialog 去加载并执行响应脚本（关面板 + 显示 #hud_portal + loadTravel()）。 */
-  async function eventEnterGate() {
+  async function eventEnterGate(alive) {
+    alive = alive || function () { return true; };
     try {
+      if (!alive()) return false;
       if (typeof window.createDialog !== 'function') return false;
       /* ★ v2.6.108：先探一次响应，识别「Failed: Inside Event」这类服务端拒绝并写清楚日志
          （原来 createDialog 是 fire-and-forget，失败静默 → 看着像「进活动没反应」）。 */
@@ -5223,7 +5298,8 @@
         const t = await r.text();
         if (/Failed\s*:\s*Inside Event/i.test(t)) { logEvent('活动：进入被拒（Failed: Inside Event）→ 当前在副本 / 塔里，先出副本再进'); return false; }
       } catch (e) { /* 探测失败不阻塞，继续走 createDialog */ }
-      humanDialog('Event Gate', '', 'ajax', '/modal/event_gate');
+      if (!alive()) return false;
+      humanDialog('Event Gate', '', 'ajax', '/modal/event_gate', undefined, alive);
       return true;
     } catch (e) { return false; }
   }
@@ -5449,9 +5525,12 @@
     }
     E.lastCheckAt = now();
     E.busy = true; E.busyAt = now();
+    const seq = runSeq, checkAt = E.busyAt;
+    const alive = function () { return running && seq === runSeq && cfg.autoEvent && E.busyAt === checkAt; };
     (async function () {
       try {
         const has = await eventActivitiesHasJoin();
+        if (!alive()) return;
         E.checkAt = now();
         if (!has) {
           /* 诊断日志：状态变化（开启→关闭）必记；状态不变则 5 分钟一条心跳，避免每 30s 刷屏 */
@@ -5469,8 +5548,9 @@
         E.phase = 'enter';
         logEvent('活动：检测到活动开启 → 进入（原图 ' + navMapName(E.homeMap) + ' · ' + (E.homePoint || '未设采集点') + '）');
         setStatus('活动开启：进入活动地图…');
-        await eventEnterGate();
-        for (let i = 0; i < 30; i++) { await sleep(1000); if (String(character.current_map) === String(EVENT_MAP_ID)) break; if (!running) break; }
+        await eventEnterGate(alive);
+        if (!alive()) return;
+        for (let i = 0; i < 30; i++) { await sleep(1000); if (!alive()) return; if (String(character.current_map) === String(EVENT_MAP_ID)) break; }
         if (String(character.current_map) === String(EVENT_MAP_ID)) {
           /* ★ v2.6.111：先试「只刷新画面」—— 调游戏 loadTravel() 重画地图 + 对准镜头；
              3 秒后还是没画出活动图（或 loadTravel 被客户端 retryCount>=5 卡成 no-op）→ 退回整页刷新。
@@ -5480,7 +5560,7 @@
           softReloadMap();
           setTimeout(function () {
             try {
-              if (!running || !inGame()) return;
+              if (!alive() || !inGame()) return;
               if (+character.current_map !== +EVENT_MAP_ID) return;   /* 又离开活动图 → 不管 */
               const drawn = renderedMapId() || renderMapId();
               if (drawn === +EVENT_MAP_ID) { recenterCamera(); return; }
@@ -5493,11 +5573,12 @@
         }
         E.phase = 'idle'; logEvent('活动：进入失败（没切到活动图）');
       } catch (e) {
+        if (!alive()) return;
         E.checkFails = (E.checkFails || 0) + 1;
         E.phase = 'idle';
         logEvent('活动：检查/进入异常 → ' + (e && e.message ? e.message : String(e)) + '（连续 ' + E.checkFails + ' 次）');
       }
-      finally { E.busy = false; }
+      finally { if (seq === runSeq && E.busyAt === checkAt) E.busy = false; }
     })();
     return true;
   }
@@ -5660,6 +5741,7 @@
   function installSpeedPatch() {
     const jq = window.jQuery;
     if (!jq || !jq.fn || typeof jq.fn.animate !== 'function') return false;
+    installGatherResultHook();
     if (jq.__nrSpeedPatched) return true;
     jq.__nrSpeedPatched = true;
 
@@ -6337,7 +6419,14 @@
   function stepTower() {
     if (!inGame()) { setStatus('等待进入游戏…'); return; }
     if (!isTowerMap(character.current_map)) { st.phase = 'idle'; stepTowerEnter(); return; }
-    if (!st.towerFloor) st.towerFloor = 1;   /* ★ 进塔即第 1 层 */
+    const tg = document.getElementById('frame_TowerGate');
+    // 900 是塔外入口，不是第 1 层；先结算跨门计层，再判断停止层数。
+    if (+character.current_map === TOWER_MAP_MIN) st.towerFloor = 0;
+    else if (!tg && st.towerGateSeen) {
+      st.towerGateSeen = false; st.towerFloor = (st.towerFloor || 0) + 1;
+      st.towerRoomTries = 0; st.towerDoorsUsed = {};
+      logEvent('爬塔：进入第 ' + st.towerFloor + ' 层');
+    } else if (!st.towerFloor) st.towerFloor = 1;
 
     /* ★ 停止条件（放最前，阵亡要在自动复活之前拦下） */
     if (cfg.towerStopDeath && document.getElementById('battle_defeat')) { stop('爬塔：角色阵亡，按设置停止'); return; }
@@ -6354,7 +6443,6 @@
        层数永远不涨（也就永远触发不了「爬到第 N 层停止」）。
        实测（2026-10-20）：走到 tower_gate 会打开 frame_TowerGate（标题 'Prove Yourself Worthy'，
        正文 'Clear the floor / Slay the N remaining enemies'），里面有「Enter」按钮（/modal/tower_gate?enter）。 */
-    const tg = document.getElementById('frame_TowerGate');
     if (tg) {
       /* ★ v2.6.107：塔门弹窗正文写着「Clear the floor / Slay the N remaining enemies」。
          N > 0 = 本层还没清完（另一半房间的怪）→ 盲目点 Enter 没用，会在这里死循环。
@@ -6380,8 +6468,6 @@
       return;
     }
     st.towerEntered = 0;
-    /* ★ frame_TowerGate 关掉了 = 成功进下一层 → 层数 +1 */
-    if (st.towerGateSeen) { st.towerGateSeen = false; st.towerFloor = (st.towerFloor || 1) + 1; st.towerRoomTries = 0; st.towerDoorsUsed = {}; logEvent('爬塔：进入第 ' + st.towerFloor + ' 层'); }
     const healing = supply();
     if (st.repair.active || st.sell.active) return;
     if (st.mapSwitch.active || navBusy) { setStatus(st.statusText); return; }
@@ -6567,9 +6653,10 @@
       const spot = findGatheringSpot(name);
       if (spot) {
         if (character.x === spot.x && character.y === spot.y) {
-          if (hasFrame('frame_Gathering') || (gatheringActive() && gatheringTurning())) { st.phase = 'gather'; st.gatherRetryAt = 0; setStatus('采集中…（游戏自动循环）'); return; }
+          if (gatheringActive() && gatheringTurning()) { st.phase = 'gather'; st.gatherRetryAt = 0; setStatus('采集中…（游戏自动循环）'); return; }
           if (now() - st.gatherRetryAt > 5000) {
             st.gatherRetryAt = now();
+            closeGatheringWindows();
             if (startGatheringHere()) { setStatus('重新开始采集…'); return; }
           }
           st.phase = 'wait'; setStatus('已就位，等待采集开始…'); return;
@@ -6606,6 +6693,7 @@
    * ===================================================================== */
   const ROT_KEY = 'norroth_autofarm_rot_v1';
   let rot = null;
+  let mcSeq = 0;             // 轮转独立换代，避免停止后立即重启接收旧请求
 
   function mcLoadRot() {
     let o = null;
@@ -6643,11 +6731,12 @@
      正确流程：先 /switch_char 退出到选角页，再 /choose_char?id=X 进入目标角色。 */
   function mcSwitch(id) {
     const t = String(id);
+    const seq = mcSeq;
     /* ★ 记录「正在切号」：切号是整页跳转，完成前当前页仍是旧角色，
        mcTick 若在这段窗口里再触发一次行程 → 会重复启动 idle 并误报失败。 */
     try { if (rot) { rot.switching = { from: inGame() ? String(character.id) : null, to: t, at: now() }; mcSaveRot(); } } catch (e) { /* ignore */ }
     let done = false;
-    const go = function () { if (done) return; done = true; try { location.href = '/choose_char?id=' + encodeURIComponent(t); } catch (e) { /* ignore */ } };
+    const go = function () { if (done || seq !== mcSeq) return; done = true; try { location.href = '/choose_char?id=' + encodeURIComponent(t); } catch (e) { /* ignore */ } };
     try {
       fetch('/switch_char', { credentials: 'same-origin' }).catch(function () { /* ignore */ }).then(go);
       setTimeout(go, 2500);   /* 兜底：fetch 卡住也要切 */
@@ -6907,13 +6996,17 @@
   }
   /* 主角色：定期读队列 → 更新各副角色 epoch → 到期 / 未启动 就切过去 */
   function mcWatchQueue() {
+    if (!cfg.multiChar || !rot || !rot.on || rot.paused) return;
     if (rot.tripAlt) return;
     /* ★ v2.6.16：主角色正在维修 / 清包 / 存仓行程中 → 别切号。
        切号是整页跳转，会把正在跑的行程当场打断（表现为「触发维修→传送到城镇→什么都没发生」）。 */
     if (st.repair.active || st.sell.active || st.bank.active || st.tripManual) return;
     if (now() - (rot.lastQueueAt || 0) < rhythm(20000)) return;
     rot.lastQueueAt = now();
+    const rotation = rot, charId = character.id, seq = mcSeq;
     mcQueue().then(function (list) {
+      if (seq !== mcSeq || rot !== rotation || !cfg.multiChar || !rot.on || rot.paused || !inGame() || character.id !== charId) return;
+      if (rot.tripAlt || st.repair.active || st.sell.active || st.bank.active || st.tripManual) return;
       const alts = mcAlts();
       mcApplyQueue(list);
       mcSaveRot(); mcRender();
@@ -6979,7 +7072,8 @@
   /* 副角色页：维修 → 存仓 → 去挂机点 → 重启 idle → 切回主角色 */
   async function mcRunTrip(alt) {
     /* ★ v2.6.22：角色被改成主角色 / 被停用后，正在跑的副角色行程要立刻停（否则会一直乱跑） */
-    const alive = function () { return cfg.multiChar && rot && rot.on && !!mcAltById(alt.id); };
+    const seq = mcSeq;
+    const alive = function () { return seq === mcSeq && cfg.multiChar && rot && rot.on && !rot.paused && inGame() && String(character.id) === String(alt.id) && !!mcAltById(alt.id); };
     let repaired = false;
     async function doRepair() {
       try {
@@ -7070,7 +7164,9 @@
         return;
       }
       await humanPause();   /* ★ 真人化：启动 idle 也算一个动作 */
+      if (!alive()) return;
       const ok = await mcStartIdle();
+      if (!alive()) return;
       if (!ok) { mcTripFail(alt, '启动 idle 失败'); return; }
       rot.idle[alt.id] = { startedAt: now(), epoch: null, est: now() + info.min * 60000, min: info.min, turns: info.turns, fail: false, failMsg: '' };
       rot.fail[alt.id] = 0;
@@ -7284,6 +7380,7 @@
 
   /* 开启/关闭多角色轮转 */
   function mcSetOn(on) {
+    mcSeq++;
     cfg.multiChar = !!on;
     if (!rot) mcLoadRot();
     rot.on = !!on;
@@ -7305,6 +7402,7 @@
      「刚改成主角色」的角色还在跑副角色的行程（用户反馈：一直乱跑）。 */
   function mcSetRole(c, role) {
     if (!c) return;
+    mcSeq++;
     if (!rot) mcLoadRot();
     const toMain = (role === 'main');
     const changed = ((c.role === 'main') !== toMain);
@@ -7326,6 +7424,7 @@
   }
   /* 启动全部（清空 idle 记录 → 主角色控制器会把每个副角色依次启动） */
   function mcStartAll() {
+    mcSeq++;
     if (!rot) mcLoadRot();
     rot.idle = {}; rot.fail = {}; rot.phase = 'MAIN'; rot.tripAlt = null; rot.step = null; rot.switching = null; rot.rotWaitUntil = 0;
     rot.on = true; rot.paused = false; cfg.multiChar = true;
@@ -7343,6 +7442,7 @@
      暂停 = 保留多角色的一切状态（队列、idle 记录、主角色挂机标记），只是不再切号、不再跑副角色行程。
      暂停时若人在副角色页，先切回主角色 —— 否则那个副角色页会按普通挂机逻辑自己乱跑。 */
   function mcTogglePause() {
+    mcSeq++;
     if (!rot) mcLoadRot();
     rot.paused = !rot.paused;
     mcSaveRot();
@@ -7387,6 +7487,7 @@
   }
   /* ★ 停止：关闭轮转；若当前在副角色页 → 切回主角色（并把主角色的挂机标记补上，切回去自动续挂） */
   function mcStopAll() {
+    mcSeq++;
     if (!rot) mcLoadRot();
     const main = mcMain();
     const resume = rot.mainRun ? rot.mainRun.mode : null;
@@ -7415,6 +7516,7 @@
     if (!inGame()) { setStatus('等待进入游戏…'); return; }
 
     const dead = !!document.getElementById('battle_defeat');
+    if (dead && st.mode === 'tower' && cfg.towerStopDeath) { stop('爬塔：角色阵亡，按设置停止'); return; }
     if (dead && cfg.autoRespawn) { handleDefeat(); return; }
     if (!dead && defeatAt) {
       resetDefeat(); logEvent('已复活，继续挂机'); setStatus('已复活，继续挂机');
@@ -8884,6 +8986,7 @@
     el.addEventListener('change', () => {
       let v = parseFloat(el.value);
       if (isNaN(v) || v < min) v = min;
+      if (el.hasAttribute('max') && Number.isFinite(+el.max)) v = Math.min(v, +el.max);
       cfg[key] = v; el.value = v; saveCfg();
     });
   }
@@ -9229,6 +9332,7 @@
     if (running) stop();
     if (!inGame()) { setStatus('请先进入游戏'); return; }
     st.paused = false;
+    runSeq++;
     running = true;
     st.mode = mode;
     st.kills = 0; st.gathers = 0; st.roundKills = 0;
@@ -9248,8 +9352,15 @@
     st.runStart = now();
     st.runElapsed = 0;
     st.returnRetryAt = 0; st.returnFails = 0;
+    if (!(opts && opts.resume) && (!isTowerMap(character.current_map) || +character.current_map === TOWER_MAP_MIN)) {
+      st.towerFloor = 0; st.towerGateSeen = false; st.towerEntered = 0;
+      st.towerGateAt = 0; st.towerOff = null; st.tq = null;
+      st.towerNavAt = 0; st.towerOpenAt = 0; st.towerQuestLogAt = 0;
+      st.towerRoomTries = 0; st.towerDoorAt = 0; st.towerRemainLogAt = 0;
+      st.towerDoorsUsed = {}; st.towerDoorLogAt = 0;
+    }
     // ★ 详细统计按「本次挂机」重置
-    st.killsByName = {}; st.gathersByKind = {}; st.gainedByKey = {}; st.gainedByRarity = {}; st.deaths = 0;
+    st.killsByName = {}; st.gathersByKind = {}; st.gainedByKey = {}; st.gainedByRarity = {}; st.soldByRarity = {}; st.deaths = 0;
     st.bagReadAt = 0;
     initBagSnap();
     /* ★ 挂机地图只在「用户主动开始」时更新：
@@ -9320,6 +9431,7 @@
   function pause() {
     if (!running) return;
     st.runElapsed = runElapsedMs();
+    runSeq++;
     running = false;
     st.paused = true;
     clearRunMark();
@@ -9328,9 +9440,10 @@
     navAutoSeq++;
     st.mapSwitch.active = false; st.mapSwitch.idleSince = 0;
     st.phase = 'idle'; st.move = null; st.gatherFighting = false;
+    eventReset(); st.event.lastCheckAt = 0;
     st.repair.active = false; st.sell.active = false; st.sell.force = false;
     resetDefeat(); closeSellFrame(); abortWalk();
-    closeFrameById('frame_Gathering'); closeFrameById('frame_CollectScrap');
+    closeGatheringWindows();
     logEvent('已暂停挂机（本次统计保留）');
     setStatus('已暂停（本次统计保留）');
     syncRunButtons();
@@ -9341,6 +9454,7 @@
     if (running || !st.paused) return;
     if (!inGame()) { setStatus('请先进入游戏'); return; }
     st.paused = false;
+    runSeq++;
     running = true;
     st.runStart = now();
     /* ★ 修 bug：原来只清 st.move / st.phase。暂停期间换图/切号后，st.reach / st.inCollect /
@@ -9398,6 +9512,7 @@
 
   /* 清理运行态（不写日志 / 不改状态栏），供 stop() 与手动行程收尾复用 */
   function stopCore() {
+    runSeq++;
     running = false;
     st.paused = false;
     st.runElapsed = 0;
@@ -9423,8 +9538,7 @@
     closeSellFrame();
     abortWalk();
     // 采集/拾取是游戏自己在循环的，只停插件定时器不够，必须把这类窗口关掉
-    closeFrameById('frame_Gathering');
-    closeFrameById('frame_CollectScrap');
+    closeGatheringWindows();
     /* ★ v2.6.76：停止后解除采集点冻结，让下拉按当前地图重新同步。 */
     try { detectGatherPoints(true); } catch (e) { /* ignore */ }
   }
@@ -9650,7 +9764,10 @@
       if (!installMapCoordFix()) return;
       e.preventDefault();
       e.stopImmediatePropagation();                                           // 拦下游戏自己的缩放处理器
-      const cur = currentMapScale(mc);                                        // ★ 以 DOM 真实值为基准，避免和游戏/换图后的值漂移
+      // 地图有 1s transform 过渡：滚轮以已命令的目标值累计，不能用动画中间值。
+      // 坐标换算仍由 currentMapScale 读取实时值，避免过渡期间点格偏移。
+      const target = /^scale\(\s*([\d.]+)\s*\)$/.exec(mc.style.transform || '');
+      const cur = target && Number.isFinite(+target[1]) && +target[1] > 0 ? +target[1] : currentMapScale(mc);
       const next = (e.deltaY > 0) ? Math.max(ZOOM_MIN, cur - ZOOM_STEP)
                                   : Math.min(ZOOM_MAX, cur + ZOOM_STEP);
       applyMapZoom(Math.round(next * 100) / 100);
@@ -10345,10 +10462,20 @@
         if (alive && !alive()) return false;
       }
       if (walkOnly) return +character.current_map === dest;
-      /* ⑤ 无步行通路 → 强制传送逃生 */
-      if (await navEscapeStuck(dest, alive, allowCity, allowWild)) {
+      /* ⑤ 无步行通路 → 有界逃生；塔层 → 塔外入口 → 城市可能需要两段。 */
+      for (let attempt = 0; attempt < 3; attempt++) {
+        const from = +character.current_map;
+        if (!await navEscapeStuck(dest, alive, allowCity, allowWild)) break;
         if (alive && !alive()) return false;
-        if (await navWalkPlanTo(dest, alive)) return true;
+        if (+character.current_map === dest || await navWalkPlanTo(dest, alive)) return true;
+        if (alive && !alive()) return false;
+        if (+character.current_map === from) break;   // 没换图不反复重试
+        const readyUntil = now() + 10000;
+        while (!renderSynced() && now() < readyUntil) {
+          if (alive && !alive()) return false;
+          await sleep(200);
+        }
+        if (!renderSynced()) break;                 // 不用上一张图的门继续规划
       }
       return +character.current_map === dest;
     } finally { if (!opts._nested) navBusy = false; }
@@ -10721,10 +10848,18 @@
         const c = (els[i].getAttribute('coords') || '').split('-');
         const x = +c[0], y = +c[1];
         if (!(x > 0 && y > 0)) continue;
+        if (!isReachable(x, y)) continue;
         const from = character.current_map;
+        const region = reachableSet();
         /* ★ 已经在格上也要试：交给 navWalkTile 的「走开一格再走回」重触发逻辑。
              原来这里 continue 直接跳过 —— 若本图唯一出口正好在脚下，就永远出不去。 */
-        await navWalkTile(x, y, { until: 'mapChange', timeoutMs: 40000, alive: alive });
+        await navWalkTile(x, y, {
+          retrigger: true,
+          cond: function () {
+            return character.current_map !== from || !!(region && !region.has(character.x + ',' + character.y));
+          },
+          timeoutMs: 40000, alive: alive
+        });
         if (character.current_map !== from) return character.current_map;
       }
     }
@@ -10742,7 +10877,7 @@
         'display:flex;align-items:center;gap:10px;min-width:300px;';
       document.body.appendChild(navBar);
     }
-    navBar.innerHTML = '<span style="flex:1">' + txt + '</span>' +
+    navBar.innerHTML = '<span style="flex:1">' + escapeHtml(txt) + '</span>' +
       '<span style="color:#7f8ea6;font-variant-numeric:tabular-nums">' + (pct == null ? '' : pct + '%') + '</span>' +
       (showStop ? '<a id="nr-navstop" style="cursor:pointer;color:#ff8a8a;border:1px solid #7a3b3b;border-radius:6px;padding:1px 8px;background:#3a2226">停止</a>' : '');
     if (showStop) {
@@ -11846,6 +11981,7 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
       const res = await bestiaryScan(function (n, found, total) {
         say('扫描中… ' + n + '/' + total + '，已找到 ' + found + ' 种');
       });
+      if (_bestCancel) { say('已取消，未上传'); setStatus('图鉴同步已取消'); return; }
       const list = res.list;
       if (!list.length) { say('没取到数据（未登录或接口被限流）'); setStatus('图鉴同步：没取到数据'); return; }
       const payload = bestiaryPayload(list, res.src);
@@ -11853,6 +11989,7 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
       const fpath = GH_CONTRIB_DIR + '/' + fname;
       const text = JSON.stringify(payload, null, 1);
       token = await ghToken();
+      if (_bestCancel) { say('已取消，未上传'); setStatus('图鉴同步已取消'); return; }
       if (!token) { say('未配置社区令牌，已跳过上传'); setStatus('图鉴同步：未配置令牌'); return; }
       {
         say('上传中… ' + fname);
@@ -11953,7 +12090,7 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
     readEquipDur: readEquipDur, parseEquipDur: parseEquipDur, durWorst: durWorst, durText: durText, repairNeeded: repairNeeded, gatherDurNow: gatherDurNow, lastGatherDur: lastGatherDur, renderDurInfo: renderDurInfo,
     getMapDict: getMapDict, startRestock: startRestock, repairSellNow: repairSellNow,
     nrPost: nrPost, apiRepairRows: apiRepairRows, stashDeposit: stashDeposit, stashWithdraw: stashWithdraw, stashCount: stashCount, clickEquipSell: clickEquipSell, sellEquips: sellEquips, findBank: findBank, doBankDeposit: doBankDeposit, runDeposit: runDeposit, ensureBankFrame: ensureBankFrame, bankFreeSlots: bankFreeSlots, readBagEquipItems: readBagEquipItems, depositBagEquips: depositBagEquips, serviceTowns: serviceTowns, waygateReachable: waygateReachable, navRoute: navRoute, rideSmugglers: rideSmugglers, findSmugglersTile: findSmugglersTile, smugglersDestId: smugglersDestId, renderTownSelect: renderTownSelect, verifyPath: verifyPath, resolveRepairRoute: resolveRepairRoute,
-    verifyPath: verifyPath, refreshCurMap: refreshCurMap, detectGatherPoints: detectGatherPoints, liveMapSnapshot: liveMapSnapshot, poiLearnNow: poiLearnNow, MapDB: MapDB, syncMaps: syncMaps,
+     refreshCurMap: refreshCurMap, detectGatherPoints: detectGatherPoints, liveMapSnapshot: liveMapSnapshot, poiLearnNow: poiLearnNow, MapDB: MapDB, syncMaps: syncMaps,
     gatheringSpots: gatheringSpots, findGatheringSpot: findGatheringSpot, stepGather: stepGather, effectiveGatherPoint: effectiveGatherPoint,
     reachableSet: reachableSet, isReachable: isReachable, unreachableEnemies: unreachableEnemies,
     takeAllLoot: takeAllLoot, readPetInfo: readPetInfo, readPetFood: readPetFood, checkAndFeedPet: checkAndFeedPet,
@@ -11972,16 +12109,16 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
     nearestResource: nearestResource, checkFrozen: checkFrozen,
     sweepStrayFrames: sweepStrayFrames, registerUserFrames: registerUserFrames,
     tryGatherFlee: tryGatherFlee, gameRunAway: gameRunAway, altPageCombatPolicy: altPageCombatPolicy, applyHighlightSelf: applyHighlightSelf, exportErrorLog: exportErrorLog,
-    supply: supply, verifyPotion: verifyPotion, togglePotion: togglePotion, startPotionLoop: startPotionLoop, stopPotionLoop: stopPotionLoop, healInfo: healInfo, ensureTTDB: ensureTTDB, potionKey: potionKey, scanBag: scanBag,
+    supply: supply, verifyPotion: verifyPotion, togglePotion: togglePotion, startPotionLoop: startPotionLoop, stopPotionLoop: stopPotionLoop, healInfo: healInfo, ensureTTDB: ensureTTDB, potionKey: potionKey, 
     questTargets: () => _questCache.list,
-    recordVisit: recordVisit, visitedTowns: visitedTowns, serviceTowns: serviceTowns, renderTownSelect: renderTownSelect,
+    recordVisit: recordVisit, visitedTowns: visitedTowns,  
     renderDet: renderDet, readCoins: readCoins, readCoinsHud: readCoinsHud, parseCoinText: parseCoinText, installCoinsHook: installCoinsHook, coinRatePerMin: coinRatePerMin, minutesToLevel: minutesToLevel,
-    perfSlope: perfSlope, perfSpanMin: perfSpanMin, perfText: perfText,
+    perfSlope: perfSlope, perfSpanMin: perfSpanMin, 
     updateStats: updateStats, isNormalMap: isNormalMap, navRoundTrip: navRoundTrip,
     applyBagDiff: applyBagDiff, parseInvItems: parseInvItems, initBagSnap: initBagSnap,
     pause: pause, resume: resume, toggleRun: toggleRun, runElapsedMs: runElapsedMs, pollBagGain: pollBagGain,
     startRoundTrip: function () { const seq = ++navAutoSeq; st.mapSwitch.active = true; return navRoundTrip(seq); },
-    returnToFarm: returnToFarm, navToMap: navToMap, navGoTo: navToMap, navWalkTile: navWalkTile, navDist: navDist, escapeTarget: escapeTarget, navTeleportNear: navTeleportNear, navSetPending: navSetPending, navClearPending: navClearPending, navPendingTick: navPendingTick, navPendingDest: navPendingDest, nearestWaygateMap: nearestWaygateMap, waygateMaps: waygateMaps, isWildAnchor: isWildAnchor, isTownMap: isTownMap, suppliesEmpty: suppliesEmpty, rideSmugglers: rideSmugglers, navWaygateOut: navWaygateOut, navWorldTeleport: navWorldTeleport, worldTeleportTarget: worldTeleportTarget, findMapDetailsTeleport: findMapDetailsTeleport, navWalkToAnyExit: navWalkToAnyExit, townName: townName,
+    returnToFarm: returnToFarm, navToMap: navToMap, navGoTo: navToMap, navWalkTile: navWalkTile, navDist: navDist, escapeTarget: escapeTarget, navTeleportNear: navTeleportNear, navSetPending: navSetPending, navClearPending: navClearPending, navPendingTick: navPendingTick, navPendingDest: navPendingDest, nearestWaygateMap: nearestWaygateMap, waygateMaps: waygateMaps, isWildAnchor: isWildAnchor, isTownMap: isTownMap, suppliesEmpty: suppliesEmpty,  navWaygateOut: navWaygateOut, navWorldTeleport: navWorldTeleport, worldTeleportTarget: worldTeleportTarget, findMapDetailsTeleport: findMapDetailsTeleport, navWalkToAnyExit: navWalkToAnyExit, townName: townName,
     navImportRecorder: navImportRecorder,
     mapDB: MapDB,
     nav: { graph: MapDB, route: navRoute, travelTo: navTravelTo, hop: navHop, learn: navLearn,
