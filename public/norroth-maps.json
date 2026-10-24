@@ -1,15 +1,15 @@
 {
  "meta": {
   "source": "小伴侣地图数据（MapDB）· 4 位贡献者合并",
-  "updated": "2026-10-24T13:40:02.986Z",
+  "updated": "2026-10-24T14:32:01.192Z",
   "version": "1.0",
   "contributors": [
    {
     "file": "maps-1151.json",
     "char": "#1151",
-    "level": 46,
-    "time": "2026-10-23T04:27:16.757Z",
-    "count": 340,
+    "level": 53,
+    "time": "2026-10-24T14:31:36.940Z",
+    "count": 342,
     "mergedAt": "2026-10-24"
    },
    {
@@ -37,7 +37,7 @@
     "mergedAt": "2026-10-24"
    }
   ],
-  "count": 340
+  "count": 343
  },
  "maps": {
   "1": {
@@ -7938,6 +7938,14 @@
     ]
    ]
   },
+  "330": {
+   "at": 0,
+   "name": "Dark Boreal"
+  },
+  "331": {
+   "at": 0,
+   "name": "Dark Boreal"
+  },
   "332": {
    "at": 1792765249447,
    "name": "Grimble’s Camp",
@@ -8293,7 +8301,7 @@
    ]
   },
   "348": {
-   "at": 1792676184096,
+   "at": 1792852273872,
    "name": "Laen Dorei",
    "type": "City",
    "ex": [
@@ -8381,6 +8389,10 @@
    "at": 0,
    "name": "Dominion Spire",
    "type": "City"
+  },
+  "363": {
+   "at": 0,
+   "name": "Moldrir Depths"
   },
   "900": {
    "at": 1792696897849,
@@ -8595,7 +8607,7 @@
    "name": "Fountain of Rebirth"
   },
   "1000": {
-   "at": 1792780143428,
+   "at": 1792852248741,
    "name": "Fountain of Rebirth",
    "type": "Normal",
    "ex": [
