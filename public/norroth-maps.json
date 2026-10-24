@@ -1,7 +1,7 @@
 {
  "meta": {
   "source": "小伴侣地图数据（MapDB）· 4 位贡献者合并",
-  "updated": "2026-10-23T22:34:23.241Z",
+  "updated": "2026-10-24T01:01:59.994Z",
   "version": "1.0",
   "contributors": [
    {
@@ -10,7 +10,7 @@
     "level": 46,
     "time": "2026-10-23T04:27:16.757Z",
     "count": 340,
-    "mergedAt": "2026-10-23"
+    "mergedAt": "2026-10-24"
    },
    {
     "file": "maps-1330.json",
@@ -18,7 +18,7 @@
     "level": 48,
     "time": "2026-10-23T21:46:22.152Z",
     "count": 339,
-    "mergedAt": "2026-10-23"
+    "mergedAt": "2026-10-24"
    },
    {
     "file": "maps-2003.json",
@@ -26,7 +26,7 @@
     "level": 5,
     "time": "2026-10-22T10:35:36.389Z",
     "count": 330,
-    "mergedAt": "2026-10-23"
+    "mergedAt": "2026-10-24"
    },
    {
     "file": "maps-2838.json",
@@ -34,7 +34,7 @@
     "level": 19,
     "time": "2026-10-23T08:29:11.845Z",
     "count": 340,
-    "mergedAt": "2026-10-23"
+    "mergedAt": "2026-10-24"
    }
   ],
   "count": 340
