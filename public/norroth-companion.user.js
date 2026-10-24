@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.134
+// @version      2.6.135
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -162,6 +162,8 @@
     mapSwitchIdleSec: 6,        // 连续无目标多少秒后触发切图
     autoEvent: false,           // ★ 活动自动进入：检测到活动开启就进活动图采集，结束后回原图继续（战斗/采集/爬塔都生效）
     eventRes: '',               // ★ 活动图里要采的资源类型（'' = 自动，按外面的采集点类型匹配）
+    autoOverlord: false,        // ★ v2.6.135：自动打 Overlord（世界 Boss，服务器时间 01:00 / 10:00 / 19:00 刷新）
+    ovlLeadSec: 20,             // 刷新前多少秒开始蹲点（到点前加密轮询）
     sweepFrames: true,          // ★ 自动关闭「意外弹窗」（挂机踩到 NPC/服务格时游戏自动弹的）；真人手动打开的窗口不受影响
 
     /* 其它 */
@@ -187,7 +189,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.134';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
+  const SCRIPT_VER = '2.6.135';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -255,6 +257,8 @@
     event: { on: false, phase: 'idle', busy: false, homeMap: 0, homePoint: '', homeRes: '', homeType: '', pointName: '', enteredAt: 0, lastCheckAt: 0, timeLeft: null, score: null,
              busyAt: 0, checkAt: 0, checkFails: 0, combatSkipAt: 0, lastLogAt: 0, lastHas: null,
              gateBusy: false, gateLogAt: 0, combatMap: 0 },   /* ★ v2.6.101：战斗型活动的「进战斗区」状态 */
+    /* ★ v2.6.135：Overlord（世界 Boss）自动参战 */
+    ovl: { on: false, phase: 'idle', nextEpoch: 0, boss: '', lastPoll: 0, logAt: 0, joinedAt: 0 },
     tripManual: false, tripOrigin: null,
     gatherFighting: false,   // 采集模式里"正在打怪"的标记
     repair: { active: false, cooldownUntil: 0, failCount: 0, smith: null, route: null },
@@ -422,6 +426,8 @@
     c.gatherFlee = !!c.gatherFlee;                                    // ★ 融合：默认关
     c.autoEvent = !!c.autoEvent;                                      // ★ 自动进活动（默认关；战斗/采集/爬塔都生效）
     c.eventRes = (['fishing', 'mining', 'chopping', 'farming', 'quarrying', 'foraging', 'combat'].indexOf(String(o.eventRes || '')) >= 0) ? String(o.eventRes) : '';
+    c.autoOverlord = !!c.autoOverlord;
+    c.ovlLeadSec = Math.max(0, Math.min(600, Math.round(+c.ovlLeadSec || 0)));
     c.highlightSelf = (c.highlightSelf === undefined) ? true : !!c.highlightSelf;   // ★ 融合：默认开
     /* ★ 旧版「顺路拾取」(collectInBattle) 已并入「拾取地面资源」：显式关过它 → 地面拾取一起关（一次性迁移） */
     if (c.collectInBattle === false) c.gatherScrap = false;
@@ -5321,6 +5327,25 @@
     } catch (e) { /* ignore */ }
     return '';
   }
+  /* ★ v2.6.135：活动「返回传送门」。
+     进活动时游戏会给一个 #hud_portal（tooltip：You have an open portal. You can travel back to
+     your latest location. The portal will close after being used.）。点它 = 游戏原生全局函数
+     backPortal()，直接回到「进入活动前的位置」，比 navToMap 一步步走回去快得多（一次性。
+     实测记录（资料汇编 36 章）：活动结束被服务器弹出后 #hud_portal 仍在，仍可 backPortal() 回去。 */
+  function tryBackPortal() {
+    try {
+      const el = document.getElementById('hud_portal');
+      if (!el) return false;
+      if (el.classList && el.classList.contains('no_display')) return false;
+      if (el.offsetParent === null && String(el.style.display) === 'none') return false;
+      logEvent('活动结束：使用返回传送门（#hud_portal / backPortal()）回进入前的位置');
+      setStatus('活动结束：用返回传送门回去…');
+      if (typeof window.backPortal === 'function') window.backPortal();
+      else { try { el.click(); } catch (e2) { return false; } }   /* 没有全局函数就点图标本身 */
+      return true;
+    } catch (e) { return false; }
+  }
+
   /* 主循环钩子：true = 本 tick 已被活动逻辑接管（进入 / 返回期间） */
   function eventTick() {
     if (!cfg.autoEvent) { if (st.event.phase !== 'idle') eventReset(); return false; }
@@ -5428,6 +5453,20 @@
         /* ★ 爬塔：交给 stepTower 自己导航回塔城再进塔（塔层数会从第 1 层重新开始） */
         E.phase = 'idle';
       } else if (home && String(character.current_map) !== String(home)) {
+        /* ★ v2.6.135：先试「返回传送门」（一键回到进入前的位置），没传送成功再退回走路回去。 */
+        if (tryBackPortal()) {
+          E.phase = 'return';
+          setTimeout(function () {
+            try {
+              if (!running) { E.phase = 'idle'; return; }
+              if (String(character.current_map) === String(home)) { E.phase = 'idle'; return; }
+              logEvent('活动：返回传送门没生效（当前 ' + currentMapName() + '）→ 改用导航回「' + navMapName(home) + '」');
+              navToMap(home, { alive: function () { return running && cfg.autoEvent; }, allowCity: cfg.useWaygateCity, allowWild: cfg.useWaygateWild })
+                .then(function () { E.phase = 'idle'; }, function () { E.phase = 'idle'; });
+            } catch (e) { E.phase = 'idle'; }
+          }, 4000);
+          return true;
+        }
         setStatus('活动结束：返回「' + navMapName(home) + '」…');
         navToMap(home, { alive: function () { return running && cfg.autoEvent; }, allowCity: cfg.useWaygateCity, allowWild: cfg.useWaygateWild })
           .then(function () { E.phase = 'idle'; }, function () { E.phase = 'idle'; });
@@ -5514,6 +5553,123 @@
     return true;
   }
 
+
+  /* ======================= 14.7 Overlord（世界 Boss）自动参战 =======================
+   * 官方（help 111 / wiki 161）：Overlord 在服务器时间 01:00 / 10:00 / 19:00 刷新，全服一起打；
+   *   Activities 面板的「Overlord Chamber」磁贴带 data-countdown-epoch = 下一次刷新的 UTC 秒。
+   * 实测（2026-10-24，build P20261023）：
+   *   · Activities 磁贴：<div onclick="quickNote('Unlocks at Level 30')">… Overlord Chamber … <div class=promo-countdown data-countdown-epoch=…>
+   *   · 详情：GET /modal/overlord_chamber → 头图 + 倒计时（data-countdown-epoch）+ 上一场排行榜
+   *   · 参战入口：游戏 HUD 里有个隐藏的「Global Overlord」图标（[content="Global Overlord"]），
+   *     可参战时去掉 class=no_display；它的 onclick =
+   *       createDialog('Join Overlord Battle?', …, 'confirm',
+   *         "javascript:createDialog('Overlord Chamber','','ajax','/modal/overlord_chamber?src=activities');")
+   *     = 游戏自己的 overlordChamber('activities')。脚本直接走这一步（跳过确认弹窗）。
+   * 判据：HUD 图标可见 = 可参战（游戏自己的标志，最可靠）；倒计时只用来「到点前蹲点」和日志。
+   * 参战要求：角色 Lv30+（官方 wiki 161）。
+   * ===================================================================== */
+  function ovlHudJoinBtn() {
+    try {
+      const els = $$q('[content="Global Overlord"]');
+      for (let i = 0; i < els.length; i++) {
+        const el = els[i];
+        if (el.classList && el.classList.contains('no_display')) continue;
+        if (el.offsetParent === null) continue;
+        return el;
+      }
+    } catch (e) { /* ignore */ }
+    return null;
+  }
+  function ovlInBattle() {
+    try { if (/spawn_overlord/i.test(String((window.map && window.map.name) || ''))) return true; } catch (e) { /* ignore */ }
+    try { if (document.querySelector('#overlord_hp, #overlord_boss, .overlord_hp')) return true; } catch (e) { /* ignore */ }
+    return false;
+  }
+  async function ovlReadCountdown() {
+    let ac = null, timer = 0;
+    try {
+      ac = (typeof AbortController === 'function') ? new AbortController() : null;
+      if (ac) timer = setTimeout(function () { try { ac.abort(); } catch (e) { /* ignore */ } }, EVENT_CHECK_TIMEOUT_MS);
+      const r = await fetch('/modal/overlord_chamber', { credentials: 'same-origin', headers: { 'X-Requested-With': 'XMLHttpRequest' }, signal: ac ? ac.signal : undefined });
+      const t = await r.text();
+      const m = /data-countdown-epoch="(\d+)"/.exec(t);
+      let boss = '';
+      const h = /<h1[^>]*>([\s\S]{0,300}?)<\/h1>/i.exec(t);
+      if (h) boss = String(h[1]).replace(/<[^>]*>/g, '').trim();
+      return { epoch: m ? +m[1] : 0, boss: boss };
+    } catch (e) { return { epoch: 0, boss: '' }; }
+    finally { if (timer) clearTimeout(timer); }
+  }
+  function ovlHhmmss(ms) {
+    const s = Math.max(0, Math.round(ms / 1000));
+    const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), ss = s % 60;
+    return (h ? h + 'h' : '') + (h || m ? m + 'm' : '') + ss + 's';
+  }
+  function ovlJoin() {
+    const O = st.event.ovl;
+    if (now() - (O.joinedAt || 0) < 30000) return;   /* 30s 内只点一次，别刷屏 */
+    O.joinedAt = now();
+    logEvent('Overlord：检测到可参战（HUD 图标可见）→ 打开 Overlord Chamber 参战');
+    setStatus('Overlord：正在参战…');
+    try { humanDialog('Overlord Chamber', '', 'ajax', '/modal/overlord_chamber?src=activities', true); } catch (e) { /* ignore */ }
+    /* 兜底：若面板里还要再点一次「Join / Enter」，就点它（跳过玩家排行榜行） */
+    setTimeout(function () {
+      try {
+        const f = document.getElementById('frame_OverlordChamber') || document.querySelector('div[id^="frame_"][id*="verlord"]');
+        if (!f) return;
+        const btns = $$q('button,a', f);
+        for (let i = 0; i < btns.length; i++) {
+          const oc = String(btns[i].getAttribute('onclick') || '');
+          if (/inspect\(/.test(oc)) continue;
+          if (/join|enter|overlord/i.test(oc) || /join|enter|加入|进入/i.test(btns[i].textContent || '')) {
+            humanClick(btns[i]);
+            logEvent('Overlord：点了面板里的参战按钮「' + String(btns[i].textContent || '').trim().slice(0, 20) + '」');
+            break;
+          }
+        }
+      } catch (e) { /* ignore */ }
+    }, 2500);
+  }
+  /* 主循环钩子：true = 本 tick 被 Overlord 逻辑接管 */
+  function ovlTick() {
+    const O = st.event.ovl;
+    if (!cfg.autoOverlord) { if (O.on || O.phase !== 'idle') { O.on = false; O.phase = 'idle'; } return false; }
+    if (!running || !inGame()) return false;
+    if (st.mode === 'tower') return false;                       /* 爬塔不掺和（进出会从第 1 层重来） */
+    if (st.event.phase !== 'idle') return false;                 /* 正在进 / 出活动 → 让路 */
+    if (st.repair.active || st.sell.active || st.bank.active) return false;
+    if (hasFrame('frame_Combat')) return false;                  /* 正在打架 → 别插一脚 */
+    if (inDungeonOrTower()) return false;
+    /* 已经在 Overlord 战斗里 → 交给普通战斗逻辑 */
+    if (ovlInBattle()) {
+      if (!O.on) { O.on = true; O.phase = 'in'; logEvent('Overlord：已进入战斗，交给自动战斗'); setStatus('Overlord：战斗中…'); }
+      return false;
+    }
+    if (O.on) { O.on = false; O.phase = 'idle'; logEvent('Overlord：已离开战斗'); }
+    /* 可参战？（游戏自己的 HUD 图标） */
+    if (ovlHudJoinBtn()) { ovlJoin(); return true; }
+    /* 没到点：定期读倒计时（日志 + 到点前 N 秒开始加密轮询） */
+    const due = O.nextEpoch ? (O.nextEpoch * 1000 - now()) : Infinity;
+    const near = !!O.nextEpoch && due <= (+cfg.ovlLeadSec || 0) * 1000;
+    const interval = near ? 3000 : 60000;
+    if (now() - (O.lastPoll || 0) >= interval) {
+      O.lastPoll = now();
+      (async function () {
+        const r = await ovlReadCountdown();
+        if (!r.epoch) return;
+        const changed = (r.epoch !== O.nextEpoch);
+        O.nextEpoch = r.epoch; O.boss = r.boss;
+        const left = r.epoch * 1000 - now();
+        if (changed || left <= 0 || now() - (O.logAt || 0) > 600000) {
+          O.logAt = now();
+          logEvent('Overlord：下一个「' + (r.boss || '?') + '」' + (left > 0 ? ('还有 ' + ovlHhmmss(left)) : '已到刷新时间') + '（epoch ' + r.epoch + '）');
+        }
+        if (left <= 0) setStatus('Overlord：到刷新时间了，等参战按钮…');
+        else if (near) setStatus('Overlord：' + ovlHhmmss(left) + ' 后刷新，蹲点中…');
+      })();
+    }
+    return false;
+  }
 
   /* ======================= 14.5 动画加速（合并自「动画加速器」） =======================
    * 只压缩 jQuery.animate() 的时长，不动 Date.now / setTimeout / setInterval。
@@ -7423,6 +7579,8 @@
     /* ★ 活动自动进入：战斗 / 采集 / 爬塔 都生效。进入 / 返回期间接管本 tick；
        在活动图里 → 强制走采集逻辑（无论当前任务是什么），出来后再继续原任务。 */
     if (eventTick()) return;
+    /* ★ v2.6.135：Overlord（世界 Boss）自动参战 */
+    if (ovlTick()) return;
     /* ★ v2.6.119：导航「待办目的地」—— 没到目的地就不开始任务，中途偏离会自动重规划 */
     if (navPendingTick()) return;
     /* ★ v2.6.101：活动战斗区里 → 不管当前任务是什么，都走下面的战斗逻辑 */
@@ -8128,6 +8286,14 @@
 
           <div class="divblock_dark" style="margin-top:4px">
             <div class="nr-srow">
+              <label title="Overlord（世界 Boss）在服务器时间 01:00 / 10:00 / 19:00 刷新，全服一起打。开着时：到点前「提前 N 秒」开始蹲点，一旦游戏右侧出现可参战的 Overlord 图标就自动进去打（打完继续原任务）。需角色 Lv30+。"><input type="checkbox" class="chk" id="nr-autoovl">自动打 Overlord</label>
+              <span class="nr-sl">提前</span><input type="number" id="nr-ovl_lead" min="0" max="600" step="5" class="nr-snum" title="刷新前多少秒开始蹲点">
+              <span class="nr-sl">秒</span>
+            </div>
+          </div>
+
+          <div class="divblock_dark" style="margin-top:4px">
+            <div class="nr-srow">
               <label title="游戏的世界地图只画「你去过的」地图点，没去过的连点都没有、整块还被战争迷雾盖住。开启后用抓好的全量世界坐标（380 张）补齐所有地图点、并去掉迷雾，让整幅地图都可见可点。点开的仍是游戏真实的 Map Details（看详情 / 传送）。"><input type="checkbox" class="chk" id="nr-wmunlock">解锁世界地图</label>
             </div>
           </div>
@@ -8292,6 +8458,8 @@
     })();
     bindCheck('nr-gscrap', 'gatherScrap');
     bindCheck('nr-autoevent', 'autoEvent');
+    bindCheck('nr-autoovl', 'autoOverlord');
+    bindNum('nr-ovl_lead', 'ovlLeadSec', 0);
     (function () {
       const er = document.getElementById('nr-eventres');
       if (er) { er.value = cfg.eventRes || ''; er.addEventListener('change', () => { cfg.eventRes = (['fishing','mining','chopping','farming','quarrying','foraging','combat'].indexOf(er.value) >= 0) ? er.value : ''; saveCfg(); }); }
@@ -8793,6 +8961,7 @@
     set('nr-sweepframes', cfg.sweepFrames);
     set('nr-wmunlock', cfg.worldMapUnlock);
     set('nr-gscrap', cfg.gatherScrap); set('nr-autoevent', cfg.autoEvent);
+    set('nr-autoovl', cfg.autoOverlord); num('nr-ovl_lead', cfg.ovlLeadSec);
     try { const _er = document.getElementById('nr-eventres'); if (_er) _er.value = cfg.eventRes || ''; } catch (e) { /* ignore */ }
     set('nr-gatherflee', cfg.gatherFlee);
     set('nr-mc', cfg.multiChar); try { mcRender(); } catch (e) { /* ignore */ } try { syncMcBtns(); } catch (e) { /* ignore */ }
@@ -11828,7 +11997,8 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
   }
 
   window.__norrothFarm = {
-    event: { tick: eventTick, reset: eventReset, activitiesHasJoin: eventActivitiesHasJoin, enterGate: eventEnterGate, pickPoint: eventPickPoint, typeOf: eventTypeOf, res: function () { return st.event; }, mapId: EVENT_MAP_ID, combatMaps: EVENT_COMBAT_MAPS, combatTargetId: eventCombatTargetId, combatGate: eventCombatGate, combatActive: eventCombatActive, levelRange: eventLevelRange, dumpTiles: eventDumpTiles },
+    event: { tick: eventTick, reset: eventReset, activitiesHasJoin: eventActivitiesHasJoin, enterGate: eventEnterGate, pickPoint: eventPickPoint, typeOf: eventTypeOf, res: function () { return st.event; }, mapId: EVENT_MAP_ID, combatMaps: EVENT_COMBAT_MAPS, combatTargetId: eventCombatTargetId, combatGate: eventCombatGate, combatActive: eventCombatActive, levelRange: eventLevelRange, dumpTiles: eventDumpTiles, backPortal: tryBackPortal },
+    overlord: { tick: ovlTick, join: ovlJoin, hudBtn: ovlHudJoinBtn, inBattle: ovlInBattle, countdown: ovlReadCountdown, res: function () { return st.event.ovl; } },
     mc: { serviceTownNow: activeServiceTown, toggle: mcToggle, togglePause: mcTogglePause, syncBtns: syncMcBtns, queue: mcQueue, profLevels: mcProfLevels, profLevelsCached: mcProfLevelsCached, idleInfo: mcIdleInfo, startIdle: mcStartIdle, switch: mcSwitch, readChars: mcReadChars, setOn: mcSetOn, startAll: mcStartAll, stopAll: mcStopAll, validateAll: mcValidateAll, canGather: mcCanGather, render: mcRender, tick: mcTick, fillCurrent: mcFillCurrent, runTrip: mcRunTrip, beginTrip: mcBeginTrip, runRepairAndDeposit: runRepairAndDeposit, nearestGatherTile: nearestGatherTile, idleRaw: function () { return _mcGatherRaw; }, loadRot: mcLoadRot, saveRot: mcSaveRot, rot: function () { return rot; }, due: mcDue, chars: function () { return cfg.mcChars; }, queueCache: function () { return _mcQueueCache; }, claimIdleRewards: claimIdleRewards, closeIdleDialog: closeIdleResultDialog, refreshStatus: mcRefreshStatus, applyQueue: mcApplyQueue },
     start: () => beginRun('battle'), stop: stop, cfg: cfg, st: st, step: step,
     startTower: () => beginRun('tower'), stepTower: stepTower, isTowerMap: isTowerMap, towerTiles: towerTiles, towerNextGate: towerNextGate, towerGateCandidates: towerGateCandidates, towerAdjacentTile: towerAdjacentTile, towerRoomDoor: towerRoomDoor, inDungeonOrTower: inDungeonOrTower, openTower: openTower, nearestTowerTown: nearestTowerTown,

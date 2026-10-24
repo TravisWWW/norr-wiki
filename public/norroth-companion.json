@@ -1,8 +1,8 @@
 {
-  "version": "2.6.134",
+  "version": "2.6.135",
   "date": "2026-10-24",
-  "notes": "v2.6.134：修「分段导航不生效」。根因：walkTileCore 入口从来没发过第一次走位，第一次 walkTo 是 2.5s 后由「重发走路指令」兜底发出的，而那次重发会清掉两段式标记 seg=null → 两段式永远不触发。现在入口立刻发一次走位，且重发/卡住自愈都不再清 seg；两段式触发时会写一条事件日志 + 状态提示，方便核对。",
+  "notes": "v2.6.135：① 活动结束改用「返回传送门」（#hud_portal / backPortal()）一键回到进入前的位置，失败才退回走路；② 新增「自动打 Overlord」（高级页，默认关）：到点前 N 秒蹲点，游戏右侧出现可参战的 Overlord 图标就自动进去打（需 Lv30+）。",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 790115,
-  "sha256": "0ab426b06b57098852f8827cff898e2712d512d9b49e6beb5a503ee485c297ba"
+  "size": 800652,
+  "sha256": "ba7a713cd52435ee6cf6c32e284e1fb6ff8f2ed728a8cd7ad6e03b34638a06b4"
 }
