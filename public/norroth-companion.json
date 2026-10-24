@@ -1,8 +1,8 @@
 {
-  "version": "2.6.135",
+  "version": "2.6.137",
   "date": "2026-10-24",
-  "notes": "v2.6.135：① 活动结束改用「返回传送门」（#hud_portal / backPortal()）一键回到进入前的位置，失败才退回走路；② 新增「自动打 Overlord」（高级页，默认关）：到点前 N 秒蹲点，游戏右侧出现可参战的 Overlord 图标就自动进去打（需 Lv30+）。",
+  "notes": "v2.6.137：修 v2.6.135 引入的致命 bug —— syncUI() 里在 `const num` 声明之前就用了 num()（TDZ），导致 boot() 抛错、IIFE 中断、navBusy 永远没初始化（表现就是「Cannot access 'navBusy' before initialization」）。另外修「返回传送门 / Overlord 图标」的可见性判据：游戏的 .no_display{display:none} 会被 jQuery slideDown 的行内 display 覆盖、class 不会去掉，所以改成看计算后的 display（不再看 class、也不再用 offsetParent）。",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 800652,
-  "sha256": "ba7a713cd52435ee6cf6c32e284e1fb6ff8f2ed728a8cd7ad6e03b34638a06b4"
+  "size": 801315,
+  "sha256": "fc050e7b4edb91ae1379e727f4512e5adc25b82d8d224fdb12b8c15c2e089e60"
 }

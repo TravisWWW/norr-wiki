@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.135
+// @version      2.6.137
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -189,7 +189,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.135';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
+  const SCRIPT_VER = '2.6.137';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -5327,6 +5327,20 @@
     } catch (e) { /* ignore */ }
     return '';
   }
+  /* ★ v2.6.136：判断一个 HUD 元素「现在真的显示着」。
+     游戏的隐藏类是 `.no_display{display:none}`（无 !important），而显示时用 jQuery
+     `slideDown()` 只加一个**行内** display（优先级高于类）—— **class 不会被去掉**。
+     所以不能看 class，只能看计算后的 display。
+     （也不能用 offsetParent：HUD 那一排可以被折叠，折叠时 offsetParent 会是 null。） */
+  function hudShown(el) {
+    try {
+      if (!el) return false;
+      const cs = (typeof getComputedStyle === 'function') ? getComputedStyle(el) : null;
+      if (cs) return cs.display !== 'none' && cs.visibility !== 'hidden';
+      return String(el.style.display) !== 'none';
+    } catch (e) { return false; }
+  }
+
   /* ★ v2.6.135：活动「返回传送门」。
      进活动时游戏会给一个 #hud_portal（tooltip：You have an open portal. You can travel back to
      your latest location. The portal will close after being used.）。点它 = 游戏原生全局函数
@@ -5336,8 +5350,7 @@
     try {
       const el = document.getElementById('hud_portal');
       if (!el) return false;
-      if (el.classList && el.classList.contains('no_display')) return false;
-      if (el.offsetParent === null && String(el.style.display) === 'none') return false;
+      if (!hudShown(el)) return false;                       /* 没显示 = 当前没有可用的返回传送门 */
       logEvent('活动结束：使用返回传送门（#hud_portal / backPortal()）回进入前的位置');
       setStatus('活动结束：用返回传送门回去…');
       if (typeof window.backPortal === 'function') window.backPortal();
@@ -5572,10 +5585,7 @@
     try {
       const els = $$q('[content="Global Overlord"]');
       for (let i = 0; i < els.length; i++) {
-        const el = els[i];
-        if (el.classList && el.classList.contains('no_display')) continue;
-        if (el.offsetParent === null) continue;
-        return el;
+        if (hudShown(els[i])) return els[i];                 /* 游戏把它 slideDown 出来 = 可参战 */
       }
     } catch (e) { /* ignore */ }
     return null;
@@ -8961,7 +8971,6 @@
     set('nr-sweepframes', cfg.sweepFrames);
     set('nr-wmunlock', cfg.worldMapUnlock);
     set('nr-gscrap', cfg.gatherScrap); set('nr-autoevent', cfg.autoEvent);
-    set('nr-autoovl', cfg.autoOverlord); num('nr-ovl_lead', cfg.ovlLeadSec);
     try { const _er = document.getElementById('nr-eventres'); if (_er) _er.value = cfg.eventRes || ''; } catch (e) { /* ignore */ }
     set('nr-gatherflee', cfg.gatherFlee);
     set('nr-mc', cfg.multiChar); try { mcRender(); } catch (e) { /* ignore */ } try { syncMcBtns(); } catch (e) { /* ignore */ }
@@ -8995,6 +9004,7 @@
     set('nr-hummistake', cfg.humanMistakeOn); num('nr-hummistake_pct', cfg.humanMistakePct);
     set('nr-navseg', cfg.navSegOn); num('nr-navseg_dist', cfg.navSegDist);
     num('nr-navseg_pause', cfg.navSegPauseMs);
+    set('nr-autoovl', cfg.autoOverlord); num('nr-ovl_lead', cfg.ovlLeadSec);
     try { syncFarmMapUI(); } catch (e) { /* ignore */ }
     num('nr-sellfree', cfg.sellFreeMin); num('nr-sellmaxlv', cfg.sellEquipMaxLv);
     num('nr-repairdurpct', cfg.repairDurPct);
