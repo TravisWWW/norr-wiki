@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.141
+// @version      2.6.142
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -189,7 +189,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.141';   // 与 @version 保持一致
+  const SCRIPT_VER = '2.6.142';   // 与 @version 保持一致
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -1152,6 +1152,7 @@
     if (_logSaveTimer) return;
     _logSaveTimer = setTimeout(() => {
       _logSaveTimer = null;
+      renderLog();
       try { localStorage.setItem(LOG_KEY, JSON.stringify(st.log.slice(-80))); } catch (e) { /* ignore */ }
     }, 400);
   }
@@ -1159,7 +1160,7 @@
   function loadLog() {
     try {
       const a = JSON.parse(localStorage.getItem(LOG_KEY) || '[]');
-      if (Array.isArray(a) && a.length) st.log = a.slice(-LOG_MAX);
+      if (Array.isArray(a) && a.length) st.log = a.slice(-LOG_MAX).map(e => Object.assign({}, e, { scope: null }));
     } catch (e) { /* ignore */ }
     try {
       const rec = JSON.parse(localStorage.getItem(STOP_KEY) || 'null');
@@ -1169,13 +1170,33 @@
       }
     } catch (e) { /* ignore */ }
   }
-  function logEvent(msg) {
+  /* 相同消息合并；指定 key 的高频过程按固定时间段汇总，错误和启停仍单列。
+     firstAt 固定窗口起点，避免持续运行时一条摘要无限累加。 */
+  function logEvent(msg, opts) {
+    opts = opts || {};
     const d = new Date();
+    const at = d.getTime();
     const t = ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2) + ':' + ('0' + d.getSeconds()).slice(-2);
-    st.log.push({ t: t, msg: String(msg) });
+    msg = String(msg);
+    const key = opts.key ? String(opts.key) : '';
+    const span = opts.windowMs || 30000;
+    const count = opts.count > 0 ? opts.count : 1;
+    let index = -1;
+    for (let i = st.log.length - 1; i >= Math.max(0, st.log.length - 40); i--) {
+      const e = st.log[i];
+      if (e.firstAt == null || e.scope !== runSeq || at < e.firstAt || at - e.firstAt >= span) continue;
+      if (key ? e.key === key : (i === st.log.length - 1 && !e.key && e.msg === msg)) { index = i; break; }
+    }
+    const previous = index >= 0 ? st.log.splice(index, 1)[0] : null;
+    st.log.push({ t: t, msg: msg, key: key, n: (previous ? previous.n || 1 : 0) + count,
+      firstAt: previous ? previous.firstAt : at, firstT: previous ? previous.firstT : t, unit: opts.unit || '次', scope: runSeq });
     if (st.log.length > LOG_MAX) st.log.splice(0, st.log.length - LOG_MAX);
-    renderLog();
+    // 批量渲染与保存，短时连发只刷新一次面板。
     saveLogSoon();
+  }
+
+  function logEntryText(e, clean) {
+    return (clean ? clean(e.msg) : String(e.msg)) + (e.n > 1 ? '（本段 ' + e.n + (e.unit || '次') + '）' : '');
   }
 
   function renderLog() {
@@ -1183,10 +1204,11 @@
     if (tg) tg.textContent = '操作日志 (' + st.log.length + ')';
     const box = document.getElementById('nr-log');
     if (!box) return;
+    const follow = box.scrollHeight - box.scrollTop - box.clientHeight < 24;
     box.style.display = 'block';                       // ★ 常开，不再折叠
     box.innerHTML = st.log.slice(-100).map(e =>
-      '<div class="lrow"><span class="lt">' + e.t + '</span><span>' + escapeHtml(e.msg) + '</span></div>').join('');
-    box.scrollTop = box.scrollHeight;
+      '<div class="lrow"><span class="lt">' + e.t + '</span><span>' + escapeHtml(logEntryText(e)) + '</span></div>').join('');
+    if (follow) box.scrollTop = box.scrollHeight;
     placePanel(false);
   }
 
@@ -1692,7 +1714,7 @@
         st.target = t.enemy;
         st.retargetHist[t.enemy.key] = 1;                      /* ★ 记入「已锁定过」历史 */
         lastKey = t.enemy.key;
-        logEvent(tag + '：途中发现更优目标 → 切换（' + (t.enemy.name || t.enemy.key) + '）');
+        logEvent(tag + '：切换目标 → ' + (t.enemy.name || t.enemy.key), { key: 'target:' + character.current_map });
         return true;
       },
       lastKey: function () { return lastKey; }
@@ -2025,7 +2047,6 @@
         };
         guarded.__nrGuarded = true;
         window.closeFrames = guarded;
-        logEvent('已接管游戏 closeFrames（保护手动打开的窗口）');
       } else if (++tries > 240) { clearInterval(iv); }
     }, 250);
   }
@@ -2054,7 +2075,7 @@
       closed++;
     }
     if (closed) {
-      logEvent('关闭意外弹窗（' + closed + ' 个）');
+      logEvent('关闭意外弹窗', { key: 'frames', count: closed, unit: '个' });
       setStatus('已关闭意外弹窗，继续挂机…');
     }
   }
@@ -3633,7 +3654,7 @@
         seg = null;
         try { abortWalk(); } catch (e) { /* ignore */ }
         const p0 = now();
-        logEvent('分段导航：已到目标前一格（' + character.x + '-' + character.y + ' → ' + gx + '-' + gy + '），停顿 ' + Math.max(0, Math.round(+cfg.navSegPauseMs || 0)) + 'ms 再走最后一段');
+        logEvent('分段到站：' + character.x + '-' + character.y + ' → ' + gx + '-' + gy + '，停顿 ' + Math.max(0, Math.round(+cfg.navSegPauseMs || 0)) + 'ms');
         setStatus('分段导航：到目标前一格，停顿中…');
         /* ★ v2.6.133：段间停顿 = 固定值（默认 300ms，不随机）。 */
         await sleep(Math.max(0, Math.round(+cfg.navSegPauseMs || 0)));
@@ -5534,7 +5555,7 @@
         E.checkAt = now();
         if (!has) {
           /* 诊断日志：状态变化（开启→关闭）必记；状态不变则 5 分钟一条心跳，避免每 30s 刷屏 */
-          if (E.lastHas !== false || now() - (E.lastLogAt || 0) > 300000) { E.lastLogAt = now(); logEvent('活动：检查完成 → 未开启（本图 ' + currentMapName() + '）'); }
+          if (E.lastHas !== false) { E.lastLogAt = now(); logEvent('活动：未开启'); }
           E.lastHas = false; E.checkFails = 0;
           return;
         }
@@ -6018,7 +6039,7 @@
       if (c && !c.checked) {
         c.checked = true;
         c.dispatchEvent(new Event('change', { bubbles: true }));
-        logEvent('已开启游戏自动战斗');
+        logEvent('已开启游戏自动战斗', { key: 'auto-combat' });
       }
     } catch (e) { /* ignore */ }
   }
@@ -6030,7 +6051,7 @@
     st.phase = 'combat'; st.kills++; st.roundKills++;
     const nm = (st.target && st.target.name) ? String(st.target.name) : '未知';
     st.killsByName[nm] = (st.killsByName[nm] || 0) + 1;   // ★ 详细统计
-    logEvent('击杀 #' + st.kills + (st.target ? ' · ' + (st.target.name || '') + (st.target.lv ? ' Lv' + st.target.lv : '') : ''));
+    logEvent('战斗 #' + st.kills + (st.target ? ' · ' + (st.target.name || '') + (st.target.lv ? ' Lv' + st.target.lv : '') : ''), { key: 'combat:' + character.current_map });
     updateStats();
   }
 
@@ -6620,7 +6641,7 @@
     }
 
     const inGather = hasFrame('frame_Gathering') || hasFrame('frame_CollectScrap') || gatheringActive();
-    if (inGather && !st.inCollect) { st.inCollect = true; countGather(); logEvent('开始采集'); }
+    if (inGather && !st.inCollect) { st.inCollect = true; countGather(); logEvent('开始采集', { key: 'gather:' + character.current_map }); }
     if (!inGather && st.inCollect) st.inCollect = false;
 
     const healing = supply();
@@ -7465,16 +7486,16 @@
     if (tg) {
       tg.textContent = on ? '■ 停止' : '▶ 启动全部';
       tg.title = on
-        ? '停止多角色轮转（= 关闭「多角色离线」）；若当前在副角色页会先切回主角色'
-        : '启动全部：清空记录，逐个启动每个副角色的 idle';
+        ? '停止轮转并切回主角色。'
+        : '清空轮转记录，逐个启动副角色离线采集。';
       tg.classList.toggle('on', on);
     }
     const ps = document.getElementById('nr-mc-pause');
     if (ps) {
       ps.textContent = paused ? '▶ 继续' : '⏸ 暂停';
       ps.title = paused
-        ? '继续多角色轮转（接着原来的队列与记录跑）'
-        : '暂停多角色轮转：保留队列与记录，不再切号 / 跑副角色行程；主角色照常挂机。再点一次继续。';
+        ? '按原队列继续轮转。'
+        : '保留队列并暂停切号；主角色照常挂机。';
       ps.classList.toggle('on', paused);
       ps.disabled = !on;
     }
@@ -8080,14 +8101,14 @@
         <div class="pane on" data-pane="idle">
           <div class="divblock_dark" id="nr-common">
             <div class="opts" style="margin-top:0">
-              <label id="nr-flee-wrap" title="遇怪就点游戏自带「逃跑」，不还手。勾上即生效，不需要开始挂机；「战斗 / 爬塔」任务运行中自动屏蔽。"><input type="checkbox" class="chk" id="nr-gatherflee">遇敌逃跑</label>
+              <label id="nr-flee-wrap" title="勾选即生效；战斗、爬塔运行时禁用。"><input type="checkbox" class="chk" id="nr-gatherflee">遇敌逃跑</label>
               <label><input type="checkbox" class="chk" id="nr-autorespawn">阵亡复活</label>
               <label title="自动关掉游戏因踩到 NPC / 服务格而弹出的挡路窗口；你自己开的窗口保留。"><input type="checkbox" class="chk" id="nr-sweepframes">自动关弹窗</label>
               <label title="给自己加金色描边，人多时一眼找到自己。"><input type="checkbox" class="chk" id="nr-highlight">高亮自己</label>
             </div>
             <div class="opts" style="margin-top:5px">
-              <label style="flex:0 0 calc(50% - 3px);max-width:calc(50% - 3px)" title="检测到活动开启就自动进入活动地图采集；活动结束被弹出后自动回原图继续当前任务（战斗 / 采集生效，爬塔时不进）。"><input type="checkbox" class="chk" id="nr-autoevent">自动进活动</label>
-              <select id="nr-eventres" style="flex:1 1 0;min-width:0" title="活动图里做什么：采集类型 = 采对应资源；「⚔ 战斗」= 进活动大厅后走到「当前等级对应」的战斗区打怪">
+              <label style="flex:0 0 calc(50% - 3px);max-width:calc(50% - 3px)" title="活动开启时进入，结束后回原图续挂；爬塔时不进入。"><input type="checkbox" class="chk" id="nr-autoevent">自动进活动</label>
+              <select id="nr-eventres" style="flex:1 1 0;min-width:0" title="活动中采集指定资源，或按角色等级进入战斗区。">
                 <option value="">自动（同外面）</option>
                 <option value="mining">采矿</option>
                 <option value="quarrying">采石</option>
@@ -8117,10 +8138,10 @@
               <span style="color:#8fa3bd;flex:none">–</span>
               <input type="number" id="nr-lvmax" min="0" max="999" step="1" placeholder="最高" title="只打等级在此范围内的怪（0 / 留空 = 不限）" style="width:40px;flex:none">
             </div>
-            <div class="seg" id="nr-tmode" title="战斗索敌模式（三选一）：优先任务 = 只打名单怪；优先距离 = 全打、谁近打谁；全图列表 = 全打、名单里的先打。三种模式下「名单内」的怪都同优先级。">
-              <button type="button" data-tmode="priority" title="优先任务 —— 只打「优先名单」里的怪（名单 = 手填 + 未完成任务怪），名单外的怪一律不打。名单内的怪同优先级（不看名单先后）；先打谁：星级 → 距离。">优先任务</button>
-              <button type="button" data-tmode="distance" title="优先距离 —— 不看优先名单，全地图的怪都可打。只按「离人的距离」挑下一个怪，谁近打谁。星级 / 等级 / 黑名单过滤仍生效，但不按名单和星级排序。">优先距离</button>
-              <button type="button" data-tmode="all" title="全图列表 —— 全地图的怪都打（名单不做过滤）。名单里的怪先打（名单内的怪同优先级，不再按名单先后），名单外的后打；两组内部都按 星级 → 距离。">全图列表</button>
+            <div class="seg" id="nr-tmode">
+              <button type="button" data-tmode="priority" title="只打手填名单与未完成任务怪；按星级、距离排序，忽略名单顺序。">优先任务</button>
+              <button type="button" data-tmode="distance" title="所有符合筛选的怪按距离排序，忽略名单与星级顺序。">优先距离</button>
+              <button type="button" data-tmode="all" title="所有符合筛选的怪都打，名单内优先；组内按星级、距离排序。">全图列表</button>
             </div>
             <div class="opts">
               <label title="本图没怪时去采集点采集。与「切图刷怪」2 选 1。"><input type="checkbox" class="chk" id="nr-autogather">无怪采集</label>
@@ -8201,7 +8222,7 @@
             <div><span class="lbl">补蓝阈值</span><input type="number" id="nr-mppct" min="1" max="100" step="1"></div>
           </div>
           <div class="opts">
-            <label title="独立开关：只按血量/蓝量阈值吃药，不依赖挂机；吃药时挂机会自动让路。"><input type="checkbox" class="chk" id="nr-potion">自动补药</label>
+            <label title="按血量、蓝量阈值补药；未挂机时也生效。"><input type="checkbox" class="chk" id="nr-potion">自动补药</label>
             <label><input type="checkbox" class="chk" id="nr-petfeed">自动喂宠</label>
             <label title="需要补血/补蓝但背包里已经没有对应物品时，暂停挂机（避免一直挨打）。"><input type="checkbox" class="chk" id="nr-pausesupply">没吃的就暂停</label>
           </div>
@@ -8222,8 +8243,8 @@
             <button class="mini" id="nr-townrefresh">刷新</button>
           </div>
           <div class="opts">
-            <label title="导航时考虑「传送到城市」：Noble 走世界地图免费传；非 Noble 走传送站 Cities 页（花 Spirit Essence）。"><input type="checkbox" class="chk" id="nr-usewaygatecity">城市传送点</label>
-            <label title="导航时考虑「传送到野外锚点」（共 22 个，如 Fountain of Rebirth / Mirage Mountains / Ancient Ruins / Deep Forest / The Shifting Tides / Corduin / Wardens’ Bridge 等）：只能走传送站 Wilderness 页（花 Spirit Essence）。"><input type="checkbox" class="chk" id="nr-usewaygatewild">野外传送点</label>
+            <label title="导航可用城市传送：Noble 免费；否则经传送站消耗 Spirit Essence。"><input type="checkbox" class="chk" id="nr-usewaygatecity">城市传送点</label>
+            <label title="导航可经传送站前往已解锁的野外锚点，消耗 Spirit Essence。"><input type="checkbox" class="chk" id="nr-usewaygatewild">野外传送点</label>
           </div>
           <div class="row">
             <button class="mini" id="nr-importmaprec" style="flex:1" title="导入「地图记录器」导出的 JSON 文件，补充内置导航图">📥 导入地图 JSON</button>
@@ -8239,7 +8260,7 @@
           <div class="kv" id="nr-durinfo" style="color:#8fa3bd;font-size:10.5px;line-height:1.5;margin-top:4px"></div>
           <div class="opts">
             <label><input type="checkbox" class="chk" id="nr-sellon" title="背包快满时去铁匠出售/拆解低品质装备（可与「自动存仓」同时开）">自动清包</label>
-            <label><input type="checkbox" class="chk" id="nr-depositon" title="背包快满时去银行存包（可与「自动清包」同时开）。存材料走游戏「快速存入」；并把「品质 ≥ 品质低于阈值」的装备逐件存进银行装备格（每件只试一次，存不进去就跳过）">自动存仓</label>
+            <label><input type="checkbox" class="chk" id="nr-depositon" title="背包达阈值时存材料及符合品质条件的装备；失败跳过，可与清包同开。">自动存仓</label>
           </div>
           <div class="half" style="margin-top:8px">
             <div class="inline"><span>背包剩余 ≤</span><input type="number" id="nr-sellfree" min="1" step="1" title="背包剩余格数 ≤ 该值就去休整（清包 / 存仓共用）"></div>
@@ -8247,7 +8268,7 @@
           </div>
           <div class="half" style="margin-top:6px">
             <div class="inline"><span>操作</span><select id="nr-clearaction" title="自动清包的方式：出售换金币 / 拆解换材料"><option value="sell">出售</option><option value="salvage">拆解</option></select></div>
-            <div class="inline"><span>品质低于</span><select id="nr-sellrarity" title="只处理「低于」该品质的装备（例：选稀有 → 处理普通/魔法）。选「普通」= 只清灰色装备。不限 = 不按品质过滤。★ 自动存仓时反向：把「≥ 该品质」的装备存进银行（不限 = 不按品质存装备）"><option value="">不限</option><option value="normal">普通（仅灰色）</option><option value="magic">魔法</option><option value="rare">稀有</option><option value="epic">史诗</option><option value="mystical">神秘</option><option value="ascended">飞升</option><option value="legendary">传说</option><option value="relic">遗物</option><option value="unique">独特</option></select></div>
+            <div class="inline"><span>品质低于</span><select id="nr-sellrarity" title="清包：低于所选品质（普通仅灰装；不限则全品质）。存仓：达到所选品质（不限则不存装备）。"><option value="">不限</option><option value="normal">普通（仅灰色）</option><option value="magic">魔法</option><option value="rare">稀有</option><option value="epic">史诗</option><option value="mystical">神秘</option><option value="ascended">飞升</option><option value="legendary">传说</option><option value="relic">遗物</option><option value="unique">独特</option></select></div>
           </div>
           <div class="row" style="margin-top:6px">
             <button class="pri" id="nr-sellnow" style="flex:1">🧰 立即维护</button>
@@ -8256,7 +8277,7 @@
         </div>
 
         <div class="pane" data-pane="speed">
-          <span class="lbl" title="只压缩「战斗期间」的 jQuery 动画时长（战斗窗口 / 伤害数字 / 掉落等）。走格、采集、生产、搜刮、换图过渡、相机跟随都有服务器校验，一律原速播放。1 = 原速，最高 5×。">加速倍率（1 ~ 5，1 = 原速）</span>
+          <span class="lbl" title="仅加速战斗动画；移动、采集、生产等保持原速。">加速倍率（1 ~ 5，1 = 原速）</span>
           <div class="row">
             <input type="range" id="nr-speedk" min="1" max="5" step="0.1" style="flex:1">
             <span id="nr-speedval" style="min-width:40px;text-align:right;color:#ffd76e;font-weight:700;font-size:11.5px">5×</span>
@@ -8265,7 +8286,7 @@
 
           <div class="divblock_dark" style="margin-top:4px">
             <div class="nr-srow">
-              <span class="nr-sl" style="flex:none" title="缩放游戏里打开的窗口（战斗 / 背包 / professions / activities / bank / 商店 / 邮件…）的显示大小。只改视觉（transform:scale），不动布局，所以游戏自带的窗口拖动不会错位。100% = 原样。不影响本脚本面板。">窗口缩放</span>
+              <span class="nr-sl" style="flex:none" title="缩放游戏弹窗，100% 为原大小；不影响助手面板。">窗口缩放</span>
               <input type="range" id="nr-winscale" min="20" max="100" step="5" style="flex:1">
               <span id="nr-winscaleval" style="min-width:44px;text-align:right;color:#ffd76e;font-weight:700;font-size:11.5px">100%</span>
             </div>
@@ -8273,7 +8294,7 @@
 
           <div class="divblock_dark" style="margin-top:4px">
             <div class="nr-srow">
-              <label title="每个「动作」发出前随机等 最小~最大 毫秒。影响范围：走格、点按钮、开/关游戏窗口、拾取战利品、喂宠、开始采集、维修 / 出售 / 拆解 / 存仓、复活、进出活动、世界地图传送 / 传送站、点掉离线结算弹窗。不含吃药（直接调游戏接口）。填 0 或不填 = 关闭。"><input type="checkbox" class="chk" id="nr-humandelay">随机间隔</label>
+              <label title="移动、点击等动作前随机等待指定毫秒；不含补药。范围全为 0 时关闭。"><input type="checkbox" class="chk" id="nr-humandelay">随机间隔</label>
               <span class="nr-sl">最小</span><input type="number" id="nr-hdmin" min="0" max="60000" step="50" class="nr-snum">
               <span class="nr-sl">最大</span><input type="number" id="nr-hdmax" min="0" max="60000" step="50" class="nr-snum">
               <span class="nr-sl">ms</span>
@@ -8282,8 +8303,8 @@
 
           <div class="divblock_dark" style="margin-top:4px">
             <div class="nr-srow">
-              <label title="给脚本内部的定时器 / 轮询加随机波动，避免固定节拍。动作级间隔（<2s，如主循环 400ms、吃药检查 500ms）按上面「随机间隔」的毫秒范围加（只会更晚）；轮询级间隔（≥2s）按「阈值抖动 幅度%」双向抖动。影响：装备耐久 30s、宠物能量 30s、背包剩余 30s / 重扫背包 60s、任务怪 60s、连击 60s、维修冷却 60s / 20s、清包失败冷却 120s、多角色队列 15s、随机浏览面板 30s、耐久面板刷新 30s。需同时开「随机间隔」。"><input type="checkbox" class="chk" id="nr-humrhythm">节拍抖动</label>
-              <label title="每次判断时把这些阈值在原值上下随机漂移 ±幅度%（小整数至少 ±1）：补血阈值、补蓝阈值、喂食阈值、维修阈值、背包剩余格数、卡住自愈秒数、分段导航长距离格数。这个「幅度%」同时用作「节拍抖动」里轮询级间隔的抖动比例（填 0 时按 10% 兜底）。"><input type="checkbox" class="chk" id="nr-humjitter">阈值抖动</label>
+              <label title="需开启随机间隔。短周期按其毫秒范围延后；长周期按幅度百分比上下浮动（0 按 10%）。"><input type="checkbox" class="chk" id="nr-humrhythm">节拍抖动</label>
+              <label title="补药、喂宠、维修、背包、自愈与分段距离阈值上下浮动 ±幅度%；小整数至少 ±1。幅度也用于节拍抖动。"><input type="checkbox" class="chk" id="nr-humjitter">阈值抖动</label>
               <span class="nr-sl">幅度</span><input type="number" id="nr-humjitterpct" min="0" max="50" step="1" class="nr-snum">
               <span class="nr-sl">%</span>
             </div>
@@ -8305,7 +8326,7 @@
               <span class="nr-sl">秒</span>
             </div>
             <div class="nr-srow">
-              <label title="每隔 间隔 最小~最大 分钟，随机打开一个只读面板（角色 / 背包 / 生活技能 / 成就 / 日志 / 日常 / 公会 / 好友 / 外观 / 神器 / 强化 / 帮助）看 2.5~6.5 秒再关掉，模拟真人随手翻看。战斗中 / 移动中 / 休整行程中会跳过；打开的窗口不会被「自动关弹窗」误关。"><input type="checkbox" class="chk" id="nr-humidleact">随机浏览面板</label>
+              <label title="按设定分钟间隔打开只读面板，2.5~6.5 秒后关闭；战斗、移动、休整时跳过。"><input type="checkbox" class="chk" id="nr-humidleact">随机浏览面板</label>
               <span class="nr-sl">间隔</span><input type="number" id="nr-humidleact_min" min="1" max="1440" step="1" class="nr-snum">
               <span class="nr-sl">~</span><input type="number" id="nr-humidleact_max" min="1" max="1440" step="1" class="nr-snum">
               <span class="nr-sl">分钟</span>
@@ -8319,7 +8340,7 @@
 
           <div class="divblock_dark" style="margin-top:4px">
             <div class="nr-srow">
-              <label title="长距离移动时改成「两段式」：先走到目标「前一格」停下喘口气，再走到目标点位（路线不变，只是重新请求剩余路径）。当前生效范围：休整行程（走到 smith / 银行）、多角色行程走位。普通打怪 / 采集的图内移动与跨图导航走门不适用。"><input type="checkbox" class="chk" id="nr-navseg">分段导航</label>
+              <label title="休整、多角色行程的长距离走位，在目标前一格停顿后再到站；普通打怪、采集及跨图走门不适用。"><input type="checkbox" class="chk" id="nr-navseg">分段导航</label>
               <span class="nr-sl">长距离</span><input type="number" id="nr-navseg_dist" min="3" max="200" step="1" class="nr-snum">
               <span class="nr-sl">格</span>
               <span class="nr-sl" title="两段式导航在目标「前一格」停下后，等多久再走最后一段（固定毫秒数，默认 300ms）。">停顿</span>
@@ -8330,7 +8351,7 @@
 
           <div class="divblock_dark" style="margin-top:4px">
             <div class="nr-srow">
-              <label title="Overlord（世界 Boss）在服务器时间 01:00 / 10:00 / 19:00 刷新，全服一起打。开着时：到点前「提前 N 秒」开始蹲点，一旦游戏右侧出现可参战的 Overlord 图标就自动进去打（打完继续原任务）。需角色 Lv30+。"><input type="checkbox" class="chk" id="nr-autoovl">自动打 Overlord</label>
+              <label title="需 Lv30+；服务器时间 01/10/19 点刷新。提前检查，出现参战图标后进入，结束续挂。"><input type="checkbox" class="chk" id="nr-autoovl">自动打 Overlord</label>
               <span class="nr-sl">提前</span><input type="number" id="nr-ovl_lead" min="0" max="600" step="5" class="nr-snum" title="刷新前多少秒开始蹲点">
               <span class="nr-sl">秒</span>
             </div>
@@ -8338,14 +8359,14 @@
 
           <div class="divblock_dark" style="margin-top:4px">
             <div class="nr-srow">
-              <label title="游戏的世界地图只画「你去过的」地图点，没去过的连点都没有、整块还被战争迷雾盖住。开启后用抓好的全量世界坐标（380 张）补齐所有地图点、并去掉迷雾，让整幅地图都可见可点。点开的仍是游戏真实的 Map Details（看详情 / 传送）。"><input type="checkbox" class="chk" id="nr-wmunlock">解锁世界地图</label>
+              <label title="补齐未探索地图并去除迷雾；点击可看详情，传送仍受游戏条件限制。"><input type="checkbox" class="chk" id="nr-wmunlock">解锁世界地图</label>
             </div>
           </div>
 
           <div class="divblock_dark" style="margin-top:4px">
             <div class="nr-srow">
-              <button class="mini" id="nr-bestsync" type="button" style="flex:1" title="扫描本账号的图鉴记录，然后【静默上传】到公共图鉴数据仓库（TravisWWW/nor-database）；norr-wiki 会自动拉取并并入唯一一份权威图鉴文档，所有用小伴侣的人共享同一份数据。全程不需要填令牌、不会打开任何网页，约 20 秒，可随时取消。">图鉴同步</button>
-              <button class="mini" id="nr-mapsync" type="button" style="flex:1" title="上传本地地图数据（每张图的名字/类型/采集点/怪物/门/走私路线/秘密通路等出口格 + 该图最后更新时间），并拉取公共地图数据合并进本地；每张图以「更新时间最新」的那份为准。静默完成，不需要令牌、不会打开任何网页。">地图同步</button>
+              <button class="mini" id="nr-bestsync" type="button" style="flex:1" title="扫描账号图鉴并上传公共仓库供 Wiki 共享；约 20 秒，可取消。">图鉴同步</button>
+              <button class="mini" id="nr-mapsync" type="button" style="flex:1" title="上传本地地图并合并公共数据，每张图保留更新时间较新的记录。">地图同步</button>
             </div>
             <div class="nr-srow" style="margin-top:4px">
               <span id="nr-bestsyncstate" style="flex:1;min-width:0;color:#9aa4b2;font-size:10.5px;white-space:normal;line-height:1.3">图鉴：点「图鉴同步」（静默上传，无需令牌）</span>
@@ -8358,7 +8379,7 @@
 
           <div class="divblock_dark" style="margin-top:4px">
             <div class="nr-srow">
-              <span class="nr-sl" style="flex:none" title="脚本托管在 GitHub Pages：元数据里的 @updateURL / @downloadURL 指向同一地址，Tampermonkey 会按自己的周期（默认每天，可在设置里调短）静默自动升级。这里额外做一次「进游戏就查」的轻量检查，发现新版本时右上角版本号会变成金色角标，点一下即可更新。">在线更新</span>
+              <span class="nr-sl" style="flex:none" title="油猴按设置自动更新；进入游戏也会检查，版本号变金色时可点击更新。">在线更新</span>
               <span id="nr-updstate" style="flex:1;color:#9aa4b2;font-size:10.5px">当前 v${SCRIPT_VER}</span>
               <button class="mini" id="nr-updcheck" type="button" title="立即检查远端是否有新版本（绕过 5 分钟节流）">检查更新</button>
             </div>
@@ -8371,7 +8392,7 @@
           <div id="nr-stats"></div>
           <div id="nr-detbar"><span id="nr-dettoggle">▸ 详细统计</span><span id="nr-detclear">清空</span></div>
           <div id="nr-det"></div>
-          <div id="nr-logbar"><span id="nr-logtoggle">操作日志 (0)</span><span><span id="nr-logexport" title="导出诊断日志（txt，自动抹掉网址与凭据）">导出</span> <span id="nr-logclear">清空</span></span></div>
+          <div id="nr-logbar"><span id="nr-logtoggle" title="高频操作按 30 秒汇总，地图更新按 60 秒汇总；显示本段次数与最近一条信息。">操作日志 (0)</span><span><span id="nr-logexport" title="导出诊断日志（txt，自动抹掉网址与凭据）">导出</span> <span id="nr-logclear">清空</span></span></div>
           <div id="nr-log"></div>
         </div>
       </div>
@@ -8812,7 +8833,7 @@
 
     // 日志：常开显示，只保留「清空」
     panel.querySelector('#nr-logbar').addEventListener('click', e => {
-      if (e.target.id === 'nr-logclear') { st.log = []; renderLog(); }
+      if (e.target.id === 'nr-logclear') { st.log = []; renderLog(); saveLogSoon(); }
       if (e.target.id === 'nr-logexport') { exportErrorLog(); }
     });
     const bestCancelEl = panel.querySelector('#nr-bestcancel');
@@ -9908,7 +9929,7 @@
     const diff = MapDB.syncLive(live.id, live);
     if (diff.length) {
       try { renderTownSelect(); } catch (e) { /* ignore */ }
-      logEvent('地图 ' + live.id + '（' + (live.name || '?') + '）实测更新：' + diff.join('；'));
+      logEvent('地图已更新：' + (live.name || '#' + live.id) + ' · ' + diff.join('；'), { key: 'map:' + live.id, windowMs: 60000 });
     }
   }
 
@@ -11600,7 +11621,7 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
     const how = gameRunAway();
     if (!how) return false;
     _fleeAt = now();
-    logEvent('遇敌逃跑 → ' + (how === 'api' ? '接口' : '点按钮'));
+    logEvent('遇敌逃跑', { key: 'flee:' + character.current_map });
     setStatus('遇敌逃跑中…');
     return true;
   }
@@ -11629,7 +11650,7 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
     let how = null;
     if (now() - _altFleeAt > 1500) {
       how = gameRunAway();
-      if (how) { _altFleeAt = now(); logEvent('多角色：副角色页遇敌 → 逃跑' + (how === 'api' ? '（接口）' : '')); setStatus('多角色：副角色页遇怪逃跑中…'); }
+      if (how) { _altFleeAt = now(); logEvent('副角色遇敌逃跑', { key: 'alt-flee:' + character.current_map }); setStatus('多角色：副角色页遇怪逃跑中…'); }
     }
     if (how) {
       try {
@@ -11748,7 +11769,9 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
         curMapGatherTiles: safe(function () { return (MapDB.gatherTiles(c.current_map) || []).map(function (t) { return t[0] + '-' + t[1] + ' ' + t[2]; }); }, [])
       };
 
-      const logs = (st.log || []).slice(-300).map(function (e) { return '[' + clean(e.t) + '] ' + clean(e.msg); });
+      const logs = (st.log || []).slice(-300).map(function (e) {
+        return '[' + clean(e.n > 1 && e.firstT ? e.firstT + '–' + e.t : e.t) + '] ' + logEntryText(e, clean);
+      });
       const text = ['Norroth 小伴侣 · 诊断日志', '版本：' + SCRIPT_VER, '导出时间：' + new Date().toISOString(),
         '（仅含助手记录与白名单状态；不含账号凭据 / 聊天 / 网址）', '',
         '== 运行态 ==', JSON.stringify(state, null, 2), '',
@@ -12138,7 +12161,6 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
   setTimeout(function () {
     try {
       renderTownSelect();
-      logEvent("导航图就绪：内置 " + MapDB.edgeCount() + " 条路线 · " + MapDB.count() + " 张地图");
     } catch (e) { /* ignore */ }
   }, 500);
 })();
