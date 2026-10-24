@@ -1,7 +1,7 @@
 {
  "meta": {
   "source": "小伴侣地图数据（MapDB）· 4 位贡献者合并",
-  "updated": "2026-10-24T16:59:18.301Z",
+  "updated": "2026-10-24T18:27:13.277Z",
   "version": "1.0",
   "contributors": [
    {
@@ -15,9 +15,9 @@
    {
     "file": "maps-1330.json",
     "char": "#1330",
-    "level": 48,
-    "time": "2026-10-23T21:46:22.152Z",
-    "count": 339,
+    "level": 50,
+    "time": "2026-10-24T18:26:55.691Z",
+    "count": 342,
     "mergedAt": "2026-10-24"
    },
    {
@@ -37,7 +37,7 @@
     "mergedAt": "2026-10-24"
    }
   ],
-  "count": 343
+  "count": 344
  },
  "maps": {
   "1": {
@@ -1809,8 +1809,34 @@
    ]
   },
   "45": {
-   "at": 0,
-   "name": "Baron’s Lair"
+   "at": 1792852588353,
+   "name": "Baron’s Lair",
+   "m": [
+    "Snake",
+    "Troglodyte",
+    "Monstrous Worm",
+    "Hypnotic Bat",
+    "Goblin Pyro",
+    "Baron, Manor Lord",
+    "Oculus"
+   ],
+   "ex": [
+    [
+     19,
+     41,
+     "gate",
+     "Manor Cellar (Lv.4)"
+    ]
+   ],
+   "edges": [
+    [
+     45,
+     40,
+     19,
+     41,
+     "gate"
+    ]
+   ]
   },
   "46": {
    "at": 1792240947853,
@@ -4433,8 +4459,34 @@
    ]
   },
   "139": {
-   "at": 0,
-   "name": "Ghrorak’s Prison"
+   "at": 1792855637932,
+   "name": "Ghrorak’s Prison",
+   "m": [
+    "Drow",
+    "Rust Monster",
+    "Phantom Miner",
+    "Xorn",
+    "Werebat",
+    "Goblin Engineer",
+    "Ghrorak"
+   ],
+   "ex": [
+    [
+     35,
+     52,
+     "gate",
+     "Abandoned Mine (Lv.43)"
+    ]
+   ],
+   "edges": [
+    [
+     139,
+     138,
+     35,
+     52,
+     "gate"
+    ]
+   ]
   },
   "141": {
    "at": 1792789499435,
@@ -7065,7 +7117,7 @@
    ]
   },
   "281": {
-   "at": 1792787255533,
+   "at": 1792850631743,
    "name": "Trescan",
    "type": "City",
    "g": [
@@ -7123,25 +7175,29 @@
      281,
      280,
      23,
-     56
+     56,
+     "gate"
     ],
     [
      281,
      323,
      10,
-     18
+     18,
+     "gate"
     ],
     [
      281,
      324,
      22,
-     4
+     4,
+     "gate"
     ],
     [
      281,
      342,
      51,
-     54
+     54,
+     "gate"
     ]
    ]
   },
@@ -7686,7 +7742,7 @@
    ]
   },
   "324": {
-   "at": 1792791977574,
+   "at": 1792864798700,
    "name": "Dark Boreal",
    "type": "Normal",
    "m": [
@@ -7716,19 +7772,22 @@
      324,
      281,
      31,
-     61
+     61,
+     "gate"
     ],
     [
      324,
      325,
      39,
-     1
+     1,
+     "gate"
     ]
    ]
   },
   "325": {
-   "at": 1792791395461,
+   "at": 1792864838415,
    "name": "Dark Boreal",
+   "type": "Normal",
    "g": [
     "Mithril Mine"
    ],
@@ -7766,19 +7825,22 @@
      325,
      324,
      42,
-     66
+     66,
+     "gate"
     ],
     [
      325,
      326,
      39,
-     1
+     1,
+     "gate"
     ]
    ]
   },
   "326": {
-   "at": 1792791359719,
+   "at": 1792865458516,
    "name": "Dark Boreal",
+   "type": "Normal",
    "g": [
     "Largemouth Bass Pier"
    ],
@@ -7822,25 +7884,29 @@
      326,
      325,
      38,
-     66
+     66,
+     "gate"
     ],
     [
      326,
      327,
      33,
-     9
+     9,
+     "gate"
     ],
     [
      326,
      332,
      13,
-     51
+     51,
+     "other"
     ]
    ]
   },
   "327": {
-   "at": 1792764778416,
+   "at": 1792864963101,
    "name": "Dark Boreal",
+   "type": "Normal",
    "g": [
     "Beech Grove"
    ],
@@ -7884,23 +7950,47 @@
      327,
      326,
      28,
-     65
+     65,
+     "gate"
     ],
     [
      327,
      329,
      58,
-     5
+     5,
+     "gate"
     ]
    ]
   },
   "328": {
-   "at": 0,
-   "name": "The Ghost Shore"
+   "at": 1792861232499,
+   "name": "The Ghost Shore",
+   "m": [
+    "Thalassor, the Krakenlord"
+   ],
+   "ex": [
+    [
+     46,
+     46,
+     "gate",
+     "Dark Boreal (Lv.45)"
+    ]
+   ],
+   "visited": true,
+   "edges": [
+    [
+     328,
+     327,
+     46,
+     46,
+     "gate"
+    ]
+   ]
   },
   "329": {
-   "at": 1792728221728,
+   "at": 1792865740914,
    "name": "Dark Boreal",
+   "type": "Normal",
    "m": [
     "Dwarven Guard",
     "Dwarven Hunter",
@@ -7928,26 +8018,77 @@
      329,
      327,
      4,
-     37
+     37,
+     "gate"
     ],
     [
      329,
      330,
      60,
-     40
+     40,
+     "gate"
     ]
    ]
   },
   "330": {
-   "at": 0,
-   "name": "Dark Boreal"
+   "at": 1792866411733,
+   "name": "Dark Boreal",
+   "type": "Normal",
+   "g": [
+    "Travertine Quarry"
+   ],
+   "gt": [
+    [
+     26,
+     13,
+     "Travertine Quarry"
+    ]
+   ],
+   "m": [
+    "Dwarven Caster",
+    "Dwarven Hunter",
+    "Dwarven Guard",
+    "Armored Ram",
+    "Komodo Basilisk"
+   ],
+   "ex": [
+    [
+     4,
+     37,
+     "gate",
+     "Dark Boreal (Lv.47)"
+    ],
+    [
+     60,
+     40,
+     "gate",
+     "Dark Boreal (Lv.50)"
+    ]
+   ],
+   "visited": true,
+   "edges": [
+    [
+     330,
+     329,
+     4,
+     37,
+     "gate"
+    ],
+    [
+     330,
+     331,
+     60,
+     40,
+     "gate"
+    ]
+   ]
   },
   "331": {
    "at": 0,
    "name": "Dark Boreal"
   },
   "332": {
-   "at": 1792765249447,
+   "at": 1792857802040,
    "name": "Grimble’s Camp",
    "m": [
     "Armored Ram",
@@ -7971,7 +8112,8 @@
      332,
      326,
      64,
-     43
+     43,
+     "gate"
     ]
    ]
   },
@@ -8747,7 +8889,7 @@
    "name": "Sleepy Hollow"
   },
   "1183": {
-   "at": 1792787305681,
+   "at": 1792862113820,
    "name": "The Sacred Wilds Lobby",
    "g": [
     "Quarry",
@@ -8803,13 +8945,15 @@
      1183,
      5,
      24,
-     35
+     35,
+     "gate"
     ],
     [
      1183,
      16,
      24,
-     35
+     35,
+     "gate"
     ]
    ]
   },
@@ -8889,6 +9033,30 @@
      1183,
      56,
      11
+    ]
+   ]
+  },
+  "1189": {
+   "at": 1792861951898,
+   "m": [
+    "Wyvern"
+   ],
+   "ex": [
+    [
+     56,
+     11,
+     "gate",
+     "The Sacred Wilds Lobby (Lv.100)"
+    ]
+   ],
+   "visited": true,
+   "edges": [
+    [
+     1189,
+     1183,
+     56,
+     11,
+     "gate"
     ]
    ]
   },
