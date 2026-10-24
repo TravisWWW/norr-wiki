@@ -1,15 +1,15 @@
 {
  "meta": {
   "source": "小伴侣地图数据（MapDB）· 4 位贡献者合并",
-  "updated": "2026-10-24T19:24:12.735Z",
+  "updated": "2026-10-24T20:03:36.656Z",
   "version": "1.0",
   "contributors": [
    {
     "file": "maps-1151.json",
     "char": "#1151",
-    "level": 53,
-    "time": "2026-10-24T14:31:36.940Z",
-    "count": 342,
+    "level": 55,
+    "time": "2026-10-24T20:03:20.425Z",
+    "count": 346,
     "mergedAt": "2026-10-24"
    },
    {
@@ -37,7 +37,7 @@
     "mergedAt": "2026-10-24"
    }
   ],
-  "count": 344
+  "count": 346
  },
  "maps": {
   "1": {
@@ -751,7 +751,7 @@
    ]
   },
   "16": {
-   "at": 1792788484943,
+   "at": 1792863127115,
    "name": "Elundi",
    "type": "City",
    "g": [
@@ -811,13 +811,15 @@
      16,
      15,
      29,
-     60
+     60,
+     "gate"
     ],
     [
      16,
      48,
      29,
-     7
+     7,
+     "gate"
     ]
    ]
   },
@@ -2293,9 +2295,8 @@
    ]
   },
   "58": {
-   "at": 1792788918719,
+   "at": 1792855481238,
    "name": "Abandoned Mine",
-   "type": "Normal",
    "g": [
     "Laterite Quarry",
     "Largemouth Bass Pier"
@@ -2351,19 +2352,22 @@
      58,
      57,
      65,
-     40
+     40,
+     "gate"
     ],
     [
      58,
      59,
      9,
-     46
+     46,
+     "gate"
     ],
     [
      58,
      138,
      3,
-     15
+     15,
+     "gate"
     ]
    ]
   },
@@ -4417,9 +4421,8 @@
    ]
   },
   "138": {
-   "at": 1792789366474,
+   "at": 1792855514115,
    "name": "Abandoned Mine",
-   "type": "Normal",
    "m": [
     "Phantom Miner",
     "Xorn",
@@ -4448,13 +4451,15 @@
      138,
      58,
      59,
-     65
+     65,
+     "gate"
     ],
     [
      138,
      139,
      35,
-     15
+     15,
+     "other"
     ]
    ]
   },
@@ -5931,7 +5936,7 @@
    ]
   },
   "220": {
-   "at": 1792758685496,
+   "at": 1792853699341,
    "name": "Burning Moon Sands",
    "m": [
     "Nomadic Cleric",
@@ -5962,18 +5967,20 @@
      220,
      219,
      23,
-     7
+     7,
+     "gate"
     ],
     [
      220,
      221,
      28,
-     52
+     52,
+     "gate"
     ]
    ]
   },
   "221": {
-   "at": 1792758718067,
+   "at": 1792853762499,
    "name": "Deserted Cavern",
    "m": [
     "Monstrous Bat",
@@ -6008,24 +6015,27 @@
      221,
      220,
      24,
-     7
+     7,
+     "gate"
     ],
     [
      221,
      222,
      52,
-     23
+     23,
+     "gate"
     ],
     [
      221,
      288,
      0,
-     0
+     0,
+     "gate"
     ]
    ]
   },
   "222": {
-   "at": 1792758738090,
+   "at": 1792853808055,
    "name": "The Living Desert",
    "g": [
     "Fieldstone Quarry"
@@ -6066,18 +6076,20 @@
      222,
      221,
      14,
-     42
+     42,
+     "gate"
     ],
     [
      222,
      224,
      53,
-     20
+     20,
+     "gate"
     ]
    ]
   },
   "224": {
-   "at": 1792758770623,
+   "at": 1792855308590,
    "name": "Desert of Illusions",
    "m": [
     "Cassowary",
@@ -6120,19 +6132,22 @@
      224,
      222,
      14,
-     19
+     19,
+     "gate"
     ],
     [
      224,
      225,
      53,
-     19
+     19,
+     "gate"
     ],
     [
      224,
      243,
      39,
-     60
+     60,
+     "gate"
     ]
    ]
   },
@@ -7077,8 +7092,9 @@
    ]
   },
   "280": {
-   "at": 1792657849784,
+   "at": 1792868579022,
    "name": "Shrubland",
+   "type": "Normal",
    "m": [
     "Orc Warrior",
     "Orc Hunter",
@@ -7106,13 +7122,15 @@
      280,
      279,
      21,
-     61
+     61,
+     "gate"
     ],
     [
      280,
      281,
      49,
-     11
+     11,
+     "gate"
     ]
    ]
   },
@@ -8393,9 +8411,8 @@
    ]
   },
   "347": {
-   "at": 1792729448348,
+   "at": 1792866851908,
    "name": "Dark Boreal",
-   "type": "Normal",
    "g": [
     "Beech Grove"
    ],
@@ -8432,18 +8449,20 @@
      347,
      346,
      2,
-     37
+     37,
+     "gate"
     ],
     [
      347,
      348,
      65,
-     36
+     36,
+     "gate"
     ]
    ]
   },
   "348": {
-   "at": 1792852273872,
+   "at": 1792863636933,
    "name": "Laen Dorei",
    "type": "City",
    "ex": [
@@ -8466,24 +8485,29 @@
      "Dark Boreal (Lv.48)"
     ]
    ],
+   "visited": true,
+   "smith": true,
    "edges": [
     [
      348,
      347,
      10,
-     59
+     59,
+     "gate"
     ],
     [
      348,
      349,
      59,
-     58
+     58,
+     "gate"
     ]
    ]
   },
   "349": {
-   "at": 1792679974017,
+   "at": 1792872193038,
    "name": "Dark Boreal",
+   "type": "Normal",
    "m": [
     "Dwarven Guard (?)",
     "Dwarven Guard",
@@ -8507,18 +8531,140 @@
      "Dark Boreal (Lv.51)"
     ]
    ],
+   "visited": true,
    "edges": [
     [
      349,
      348,
      15,
-     8
+     8,
+     "gate"
     ],
     [
      349,
      350,
      41,
-     65
+     65,
+     "gate"
+    ]
+   ]
+  },
+  "350": {
+   "at": 1792866163602,
+   "name": "Dark Boreal",
+   "g": [
+    "Ash Grove"
+   ],
+   "gt": [
+    [
+     30,
+     7,
+     "Ash Grove"
+    ]
+   ],
+   "m": [
+    "Armored Ram",
+    "Dwarven Guard",
+    "Komodo Basilisk",
+    "Dwarven Caster",
+    "Dwarven Hunter"
+   ],
+   "ex": [
+    [
+     5,
+     9,
+     "gate",
+     "Dark Boreal (Lv.50)"
+    ],
+    [
+     65,
+     47,
+     "gate",
+     "Wardens’ Bridge (Lv.52)"
+    ]
+   ],
+   "visited": true,
+   "edges": [
+    [
+     350,
+     349,
+     5,
+     9,
+     "gate"
+    ],
+    [
+     350,
+     351,
+     65,
+     47,
+     "gate"
+    ]
+   ]
+  },
+  "351": {
+   "at": 1792866078236,
+   "name": "Wardens’ Bridge",
+   "g": [
+    "Northern Pike Pier",
+    "High Quality Patch",
+    "Bamboo Field"
+   ],
+   "gt": [
+    [
+     49,
+     15,
+     "Northern Pike Pier"
+    ],
+    [
+     29,
+     16,
+     "High Quality Patch"
+    ],
+    [
+     26,
+     18,
+     "Bamboo Field"
+    ],
+    [
+     46,
+     58,
+     "Northern Pike Pier"
+    ]
+   ],
+   "m": [
+    "Seafallen Stalker",
+    "Seafallen Reaver",
+    "Seafallen Oracle"
+   ],
+   "ex": [
+    [
+     3,
+     31,
+     "gate",
+     "Dark Boreal (Lv.51)"
+    ],
+    [
+     65,
+     32,
+     "gate",
+     "Wardens’ Bridge (Lv.53)"
+    ]
+   ],
+   "visited": true,
+   "edges": [
+    [
+     351,
+     350,
+     3,
+     31,
+     "gate"
+    ],
+    [
+     351,
+     352,
+     65,
+     32,
+     "gate"
     ]
    ]
   },
@@ -8749,7 +8895,7 @@
    "name": "Fountain of Rebirth"
   },
   "1000": {
-   "at": 1792852248741,
+   "at": 1792863602756,
    "name": "Fountain of Rebirth",
    "type": "Normal",
    "ex": [
@@ -8772,7 +8918,8 @@
      1000,
      998,
      39,
-     30
+     30,
+     "other"
     ]
    ]
   },
@@ -9037,7 +9184,7 @@
    ]
   },
   "1189": {
-   "at": 1792861951898,
+   "at": 1792863120056,
    "m": [
     "Wyvern"
    ],
