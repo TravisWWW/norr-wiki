@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.142
+// @version      2.6.144
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -163,7 +163,7 @@
     autoEvent: false,           // ★ 活动自动进入：检测到活动开启就进活动图采集，结束后回原图继续（战斗/采集/爬塔都生效）
     eventRes: '',               // ★ 活动图里要采的资源类型（'' = 自动，按外面的采集点类型匹配）
     autoOverlord: false,        // ★ v2.6.135：自动打 Overlord（世界 Boss，服务器时间 01:00 / 10:00 / 19:00 刷新）
-    ovlLeadSec: 20,             // 刷新前多少秒开始蹲点（到点前加密轮询）
+    ovlLeadSec: 20,             // 刷新前多少秒开始尝试进入（以最新倒计时为准）
     sweepFrames: true,          // ★ 自动关闭「意外弹窗」（挂机踩到 NPC/服务格时游戏自动弹的）；真人手动打开的窗口不受影响
 
     /* 其它 */
@@ -189,7 +189,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.142';   // 与 @version 保持一致
+  const SCRIPT_VER = '2.6.144';   // 与 @version 保持一致
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -1010,6 +1010,7 @@
     if (act === 'waygate') return !!document.querySelector('#frame_Waygate #tab_cities, #frame_Waygate #tab_wilderness');
     if (act === 'collect_scrap') return hasFrame('frame_CollectScrap');
     if (act === 'pick_up') return hasFrame('frame_Loot');
+    if (act === 'overlord_lootbox') return hasFrame('frame_OverlordLootbox') || hasFrame('frame_Loot');
     if (act === 'gathering') return hasFrame('frame_Gathering');
     return false;
   }
@@ -1979,7 +1980,7 @@
      登记过的窗口脚本永不自动关；窗口被关掉（DOM 里消失）后自动从登记表里清掉，
      下次再冒出来才会重新按「意外弹窗」处理。 */
   const KEEP_FRAMES = ['frame_Combat', 'frame_Loot', 'frame_Scavenge', 'frame_CollectScrap',
-                       'frame_Gathering', 'frame_FeedPet', 'frame_Use', 'frame_Inventory', 'frame_MapDetails',
+                       'frame_Gathering', 'frame_FeedPet', 'frame_Use', 'frame_Inventory', 'frame_MapDetails', 'frame_OverlordLootbox',
                        'frame_TowerGate', 'frame_Entrance', 'frame_Quest', 'frame_AbyssalTower'];   /* ★ 爬塔：进/下一层的过渡窗与入口提示，被自动关弹窗关掉会打断传送 / 看不到任务要求 */
   const USER_GRACE_MS = 6000;      // 真人点击后多久内出现的弹窗算「玩家自己开的」
 
@@ -5616,7 +5617,7 @@
    *       createDialog('Join Overlord Battle?', …, 'confirm',
    *         "javascript:createDialog('Overlord Chamber','','ajax','/modal/overlord_chamber?src=activities');")
    *     = 游戏自己的 overlordChamber('activities')。脚本直接走这一步（跳过确认弹窗）。
-   * 判据：HUD 图标可见 = 可参战（游戏自己的标志，最可靠）；倒计时只用来「到点前蹲点」和日志。
+   * HUD 图标只代表入口开放；必须结合最新倒计时，在设定提前时间内才进入。
    * 参战要求：角色 Lv30+（官方 wiki 161）。
    * ===================================================================== */
   function ovlHudJoinBtn() {
@@ -5629,6 +5630,7 @@
     return null;
   }
   function ovlInBattle() {
+    try { if (window.overlordChamberMapIds && window.overlordChamberMapIds[character.current_map]) return true; } catch (e) { /* ignore */ }
     try { if (/spawn_overlord/i.test(String((window.map && window.map.name) || ''))) return true; } catch (e) { /* ignore */ }
     try { if (document.querySelector('#overlord_hp, #overlord_boss, .overlord_hp')) return true; } catch (e) { /* ignore */ }
     return false;
@@ -5640,7 +5642,7 @@
       if (ac) timer = setTimeout(function () { try { ac.abort(); } catch (e) { /* ignore */ } }, EVENT_CHECK_TIMEOUT_MS);
       const r = await fetch('/modal/overlord_chamber', { credentials: 'same-origin', headers: { 'X-Requested-With': 'XMLHttpRequest' }, signal: ac ? ac.signal : undefined });
       const t = await r.text();
-      const m = /data-countdown-epoch="(\d+)"/.exec(t);
+      const m = /data-countdown-epoch=["'](\d+)["']/.exec(t);
       let boss = '';
       const h = /<h1[^>]*>([\s\S]{0,300}?)<\/h1>/i.exec(t);
       if (h) boss = String(h[1]).replace(/<[^>]*>/g, '').trim();
@@ -5657,12 +5659,21 @@
     const O = st.ovl;
     if (now() - (O.joinedAt || 0) < 30000) return;   /* 30s 内只点一次，别刷屏 */
     O.joinedAt = now();
-    logEvent('Overlord：检测到可参战（HUD 图标可见）→ 打开 Overlord Chamber 参战');
+    O.homeMap = +cfg.farmMap || +character.current_map;
+    O.joinedEpoch = O.nextEpoch;
+    O.phase = 'joining';
+    const seq = runSeq, charId = character.id;
+    logEvent('Overlord：已到设定提前时间，进入房间');
     setStatus('Overlord：正在参战…');
-    try { humanDialog('Overlord Chamber', '', 'ajax', '/modal/overlord_chamber?src=activities', true); } catch (e) { /* ignore */ }
+    const joinedAt = O.joinedAt, mapId = character.current_map;
+    humanDefer(function () {
+      if (!running || !cfg.autoOverlord || seq !== runSeq || character.id !== charId || character.current_map !== mapId || O.joinedAt !== joinedAt) return;
+      if (typeof window.createDialog === 'function') window.createDialog('Overlord Chamber', '', 'ajax', '/modal/overlord_chamber?src=activities', true);
+    });
     /* 兜底：若面板里还要再点一次「Join / Enter」，就点它（跳过玩家排行榜行） */
     setTimeout(function () {
       try {
+        if (!running || !cfg.autoOverlord || seq !== runSeq || character.id !== charId || ovlInBattle()) return;
         const f = document.getElementById('frame_OverlordChamber') || document.querySelector('div[id^="frame_"][id*="verlord"]');
         if (!f) return;
         const btns = $$q('button,a', f);
@@ -5678,42 +5689,104 @@
       } catch (e) { /* ignore */ }
     }, 2500);
   }
+  /* 世界 Boss 使用独立目标选择，不受日常采集模式、怪物名单或拾取开关影响。 */
+  function ovlRoomTick() {
+    const O = st.ovl;
+    if (!O.on) {
+      O.on = true; O.phase = 'waiting';
+      O.homeMap = O.homeMap || +cfg.farmMap || 0;
+      logEvent('Overlord：已进房，等待 Boss 或宝箱');
+    }
+    if (hasFrame('frame_Combat')) { ensureAutoBattle(); noteCombat(); O.phase = 'combat'; return true; }
+    if (handleFrames()) return true;
+    if (hasFrame('frame_OverlordLootbox')) { O.phase = 'loot'; setStatus('Overlord：等待宝箱结算…'); return true; }
+    if (!renderSynced()) { setStatus('Overlord：等待地图加载…'); return true; }
+    if (checkMove()) return true;
+    const boxes = $$q('.map_table [action="overlord_lootbox"][coords]');
+    if (boxes.length) {
+      const xy = String(boxes[0].getAttribute('coords') || '').split('-').map(Number);
+      if (!(xy[0] > 0 && xy[1] > 0)) return true;
+      O.phase = 'loot';
+      setStatus('Overlord：开启宝箱，等待领奖传出…');
+      if (+character.x !== xy[0] || +character.y !== xy[1]) {
+        startMove(xy[0], xy[1], 'res', 'Boss 宝箱');
+      } else if (now() - (O.actionAt || 0) >= 5000) {
+        O.actionAt = now();
+        const seq = runSeq, mapId = character.current_map;
+        humanDefer(function () {
+          if (!running || !cfg.autoOverlord || seq !== runSeq || character.current_map !== mapId) return;
+          if (+character.x !== xy[0] || +character.y !== xy[1]) return;
+          if (tileActionAt(xy[0], xy[1]) !== 'overlord_lootbox') return;
+          if (typeof window.execTileAction === 'function') window.execTileAction('overlord_lootbox', false);
+        });
+      }
+      return true;
+    }
+    if (supply()) return true;
+    const boss = scanEnemies().filter(e => isReachable(e.x, e.y)).sort((a, b) =>
+      manhattan(character.x, character.y, a.x, a.y) - manhattan(character.x, character.y, b.x, b.y))[0];
+    if (boss) {
+      O.phase = 'combat'; st.target = boss;
+      if (now() - (O.actionAt || 0) >= 2000) {
+        O.actionAt = now(); startMove(boss.x, boss.y, 'enemy', 'Overlord · ' + boss.name);
+      }
+    } else {
+      O.phase = 'waiting'; st.phase = 'idle'; st.target = null;
+      setStatus('Overlord：等待 Boss 刷新 / 宝箱出现…');
+    }
+    return true;
+  }
+  function ovlHolding() {
+    return !!(running && cfg.autoOverlord && (ovlInBattle() ||
+      (st.ovl.phase === 'joining' && now() - (st.ovl.joinedAt || 0) < 30000)));
+  }
   /* 主循环钩子：true = 本 tick 被 Overlord 逻辑接管 */
   function ovlTick() {
     const O = st.ovl;
     if (!cfg.autoOverlord) { if (O.on || O.phase !== 'idle') { O.on = false; O.phase = 'idle'; } return false; }
     if (!running || !inGame()) return false;
+    if (ovlInBattle()) return ovlRoomTick();
+    if (O.on) {
+      O.on = false; O.phase = 'idle'; O.actionAt = 0;
+      O.finishedEpoch = O.joinedEpoch || O.nextEpoch;
+      const home = +O.homeMap || +cfg.farmMap || 0;
+      O.homeMap = 0;
+      logEvent('Overlord：已离开房间，恢复原任务');
+      if (home && +character.current_map !== home) navSetPending(home, 'Overlord 结束后返回挂机点');
+      return true;
+    }
     if (st.mode === 'tower') return false;                       /* 爬塔不掺和（进出会从第 1 层重来） */
     if (st.event.phase !== 'idle') return false;                 /* 正在进 / 出活动 → 让路 */
     if (st.repair.active || st.sell.active || st.bank.active) return false;
     if (hasFrame('frame_Combat')) return false;                  /* 正在打架 → 别插一脚 */
+    if (+character.level < 30) return false;
     if (inDungeonOrTower()) return false;
-    /* 已经在 Overlord 战斗里 → 交给普通战斗逻辑 */
-    if (ovlInBattle()) {
-      if (!O.on) { O.on = true; O.phase = 'in'; logEvent('Overlord：已进入战斗，交给自动战斗'); setStatus('Overlord：战斗中…'); }
-      return false;
-    }
-    if (O.on) { O.on = false; O.phase = 'idle'; logEvent('Overlord：已离开战斗'); }
-    /* 可参战？（游戏自己的 HUD 图标） */
-    if (ovlHudJoinBtn()) { ovlJoin(); return true; }
     /* 没到点：定期读倒计时（日志 + 到点前 N 秒开始加密轮询） */
     const due = O.nextEpoch ? (O.nextEpoch * 1000 - now()) : Infinity;
     const near = !!O.nextEpoch && due <= (+cfg.ovlLeadSec || 0) * 1000;
-    const interval = near ? 3000 : 60000;
-    if (now() - (O.lastPoll || 0) >= interval) {
+    const interval = near && O.finishedEpoch !== O.nextEpoch ? 3000 : 60000;
+    // 图标可能提前开放；必须先确认刷新时间，不能使用陈旧倒计时或重进已完成场次。
+    if (O.nextEpoch && near && now() - (O.countdownAt || 0) < 65000 && O.finishedEpoch !== O.nextEpoch && ovlHudJoinBtn()) { ovlJoin(); return true; }
+    if (!O.pollBusy && now() - (O.lastPoll || 0) >= interval) {
       O.lastPoll = now();
+      O.pollBusy = true;
+      const seq = runSeq, charId = character.id;
       (async function () {
-        const r = await ovlReadCountdown();
-        if (!r.epoch) return;
-        const changed = (r.epoch !== O.nextEpoch);
-        O.nextEpoch = r.epoch; O.boss = r.boss;
-        const left = r.epoch * 1000 - now();
-        if (changed || left <= 0 || now() - (O.logAt || 0) > 600000) {
-          O.logAt = now();
-          logEvent('Overlord：下一个「' + (r.boss || '?') + '」' + (left > 0 ? ('还有 ' + ovlHhmmss(left)) : '已到刷新时间') + '（epoch ' + r.epoch + '）');
-        }
-        if (left <= 0) setStatus('Overlord：到刷新时间了，等参战按钮…');
-        else if (near) setStatus('Overlord：' + ovlHhmmss(left) + ' 后刷新，蹲点中…');
+        try {
+          const r = await ovlReadCountdown();
+          if (!running || !cfg.autoOverlord || seq !== runSeq || character.id !== charId) return;
+          if (!r.epoch) return;
+          const changed = (r.epoch !== O.nextEpoch);
+          O.nextEpoch = r.epoch; O.boss = r.boss; O.countdownAt = now();
+          const left = r.epoch * 1000 - now(), spawnDue = left <= 0;
+          if (changed || O.spawnDue !== spawnDue || now() - (O.logAt || 0) > 600000) {
+            O.logAt = now();
+            logEvent('Overlord：「' + (r.boss || '?') + '」' + (left > 0 ? ('还有 ' + ovlHhmmss(left)) : '已到刷新时间'));
+          }
+          O.spawnDue = spawnDue;
+          if (spawnDue) setStatus('Overlord：到刷新时间了，等参战按钮…');
+          else if (left <= (+cfg.ovlLeadSec || 0) * 1000) setStatus('Overlord：' + ovlHhmmss(left) + ' 后刷新，蹲点中…');
+        } finally { O.pollBusy = false; }
       })();
     }
     return false;
@@ -7018,6 +7091,7 @@
   /* 主角色：定期读队列 → 更新各副角色 epoch → 到期 / 未启动 就切过去 */
   function mcWatchQueue() {
     if (!cfg.multiChar || !rot || !rot.on || rot.paused) return;
+    if (cfg.autoOverlord && ovlHolding()) return;
     if (rot.tripAlt) return;
     /* ★ v2.6.16：主角色正在维修 / 清包 / 存仓行程中 → 别切号。
        切号是整页跳转，会把正在跑的行程当场打断（表现为「触发维修→传送到城镇→什么都没发生」）。 */
@@ -7027,6 +7101,7 @@
     const rotation = rot, charId = character.id, seq = mcSeq;
     mcQueue().then(function (list) {
       if (seq !== mcSeq || rot !== rotation || !cfg.multiChar || !rot.on || rot.paused || !inGame() || character.id !== charId) return;
+      if (cfg.autoOverlord && ovlHolding()) return;
       if (rot.tripAlt || st.repair.active || st.sell.active || st.bank.active || st.tripManual) return;
       const alts = mcAlts();
       mcApplyQueue(list);
@@ -7646,9 +7721,9 @@
 
     /* ★ 活动自动进入：战斗 / 采集 / 爬塔 都生效。进入 / 返回期间接管本 tick；
        在活动图里 → 强制走采集逻辑（无论当前任务是什么），出来后再继续原任务。 */
-    if (eventTick()) return;
     /* ★ v2.6.135：Overlord（世界 Boss）自动参战 */
     if (ovlTick()) return;
+    if (eventTick()) return;
     /* ★ v2.6.119：导航「待办目的地」—— 没到目的地就不开始任务，中途偏离会自动重规划 */
     if (navPendingTick()) return;
     /* ★ v2.6.101：活动战斗区里 → 不管当前任务是什么，都走下面的战斗逻辑 */
@@ -8351,7 +8426,7 @@
 
           <div class="divblock_dark" style="margin-top:4px">
             <div class="nr-srow">
-              <label title="需 Lv30+；服务器时间 01/10/19 点刷新。提前检查，出现参战图标后进入，结束续挂。"><input type="checkbox" class="chk" id="nr-autoovl">自动打 Overlord</label>
+              <label title="需 Lv30+；服务器时间 01/10/19 点刷新。按设定提前秒数进房，打怪、开宝箱，传出后回挂机点。"><input type="checkbox" class="chk" id="nr-autoovl">自动打 Overlord</label>
               <span class="nr-sl">提前</span><input type="number" id="nr-ovl_lead" min="0" max="600" step="5" class="nr-snum" title="刷新前多少秒开始蹲点">
               <span class="nr-sl">秒</span>
             </div>
@@ -10888,7 +10963,7 @@
   }
 
   /* ---- 导航状态条 ---- */
-  function navStatus(txt, pct, showStop) {
+  function navStatus(txt, pct, showStop, detail) {
     if (!navBar) {
       navBar = document.createElement('div');
       navBar.id = 'nr-navbar';
@@ -10898,7 +10973,8 @@
         'display:flex;align-items:center;gap:10px;min-width:300px;';
       document.body.appendChild(navBar);
     }
-    navBar.innerHTML = '<span style="flex:1">' + escapeHtml(txt) + '</span>' +
+    navBar.innerHTML = '<span style="flex:1">' + escapeHtml(txt) +
+      (detail ? '<br><span style="color:#8fa3bd">' + escapeHtml(detail) + '</span>' : '') + '</span>' +
       '<span style="color:#7f8ea6;font-variant-numeric:tabular-nums">' + (pct == null ? '' : pct + '%') + '</span>' +
       (showStop ? '<a id="nr-navstop" style="cursor:pointer;color:#ff8a8a;border:1px solid #7a3b3b;border-radius:6px;padding:1px 8px;background:#3a2226">停止</a>' : '');
     if (showStop) {
@@ -10920,9 +10996,8 @@
   function navProgressHop(i, total, destId, nextId) {
     if (!navBar) return;
     const pct = (total > 0) ? Math.round((i / total) * 100) : null;
-    navStatus('🧭 导航中 → ' + navMapName(destId) + '<br><span style="color:#8fa3bd">' +
-      (i + 1) + '/' + total + '　当前：' + navMapName(character.current_map) + ' → ' + navMapName(nextId) + '</span>',
-      pct, true);
+    navStatus('🧭 导航中 → ' + navMapName(destId), pct, true,
+      (i + 1) + '/' + total + '　当前：' + navMapName(character.current_map) + ' → ' + navMapName(nextId));
   }
 
   /* ★ v2.6.104：navGoTo() 已删除 —— 统一用模块 A navToMap()。 */
@@ -11633,6 +11708,7 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
   function fleeWatchTick() {
     if (!cfg.gatherFlee) return;
     if (!inGame()) return;
+    if (running && cfg.autoOverlord && ovlInBattle()) return;
     if (running && !st.paused && FLEE_MASK_TASKS.indexOf(String(cfg.task || 'battle')) >= 0) return;   /* 战斗 / 爬塔 → 屏蔽 */
     if (st.altTrip) return;
     if (!hasFrame('frame_Combat')) return;
@@ -11686,6 +11762,26 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
 
   /* ======================= 22. 诊断日志导出（融合自 norroth-assistant） =======================
    * 把当前状态 + 最近 300 条操作日志导出成 txt（自动抹掉网址与凭据），方便排查 / 反馈。 */
+  // 只记录候选属性是否存在及可见性，不记录装备属性原文或页面 HTML。
+  function itemSpecialistDiag() {
+    try {
+      const frame = document.getElementById('frame_ItemSpecialist');
+      if (!frame) return null;
+      const visible = function (el) {
+        const css = getComputedStyle(el), r = el.getBoundingClientRect();
+        return { tag: el.tagName, id: el.id || '', classes: String(el.className || ''),
+          display: css.display, visibility: css.visibility, opacity: css.opacity,
+          filter: css.filter, animation: css.animationName, width: Math.round(r.width), height: Math.round(r.height) };
+      };
+      return { columns: $$q('td[data-name="reroll_stats"]', frame).slice(0, 10).map(function (el) {
+        const ancestors = []; let p = el;
+        for (let i = 0; p && i < 6; i++, p = p.parentElement) ancestors.push(visible(p));
+        return { textLength: (el.textContent || '').trim().length, childCount: el.children.length,
+          children: Array.from(el.children).slice(0, 12).map(visible), ancestors: ancestors };
+      }), skin: cfg.skin, scale: cfg.winScale };
+    } catch (e) { return { error: '读取属性显示状态失败' }; }
+  }
+
   function exportErrorLog() {
     try {
       const clean = function (s) {
@@ -11710,6 +11806,10 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
         kills: st.kills, gathers: st.gathers, deaths: st.deaths,
         targetDiag: safe(targetDiag, null),
         gatherFlee: !!cfg.gatherFlee, highlightSelf: !!cfg.highlightSelf,
+        itemSpecialist: itemSpecialistDiag(),
+        overlord: safe(function () { const o = st.ovl; return { on: !!o.on, phase: o.phase, nextEpoch: o.nextEpoch,
+          joinedEpoch: o.joinedEpoch, finishedEpoch: o.finishedEpoch, homeMap: o.homeMap,
+          countdownAgeMs: o.countdownAt ? now() - o.countdownAt : null }; }, null),
         frames: frames, walkQueueLen: walkQ, walkTo: clean(c.walk_to || ''),
         move: safe(function () { return st.move ? { tx: st.move.tx, ty: st.move.ty, kind: st.move.kind, label: clean(st.move.label || ''), retries: st.move.retries, atAgoMs: st.move.at ? (now() - st.move.at) : null } : null; }, null),
         trip: { manual: !!st.tripManual, town: st.tripTown || '', home: st.tripHome || '', origin: st.tripOrigin || '' },
