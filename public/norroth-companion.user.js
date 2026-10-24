@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.144
+// @version      2.6.145
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -189,7 +189,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.144';   // 与 @version 保持一致
+  const SCRIPT_VER = '2.6.145';   // 与 @version 保持一致
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -236,6 +236,9 @@
   let running = false;
   let runSeq = 0;             // 每次运行/暂停/停止换代，旧的异步结果不得发起新动作
   let walkSeq = 0;            // abortWalk 使尚未发出的旧走位失效，独立于挂机开关
+  let navCancelSeq = 0;       // 暂停/停止/取消导航，使整个旧行程失效（内部重寻路不换代）
+  let _walkRequestOwner = null;
+  const _walkRequests = new Set();
   let timer = null;
 
   const st = {
@@ -688,12 +691,26 @@
      checkMove 的「重发」分支变成死代码：走位被游戏挡掉（can_travel=false / 幽灵战斗态）时
      脚本什么都不做，只能干等 45 秒的 checkStuck 看门狗 —— 实测「打完怪发呆 45 秒」。
      cb 可选；不传就只当「已排队发出」（walkTileCore / nudgeRecover 这些不看返回值）。 */
+  function installWalkRequestGuard() {
+    const $ = jq();
+    if (!$ || typeof $(document).on !== 'function') return;
+    if ($.__nrWalkRequestHook) return;
+    $.__nrWalkRequestHook = true;
+    $(document).on('ajaxSend.nrWalkCancel', function (_ev, xhr, opts) {
+      if (!_walkRequestOwner || !/\/ajax_get_path\.php(?:\?|$)/.test(String(opts.url || ''))) return;
+      _walkRequests.add(xhr);
+    }).on('ajaxComplete.nrWalkCancel', function (_ev, xhr) { _walkRequests.delete(xhr); });
+  }
   function safeWalkTo(x, y, cb) {
     if (!inGame()) return false;
     const seq = walkSeq, id = character.id, mapId = character.current_map;
     const go = function () {
       if (seq !== walkSeq || !inGame() || character.id !== id || character.current_map !== mapId) return false;
+      installWalkRequestGuard();
+      const previous = _walkRequestOwner;
+      _walkRequestOwner = { seq: seq, id: id, mapId: mapId };
       try { return typeof window.walkTo === 'function' ? window.walkTo(x, y) : false; } catch (e) { return false; }
+      finally { _walkRequestOwner = previous; }
     };
     /* ★ 真人化：走格也算一个动作 → 随机间隔后再发出 */
     if (humanDelayOn()) {
@@ -717,6 +734,9 @@
   // 残留的 walk_to 会让后续 walkTo 变成 no-op（角色站着不动），所以必须一并清掉。
   function abortWalk() {
     walkSeq++;
+    const pending = Array.from(_walkRequests);
+    _walkRequests.clear();
+    pending.forEach(function (xhr) { try { xhr.abort(); } catch (e) { /* ignore */ } });
     try {
       /* ★ v2.6.70 兜底[落位]：中止一次「正在进行的走位」= 客户端动画停在半路，
          而服务端已经把整条路径走完（实测服务端推进远快于客户端 400ms/格的动画）→
@@ -728,6 +748,8 @@
       } catch (e) { /* ignore */ }
       if (typeof window.clearQueue === 'function') window.clearQueue(character && character.id);
       if (character) character.walk_to = null;
+      // 寻路回包前本地队列仍可能为空，原生 clearQueue 此时不会发送停止通知。
+      if (pending.length && typeof window.sendWalkQueue === 'function') window.sendWalkQueue([]);
       /* ★ 关键根因修复：游戏的 walkTo() 在发起寻路时先把 window.can_travel 置 false，
          只有在「走格动画完成」或「寻路 AJAX 失败」时才会重新置 true。
          一旦那次寻路中途被打断（窗口弹出 / 异常 / 回调丢失），can_travel 会一直卡在 false，
@@ -803,12 +825,14 @@
    * 高级参数：不受影响。
    * ───────────────────────────────────────────────────────────── */
   async function settleAtSpot(tx, ty, why) {
+    const cancelSeq = navCancelSeq;
     const n2 = mcAdjWalkTile(tx, ty);
     if (!n2) return false;
     const fromMap = (character && character.current_map);
     /* ★ v2.6.72：落位期间一旦「换图 / 活动进出 / 导航 / 休整 / 加载页 / 开战」就立刻放弃 ——
        否则 abortWalk + 重新寻路会和 loadTravel() 撞车，把切地图卡死。 */
     const alive = function () {
+      if (cancelSeq !== navCancelSeq) return false;
       try { if (settleBlocked()) return false; if (character && character.current_map !== fromMap) return false; } catch (e) { /* ignore */ }
       return true;
     };
@@ -817,6 +841,7 @@
     await navWalkTile(n2[0], n2[1], { timeoutMs: 12000, alive: alive, onStuck: noNudge, cond: function () { return character.x === n2[0] && character.y === n2[1]; } });
     if (!alive()) { done(); return false; }
     await sleep(600);
+    if (!alive()) { done(); return false; }
     await navWalkTile(tx, ty, { timeoutMs: 15000, alive: alive, onStuck: noNudge, cond: function () { return character.x === tx && character.y === ty; } });
     done();
     return true;
@@ -3502,7 +3527,10 @@
     opts = opts || {};
     if (!inGame()) return 'cancel';
     const timeoutMs = opts.timeoutMs || WALK_TIMEOUT_MIN;
-    const alive = opts.alive || function () { return true; };
+    const cancelSeq = navCancelSeq;
+    const callerAlive = opts.alive || function () { return true; };
+    const alive = function () { return cancelSeq === navCancelSeq && callerAlive(); };
+    const cancel = function () { if (cancelSeq === navCancelSeq) { try { abortWalk(); } catch (e) {} } return 'cancel'; };
     if (!alive()) return 'cancel';
     const cond = opts.cond || function () { return character.x === gx && character.y === gy; };
     const retrigger = !!opts.retrigger;
@@ -3516,6 +3544,7 @@
     const nb = function (x, y) { return [[x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1], [x + 1, y + 1], [x + 1, y - 1], [x - 1, y + 1], [x - 1, y - 1]]
       .filter(function (p) { return pts.some(function (q) { return q.x === p[0] && q.y === p[1]; }); }); };
     const stepAside = async function () {
+      if (!alive()) return;
       const n = nb(character.x, character.y)[0];
       if (n) { try { safeWalkTo(n[0], n[1]); } catch (e) { /* ignore */ } await sleep(2600); }
     };
@@ -3555,6 +3584,7 @@
         logEvent('两段式到位没触发动作（' + act + ' @' + gx + '-' + gy + '）→ 走开一格再走回');
         setStatus('到位没触发动作，走开再走回重触发…');
         await stepAside();
+        if (!alive()) return;
         try { safeWalkTo(gx, gy); } catch (e) { /* ignore */ }
         await sleep(1200);
       }
@@ -3575,6 +3605,7 @@
        要白等一轮卡住自愈才恢复。 */
     try { abortWalk(); } catch (e) { /* ignore */ }
     if (retrigger && onTile()) await stepAside();
+    if (!alive()) return cancel();
     /* ★ v2.6.129：只有「长距离」移动才启用两段式 */
     if (segOn()) {
       const d0 = Math.abs(character.x - gx) + Math.abs(character.y - gy);
@@ -3598,8 +3629,8 @@
     let paused = 0, lastTry = 0, lastPos = '', lastMove = now(), bestD = 1e9, bestAt = now(), stuck = 0, blocked = 0, scavWait = 0;
     /* ★ paused 上限：避免“永远在等”（死循环） —— 真实时间超过 timeoutMs 且 paused 也超过 5 分钟就放弃 */
     while (now() - t0 - paused < timeoutMs && paused < 300000) {
-      if (!alive()) { try { abortWalk(); } catch (e) { /* ignore */ } return 'cancel'; }
-      if (cond()) { await settleArriveAction(); return okOut(); }
+      if (!alive()) return cancel();
+      if (cond()) { await settleArriveAction(); return alive() ? okOut() : cancel(); }
       if (!inGame()) return 'cancel';
 
       /* 阵亡：点复活，等待期间不计入超时 */
@@ -3634,7 +3665,7 @@
       const pos = character.x + ',' + character.y;
       if (pos !== lastPos) { lastPos = pos; lastMove = now(); }
       if (onTile()) {
-        if (!retrigger) { await settleArriveAction(); return okOut(); }   /* 非重触发：站上目标格即成功 */
+        if (!retrigger) { await settleArriveAction(); return alive() ? okOut() : cancel(); }   /* 非重触发：站上目标格即成功 */
         if (cond()) return okOut();
         break;                                       /* 重触发：已到门口但条件未成立 → 跳出，走开再走回 */
       }
@@ -3660,7 +3691,7 @@
         /* ★ v2.6.133：段间停顿 = 固定值（默认 300ms，不随机）。 */
         await sleep(Math.max(0, Math.round(+cfg.navSegPauseMs || 0)));
         paused += now() - p0;
-        if (!alive()) { try { abortWalk(); } catch (e) { /* ignore */ } return 'cancel'; }
+        if (!alive()) return cancel();
         lastMove = now(); bestAt = now();                     /* 别把停顿误判成卡住 */
         safeWalkTo(gx, gy);
         segDone = true;                                       /* ★ v2.6.130：第二段已发出 */
@@ -3678,10 +3709,11 @@
     /* 重触发场景：站到目标格但条件仍未成立 → 走开一格再走回，试几次（门要重踩才触发） */
     if (retrigger && onTile() && !cond()) {
       for (let k = 0; k < 3; k++) {
-        for (let w = 0; w < 9; w++) { await sleep(700); if (!alive()) { try { abortWalk(); } catch (e) { /* ignore */ } return 'cancel'; } if (cond()) return okOut(); clearBlockers(); }
+        for (let w = 0; w < 9; w++) { await sleep(700); if (!alive()) return cancel(); if (cond()) return okOut(); clearBlockers(); }
         await stepAside();
+        if (!alive()) return cancel();
         try { safeWalkTo(gx, gy); } catch (e) { /* ignore */ }
-        for (let w = 0; w < 9; w++) { await sleep(700); if (!alive()) { try { abortWalk(); } catch (e) { /* ignore */ } return 'cancel'; } if (cond()) return okOut(); }
+        for (let w = 0; w < 9; w++) { await sleep(700); if (!alive()) return cancel(); if (cond()) return okOut(); }
       }
     }
     try { abortWalk(); } catch (e) { /* ignore */ }
@@ -6150,6 +6182,7 @@
      真人卡住时点几下别处就能恢复；这里用同样思路：先复位 can_travel + 清队列，
      再朝 3 个不同方向的邻近可走格各点一次。期间主循环让路（st.nudging），避免打架。 */
   function nudgeRecover() {
+    const cancelSeq = navCancelSeq, mapId = character.current_map, charId = character.id;
     let tried = 0;
     try {
       abortWalk();
@@ -6173,6 +6206,7 @@
       picks.forEach((p, i) => {
         setTimeout(() => {
           try {
+            if (cancelSeq !== navCancelSeq || character.id !== charId || character.current_map !== mapId) return;
             if (hasFrame('frame_Combat')) return;      // 已经打起来了就别再乱点
             window.can_travel = true;
             abortWalk();
@@ -9528,6 +9562,7 @@
     if (!running) return;
     st.runElapsed = runElapsedMs();
     runSeq++;
+    navCancelSeq++; navBusy = false; navHideBar();
     running = false;
     st.paused = true;
     clearRunMark();
@@ -9538,6 +9573,7 @@
     st.phase = 'idle'; st.move = null; st.gatherFighting = false;
     eventReset(); st.event.lastCheckAt = 0;
     st.repair.active = false; st.sell.active = false; st.sell.force = false;
+    st.bank.active = false; st.bank.force = false; st.tripManual = false;
     resetDefeat(); closeSellFrame(); abortWalk();
     closeGatheringWindows();
     logEvent('已暂停挂机（本次统计保留）');
@@ -9608,6 +9644,7 @@
 
   /* 清理运行态（不写日志 / 不改状态栏），供 stop() 与手动行程收尾复用 */
   function stopCore() {
+    navCancelSeq++; navBusy = false; navHideBar();
     runSeq++;
     running = false;
     st.paused = false;
@@ -10523,7 +10560,9 @@
     const dest = +destId;
     if (!inGame() || !(dest > 0)) return false;
     if (+character.current_map === dest) return true;
-    const alive = opts.alive || function () { return true; };
+    const cancelSeq = navCancelSeq;
+    const callerAlive = opts.alive || function () { return true; };
+    const alive = function () { return cancelSeq === navCancelSeq && callerAlive(); };
     const allowCity = (opts.allowCity === undefined) ? !!cfg.useWaygateCity : !!opts.allowCity;
     const allowWild = (opts.allowWild === undefined) ? !!cfg.useWaygateWild : !!opts.allowWild;
     const walkOnly = !!opts.walkOnly;
@@ -10574,7 +10613,7 @@
         if (!renderSynced()) break;                 // 不用上一张图的门继续规划
       }
       return +character.current_map === dest;
-    } finally { if (!opts._nested) navBusy = false; }
+    } finally { if (!opts._nested && cancelSeq === navCancelSeq) navBusy = false; }
   }
 
   /* 传送门回主城（死亡恢复） */
@@ -10980,6 +11019,7 @@
     if (showStop) {
       const b = document.getElementById('nr-navstop');
       if (b) b.onclick = function () {
+        navCancelSeq++;
         navBusy = false;                                   /* ★ 让导航循环的 alive() 立即变 false */
         try { abortWalk(); } catch (e) { /* ignore */ }    /* ★ 立刻停住角色，别继续朝目标格走 */
         navStatus('已停止导航', null, false); setTimeout(navHideBar, 1500);
@@ -11025,11 +11065,12 @@
   /* ---- 导航到目标地图（Move 按钮调用）—— 纯 UI 壳，实现在模块 A ---- */
   async function navTravelTo(destId) {
     if (navBusy) { navStatus('已有导航在进行中', null, true); return false; }
-    navBusy = true;
     try { if (running) stop('开始跨图导航，已暂停挂机'); } catch (e) { /* ignore */ }
+    navBusy = true;
+    const cancelSeq = navCancelSeq;
     try {
       if (String(character.current_map) === String(destId)) { navStatus('已经在该地图了', null, false); setTimeout(navHideBar, 1800); return true; }
-      const alive = function () { return navBusy && inGame(); };
+      const alive = function () { return cancelSeq === navCancelSeq && navBusy && inGame(); };
       navStatus('🧭 导航中 → ' + navMapName(destId), null, true);
       const ok = await navToMap(destId, { alive: alive, _nested: true });
       if (!alive()) { navHideBar(); return false; }
@@ -11042,17 +11083,18 @@
       navStatus('❌ 无法到达「' + navMapName(destId) + '」', null, false);
       setTimeout(navHideBar, 3500);
       return false;
-    } finally { navBusy = false; }
+    } finally { if (cancelSeq === navCancelSeq) navBusy = false; }
   }
 
   /* ---- 自动切图刷怪：随便走一个传送点出去再回来 ---- */
   async function navRoundTrip(seq) {
     if (navBusy) return false;
+    const cancelSeq = navCancelSeq;
     navBusy = true;
     // ★ 以「挂机地图」为准：即使当前被意外带到别处，也以挂机地图为家来回切
     const home = cfg.farmMap ? +cfg.farmMap : character.current_map;
     const homeName = townName(home);
-    const alive = function () { return seq === navAutoSeq && running && cfg.autoMapSwitch; };
+    const alive = function () { return cancelSeq === navCancelSeq && seq === navAutoSeq && running && cfg.autoMapSwitch; };
     try {
       /* ★ v2.6.106：door_tiles 必须属于当前渲染（window.map.id == character.current_map）才敢用，
          否则换图空窗会拿到上一张图的门。 */
@@ -11103,9 +11145,11 @@
       setStatus('切图出错：' + (e && e.message ? e.message : String(e)));
       return false;
     } finally {
-      navBusy = false;
-      st.blacklist = {}; st.roundKills = 0; st.move = null; st.reach = null;
-      st.mapSwitch.lastAt = now(); st.mapSwitch.idleSince = 0;
+      if (cancelSeq === navCancelSeq && seq === navAutoSeq) {
+        navBusy = false;
+        st.blacklist = {}; st.roundKills = 0; st.move = null; st.reach = null;
+        st.mapSwitch.lastAt = now(); st.mapSwitch.idleSince = 0;
+      }
     }
   }
 
