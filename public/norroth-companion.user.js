@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.137
+// @version      2.6.139
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -189,7 +189,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.137';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
+  const SCRIPT_VER = '2.6.139';   // ★ v2.6.74：显示 / 诊断用版本号（与 @version 保持一致；修掉面板写死 v2.6.69 的老 bug）
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -247,7 +247,6 @@
     lootSince: 0,
     potionFail: {},
     pet: { lastCheck: 0, lastFeed: 0, level: 0, energy: 0, max: 0, food: 0, tier: 0 },
-    combo: { at: 0, as: null, strikes: null },   // ★ 连击：攻速 / 游戏算出的 Bonus Strikes
     pendingCheck: null,
     healing: false,          // ★ 正在补血/补蓝（补到阈值前不寻敌）
     lastStats: 0,
@@ -334,7 +333,6 @@
    *  [休整]     runRestock / pollSmith · 状态 st.repair/sell/bank.cooldownUntil · 判据「失败 / 损坏图标残留」 · 动作 冷却期内不再出发            · 上限 60s / 20s / 120s
    *  [回图]     step() 看门狗          · 状态 st.returnRetryAt/Fails   · 判据「复活后还在重生泉水」            · 动作 returnToFarm()                · 上限 不停止，退避 30s→300s
    *  [多角色]   mcDue()                · 状态 rot.idle[id].failAt      · 判据「副角色任务失败」                · 动作 180s 内不重试                 · 上限 180s
-   *  [连击读取] pollCombo()            · 状态 st.combo.at              · 判据「/modal/overview 读失败」        · 动作 10s 后重试（不是 60s）        · 上限 不停止
    *  [传送站]   navWaygateOut()        · 状态 局部 order/TP_BUDGET     · 判据「点了按钮没换图」                · 动作 换下一个候选                   · 上限 4 个候选 / 总预算 35s
    *  [安装器]   install*Patch()        · 状态 spdTries 等              · 判据「游戏对象还没就绪」              · 动作 轮询重装                       · 上限 600 次
    *
@@ -2556,68 +2554,6 @@
       else if (r === 'enough') setStatus('宠物能量充足，无需喂食');
       updateStats();
     }).catch(e => setStatus('喂食宠物失败：' + (e && e.message ? e.message : String(e))));
-  }
-
-  /* ======================= 10.3 连击次数（攻速给的额外打击） =======================
-   * 数据源：GET /modal/overview 的「Attack Speed」行 —— 游戏自己算好的攻速总值，
-   *         同一行的 tooltip 里还有它自己算的 "Adds N Bonus Strikes"（拿来做交叉校验）。
-   * 公式：次数 = (攻速 − 100) ÷ (800 − 等级×5)，向下取整，最多 3 次。
-   *   「还差 N」= 再涨 N 点攻速就能多打 1 次。
-   * ============================================================================== */
-  const COMBO_CHECK_MS = 60000;
-  /* 兜底[连击读取]：/modal/overview 读失败 → 10s 后重试（原来要空等满 60s，界面上一直空着） */
-  const COMBO_RETRY_MS = 10000;
-  const COMBO_BASE = 100;      // 攻速基数
-  const COMBO_DEN_A = 800;     // 分母 = COMBO_DEN_A − 等级 × COMBO_DEN_B
-  const COMBO_DEN_B = 5;
-  const COMBO_MAX = 3;         // 最多 3 次额外打击
-
-  async function readComboInfo() {
-    const h = await (await fetch('/modal/overview', { credentials: 'same-origin' })).text();
-    let as = null, strikes = null;
-    /* 主解析：tooltip 的 content 属性里带 <h2>Attack Speed</h2>…>数值< */
-    const m = h.match(/content="<h2>Attack Speed<\/h2>([^"]*)"[^>]*>\s*([\d,]+)\s*</);
-    if (m) {
-      as = parseInt(String(m[2]).replace(/,/g, ''), 10);
-      const bs = /(\d+)\s*Bonus Strikes/.exec(m[1]);
-      strikes = bs ? +bs[1] : null;
-    }
-    /* ★ 兜底：直接找「Attack Speed」标签后面紧跟的那个 <span> 数值。
-       属性顺序 / 引号 / tooltip 文案变化时主解析会失手，这里保证还能读到。 */
-    if (as == null || isNaN(as)) {
-      const i = h.indexOf('Attack Speed');
-      if (i >= 0) {
-        const seg = h.slice(i, i + 800);
-        const v = seg.match(/Attack Speed<\/div>\s*<div[^>]*>\s*<span[^>]*>\s*([\d,]+)\s*<\/span>/);
-        if (v) as = parseInt(v[1].replace(/,/g, ''), 10);
-        if (strikes == null) { const b2 = /(\d+)\s*Bonus Strikes/.exec(seg); if (b2) strikes = +b2[1]; }
-      }
-    }
-    if (as == null || isNaN(as)) return null;
-    return { as: as, strikes: strikes };
-  }
-
-  /** 攻速 → 额外打击次数（+ 还差多少攻速到下一档） */
-  function comboInfo() {
-    const as = st.combo.as;
-    const lvl = (typeof character === 'object' && character && character.level) || 0;
-    if (as == null || !lvl) return null;
-    const den = Math.max(1, COMBO_DEN_A - lvl * COMBO_DEN_B);
-    const n = Math.max(0, Math.min(COMBO_MAX, Math.floor((as - COMBO_BASE) / den)));
-    const need = (n >= COMBO_MAX) ? 0 : Math.max(0, COMBO_BASE + (n + 1) * den - as);
-    return { as: as, lvl: lvl, den: den, n: n, need: need, max: n >= COMBO_MAX, game: st.combo.strikes };
-  }
-
-  function pollCombo() {
-    if (!inGame()) return;
-    if (now() - st.combo.at < rhythm(COMBO_CHECK_MS)) return;
-    st.combo.at = now();                                   /* 先占位，避免并发重复请求 */
-    const retry = () => { st.combo.at = now() - rhythm(COMBO_CHECK_MS) + COMBO_RETRY_MS; };
-    readComboInfo().then(r => {
-      if (!r) { retry(); return; }                         /* ★ 读失败：10 秒后再试，不再空等一分钟 */
-      st.combo.as = r.as; st.combo.strikes = r.strikes;
-      updateStats();
-    }).catch(retry);
   }
 
   /* ======================= 11. 地图数据（唯一数据源） =======================
@@ -5616,7 +5552,7 @@
     return (h ? h + 'h' : '') + (h || m ? m + 'm' : '') + ss + 's';
   }
   function ovlJoin() {
-    const O = st.event.ovl;
+    const O = st.ovl;
     if (now() - (O.joinedAt || 0) < 30000) return;   /* 30s 内只点一次，别刷屏 */
     O.joinedAt = now();
     logEvent('Overlord：检测到可参战（HUD 图标可见）→ 打开 Overlord Chamber 参战');
@@ -5642,7 +5578,7 @@
   }
   /* 主循环钩子：true = 本 tick 被 Overlord 逻辑接管 */
   function ovlTick() {
-    const O = st.event.ovl;
+    const O = st.ovl;
     if (!cfg.autoOverlord) { if (O.on || O.phase !== 'idle') { O.on = false; O.phase = 'idle'; } return false; }
     if (!running || !inGame()) return false;
     if (st.mode === 'tower') return false;                       /* 爬塔不掺和（进出会从第 1 层重来） */
@@ -7540,7 +7476,6 @@
       syncRunButtons();
       if (now() - st.visitedAt > 8000) { st.visitedAt = now(); recordVisit(); }   // ★ 记录拜访过的地图/城镇
       pollBagGain();                                                             // ★ 定期读背包，统计「获得」
-      pollCombo();                                                               // ★ 定期读 /modal/overview，刷新连击次数
     }
 
     // 战利品窗口放在最前面且战斗中也不跳过（塔里进层的掉落曾因「战斗中先 return」被清掉）
@@ -7649,7 +7584,6 @@
 
   /* 一次扫描同时喂饱「统计行」「星级计数」，避免每 1.2 秒把 DOM 扫三遍 */
   function updateStats() {
-    pollCombo();                                   // ★ 节流 60s：保证不挂机时也能刷新连击
     const list = inGame() ? scanEnemies() : [];
     applyRankCounts(rankCounts(list));
     const el = document.getElementById('nr-stats');
@@ -7672,8 +7606,6 @@
     }
     const cr = coinRatePerMin();
     if (cr > 0) rows.push('金币 <b>' + fmtCoin(cr) + '/分</b>');
-    const cb = inGame() ? comboInfo() : null;
-    if (cb) rows.push('连击 <b>' + cb.n + '</b> 次 · 攻速 <b>' + cb.as + '</b>' + (cb.max ? '（已满）' : '（还差 <b>' + cb.need + '</b>）'));
     if (inGame() && character.max_exp) {
       const mins = minutesToLevel();
       rows.push('经验 <b>' + character.current_exp + '</b>/' + character.max_exp +
@@ -12008,7 +11940,7 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
 
   window.__norrothFarm = {
     event: { tick: eventTick, reset: eventReset, activitiesHasJoin: eventActivitiesHasJoin, enterGate: eventEnterGate, pickPoint: eventPickPoint, typeOf: eventTypeOf, res: function () { return st.event; }, mapId: EVENT_MAP_ID, combatMaps: EVENT_COMBAT_MAPS, combatTargetId: eventCombatTargetId, combatGate: eventCombatGate, combatActive: eventCombatActive, levelRange: eventLevelRange, dumpTiles: eventDumpTiles, backPortal: tryBackPortal },
-    overlord: { tick: ovlTick, join: ovlJoin, hudBtn: ovlHudJoinBtn, inBattle: ovlInBattle, countdown: ovlReadCountdown, res: function () { return st.event.ovl; } },
+    overlord: { tick: ovlTick, join: ovlJoin, hudBtn: ovlHudJoinBtn, inBattle: ovlInBattle, countdown: ovlReadCountdown, res: function () { return st.ovl; } },
     mc: { serviceTownNow: activeServiceTown, toggle: mcToggle, togglePause: mcTogglePause, syncBtns: syncMcBtns, queue: mcQueue, profLevels: mcProfLevels, profLevelsCached: mcProfLevelsCached, idleInfo: mcIdleInfo, startIdle: mcStartIdle, switch: mcSwitch, readChars: mcReadChars, setOn: mcSetOn, startAll: mcStartAll, stopAll: mcStopAll, validateAll: mcValidateAll, canGather: mcCanGather, render: mcRender, tick: mcTick, fillCurrent: mcFillCurrent, runTrip: mcRunTrip, beginTrip: mcBeginTrip, runRepairAndDeposit: runRepairAndDeposit, nearestGatherTile: nearestGatherTile, idleRaw: function () { return _mcGatherRaw; }, loadRot: mcLoadRot, saveRot: mcSaveRot, rot: function () { return rot; }, due: mcDue, chars: function () { return cfg.mcChars; }, queueCache: function () { return _mcQueueCache; }, claimIdleRewards: claimIdleRewards, closeIdleDialog: closeIdleResultDialog, refreshStatus: mcRefreshStatus, applyQueue: mcApplyQueue },
     start: () => beginRun('battle'), stop: stop, cfg: cfg, st: st, step: step,
     startTower: () => beginRun('tower'), stepTower: stepTower, isTowerMap: isTowerMap, towerTiles: towerTiles, towerNextGate: towerNextGate, towerGateCandidates: towerGateCandidates, towerAdjacentTile: towerAdjacentTile, towerRoomDoor: towerRoomDoor, inDungeonOrTower: inDungeonOrTower, openTower: openTower, nearestTowerTown: nearestTowerTown,
@@ -12022,7 +11954,6 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
     getMapDict: getMapDict, startRestock: startRestock, repairSellNow: repairSellNow,
     nrPost: nrPost, apiRepairRows: apiRepairRows, stashDeposit: stashDeposit, stashWithdraw: stashWithdraw, stashCount: stashCount, clickEquipSell: clickEquipSell, sellEquips: sellEquips, findBank: findBank, doBankDeposit: doBankDeposit, runDeposit: runDeposit, ensureBankFrame: ensureBankFrame, bankFreeSlots: bankFreeSlots, readBagEquipItems: readBagEquipItems, depositBagEquips: depositBagEquips, serviceTowns: serviceTowns, waygateReachable: waygateReachable, navRoute: navRoute, rideSmugglers: rideSmugglers, findSmugglersTile: findSmugglersTile, smugglersDestId: smugglersDestId, renderTownSelect: renderTownSelect, verifyPath: verifyPath, resolveRepairRoute: resolveRepairRoute,
     verifyPath: verifyPath, refreshCurMap: refreshCurMap, detectGatherPoints: detectGatherPoints, liveMapSnapshot: liveMapSnapshot, poiLearnNow: poiLearnNow, MapDB: MapDB, syncMaps: syncMaps,
-    comboInfo: comboInfo, pollCombo: pollCombo, readComboInfo: readComboInfo,
     gatheringSpots: gatheringSpots, findGatheringSpot: findGatheringSpot, stepGather: stepGather, effectiveGatherPoint: effectiveGatherPoint,
     reachableSet: reachableSet, isReachable: isReachable, unreachableEnemies: unreachableEnemies,
     takeAllLoot: takeAllLoot, readPetInfo: readPetInfo, readPetFood: readPetFood, checkAndFeedPet: checkAndFeedPet,

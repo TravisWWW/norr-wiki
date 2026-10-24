@@ -1,8 +1,8 @@
 {
-  "version": "2.6.137",
+  "version": "2.6.139",
   "date": "2026-10-24",
-  "notes": "v2.6.137：修 v2.6.135 引入的致命 bug —— syncUI() 里在 `const num` 声明之前就用了 num()（TDZ），导致 boot() 抛错、IIFE 中断、navBusy 永远没初始化（表现就是「Cannot access 'navBusy' before initialization」）。另外修「返回传送门 / Overlord 图标」的可见性判据：游戏的 .no_display{display:none} 会被 jQuery slideDown 的行内 display 覆盖、class 不会去掉，所以改成看计算后的 display（不再看 class、也不再用 offsetParent）。",
+  "notes": "v2.6.139：① 按用户要求删掉「攻速→额外打击次数」整块功能（面板里本来就有，脚本重复算没必要）：移除 st.combo、机制表里的[连击读取]行、10.3 整节（COMBO_* / readComboInfo / comboInfo / pollCombo）、两处 pollCombo() 调用、统计行的「连击 … 攻速 …」、以及 comboInfo/pollCombo/readComboInfo 导出。② 修 v2.6.135 引入的 Overlord 致命 bug：ovlTick/ovlJoin/导出 res() 里写的是 st.event.ovl，但状态实际挂在 st.ovl（与 st.event 平级），导致 O 为 undefined、每 tick 抛错、Overlord 自动参战完全不工作 —— 改回 st.ovl。",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 801315,
-  "sha256": "fc050e7b4edb91ae1379e727f4512e5adc25b82d8d224fdb12b8c15c2e089e60"
+  "size": 797132,
+  "sha256": "42a18bced43ebeb1fcaa6f9cbb2af1dd920b805d248c0a01b8b799235fbc5f50"
 }
