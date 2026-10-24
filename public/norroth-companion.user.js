@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.147
+// @version      2.6.148
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -189,7 +189,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.147';   // 与 @version 保持一致
+  const SCRIPT_VER = '2.6.148';   // 与 @version 保持一致
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -9592,6 +9592,8 @@
     const what = mode === 'gather' ? '采集' : (mode === 'auto' ? '一键挂机' : (mode === 'tower' ? '爬塔' : '战斗'));
     setStatus('已开始' + what);
     logEvent('开始' + what);
+    /* ★ v2.6.148：断线续挂（页面刷新后自动继续）也先核对是否还在挂机地图，不在就先回图。 */
+    if ((opts && opts.resume) && mode !== 'tower') ensureAtFarmMap('断线续挂');
     if (!timer) timer = rhythmTimer(tick, TICK);
     markRunning(mode);
     syncRunButtons();
@@ -9668,7 +9670,13 @@
     st.gatherDur = null; st.dur = null; st.gatherIdleSince = 0; st.gatherResync = 0;
     const what = st.mode === 'gather' ? '采集' : (st.mode === 'auto' ? '一键挂机' : (st.mode === 'tower' ? '爬塔' : '战斗'));
     logEvent('继续' + what);
-    setStatus('已继续' + what);
+    /* ★ v2.6.148：继续挂机先核对「是不是还在挂机地图」——暂停期间被带离就先回图再干活。
+       爬塔模式自己的导航负责，不插手。 */
+    if (st.mode !== 'tower' && ensureAtFarmMap('继续' + what)) {
+      /* 状态与待办导航已在 ensureAtFarmMap 里设好 */
+    } else {
+      setStatus('已继续' + what);
+    }
     if (!timer) timer = rhythmTimer(tick, TICK);
     markRunning(st.mode);
     syncRunButtons();
@@ -10513,6 +10521,18 @@
     if (!navPending) return;
     if (why) logEvent('导航待办完成：' + why);
     navPending = null;
+  }
+  /* ★ v2.6.148：把「当前不在挂机地图」登记成待办导航。
+     暂停继续 / 断线续挂都属于「接着上次的挂机」——先回挂机地图再干活，
+     否则会在暂停期间被带到的别的地图上直接开打/采集。
+     返回 true = 已登记待办（主循环会先导航，不开始任务）。 */
+  function ensureAtFarmMap(reason) {
+    if (!cfg.farmMap) return false;
+    if (!inGame()) return false;
+    if (String(character.current_map) === String(cfg.farmMap)) return false;
+    navSetPending(cfg.farmMap, reason || '回挂机地图');
+    setStatus('当前不在挂机地图，先导航回「' + navMapName(cfg.farmMap) + '」…');
+    return true;
   }
   /* 返回 true = 本 tick 被「待办导航」接管（主循环要 return，别开始任务） */
   function navPendingTick() {

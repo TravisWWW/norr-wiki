@@ -1,8 +1,8 @@
 {
-  "version": "2.6.147",
+  "version": "2.6.148",
   "date": "2026-10-25",
-  "notes": "分段导航加诊断日志：普通挂机为什么没走两段式（开关/路径太短/前一格有怪或交互/findWalkPath 缺失）",
+  "notes": "暂停继续/断线续挂时先核对挂机地图：不在就先导航回图再开始任务（新增 ensureAtFarmMap）",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 814336,
-  "sha256": "d19d57cd0d3bfab6b13338bb8cad6987419d0b3758530f41bc8bf8338a880033"
+  "size": 815603,
+  "sha256": "5102712e885a9c08ebe9216200dd37fe4414248d6a897be9cf954c440aafa827"
 }
