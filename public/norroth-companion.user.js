@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.145
+// @version      2.6.146
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -189,7 +189,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.145';   // 与 @version 保持一致
+  const SCRIPT_VER = '2.6.146';   // 与 @version 保持一致
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -1704,6 +1704,7 @@
         if (!running || st.paused || !inGame()) return false;
         const m = st.move;
         if (!m) { st.retargetHist = {}; return false; }        /* 没在走 → 清空「已锁定过」历史，交给正常选目标流程 */
+        if (m.segment && m.segment.phase === 'pause') return false;
         if (!allow()) return false;
         if (now() - at < intervalMs) return false;             /* 节流 */
         at = now();
@@ -1715,7 +1716,8 @@
         if (st.target && st.target.key) st.retargetHist[st.target.key] = 1;
         let t = pick();
         if (!t || !t.enemy) return false;                      /* 只处理「换成某只怪」 */
-        if (t.x === m.tx && t.y === m.ty) { lastKey = t.enemy.key; return false; }   /* 就是当前目标 */
+        const goal = m.segment || m;
+        if (t.x === goal.tx && t.y === goal.ty) { lastKey = t.enemy.key; return false; }   /* 就是当前目标 */
         /* ★ v2.6.121：本次移动「已经锁定过」的怪不再切回去（否则 A→B→A→B 来回横跳，永远走不到）。
            最优目标被禁时 → 顺位取「还没锁定过」的最优怪；都锁过就不切。 */
         if (st.retargetHist[t.enemy.key]) {
@@ -1761,9 +1763,40 @@
     updateStats();
   }
 
-  function startMove(x, y, kind, label) {
+  /* 普通挂机先把目的地设为真实路径的倒数第二格，不靠轮询抢在最后一步前刹车。
+     游戏 findWalkPath 返回逆序格子列表；也兼容终点在末尾的列表。 */
+  function regularSegmentPoint(x, y, kind) {
+    if (!cfg.navSegOn || st.mode === 'tower' || (st.ovl && st.ovl.on)) return null;
+    if (kind !== 'enemy' && kind !== 'gather' && kind !== 'res') return null;
+    if (typeof window.findWalkPath !== 'function') return null;
+    try {
+      const path = window.findWalkPath(character.x, character.y, x, y);
+      if (!Array.isArray(path) || path.length <= Math.max(3, +cfg.navSegDist || 5)) return null;
+      const goal = x + '-' + y;
+      const raw = path[0] === goal ? path[1] : (path[path.length - 1] === goal ? path[path.length - 2] : null);
+      if (typeof raw !== 'string') return null;
+      const p = raw.split('-').map(Number);
+      if (!Number.isFinite(p[0]) || !Number.isFinite(p[1]) || Math.max(Math.abs(x - p[0]), Math.abs(y - p[1])) !== 1) return null;
+      if (tileActionAt(p[0], p[1])) return null;     // 不把临时停顿放在 NPC、门或采集格上
+      if (scanEnemies().some(e => e.x === p[0] && e.y === p[1])) return null;
+      return { x: p[0], y: p[1] };
+    } catch (e) { return null; }
+  }
+  function walkVisualArrived(x, y) {
+    try {
+      if ((window.walkQueue && window.walkQueue[character.id] || []).length) return false;
+      const el = document.getElementById('player_' + character.id);
+      if (!el) return true;
+      const $ = jq();
+      if ($ && $(el).is(':animated')) return false;
+      const left = parseFloat(el.style.left), top = parseFloat(el.style.top);
+      return (!Number.isFinite(left) || Math.abs(left - x * 48) < 1) && (!Number.isFinite(top) || Math.abs(top - y * 48) < 1);
+    } catch (e) { return false; }
+  }
+  function startMove(x, y, kind, label, opts) {
+    opts = opts || {};
     if (!canAct()) return false;
-    if (!st.move) st.retargetHist = {};   /* ★ v2.6.121：新一段移动开始 → 清空「已锁定过」历史 */
+    if (!st.move && !opts.finalLeg) st.retargetHist = {};   /* 新目标清历史；分段最后一格沿用本次历史 */
     /* ── 兜底[抢怪·出发前确认] ───────────────────────────────────
      * 症状：同一张图很多人一起打怪时，画面上还挂着**已经被别人杀掉**的怪 →
      *       走过去 / 点它 → 服务端回 "Enemy Not Found"（这次是真的没怪，不是位置不同步）。
@@ -1783,7 +1816,7 @@
       st.gatherKind = String(label || '').replace(/^(采集点|资源)·/, '') || (kind === 'gather' ? '采集点' : '资源');
     }
     /* ★ 真人化偶发失误：先走错一格，到了再走真目标（模拟手滑） */
-    if (cfg.humanMistakeOn && (+cfg.humanMistakePct || 0) > 0 && !st.move && Math.random() * 100 < (+cfg.humanMistakePct || 0)) {
+    if (!opts.finalLeg && cfg.humanMistakeOn && (+cfg.humanMistakePct || 0) > 0 && !st.move && Math.random() * 100 < (+cfg.humanMistakePct || 0)) {
       const w = mistakeTile(x, y);
       if (w) {
         const rw = safeWalkTo(w[0], w[1], function (ok) {
@@ -1803,6 +1836,12 @@
         return true;
       }
     }
+    let segment = null;
+    const pre = !opts.finalLeg && regularSegmentPoint(x, y, kind);
+    if (pre) {
+      segment = { tx: x, ty: y, kind: kind, label: label, phase: 'first' };
+      x = pre.x; y = pre.y;
+    }
     const r = safeWalkTo(x, y, function (ok) {
       const mm = st.move;
       if (!mm || mm.tx !== x || mm.ty !== y) return;              /* 已经换目标 → 忽略 */
@@ -1814,7 +1853,7 @@
     const already = character.walk_to === (x + '-' + y);   // walkTo 已朝该格走时会返回 false，同样视为已发起
     st.move = { tx: x, ty: y, kind: kind, label: label, at: now(), started: walkStarted(r) || already, retryAt: now(), retries: 0,
                 pending: (r === 'deferred'), pendingAt: (r === 'deferred') ? now() : 0,
-                d: manhattan(character.x, character.y, x, y) };
+                d: manhattan(character.x, character.y, x, y), segment: segment };
     st.phase = 'move';
     setStatus('前往 ' + label + '（' + x + '-' + y + '）');
     return true;
@@ -1852,9 +1891,31 @@
   function checkMove() {
     const m = st.move;
     if (!m) return false;
+    const goal = m.segment || m;
 
     if (hasFrame('frame_Combat')) { st.move = null; st.phase = 'combat'; return true; }   // 走到怪格 → 游戏自动开战
+    if (m.segment && m.segment.phase === 'pause') {
+      const s = m.segment;
+      if (cfg.navSegOn && now() < s.resumeAt) return true;
+      if (!canAct()) return true;
+      st.move = null;
+      if (s.kind === 'enemy' && !scanEnemies().some(e => e.x === s.tx && e.y === s.ty)) { st.target = null; return true; }
+      startMove(s.tx, s.ty, s.kind, s.label, { finalLeg: true });
+      return true;
+    }
     if (character.x === m.tx && character.y === m.ty) {                                    // 到位
+      if (m.segment) {
+        // 原生 nextStep 在动画开始时就更新坐标，要等动画真正结束才计算停顿。
+        if (!walkVisualArrived(m.tx, m.ty)) return true;
+        const ms = cfg.navSegOn ? Math.max(0, Math.round(+cfg.navSegPauseMs || 0)) : 0;
+        abortWalk();
+        m.segment.phase = 'pause'; m.segment.resumeAt = now() + ms;
+        st.phase = 'wait';
+        logEvent('分段到站：' + m.tx + '-' + m.ty + ' → ' + m.segment.tx + '-' + m.segment.ty + '，停顿 ' + ms + 'ms');
+        setStatus('分段导航：目标前一格，停顿 ' + ms + 'ms…');
+        if (!ms) { const s = m.segment; st.move = null; startMove(s.tx, s.ty, s.kind, s.label, { finalLeg: true }); }
+        return true;
+      }
       /* ★ 到位先同步服务端位置：否则「看着到了、实际没到」→ 攻击/采集会失败。
          v2.6.70：若这次走位中途被 abortWalk 打断过（st.pos 新鲜），空 walk queue 不够 →
          直接做一次真·落位（走开一格再走回）。 */
@@ -1892,7 +1953,7 @@
       m.busyAt = 0;
       if (now() - m.retryAt > 900) {
         if (!resendMove(m)) {
-          blacklistTile(m.tx + '-' + m.ty, 30000);
+          blacklistTile(goal.tx + '-' + goal.ty, 30000);
           logEvent('无法前往 ' + m.label + '，已跳过');
           setStatus('无法前往 ' + m.label + '，已跳过');
           st.move = null; return true;
@@ -1918,7 +1979,7 @@
     if (now() - (m.lastPosAt || m.at) > MOVE_STALL_MS && !character.walk_to && !gameBusyAction()) {
       logEvent('走位无进展（' + Math.round(MOVE_STALL_MS / 1000) + 's 位置没变且 walk_to 已空）→ 重发 ' + m.label);
       if (!resendMove(m, MOVE_STALL_MAX)) {
-        blacklistTile(m.tx + '-' + m.ty, 30000);
+        blacklistTile(goal.tx + '-' + goal.ty, 30000);
         logEvent('走位无进展，已跳过 ' + m.label);
         setStatus('走位无进展，已跳过 ' + m.label);
         st.move = null; return true;
@@ -1932,7 +1993,7 @@
     const _budget = (cfg.moveTimeout + Math.ceil((m.d || 0) * 0.8)) * 1000;
     if (now() - m.at > _budget) {
       abortWalk();
-      blacklistTile(m.tx + '-' + m.ty, 30000);
+      blacklistTile(goal.tx + '-' + goal.ty, 30000);
       logEvent('移动超时，跳过 ' + m.label);
       setStatus('移动超时，跳过 ' + m.label);
       st.move = null;
@@ -6254,7 +6315,8 @@
     if (!cfg.stuckSec || !inGame()) return;
     const W = st.watch;
     const exp = character.current_exp || 0;
-    const busy = hasFrame('frame_Combat') || hasFrame('frame_Gathering') || hasFrame('frame_CollectScrap') ||
+    const busy = (st.move && st.move.segment && st.move.segment.phase === 'pause') ||
+                 hasFrame('frame_Combat') || hasFrame('frame_Gathering') || hasFrame('frame_CollectScrap') ||
                  hasFrame('frame_Scavenge') || hasFrame('frame_Loot') || hasFrame('frame_FeedPet') ||
                  /* ★ v1.9.2：新前端采集是 #gathering_popup（不是 frame），
                     不认它就会把“正在采集”当成“静止无进展”→ stuckSec 后点格自愈把采集打断 */
@@ -8449,7 +8511,7 @@
 
           <div class="divblock_dark" style="margin-top:4px">
             <div class="nr-srow">
-              <label title="休整、多角色行程的长距离走位，在目标前一格停顿后再到站；普通打怪、采集及跨图走门不适用。"><input type="checkbox" class="chk" id="nr-navseg">分段导航</label>
+              <label title="普通追怪、采集与休整、多角色行程的长距离走位，先到目标前一格停顿再到达；跨图走门、爬塔作战和 Boss 作战不适用。"><input type="checkbox" class="chk" id="nr-navseg">分段导航</label>
               <span class="nr-sl">长距离</span><input type="number" id="nr-navseg_dist" min="3" max="200" step="1" class="nr-snum">
               <span class="nr-sl">格</span>
               <span class="nr-sl" title="两段式导航在目标「前一格」停下后，等多久再走最后一段（固定毫秒数，默认 300ms）。">停顿</span>
