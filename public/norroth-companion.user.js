@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.149
+// @version      2.6.150
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -189,7 +189,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.149';   // 与 @version 保持一致
+  const SCRIPT_VER = '2.6.150';   // 与 @version 保持一致
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -5509,6 +5509,10 @@
     /* ① 已在活动里（大厅 1183 或 战斗区 1184~1189） */
     const onCombatArea = !!EVENT_COMBAT_MAPS[String(character.current_map)];
     if (onEventMap || onCombatArea) {
+      /* ★ v2.6.150：已经在活动图里 → 任何「回挂机地图」的待办导航都是过期的，清掉。
+         否则 eventTick 在采集 / 战斗分支让出 tick 后，navPendingTick() 会把角色从活动图拽走
+         （「切副角色收东西再切回主角色」时必现：恢复挂机登记了回图待办 → 再也进不去活动）。 */
+      if (navPending) { navClearPending(); logEvent('活动：已在活动图 → 取消「回挂机地图」待办导航'); }
       /* ★ v2.6.101：战斗型 —— 大厅里走到「当前等级对应的战斗区」入口；战斗区里就正常开打 */
       if (cfg.eventRes === 'combat') {
         if (onCombatArea) {
@@ -10576,6 +10580,11 @@
     if (!cfg.farmMap) return false;
     if (!inGame()) return false;
     if (String(character.current_map) === String(cfg.farmMap)) return false;
+    /* ★ v2.6.150：在活动图 / 活动战斗区里不抢导航 —— 活动模块（eventTick）自己负责进出。
+       否则「切副角色收东西再切回主角色」时，恢复挂机会登记「回挂机地图」待办，
+       把角色从活动图拽走 → 之后再也进不去活动（表现为「开始步行导航，不知道往哪跑」）。 */
+    const _m = String(character.current_map);
+    if (_m === String(EVENT_MAP_ID) || EVENT_COMBAT_MAPS[_m]) return false;
     navSetPending(cfg.farmMap, reason || '回挂机地图');
     setStatus('当前不在挂机地图，先导航回「' + navMapName(cfg.farmMap) + '」…');
     return true;

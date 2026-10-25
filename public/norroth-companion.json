@@ -1,8 +1,8 @@
 {
-  "version": "2.6.149",
+  "version": "2.6.150",
   "date": "2026-10-25",
-  "notes": "开始/续挂先核对挂机地图（保持原图也回图）；新增锁屏/切后台守卫，回来时重置看门狗避免误判卡死与自动刷新",
+  "notes": "修复：活动图里不再被「回挂机地图」待办导航拽走（切副角色收东西再切回主角色后仍能进活动）",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 818431,
-  "sha256": "fd8d418ef62885887fbd0cab13d06885a4011685b921e7cf5a89b2e2f00bf7ff"
+  "size": 819427,
+  "sha256": "d1d15f06a5204a576a03896dc9efb9fdfc8ede6d315eb2c2e8ff1bafa086b138"
 }
