@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.152
+// @version      2.6.153
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -189,7 +189,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.152';   // 与 @version 保持一致
+  const SCRIPT_VER = '2.6.153';   // 与 @version 保持一致
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -11269,15 +11269,24 @@
       const gateOk = all.filter(isSwitchableDoor);
       const blocked = all.filter(function (k) { return !isSwitchableDoor(k); });
       if (blocked.length) logEvent('切图跳过（不是普通门）：' + blocked.map(function (k) { return navMapName(k) + '[' + (doorActionTo(k) || '?') + ']'; }).join('、'));
-      /* 只留普通野外图，且排除已知不合适的（isNormalMap 对未登记的图 fail-closed） */
+      /* 候选 = 本图所有「普通门」邻图，排除：城镇（没怪）、已知不合适的（st.roam.bad）。
+         ★ v2.6.153 修回归：不再硬性要求 MapDB.type==='Normal'。
+         种子数据里 329 张图有 206 张没有 type（MapDB.type 返回 ''），硬过滤会把绝大多数邻图挡掉，
+         表现为「切图刷怪完全没反应」。真正「能不能打」由到达后的真实怪数据 + 现有过滤器判定
+         （roamMapHasTargets）。副本入口已由门格子 action!=='gate' 排除，放宽是安全的。 */
       const tnow = now();
+      const badCnt = gateOk.filter(function (k) { return st.roam.bad[k] > tnow; }).length;
       const pool = gateOk.filter(function (k) {
-        return MapDB.type(k) === 'Normal' && !(st.roam.bad[k] > tnow);
+        if (MapDB.type(k) === 'City') return false;          /* 城镇没有怪，别去 */
+        return !(st.roam.bad[k] > tnow);                     /* 已判定不合适的邻图跳过 */
       });
       if (!pool.length) {
+        logEvent('切图：本图没有可切的普通邻图（门 ' + all.length + ' 个 / 普通门 ' + gateOk.length + ' 个 / 已拉黑 ' + badCnt + ' 个），原地等刷新');
         setStatus('本图没有可切的普通邻图（都不合适或只剩副本入口），原地等刷新');
         return false;
       }
+      /* 优先已知的普通野外图（type==='Normal'），未知类型的排后面（仍会去，靠到达后判定） */
+      pool.sort(function (a, b) { return (MapDB.type(b) === 'Normal' ? 1 : 0) - (MapDB.type(a) === 'Normal' ? 1 : 0); });
       /* 轮转：从上次的下一个开始，避免连续切同一张（不再是 Math.random） */
       const destId = pool[st.roam.idx++ % pool.length];
       st.move = null; abortWalk();
