@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.156
+// @version      2.6.157
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -189,7 +189,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.156';   // 与 @version 保持一致
+  const SCRIPT_VER = '2.6.157';   // 与 @version 保持一致
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -4488,10 +4488,11 @@
     const R = st.repair, B = st.bank;
     const out = { sold: 0, sellErr: '', deposited: 0, depTxt: '', depErr: '', repaired: false, repairErr: '', note: '' };
     if (!doSell && !doDep && !doRep) return out;
-    /* ★ v2.6.12：在活动图里触发 → 返程要回活动图（而不是 cfg.farmMap） */
-    const fromEvent = !!(st.event && st.event.on && String(character.current_map) === String(EVENT_MAP_ID));
+    /* ★ v2.6.12 / v2.6.157：在「临时活动」里触发休整 → 返程要回那个活动（而不是 cfg.farmMap）。
+       覆盖：活动图 / 活动战斗区（eventReturnMap）+ Overlord 房（ovlInBattle）。 */
+    const fromActivity = eventReturnMap() || (ovlInBattle() ? +character.current_map : 0);
     const home0 = st.tripHome, origin0 = st.tripOrigin;
-    if (fromEvent) st.tripHome = String(EVENT_MAP_ID);
+    if (fromActivity) st.tripHome = String(fromActivity);
     st.repair.active = true; st.bank.active = true; st.sell.active = true;
     try {
       const route = await resolveRepairRoute();
@@ -4547,7 +4548,7 @@
       R.cooldownUntil = now() + (out.repairErr ? REPAIR_COOLDOWN : REPAIR_OK_COOLDOWN);
       return out;
     } finally {
-      if (fromEvent) st.tripHome = home0;
+      if (fromActivity) st.tripHome = home0;
       st.repair.active = false; st.bank.active = false; st.sell.active = false;
       st.sell.freeAt = 0;                      /* ★ v2.6.78：本次行程用的阈值用完即清 */
     }
@@ -5508,6 +5509,9 @@
   function eventTick() {
     if (!cfg.autoEvent) { if (st.event.phase !== 'idle') eventReset(); return false; }
     if (!running || !inGame()) return false;
+    /* ★ v2.6.157：优先级 Overlord > 活动 —— Overlord 期间活动让路，
+       否则「已离开活动图」分支会把角色从 Overlord 房拽回活动。 */
+    if (cfg.autoOverlord && ovlHolding()) return false;
     const E = st.event;
     const onEventMap = String(character.current_map) === String(EVENT_MAP_ID);
 
@@ -5774,7 +5778,11 @@
     const O = st.ovl;
     if (now() - (O.joinedAt || 0) < 30000) return;   /* 30s 内只点一次，别刷屏 */
     O.joinedAt = now();
-    O.homeMap = +cfg.farmMap || +character.current_map;
+    /* ★ v2.6.157：从「活动」里参战 → 打完回活动（而不是挂机图）；
+       同时把活动的「原图」也记成活动图，避免 Overlord 期间活动模块把角色拽回挂机图。 */
+    const evm = eventReturnMap();
+    O.homeMap = evm || +cfg.farmMap || +character.current_map;
+    if (evm && st.event) st.event.homeMap = evm;
     O.joinedEpoch = O.nextEpoch;
     O.fought = false;                 /* ★ v2.6.154：新一场 → 复位「本场打过没」 */
     O.leaveBusy = false; O.leaveAt = 0; O.leaveTries = 0;
@@ -5867,6 +5875,21 @@
     return !!(running && cfg.autoOverlord && (ovlInBattle() ||
       (st.ovl.phase === 'joining' && now() - (st.ovl.joinedAt || 0) < 30000)));
   }
+  /* ★ v2.6.157：临时活动优先级 = Overlord > 活动 > 多角色离线。
+     eventHolding() = 活动正在进行 / 正在进出（用于让多角色离线让路）。 */
+  function eventHolding() {
+    return !!(st.event && (st.event.on || st.event.phase !== 'idle'));
+  }
+  /* ★ v2.6.157：当前是否在「活动」里（活动图 / 活动战斗区）；是则返回该图 id，否则 0。
+     用于：① Overlord 参战时记住「打完回活动」；② 休整返程回原活动。 */
+  function eventReturnMap() {
+    try {
+      if (!st.event || !st.event.on) return 0;
+      const m = String(character.current_map);
+      if (m === String(EVENT_MAP_ID) || EVENT_COMBAT_MAPS[m]) return +character.current_map;
+    } catch (e) { /* ignore */ }
+    return 0;
+  }
   /* 主循环钩子：true = 本 tick 被 Overlord 逻辑接管 */
   function ovlTick() {
     const O = st.ovl;
@@ -5874,6 +5897,9 @@
     if (!running || !inGame()) return false;
     if (ovlInBattle()) return ovlRoomTick();
     if (O.on) {
+      /* ★ v2.6.157：休整（维修/清包/存仓）行程中离开房间不算「Overlord 结束」——
+         修完要回房继续打（返程目标见 runRestock 的 fromActivity）。 */
+      if (st.repair.active || st.sell.active || st.bank.active) return false;
       O.on = false; O.phase = 'idle'; O.actionAt = 0;
       O.finishedEpoch = O.joinedEpoch || O.nextEpoch;
       const home = +O.homeMap || +cfg.farmMap || 0;
@@ -5883,7 +5909,9 @@
       return true;
     }
     if (st.mode === 'tower') return false;                       /* 爬塔不掺和（进出会从第 1 层重来） */
-    if (st.event.phase !== 'idle') return false;                 /* 正在进 / 出活动 → 让路 */
+    /* ★ v2.6.157：优先级 Overlord > 活动 —— 活动「进行中」不再挡住 Overlord（限时全服事件）；
+       只在活动「进出切换中」（enter / return）让路，避免半路打断切换。 */
+    if (st.event.phase === 'enter' || st.event.phase === 'return') return false;
     if (st.repair.active || st.sell.active || st.bank.active) return false;
     if (hasFrame('frame_Combat')) return false;                  /* 正在打架 → 别插一脚 */
     if (+character.level < 30) return false;
@@ -7255,7 +7283,9 @@
   /* 主角色：定期读队列 → 更新各副角色 epoch → 到期 / 未启动 就切过去 */
   function mcWatchQueue() {
     if (!cfg.multiChar || !rot || !rot.on || rot.paused) return;
+    /* ★ v2.6.157：优先级 Overlord > 活动 > 多角色离线 —— 两者进行中都不切号。 */
     if (cfg.autoOverlord && ovlHolding()) return;
+    if (cfg.autoEvent && eventHolding()) return;
     if (rot.tripAlt) return;
     /* ★ v2.6.16：主角色正在维修 / 清包 / 存仓行程中 → 别切号。
        切号是整页跳转，会把正在跑的行程当场打断（表现为「触发维修→传送到城镇→什么都没发生」）。 */

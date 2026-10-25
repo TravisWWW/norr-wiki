@@ -1,8 +1,8 @@
 {
-  "version": "2.6.156",
-  "date": "2026-10-25",
-  "notes": "v2.6.156 导航途中也会等自动回血：走格引擎 walkTileCore 新增 heal 钩子，navWalkTile 注入 supply —— 血量/蓝量低于阈值就喝药并原地等补到阈值，再继续走（不计入导航超时）。",
+  "version": "2.6.157",
+  "date": "2026-10-26",
+  "notes": "v2.6.157 临时活动优先级 = Overlord > 活动 > 多角色离线：活动进行中不再切号；Overlord 不再被「活动进行中」挡住（只在活动进出切换时让路），活动在 Overlord 期间让路。休整返程回原活动：活动图 / 活动战斗区 / Overlord 房都会记成返程目标（原来只认活动大厅）。",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 825082,
-  "sha256": "cf936417bd787321bb32746f147987a495dcbd71679b29dfe6b8033b910564f0"
+  "size": 827166,
+  "sha256": "65bd6dd3d18c0eed769efb44226dbcfe1689422c862e45b5657e0b8823346f24"
 }
