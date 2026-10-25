@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.150
+// @version      2.6.151
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -158,7 +158,7 @@
     notifyOnStop: true,         // 异常停止时发浏览器通知 + 改标题提醒
     autoRespawn: true,          // 阵亡后自动点「Continue」复活并继续挂机
     autoGather: true,           // ★ 无怪时自动去采集点（关 = 只打怪，打完就等刷新 / 切图）
-    autoMapSwitch: false,       // ★ 无怪时自动切图刷怪（走本图任一传送点出去，再走回来）
+    autoMapSwitch: false,       // ★ 无怪时自动切图刷怪（去隔壁图打怪，清完回挂机图刷新；等级/名单/黑名单/星级按当前筛选）
     mapSwitchIdleSec: 6,        // 连续无目标多少秒后触发切图
     autoEvent: false,           // ★ 活动自动进入：检测到活动开启就进活动图采集，结束后回原图继续（战斗/采集/爬塔都生效）
     eventRes: '',               // ★ 活动图里要采的资源类型（'' = 自动，按外面的采集点类型匹配）
@@ -189,7 +189,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.150';   // 与 @version 保持一致
+  const SCRIPT_VER = '2.6.151';   // 与 @version 保持一致
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -297,6 +297,7 @@
     towerDoorsUsed: {}, towerDoorLogAt: 0,                      // ★ v2.6.108：本层已走过的房间门 / 「门都试过了」日志节流
     idleActAt: 0, idleActBusy: false,                           // 随机浏览面板：下次允许 / 正在浏览
     mapSwitch: { active: false, lastAt: 0, idleSince: 0 },    // 自动切图刷怪
+    roam: { idx: 0, bad: {} },                                // ★ v2.6.151：切图刷怪 —— 邻图轮转下标 / 不合格邻图（id→过期时间）
     paused: false,                                            // ★ 已暂停（统计保留，可继续）
     returning: false,                                         // 阵亡后正在导航回挂机地图
     retargetHist: {},                                         // ★ v2.6.121：本次移动期间已锁定过的怪（禁止切回去，避免 A→B→A→B 横跳）
@@ -4818,7 +4819,7 @@
     const wasRunning = running, wasMode = st.mode;
     if (running) { st.runElapsed = runElapsedMs(); running = false; }   /* ★ 软暂停：保留统计与模式，回来接着挂 */
     navAutoSeq++;                                   /* ★ 中止正在跑的「切图刷怪」，否则它会占着 navBusy 让导航失败 */
-    st.mapSwitch.active = false; st.mapSwitch.idleSince = 0;
+    st.mapSwitch.active = false; st.mapSwitch.idleSince = 0; st.roam = { idx: 0, bad: {} };
     st.tripManual = true;
     st.repair.active = true; st.sell.active = true; st.bank.active = true;
     st.repair.smith = null;
@@ -8372,7 +8373,7 @@
             </div>
             <div class="opts">
               <label title="本图没怪时去采集点采集。与「切图刷怪」2 选 1。"><input type="checkbox" class="chk" id="nr-autogather">无怪采集</label>
-              <label title="本图没怪时自动走传送点出去再回来，刷新怪物（需本图有传送点）。与「无怪采集」2 选 1。"><input type="checkbox" class="chk" id="nr-automapswitch">切图刷怪</label>
+              <label title="本图没怪时，去隔壁图打怪（等级/名单/黑名单/星级都按当前筛选判定，不合适的邻图自动跳过），清完再回挂机图刷新。需本图有普通门。与「无怪采集」2 选 1。"><input type="checkbox" class="chk" id="nr-automapswitch">切图刷怪</label>
             </div>
           </div>
 
@@ -9691,7 +9692,7 @@
     if (resumeTimer) { clearInterval(resumeTimer); resumeTimer = null; }
     if (timer) { stopTimer(timer); timer = null; }
     navAutoSeq++;
-    st.mapSwitch.active = false; st.mapSwitch.idleSince = 0;
+    st.mapSwitch.active = false; st.mapSwitch.idleSince = 0; st.roam = { idx: 0, bad: {} };
     st.phase = 'idle'; st.move = null; st.gatherFighting = false;
     eventReset(); st.event.lastCheckAt = 0;
     st.repair.active = false; st.sell.active = false; st.sell.force = false;
@@ -9786,7 +9787,7 @@
     if (resumeTimer) { clearInterval(resumeTimer); resumeTimer = null; }
     if (timer) { stopTimer(timer); timer = null; }
     navAutoSeq++;                                        // ★ 让正在跑的自动切图立即中止
-    st.mapSwitch.active = false; st.mapSwitch.idleSince = 0;
+    st.mapSwitch.active = false; st.mapSwitch.idleSince = 0; st.roam = { idx: 0, bad: {} };
     st.phase = 'idle';
     st.move = null;
     st.gatherFighting = false;
@@ -11232,33 +11233,65 @@
     } finally { if (cancelSeq === navCancelSeq) navBusy = false; }
   }
 
-  /* ---- 自动切图刷怪：随便走一个传送点出去再回来 ---- */
-  async function navRoundTrip(seq) {
+  /* ---- 自动切图刷怪（v2.6.151）：在「挂机图 home」和一张合格的邻图之间来回刷 ----------------
+   * 设计（方案 A —— home 是唯一锚点，邻图只是临时驻留点）：
+   *   · 在 home  → 挑一张合格邻图走过去；到了由主循环正常打怪。
+   *   · 在邻图  → 回 home（此时 home 的怪已刷新）。
+   *   · 「合格」= 门 action==='gate' + 目标图 type==='Normal'
+   *                + 到达后真实怪里有能通过现有过滤器（等级 / 名单 / 黑名单 / 星级）的怪；
+   *                不合格就拉黑（st.roam.bad）换下一张。
+   *   · 被移走（阵亡 / 活动 / 切角色）→ 现有恢复路径一律回 home（ensureAtFarmMap / returnToFarm），
+   *     本函数也自愈：只要不在 home，下一轮就把角色送回 home。
+   * 旧实现是「出去兜一圈立刻回来」：既不在邻图打怪，回来也太快（home 的怪没刷新）→ 无效。 */
+  const ROAM_BAD_TTL = 30 * 60 * 1000;   // 判定「不合适」的邻图拉黑时长
+  /* 本图（当前渲染地图）里有没有「能通过现有过滤器」的怪 —— 用到达后的真实怪数据判，不依赖离线表 */
+  function roamMapHasTargets() {
+    return scanEnemies().some(function (e) {
+      return e.rank !== 'Player' && nameAllowed(e.name) && !mobBlacklisted(e.name) &&
+             rankAllowed(e.rank) && lvAllowed(e.lv);
+    });
+  }
+  async function navRoamStep(seq) {
     if (navBusy) return false;
     const cancelSeq = navCancelSeq;
     navBusy = true;
-    // ★ 以「挂机地图」为准：即使当前被意外带到别处，也以挂机地图为家来回切
-    const home = cfg.farmMap ? +cfg.farmMap : character.current_map;
+    /* ★ home = 挂机地图（唯一锚点）：即使当前被意外带到别处，也以它为家来回切 */
+    const home = +(cfg.farmMap || character.current_map) || 0;   // ★ 统一成数字，避免 farmMap 未设时字符串比较失配
     const homeName = townName(home);
     const alive = function () { return cancelSeq === navCancelSeq && seq === navAutoSeq && running && cfg.autoMapSwitch; };
     try {
-      /* ★ v2.6.106：door_tiles 必须属于当前渲染（window.map.id == character.current_map）才敢用，
+      /* ★ door_tiles 必须属于当前渲染（window.map.id == character.current_map）才敢用，
          否则换图空窗会拿到上一张图的门。 */
       if (!renderSynced()) return false;
+      /* ① 不在 home（在邻图，或被丢到别处）→ 回 home。home 是唯一锚点。 */
+      if (+character.current_map !== home) {
+        st.move = null; abortWalk();
+        if (!alive()) return false;
+        setStatus('切图刷怪：返回挂机图 ' + homeName + ' …');
+        logEvent('自动切图：返回 ' + homeName + '（当前 ' + currentMapName() + '）');
+        const back = await navToMap(home, { alive: alive, _nested: true });
+        if (back) { logEvent('自动切图：已回到 ' + homeName); setStatus('切图完成，已回到 ' + homeName); }
+        else if (alive()) setStatus('切图失败（回程），当前在 ' + currentMapName());
+        return !!back;
+      }
+      /* ② 在 home → 挑一张合格邻图 */
       const dt = window.door_tiles || {};
       const all = Object.keys(dt).map(Number).filter(function (k) { return k !== home; });
-      /* ★ 唯一硬条件：门格子的 action 必须是 gate。
-         dungeon（副本入口）一律不切 —— Marsh(122)→Stirge Lair、Medusa's Hallway(234)→Medusa's Chamber
-         这类目标图往往还没登记（map260 / map235），靠名字/地貌猜不出来，必须现读 action。 */
+      /* ★ 唯一硬条件：门格子的 action 必须是 gate。dungeon（副本入口）一律不切。 */
       const gateOk = all.filter(isSwitchableDoor);
       const blocked = all.filter(function (k) { return !isSwitchableDoor(k); });
       if (blocked.length) logEvent('切图跳过（不是普通门）：' + blocked.map(function (k) { return navMapName(k) + '[' + (doorActionTo(k) || '?') + ']'; }).join('、'));
-      if (!gateOk.length) { setStatus('本图没有可切的普通门（只剩副本等入口），跳过切图'); return false; }
-      /* 优先级：普通野外图 → 已知类型（城镇等）→ 其余普通门；isNormalMap 对未登记的图 fail-closed */
-      const normals = gateOk.filter(function (k) { return MapDB.type(k) === 'Normal'; });
-      const known = gateOk.filter(isNormalMap);
-      const pool = normals.length ? normals : (known.length ? known : gateOk);
-      const destId = pool[Math.floor(Math.random() * pool.length)];
+      /* 只留普通野外图，且排除已知不合适的（isNormalMap 对未登记的图 fail-closed） */
+      const tnow = now();
+      const pool = gateOk.filter(function (k) {
+        return MapDB.type(k) === 'Normal' && !(st.roam.bad[k] > tnow);
+      });
+      if (!pool.length) {
+        setStatus('本图没有可切的普通邻图（都不合适或只剩副本入口），原地等刷新');
+        return false;
+      }
+      /* 轮转：从上次的下一个开始，避免连续切同一张（不再是 Math.random） */
+      const destId = pool[st.roam.idx++ % pool.length];
       st.move = null; abortWalk();
       closeFrameById('frame_Gathering'); closeFrameById('frame_CollectScrap');
       if (!alive()) return false;
@@ -11267,25 +11300,30 @@
       if (!await navToMap(destId, { alive: alive, _nested: true })) { if (alive()) setStatus('切图失败（去程）'); return false; }
       await sleep(1200);
       if (!alive()) return false;
-      // ★ 到了之后确认是普通野外图：万一进了副本/城镇，立刻记下并返回
       recordVisit();
-      const at = (window.map && window.map.type) || '';
-      if (at && at !== 'Normal' && at !== 'City') {
-        logEvent('切图：' + navMapName(destId) + ' 是「' + at + '」属于副本/特殊区域，立即返回');
+      /* 到了之后确认是普通野外图：万一进了副本/城镇，立刻记下并返回 */
+      const mt = (window.map && window.map.type) || '';
+      if (mt && mt !== 'Normal' && mt !== 'City') {
+        logEvent('切图：' + navMapName(destId) + ' 是「' + mt + '」属于副本/特殊区域，立即返回');
         setStatus('「' + navMapName(destId) + '」是特殊区域，返回…');
         await navToMap(home, { alive: alive, _nested: true });
         return false;
       }
-      setStatus('切图刷怪：返回 ' + homeName + ' …');
-      if (!await navToMap(home, { alive: alive, _nested: true })) { if (alive()) setStatus('切图失败（回程），当前在 ' + currentMapName()); return false; }
-      if (!alive()) return false;
-      logEvent('自动切图完成，已返回 ' + homeName);
-      // ★ 用挂机地图判断是否真的回来了；没回来再补一次导航
-      if (String(character.current_map) !== String(home)) {
-        setStatus('切图后不在挂机地图，正在返回…');
+      /* ★ 合格性判定：用到达后的真实怪数据 + 现有过滤器（等级 / 名单 / 黑名单 / 星级）。
+         没有任何怪能通过 → 这张图不适合 → 拉黑换下一张。 */
+      if (!roamMapHasTargets()) {
+        const seen = scanEnemies();
+        logEvent('切图：' + navMapName(destId) + ' 没有符合筛选的怪（' +
+          (seen.length ? seen.map(function (e) { return e.name + (e.lv ? ' Lv' + e.lv : ''); }).join('、') : '本图无怪') +
+          '）→ 拉黑，换下一张');
+        st.roam.bad[destId] = now() + ROAM_BAD_TTL;
+        setStatus('「' + navMapName(destId) + '」没有合适的怪，返回…');
         await navToMap(home, { alive: alive, _nested: true });
+        return false;
       }
-      setStatus('切图完成，怪物已刷新');
+      /* 合格 → 就地打怪（主循环接管）；等本图清完 / 无怪时再由 autoMapSwitchMaybe 触发回 home */
+      setStatus('切图刷怪：在 ' + navMapName(destId) + ' 打怪中…');
+      logEvent('自动切图：开始在 ' + navMapName(destId) + ' 打怪（有符合筛选的怪）');
       return true;
     } catch (e) {
       setStatus('切图出错：' + (e && e.message ? e.message : String(e)));
@@ -11856,7 +11894,7 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
     st.mapSwitch.idleSince = 0;
     st.mapSwitch.active = true;
     const seq = ++navAutoSeq;   // ★ 本次切图的会话号
-    navRoundTrip(seq).then(function () { st.mapSwitch.active = false; }, function () { st.mapSwitch.active = false; });
+    navRoamStep(seq).then(function () { st.mapSwitch.active = false; }, function () { st.mapSwitch.active = false; });
   }
 
   /* ======================= 20. 采集遇怪逃跑（融合自 norroth-assistant） =======================
@@ -12427,16 +12465,16 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
     recordVisit: recordVisit, visitedTowns: visitedTowns,  
     renderDet: renderDet, readCoins: readCoins, readCoinsHud: readCoinsHud, parseCoinText: parseCoinText, installCoinsHook: installCoinsHook, coinRatePerMin: coinRatePerMin, minutesToLevel: minutesToLevel,
     perfSlope: perfSlope, perfSpanMin: perfSpanMin, 
-    updateStats: updateStats, isNormalMap: isNormalMap, navRoundTrip: navRoundTrip,
+    updateStats: updateStats, isNormalMap: isNormalMap, navRoamStep: navRoamStep,
     applyBagDiff: applyBagDiff, parseInvItems: parseInvItems, initBagSnap: initBagSnap,
     pause: pause, resume: resume, toggleRun: toggleRun, runElapsedMs: runElapsedMs, pollBagGain: pollBagGain,
-    startRoundTrip: function () { const seq = ++navAutoSeq; st.mapSwitch.active = true; return navRoundTrip(seq); },
+    startRoundTrip: function () { const seq = ++navAutoSeq; st.mapSwitch.active = true; return navRoamStep(seq); },
     returnToFarm: returnToFarm, navToMap: navToMap, navGoTo: navToMap, navWalkTile: navWalkTile, navDist: navDist, escapeTarget: escapeTarget, navTeleportNear: navTeleportNear, navSetPending: navSetPending, navClearPending: navClearPending, navPendingTick: navPendingTick, navPendingDest: navPendingDest, nearestWaygateMap: nearestWaygateMap, waygateMaps: waygateMaps, isWildAnchor: isWildAnchor, isTownMap: isTownMap, suppliesEmpty: suppliesEmpty,  navWaygateOut: navWaygateOut, navWorldTeleport: navWorldTeleport, worldTeleportTarget: worldTeleportTarget, findMapDetailsTeleport: findMapDetailsTeleport, navWalkToAnyExit: navWalkToAnyExit, townName: townName,
     navImportRecorder: navImportRecorder,
     mapDB: MapDB,
     nav: { graph: MapDB, route: navRoute, travelTo: navTravelTo, hop: navHop, learn: navLearn,
            poiLearnNow: poiLearnNow, poiLearn: () => MapDB.exportRecorder(), exportPoiLearn: exportPoiLearn,
-           mapName: navMapName, roundTrip: navRoundTrip, injectMoveButton: navInjectMoveButton,
+           mapName: navMapName, roundTrip: navRoamStep, injectMoveButton: navInjectMoveButton,
            isBusy: () => navBusy }
   };
 

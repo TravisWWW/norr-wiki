@@ -1,8 +1,8 @@
 {
-  "version": "2.6.150",
+  "version": "2.6.151",
   "date": "2026-10-25",
-  "notes": "修复：活动图里不再被「回挂机地图」待办导航拽走（切副角色收东西再切回主角色后仍能进活动）",
+  "notes": "v2.6.151 切图刷怪改为「去隔壁图打怪」：在挂机图与一张合格邻图之间来回刷；到达后用真实怪数据按当前筛选（等级/名单/黑名单/星级）判定，不合格的邻图自动拉黑跳过；被移走（阵亡/活动/切角色）一律回挂机图。",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 819427,
-  "sha256": "d1d15f06a5204a576a03896dc9efb9fdfc8ede6d315eb2c2e8ff1bafa086b138"
+  "size": 822272,
+  "sha256": "4391cc63cb25c25d6ec0216f337ccf32804254351a3ed7cc5fcbe01f40bf6b24"
 }
