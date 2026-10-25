@@ -1,8 +1,8 @@
 {
-  "version": "2.6.155",
+  "version": "2.6.156",
   "date": "2026-10-25",
-  "notes": "v2.6.155 Overlord 打完离场补全：房内没有返回传送门时，直接用世界地图传送出去（最多试 3 次），出去后自动登记「回挂机图」导航。",
+  "notes": "v2.6.156 导航途中也会等自动回血：走格引擎 walkTileCore 新增 heal 钩子，navWalkTile 注入 supply —— 血量/蓝量低于阈值就喝药并原地等补到阈值，再继续走（不计入导航超时）。",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 824458,
-  "sha256": "b70193945b0d32f8dd0f6acab01211681c4570381eb085202866a598df1388bf"
+  "size": 825082,
+  "sha256": "cf936417bd787321bb32746f147987a495dcbd71679b29dfe6b8033b910564f0"
 }

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.155
+// @version      2.6.156
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -189,7 +189,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.155';   // 与 @version 保持一致
+  const SCRIPT_VER = '2.6.156';   // 与 @version 保持一致
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -3608,6 +3608,9 @@
     const cond = opts.cond || function () { return character.x === gx && character.y === gy; };
     const retrigger = !!opts.retrigger;
     const onStuck = opts.onStuck || nudgeRecover;
+    /* ★ v2.6.156：导航途中也要等自动回血。由调用方注入（navWalkTile 传 supply）；
+       返回 true = 正在补血/补蓝 → 原地等，别继续走。默认不启用，保持 walkTileCore 的纯粹性。 */
+    const heal = (typeof opts.heal === 'function') ? opts.heal : function () { return false; };
     let from = null;
     try { from = character.current_map; } catch (e) { return 'cancel'; }
     const onTile = function () { return character.x === gx && character.y === gy; };
@@ -3709,6 +3712,8 @@
       /* 阵亡：点复活，等待期间不计入超时 */
       const df = document.getElementById('battle_defeat');
       if (df) { const b = df.querySelector('button'); if (b) { try { humanClick(b); } catch (e) { /* ignore */ } } paused += 4000; await sleep(4000); continue; }
+      /* ★ v2.6.156：低于补血/补蓝阈值 → 喝药并原地等补到阈值，再继续导航（不计入超时）。 */
+      if (heal()) { paused += 300; await sleep(300); continue; }
       /* 战斗中：交给游戏自动战斗，等待期间不计入超时 */
       if (hasFrame('frame_Combat')) { if (opts.combatText) setStatus(opts.combatText); paused += 900; await sleep(900); continue; }
       /* ★ v2.6.107 修复「导航途中击杀怪物后永久卡死」：
@@ -10362,7 +10367,8 @@
       cond: cond,
       retrigger: (opts.retrigger !== undefined) ? !!opts.retrigger : (until === 'mapChange'),
       combatText: opts.combatText,
-      onStuck: opts.onStuck
+      onStuck: opts.onStuck,
+      heal: supply                      /* ★ v2.6.156：导航途中也要等自动回血 */
     });
   }
 
