@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.151
+// @version      2.6.152
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -189,7 +189,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.151';   // 与 @version 保持一致
+  const SCRIPT_VER = '2.6.152';   // 与 @version 保持一致
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -6951,7 +6951,7 @@
     if (!o.phase) o.phase = 'MAIN';
     if (!o.idle || typeof o.idle !== 'object') o.idle = {};
     if (!o.fail || typeof o.fail !== 'object') o.fail = {};
-    if (!('mainRun' in o)) o.mainRun = null;   /* ★ 离开主角色前的挂机状态，切回来自动恢复 */
+    /* ★ v2.6.152：mainRun 已废弃（调度器不再管理主角色挂机）；老数据里的该字段被忽略。 */
     if (!('switching' in o)) o.switching = null;   /* ★ 正在切号：页面跳转期间不重复触发行程 */
     if (typeof o.paused !== 'boolean') o.paused = false;   /* ★ v2.6.79：暂停轮转（保留队列/记录，不切号不跑行程） */
     rot = o;
@@ -7157,21 +7157,12 @@
     const main = mcMain();
     if (!main) return false;
     if (String(character.id) === String(main.id)) {
-      /* ★ 切回主角色：离开前在挂机就自动恢复。
-         ★ 修 bug：原来先把 rot.mainRun 清空再 beginRun —— 若 beginRun 没真正启动
-         （不在游戏页 / 模式非法），恢复意图就永久丢失，主角色会「显示继续采集却不动」。
-         改成：确认真的跑起来（running）再清空；否则保留标记，下一 tick 继续试。 */
-      if (rot.mainRun && !running && !st.paused) {
-        const m = rot.mainRun.mode;
-        try { beginRun(m, { resume: true }); } catch (e) { /* ignore */ }
-        if (running) {
-          rot.mainRun = null; mcSaveRot();
-          logEvent('多角色：切回主角色，恢复「' + (m === 'gather' ? '采集' : (m === 'auto' ? '一键挂机' : '战斗')) + '」');
-        }
-      }
+      /* ★ v2.6.152：多角色调度器只管副角色 —— 主角色的挂机完全由挂机模块自己管理
+         （用户操作 / 断线续挂 autoResume），这里绝不 beginRun、绝不恢复主角色挂机。
+         原来这里有一块「切回主角色自动恢复 rot.mainRun」的逻辑：它越权启动了主角色挂机，
+         导致「停止挂机后 ~1.2s 又被调度器拉起来」。已删除。 */
       /* ★ v2.6.79：暂停中不读队列 —— mcWatchQueue() 会 mcBeginTrip() → mcSwitch() 切号，
-         实测把守卫只放在下面（副角色分支）根本挡不住：主角色页每 20s 读一次队列就把号切走了。
-         注意上面的 rot.mainRun 自动恢复**不受暂停影响** —— 暂停只冻结「轮转」，不冻结主角色挂机。 */
+         实测把守卫只放在下面（副角色分支）根本挡不住：主角色页每 20s 读一次队列就把号切走了。 */
       if (!rot.paused) mcWatchQueue();
       return false;
     }
@@ -7284,8 +7275,7 @@
   }
 
   function mcBeginTrip(alt, first) {
-    /* ★ 记住离开前主角色在不在挂机：切回来时自动恢复（不依赖 RUN_TTL） */
-    rot.mainRun = (running && st.mode) ? { mode: st.mode } : null;
+    /* ★ v2.6.152：不再记录「主角色挂机状态」—— 主角色的挂机完全由挂机模块自己管理。 */
     if (rot.idle[alt.id]) rot.idle[alt.id].readyAt = 0;   /* ★ 已开始行程 → 清掉待命延迟 */
     rot.phase = 'ALT_TRIP'; rot.tripAlt = alt.id; rot.step = 'ENTER'; rot.firstStart = !!first;
     mcSaveRot();
@@ -7734,16 +7724,14 @@
       else { hint.textContent = ''; }
     }
   }
-  /* ★ 停止：关闭轮转；若当前在副角色页 → 切回主角色（并把主角色的挂机标记补上，切回去自动续挂） */
+  /* ★ 停止：关闭轮转；若当前在副角色页 → 切回主角色。
+     ★ v2.6.152：不再替主角色写「续挂标记」—— 主角色的挂机完全由挂机模块自己管理。 */
   function mcStopAll() {
     mcSeq++;
     if (!rot) mcLoadRot();
     const main = mcMain();
-    const resume = rot.mainRun ? rot.mainRun.mode : null;
     rot.on = false; rot.paused = false; rot.phase = 'MAIN'; rot.tripAlt = null; rot.step = null; rot.switching = null; rot.rotWaitUntil = 0;
     cfg.multiChar = false;
-    if (resume && main) { try { localStorage.setItem(RUN_KEY, JSON.stringify({ mode: resume, at: now(), charId: main.id, charName: main.name || '' })); } catch (e) { /* ignore */ } }
-    rot.mainRun = null;
     saveCfg(); mcSaveRot(); syncUI(); mcRender();
     logEvent('多角色离线：已停止' + (main ? '，切回主角色「' + main.name + '」' : ''));
     setStatus('多角色离线：已停止');
@@ -12085,7 +12073,7 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
           });
           return { on: !!rot.on, phase: rot.phase, step: rot.step, tripAlt: rot.tripAlt, switching: rot.switching || null,
             rotWaitS: rot.rotWaitUntil ? Math.max(0, Math.round((rot.rotWaitUntil - now()) / 1000)) : 0,
-            firstStart: !!rot.firstStart, mainRun: rot.mainRun || null, idle: idle };
+            firstStart: !!rot.firstStart, idle: idle };
         }, null),
         queueCache: safe(function () { return (_mcQueueCache || []).map(function (s) { return { name: clean(s.name || ''), label: clean(s.label || ''), epoch: s.epoch, res: clean(s.res || ''), loc: clean(s.loc || '') }; }); }, [])
       };

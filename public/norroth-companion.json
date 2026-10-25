@@ -1,8 +1,8 @@
 {
-  "version": "2.6.151",
+  "version": "2.6.152",
   "date": "2026-10-25",
-  "notes": "v2.6.151 切图刷怪改为「去隔壁图打怪」：在挂机图与一张合格邻图之间来回刷；到达后用真实怪数据按当前筛选（等级/名单/黑名单/星级）判定，不合格的邻图自动拉黑跳过；被移走（阵亡/活动/切角色）一律回挂机图。",
+  "notes": "v2.6.152 多角色调度器只管副角色：删除「切回主角色自动恢复挂机」逻辑（mcTick 不再 beginRun 主角色），mcBeginTrip 不再记录主角色挂机状态，mcStopAll 不再替主角色写续挂标记。修复「停止挂机后 ~1.2s 又被多角色调度器拉起来」。",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 822272,
-  "sha256": "4391cc63cb25c25d6ec0216f337ccf32804254351a3ed7cc5fcbe01f40bf6b24"
+  "size": 821498,
+  "sha256": "b71169f6ea54292139c768e13bbec94c4fc8ebba269466fd822fb2ff3825a3c8"
 }
