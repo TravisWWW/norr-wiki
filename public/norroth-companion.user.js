@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.153
+// @version      2.6.154
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -93,7 +93,7 @@
     highlightSelf: true,        // ★ 融合：给自己精灵加一圈描边，人多时一眼找到自己
 
     /* 动画加速（合并自「动画加速器」） */
-    speedK: 5,                  // 加速倍率 1~5（支持 1 位小数），1 = 原速
+    speedK: 1,                  // 加速倍率 1~5（支持 1 位小数），1 = 原速（★ v2.6.154：默认改为 1）
     speedCombatOnly: true,      // ★ 固定「只加速战斗动画」：生产/搜刮/采集/走格/UI 都有服务器校验，一律不加速
     winScale: 100,              // ★ 高级：游戏弹窗（战斗 / 背包 / professions / activities / bank …）缩放百分比（20~100）
     /* ★ 真人化动作间隔：每个动作（走格 / 点游戏按钮 / 开窗口）之间随机等 min~max 毫秒 */
@@ -189,7 +189,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.153';   // 与 @version 保持一致
+  const SCRIPT_VER = '2.6.154';   // 与 @version 保持一致
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -262,7 +262,7 @@
              busyAt: 0, checkAt: 0, checkFails: 0, combatSkipAt: 0, lastLogAt: 0, lastHas: null,
              gateBusy: false, gateLogAt: 0, combatMap: 0 },   /* ★ v2.6.101：战斗型活动的「进战斗区」状态 */
     /* ★ v2.6.135：Overlord（世界 Boss）自动参战 */
-    ovl: { on: false, phase: 'idle', nextEpoch: 0, boss: '', lastPoll: 0, logAt: 0, joinedAt: 0 },
+    ovl: { on: false, phase: 'idle', nextEpoch: 0, boss: '', lastPoll: 0, logAt: 0, joinedAt: 0, fought: false, idleLogAt: 0 },
     tripManual: false, tripOrigin: null,
     gatherFighting: false,   // 采集模式里"正在打怪"的标记
     repair: { active: false, cooldownUntil: 0, failCount: 0, smith: null, route: null },
@@ -389,7 +389,9 @@
     c.uiTab = ['idle', 'mc', 'food', 'service', 'speed'].indexOf(o.uiTab) >= 0 ? o.uiTab
             : ((o.uiTab === 'repair' || o.uiTab === 'sell') ? 'service'
             : (o.uiTab === 'battle' ? 'idle' : (o.uiTab === 'gather' ? 'mc' : (o.uiTab === 'potion' ? 'food' : 'idle'))));   // ★ 老标签页迁移
-    c.speedK = Math.min(5, Math.max(1, Math.round((+c.speedK || 5) * 10) / 10));   // 1~5，保留 1 位小数（此处不能调 clamp，还没定义）
+    c.speedK = Math.min(5, Math.max(1, Math.round((+c.speedK || 1) * 10) / 10));   // 1~5，保留 1 位小数（此处不能调 clamp，还没定义）
+    /* ★ v2.6.154：加速默认改为 1 —— 老配置一次性归 1（之后用户改了就不再动） */
+    if (!c.speedKDefault1) { c.speedK = 1; c.speedKDefault1 = true; }
     c.speedCombatOnly = true;                       // ★ 固定「只加速战斗」
     c.winScale = Math.min(100, Math.max(20, Math.round(+c.winScale || 100)));   // ★ 弹窗缩放 20~100%
     delete c.speedMoveAccel;                        // ★ 已删除「移动也加速」选项
@@ -5483,13 +5485,14 @@
      your latest location. The portal will close after being used.）。点它 = 游戏原生全局函数
      backPortal()，直接回到「进入活动前的位置」，比 navToMap 一步步走回去快得多（一次性。
      实测记录（资料汇编 36 章）：活动结束被服务器弹出后 #hud_portal 仍在，仍可 backPortal() 回去。 */
-  function tryBackPortal() {
+  function tryBackPortal(tag) {
+    const t = tag || '活动结束';
     try {
       const el = document.getElementById('hud_portal');
       if (!el) return false;
       if (!hudShown(el)) return false;                       /* 没显示 = 当前没有可用的返回传送门 */
-      logEvent('活动结束：使用返回传送门（#hud_portal / backPortal()）回进入前的位置');
-      setStatus('活动结束：用返回传送门回去…');
+      logEvent(t + '：使用返回传送门（#hud_portal / backPortal()）回进入前的位置');
+      setStatus(t + '：用返回传送门回去…');
       if (typeof window.backPortal === 'function') window.backPortal();
       else { try { el.click(); } catch (e2) { return false; } }   /* 没有全局函数就点图标本身 */
       return true;
@@ -5768,6 +5771,7 @@
     O.joinedAt = now();
     O.homeMap = +cfg.farmMap || +character.current_map;
     O.joinedEpoch = O.nextEpoch;
+    O.fought = false;                 /* ★ v2.6.154：新一场 → 复位「本场打过没」 */
     O.phase = 'joining';
     const seq = runSeq, charId = character.id;
     logEvent('Overlord：已到设定提前时间，进入房间');
@@ -5800,35 +5804,16 @@
   function ovlRoomTick() {
     const O = st.ovl;
     if (!O.on) {
-      O.on = true; O.phase = 'waiting';
+      O.on = true; O.phase = 'waiting'; O.fought = false;
       O.homeMap = O.homeMap || +cfg.farmMap || 0;
-      logEvent('Overlord：已进房，等待 Boss 或宝箱');
+      logEvent('Overlord：已进房，等待 Boss');
     }
-    if (hasFrame('frame_Combat')) { ensureAutoBattle(); noteCombat(); O.phase = 'combat'; return true; }
+    if (hasFrame('frame_Combat')) { O.fought = true; ensureAutoBattle(); noteCombat(); O.phase = 'combat'; return true; }
     if (handleFrames()) return true;
-    if (hasFrame('frame_OverlordLootbox')) { O.phase = 'loot'; setStatus('Overlord：等待宝箱结算…'); return true; }
+    /* ★ v2.6.154：打完不再开宝箱 —— 奖励改走邮件，开箱步骤已废弃。
+       宝箱格子（overlord_lootbox）/ 结算窗（frame_OverlordLootbox）一律忽略，直接等系统把角色传出房间。 */
     if (!renderSynced()) { setStatus('Overlord：等待地图加载…'); return true; }
     if (checkMove()) return true;
-    const boxes = $$q('.map_table [action="overlord_lootbox"][coords]');
-    if (boxes.length) {
-      const xy = String(boxes[0].getAttribute('coords') || '').split('-').map(Number);
-      if (!(xy[0] > 0 && xy[1] > 0)) return true;
-      O.phase = 'loot';
-      setStatus('Overlord：开启宝箱，等待领奖传出…');
-      if (+character.x !== xy[0] || +character.y !== xy[1]) {
-        startMove(xy[0], xy[1], 'res', 'Boss 宝箱');
-      } else if (now() - (O.actionAt || 0) >= 5000) {
-        O.actionAt = now();
-        const seq = runSeq, mapId = character.current_map;
-        humanDefer(function () {
-          if (!running || !cfg.autoOverlord || seq !== runSeq || character.current_map !== mapId) return;
-          if (+character.x !== xy[0] || +character.y !== xy[1]) return;
-          if (tileActionAt(xy[0], xy[1]) !== 'overlord_lootbox') return;
-          if (typeof window.execTileAction === 'function') window.execTileAction('overlord_lootbox', false);
-        });
-      }
-      return true;
-    }
     if (supply()) return true;
     const boss = scanEnemies().filter(e => isReachable(e.x, e.y)).sort((a, b) =>
       manhattan(character.x, character.y, a.x, a.y) - manhattan(character.x, character.y, b.x, b.y))[0];
@@ -5837,9 +5822,22 @@
       if (now() - (O.actionAt || 0) >= 2000) {
         O.actionAt = now(); startMove(boss.x, boss.y, 'enemy', 'Overlord · ' + boss.name);
       }
+      return true;
+    }
+    /* 房内没有 Boss 了（已打完 / 还没刷）→ 直接离场。
+       先试游戏自己的返回传送门；没有传送门就等系统把角色传出房间
+       （ovlTick 的 O.on 分支会检测到「已离开房间」并登记返程）。
+       ★ 只在「本场确实打过」之后才试传送门，避免刚进房就被传走。 */
+    O.phase = 'waiting'; st.phase = 'idle'; st.target = null;
+    if (O.fought) {
+      if (tryBackPortal('Overlord 结束')) { O.phase = 'leaving'; return true; }
+      if (now() - (O.idleLogAt || 0) > 60000) {
+        O.idleLogAt = now();
+        logEvent('Overlord：房内已无 Boss，等待系统传出房间…');
+      }
+      setStatus('Overlord：已打完，等待离场…');
     } else {
-      O.phase = 'waiting'; st.phase = 'idle'; st.target = null;
-      setStatus('Overlord：等待 Boss 刷新 / 宝箱出现…');
+      setStatus('Overlord：等待 Boss 刷新…');
     }
     return true;
   }
@@ -8567,7 +8565,7 @@
 
           <div class="divblock_dark" style="margin-top:4px">
             <div class="nr-srow">
-              <label title="需 Lv30+；服务器时间 01/10/19 点刷新。按设定提前秒数进房，打怪、开宝箱，传出后回挂机点。"><input type="checkbox" class="chk" id="nr-autoovl">自动打 Overlord</label>
+              <label title="需 Lv30+；服务器时间 01/10/19 点刷新。按设定提前秒数进房打 Boss，打完直接离场（奖励走邮件，不再开宝箱）。"><input type="checkbox" class="chk" id="nr-autoovl">自动打 Overlord</label>
               <span class="nr-sl">提前</span><input type="number" id="nr-ovl_lead" min="0" max="600" step="5" class="nr-snum" title="刷新前多少秒开始蹲点">
               <span class="nr-sl">秒</span>
             </div>

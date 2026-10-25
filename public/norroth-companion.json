@@ -1,8 +1,8 @@
 {
-  "version": "2.6.153",
+  "version": "2.6.154",
   "date": "2026-10-25",
-  "notes": "v2.6.153 修回归：切图刷怪不再硬性要求邻图 type==='Normal'（种子数据 329 张图有 206 张没有 type，硬过滤把绝大多数邻图挡掉，导致切图完全没反应）。改为「排除城镇 + 已拉黑，优先 Normal，未知类型也去，靠到达后真实怪数据判定」，并补诊断日志。",
+  "notes": "v2.6.154 ①动画加速默认改为 1（老配置一次性归 1）②自动 Overlord 打完不再开宝箱（奖励改走邮件），打完直接离场：优先用游戏返回传送门，没有就等系统把角色传出房间。",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 822607,
-  "sha256": "50745a8ef5d670f91f2a929a24d07200a9a8be3fd5c935ef62e96ecf16fd64e3"
+  "size": 822805,
+  "sha256": "cc3c01d9a032843668ade2169ad17bfa90ea26ce1df10e497fa0034d44b570e3"
 }
