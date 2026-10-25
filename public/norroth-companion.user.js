@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.154
+// @version      2.6.155
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -189,7 +189,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.154';   // 与 @version 保持一致
+  const SCRIPT_VER = '2.6.155';   // 与 @version 保持一致
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -262,7 +262,7 @@
              busyAt: 0, checkAt: 0, checkFails: 0, combatSkipAt: 0, lastLogAt: 0, lastHas: null,
              gateBusy: false, gateLogAt: 0, combatMap: 0 },   /* ★ v2.6.101：战斗型活动的「进战斗区」状态 */
     /* ★ v2.6.135：Overlord（世界 Boss）自动参战 */
-    ovl: { on: false, phase: 'idle', nextEpoch: 0, boss: '', lastPoll: 0, logAt: 0, joinedAt: 0, fought: false, idleLogAt: 0 },
+    ovl: { on: false, phase: 'idle', nextEpoch: 0, boss: '', lastPoll: 0, logAt: 0, joinedAt: 0, fought: false, idleLogAt: 0, leaveBusy: false, leaveAt: 0, leaveTries: 0 },
     tripManual: false, tripOrigin: null,
     gatherFighting: false,   // 采集模式里"正在打怪"的标记
     repair: { active: false, cooldownUntil: 0, failCount: 0, smith: null, route: null },
@@ -5772,6 +5772,7 @@
     O.homeMap = +cfg.farmMap || +character.current_map;
     O.joinedEpoch = O.nextEpoch;
     O.fought = false;                 /* ★ v2.6.154：新一场 → 复位「本场打过没」 */
+    O.leaveBusy = false; O.leaveAt = 0; O.leaveTries = 0;
     O.phase = 'joining';
     const seq = runSeq, charId = character.id;
     logEvent('Overlord：已到设定提前时间，进入房间');
@@ -5804,7 +5805,7 @@
   function ovlRoomTick() {
     const O = st.ovl;
     if (!O.on) {
-      O.on = true; O.phase = 'waiting'; O.fought = false;
+      O.on = true; O.phase = 'waiting'; O.fought = false; O.leaveBusy = false; O.leaveAt = 0; O.leaveTries = 0;
       O.homeMap = O.homeMap || +cfg.farmMap || 0;
       logEvent('Overlord：已进房，等待 Boss');
     }
@@ -5829,16 +5830,32 @@
        （ovlTick 的 O.on 分支会检测到「已离开房间」并登记返程）。
        ★ 只在「本场确实打过」之后才试传送门，避免刚进房就被传走。 */
     O.phase = 'waiting'; st.phase = 'idle'; st.target = null;
-    if (O.fought) {
-      if (tryBackPortal('Overlord 结束')) { O.phase = 'leaving'; return true; }
-      if (now() - (O.idleLogAt || 0) > 60000) {
-        O.idleLogAt = now();
-        logEvent('Overlord：房内已无 Boss，等待系统传出房间…');
-      }
-      setStatus('Overlord：已打完，等待离场…');
-    } else {
-      setStatus('Overlord：等待 Boss 刷新…');
+    if (!O.fought) { setStatus('Overlord：等待 Boss 刷新…'); return true; }
+    /* 本场打过、房内已无 Boss → 离场。
+       ① 先试游戏自己的返回传送门（#hud_portal / backPortal()）；
+       ② 没有传送门 → 用世界地图直接传出去（★ v2.6.155：实测房内不会自动传出）。
+          传出去后 ovlTick 的 O.on 分支会检测到「已离开房间」并登记回挂机图的导航。 */
+    if (tryBackPortal('Overlord 结束')) { O.phase = 'leaving'; return true; }
+    if (!O.leaveBusy && (O.leaveTries || 0) < 3 && now() - (O.leaveAt || 0) >= 5000) {
+      const home = +O.homeMap || +cfg.farmMap || 0;
+      const tgt = home > 0 ? (worldTeleportTarget(home) || home) : 0;
+      if (!(tgt > 0)) { setStatus('Overlord：没有可传的目的地，等待手动处理…'); return true; }
+      O.leaveBusy = true; O.leaveAt = now(); O.leaveTries = (O.leaveTries || 0) + 1;
+      O.phase = 'leaving';
+      logEvent('Overlord：房内没有返回传送门 → 世界地图传送离场（第 ' + O.leaveTries + ' 次 → ' + navMapName(tgt) + '）');
+      setStatus('Overlord：用世界地图传送离场…');
+      navWorldTeleport(tgt, function () { return running && cfg.autoOverlord; }).then(function (out) {
+        O.leaveBusy = false;
+        logEvent(out ? ('Overlord：世界地图传送成功 → ' + navMapName(out)) : 'Overlord：世界地图传送失败（没有传送道具 / 非 Noble）');
+      }, function () { O.leaveBusy = false; });
+      return true;
     }
+    if ((O.leaveTries || 0) >= 3) {
+      if (now() - (O.idleLogAt || 0) > 60000) { O.idleLogAt = now(); logEvent('Overlord：世界地图传送多次失败，留在房内（请手动离场）'); }
+      setStatus('Overlord：离场失败，等待手动处理…');
+      return true;
+    }
+    setStatus('Overlord：已打完，准备离场…');
     return true;
   }
   function ovlHolding() {
