@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.148
+// @version      2.6.149
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -189,7 +189,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.148';   // 与 @version 保持一致
+  const SCRIPT_VER = '2.6.149';   // 与 @version 保持一致
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -6355,6 +6355,49 @@
     setStatus('检测到卡住，已自动复位（第 ' + W.heals + ' 次）…');
   }
 
+  /* ── 兜底[锁屏 / 切后台] ────────────────────────────────────────
+   * 症状：锁屏或切到后台后挂机「卡住」。
+   * 根因：页面变 hidden → Chrome 暂停 requestAnimationFrame 并把定时器降频
+   *       （隐藏页最低 1s；隐藏 >5 分钟进入「密集节流」→ 每分钟约 1 次）→
+   *       主循环（rhythmTimer 链式 setTimeout）几乎停摆，游戏走格动画也停。
+   * 次生问题：解锁回来第一次 tick 时 now() 已过去很久 →
+   *       checkFrozen（8s 无位移）判「走位卡死」→ 连续 8 次直接自动刷新页面；
+   *       checkStuck 也会反复自愈 + 拉黑目标。
+   * 动作：回到前台且离开 >3s → 重置所有「基于时间」的看门狗时间戳（不动累计统计）。
+   * 说明：脚本侧只能消除「误判」；锁屏期间的降频需在浏览器/系统层面解决。
+   * ─────────────────────────────────────────────────────────── */
+  let _bgAwayAt = 0;
+  function resetWatchdogsAfterBackground() {
+    const t = now();
+    st.watch = { x: character.x, y: character.y, exp: character.current_exp || 0, kills: st.kills || 0, at: t, heals: 0 };
+    st.frozen = { pos: character.x + ',' + character.y, at: t, hits: 0 };
+    st.lastStats = 0;
+    st.noSupplyAt = 0;
+    st.visitedAt = 0;
+    if (!st.entity) st.entity = { at: 0 }; st.entity.at = 0;
+    st.gatherIdleSince = 0; st.gatherResync = 0;
+    if (st.nudging && t - st.nudging > 2600) st.nudging = 0;
+    if (st.settling && t - st.settling > 40000) st.settling = 0;
+    if (st.move) { st.move.at = t; st.move.lastPosAt = t; st.move.lastPos = ''; st.move.retryAt = t; }
+    if (navPending) navPending.nextAt = 0;
+  }
+  function onVisibilityChange() {
+    try {
+      if (document.visibilityState === 'hidden') {
+        _bgAwayAt = now();
+        if (running) setStatus('页面已切到后台 / 锁屏：浏览器会降频，挂机可能变慢…');
+        return;
+      }
+      const away = _bgAwayAt ? (now() - _bgAwayAt) : 0;
+      _bgAwayAt = 0;
+      if (away > 3000) {
+        resetWatchdogsAfterBackground();
+        logEvent('回到前台（后台 ' + Math.round(away / 1000) + 's）：已重置看门狗时间戳，避免误判卡死');
+        if (running) setStatus('已回到前台，继续挂机');
+      }
+    } catch (e) { /* ignore */ }
+  }
+
   /* ---- 阵亡处理：挂机时人不在屏幕前，「自动点 Continue 复活」是刚需 ---- */
   let defeatAt = 0, defeatTries = 0;
   function resetDefeat() { defeatAt = 0; defeatTries = 0; }
@@ -9592,8 +9635,10 @@
     const what = mode === 'gather' ? '采集' : (mode === 'auto' ? '一键挂机' : (mode === 'tower' ? '爬塔' : '战斗'));
     setStatus('已开始' + what);
     logEvent('开始' + what);
-    /* ★ v2.6.148：断线续挂（页面刷新后自动继续）也先核对是否还在挂机地图，不在就先回图。 */
-    if ((opts && opts.resume) && mode !== 'tower') ensureAtFarmMap('断线续挂');
+    /* ★ v2.6.149：开始 / 断线续挂都先核对是否还在挂机地图，不在就先回图再干活。
+       覆盖「锁定图 ≠ 当前图」的两种情况：弹窗选「保持原图」，或刷新后续挂。
+       爬塔模式自己的导航负责，不插手。 */
+    if (mode !== 'tower') ensureAtFarmMap((opts && opts.resume) ? '断线续挂' : '开始挂机');
     if (!timer) timer = rhythmTimer(tick, TICK);
     markRunning(mode);
     syncRunButtons();
@@ -9856,6 +9901,7 @@
     mcLoadRot();                                         // ★ 多角色轮转状态（落盘）
     try { syncMcBtns(); } catch (e) { /* ignore */ }      // ★ v2.6.79：按落盘状态刷「启动全部/停止」「暂停/继续」
     tryResumeAfterReload();
+    try { document.addEventListener('visibilitychange', onVisibilityChange); } catch (e) { /* ignore */ }
     /* ★ v2.6.77：在线更新 —— 版本号角标可点 + 每次进游戏查一次远端版本 */
     const vEl = document.getElementById('nr-ver');
     if (vEl) vEl.addEventListener('click', function () { if (updInfo) openUpdate(); });

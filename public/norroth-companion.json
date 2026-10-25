@@ -1,8 +1,8 @@
 {
-  "version": "2.6.148",
+  "version": "2.6.149",
   "date": "2026-10-25",
-  "notes": "暂停继续/断线续挂时先核对挂机地图：不在就先导航回图再开始任务（新增 ensureAtFarmMap）",
+  "notes": "开始/续挂先核对挂机地图（保持原图也回图）；新增锁屏/切后台守卫，回来时重置看门狗避免误判卡死与自动刷新",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 815603,
-  "sha256": "5102712e885a9c08ebe9216200dd37fe4414248d6a897be9cf954c440aafa827"
+  "size": 818431,
+  "sha256": "fd8d418ef62885887fbd0cab13d06885a4011685b921e7cf5a89b2e2f00bf7ff"
 }
