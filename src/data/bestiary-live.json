@@ -1,6 +1,6 @@
 {
  "meta": {
-  "source": "游戏内 Inspect（/modal/inspect_enemy）· 小伴侣导出 · 3 位贡献者合并",
+  "source": "游戏内 Inspect（/modal/inspect_enemy）· 小伴侣导出 · 4 位贡献者合并",
   "fetched": "2026-10-25",
   "version": "1.0",
   "contributors": [
@@ -30,10 +30,19 @@
     "count": 193,
     "recorded": 8,
     "mergedAt": "2026-10-25"
+   },
+   {
+    "file": "char-3119.json",
+    "char": "#3119",
+    "level": 7,
+    "time": "2026-10-25T06:53:22.255Z",
+    "count": 193,
+    "recorded": 193,
+    "mergedAt": "2026-10-25"
    }
   ],
   "count": 199,
-  "recordedCount": 135,
+  "recordedCount": 193,
   "withLore": 198,
   "withStats": 75,
   "withSkills": 94,
@@ -1656,7 +1665,7 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_24.gif",
    "bg": "rainforest.jpg",
-   "recorded": false
+   "recorded": true
   },
   {
    "id": 25,
@@ -1667,7 +1676,7 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_25.gif",
    "bg": "rainforest.jpg",
-   "recorded": false
+   "recorded": true
   },
   {
    "id": 27,
@@ -2243,7 +2252,7 @@
    "lore": "Heavy-coated and heavy-headed, the Muskox endures the harshest climates with quiet strength. But provoke it, and you'll meet a horned fury capable of shattering bone and will alike.",
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_39.gif",
-   "recorded": false
+   "recorded": true
   },
   {
    "id": 40,
@@ -2504,7 +2513,7 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_49.gif",
    "bg": "marsh.jpg",
-   "recorded": false
+   "recorded": true
   },
   {
    "id": 50,
@@ -2617,7 +2626,7 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_52.gif",
    "bg": "sewers.jpg",
-   "recorded": false
+   "recorded": true
   },
   {
    "id": 54,
@@ -2871,7 +2880,7 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_57.gif",
    "bg": "shipwreck.jpg",
-   "recorded": false
+   "recorded": true
   },
   {
    "id": 62,
@@ -3232,7 +3241,7 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_71.gif",
    "bg": "ratdom.jpg",
-   "recorded": false
+   "recorded": true
   },
   {
    "id": 72,
@@ -3243,7 +3252,7 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_72.gif",
    "bg": "ratdom.jpg",
-   "recorded": false
+   "recorded": true
   },
   {
    "id": 86,
@@ -3492,7 +3501,7 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_89.gif",
    "bg": "shipwreck.jpg",
-   "recorded": false
+   "recorded": true
   },
   {
    "id": 95,
@@ -5764,7 +5773,7 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_123.gif",
    "bg": "red_desert.jpg",
-   "recorded": false
+   "recorded": true
   },
   {
    "id": 124,
@@ -5775,7 +5784,7 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_124.gif",
    "bg": "red_desert.jpg",
-   "recorded": false
+   "recorded": true
   },
   {
    "id": 125,
@@ -5786,7 +5795,7 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_125.gif",
    "bg": "red_desert.jpg",
-   "recorded": false
+   "recorded": true
   },
   {
    "id": 126,
@@ -6316,7 +6325,7 @@
    "tab": "boss",
    "icon": "https://www.norroth.com/images/maps/items/enemy_134.gif",
    "bg": "den_of_devourer.jpg",
-   "recorded": false
+   "recorded": true
   },
   {
    "id": 135,
@@ -6327,7 +6336,7 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_135.gif",
    "bg": "bear_den.jpg",
-   "recorded": false
+   "recorded": true
   },
   {
    "id": 137,
@@ -6494,7 +6503,7 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_141.gif",
    "bg": "shipwreck.jpg",
-   "recorded": false
+   "recorded": true
   },
   {
    "id": 142,
@@ -6505,7 +6514,7 @@
    "tab": "boss",
    "icon": "https://www.norroth.com/images/maps/items/enemy_142.gif",
    "bg": "marine.jpg",
-   "recorded": false
+   "recorded": true
   },
   {
    "id": 143,
@@ -6631,7 +6640,7 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_146.gif",
    "bg": "pumpkin_skerry.jpg",
-   "recorded": false
+   "recorded": true
   },
   {
    "id": 147,
@@ -6642,7 +6651,7 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_147.gif",
    "bg": "hollow_forest.jpg",
-   "recorded": false
+   "recorded": true
   },
   {
    "id": 148,
@@ -7175,7 +7184,7 @@
    "tab": "boss",
    "icon": "https://www.norroth.com/images/maps/items/enemy_156.gif",
    "bg": "hollow_forest.jpg",
-   "recorded": false
+   "recorded": true
   },
   {
    "id": 157,
@@ -7186,7 +7195,7 @@
    "tab": "overlord",
    "icon": "https://www.norroth.com/images/maps/items/enemy_157.gif",
    "bg": "underground.jpg",
-   "recorded": false
+   "recorded": true
   },
   {
    "id": 158,
@@ -7469,7 +7478,7 @@
    "tab": "boss",
    "icon": "https://www.norroth.com/images/maps/items/enemy_164.gif",
    "bg": "taiga.jpg",
-   "recorded": false
+   "recorded": true
   },
   {
    "id": 165,
@@ -7754,7 +7763,7 @@
    "tab": "boss",
    "icon": "https://www.norroth.com/images/maps/items/enemy_169.gif",
    "bg": "stirge_lair.jpg",
-   "recorded": false
+   "recorded": true
   },
   {
    "id": 170,
@@ -7765,7 +7774,7 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_170.gif",
    "bg": "stirge_lair.jpg",
-   "recorded": false
+   "recorded": true
   },
   {
    "id": 171,
@@ -7776,7 +7785,7 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_171.gif",
    "bg": "stirge_lair.jpg",
-   "recorded": false
+   "recorded": true
   },
   {
    "id": 172,
@@ -8154,7 +8163,7 @@
    "lore": "From the perfumed ruins of Loveland rises the Succubus, a creature of temptation, wings, and wickedness. Cloaked in sensuality and sharpened claws, she whispers promises sweeter than salvation and feeds on longing turned to madness. Many follow her into the dark, none return whole.",
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_176.gif",
-   "recorded": false
+   "recorded": true
   },
   {
    "id": 177,
@@ -9210,7 +9219,7 @@
    "tab": "boss",
    "icon": "https://www.norroth.com/images/maps/items/enemy_191.gif",
    "bg": "frost_cave.jpg",
-   "recorded": false
+   "recorded": true
   },
   {
    "id": 192,
@@ -9266,7 +9275,7 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_193.gif",
    "bg": "venom_isle.jpg",
-   "recorded": false
+   "recorded": true
   },
   {
    "id": 195,
@@ -9277,7 +9286,7 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_195.gif",
    "bg": "venom_isle.jpg",
-   "recorded": false
+   "recorded": true
   },
   {
    "id": 197,
@@ -9326,7 +9335,7 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_198.gif",
    "bg": "bunny_remote.jpg",
-   "recorded": false
+   "recorded": true
   },
   {
    "id": 199,
@@ -9443,7 +9452,7 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_200.gif",
    "bg": "sinister_isle.jpg",
-   "recorded": false
+   "recorded": true
   },
   {
    "id": 201,
@@ -9454,7 +9463,7 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_201.gif",
    "bg": "rainforest.jpg",
-   "recorded": false
+   "recorded": true
   },
   {
    "id": 202,
@@ -9465,7 +9474,7 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_202.gif",
    "bg": "rainforest.jpg",
-   "recorded": false
+   "recorded": true
   },
   {
    "id": 203,
@@ -9476,7 +9485,7 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_203.gif",
    "bg": "rainforest.jpg",
-   "recorded": false
+   "recorded": true
   },
   {
    "id": 204,
@@ -9487,7 +9496,7 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_204.gif",
    "bg": "elysian_isle.jpg",
-   "recorded": false
+   "recorded": true
   },
   {
    "id": 205,
@@ -9498,7 +9507,7 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_205.gif",
    "bg": "vulcanic_isle.jpg",
-   "recorded": false
+   "recorded": true
   },
   {
    "id": 206,
@@ -9509,7 +9518,7 @@
    "tab": "overlord",
    "icon": "https://www.norroth.com/images/maps/items/enemy_206.gif",
    "bg": "temple.jpg",
-   "recorded": false
+   "recorded": true
   },
   {
    "id": 207,
@@ -9520,7 +9529,7 @@
    "tab": "overlord",
    "icon": "https://www.norroth.com/images/maps/items/enemy_207.gif",
    "bg": "itham_s_heart.jpg",
-   "recorded": false
+   "recorded": true
   },
   {
    "id": 208,
@@ -9554,7 +9563,7 @@
    "tab": "overlord",
    "icon": "https://www.norroth.com/images/maps/items/enemy_209.gif",
    "bg": "urban.jpg",
-   "recorded": false
+   "recorded": true
   },
   {
    "id": 210,
@@ -9565,7 +9574,7 @@
    "tab": "overlord",
    "icon": "https://www.norroth.com/images/maps/items/enemy_210.gif",
    "bg": "vulcanic_underground.jpg",
-   "recorded": false
+   "recorded": true
   },
   {
    "id": 211,
@@ -9576,7 +9585,7 @@
    "tab": "overlord",
    "icon": "https://www.norroth.com/images/maps/items/enemy_211.gif",
    "bg": "frost_cave.jpg",
-   "recorded": false
+   "recorded": true
   },
   {
    "id": 213,
@@ -9807,7 +9816,7 @@
    "tab": "boss",
    "icon": "https://www.norroth.com/images/maps/items/enemy_218.gif",
    "bg": "ape_temple.jpg",
-   "recorded": false
+   "recorded": true
   },
   {
    "id": 221,
@@ -10352,7 +10361,7 @@
    "lore": "...",
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_226.gif",
-   "recorded": false
+   "recorded": true
   },
   {
    "id": 227,
@@ -10361,7 +10370,7 @@
    "lore": "...",
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_227.gif",
-   "recorded": false
+   "recorded": true
   },
   {
    "id": 228,
@@ -10370,7 +10379,7 @@
    "lore": "...",
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_228.gif",
-   "recorded": false
+   "recorded": true
   },
   {
    "id": 229,
@@ -10403,7 +10412,7 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_230.gif",
    "bg": "loot_bay.jpg",
-   "recorded": false
+   "recorded": true
   },
   {
    "id": 231,
@@ -10435,7 +10444,7 @@
    "lore": "A blazing specter of autumn wrath, Jacked-o-Lantern stalks the night with flames in its skull and vengeance in its steps. Its lanterns burn more than flesh, they ignite fear itself. It is Halloween made manifest.",
    "tab": "overlord",
    "icon": "https://www.norroth.com/images/maps/items/enemy_235.gif",
-   "recorded": false
+   "recorded": true
   },
   {
    "id": 237,
@@ -10445,7 +10454,7 @@
    "lore": "Gentle as falling snow, yet swift and sharp when cornered, the Snow Rabbit bounds through frost with uncanny awareness. A wintery whisper in the woods.",
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_237.gif",
-   "recorded": false
+   "recorded": true
   },
   {
    "id": 238,
@@ -10454,7 +10463,7 @@
    "lore": "Wielding blades forged in folklore and a grin carved from nightmares, Jack slashes through reality with festive violence. He always comes back.",
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_238.gif",
-   "recorded": false
+   "recorded": true
   },
   {
    "id": 239,
@@ -10464,7 +10473,7 @@
    "lore": "With twitching nose and twinkling eyes, the Cute Bunny deceives with innocence. But its bite is real, and its loyalty fierce, for those it chooses.",
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_239.gif",
-   "recorded": false
+   "recorded": true
   },
   {
    "id": 240,
@@ -10778,7 +10787,7 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_247.gif",
    "bg": "underground.jpg",
-   "recorded": false
+   "recorded": true
   },
   {
    "id": 248,
@@ -10789,7 +10798,7 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_248.gif",
    "bg": "mountain.jpg",
-   "recorded": false
+   "recorded": true
   },
   {
    "id": 250,
@@ -10800,7 +10809,7 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_250.gif",
    "bg": "mountain.jpg",
-   "recorded": false
+   "recorded": true
   },
   {
    "id": 251,
@@ -10811,7 +10820,7 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_251.gif",
    "bg": "mountain.jpg",
-   "recorded": false
+   "recorded": true
   },
   {
    "id": 252,
@@ -10822,7 +10831,7 @@
    "tab": "boss",
    "icon": "https://www.norroth.com/images/maps/items/enemy_252.gif",
    "bg": "vulcanic_underground.jpg",
-   "recorded": false
+   "recorded": true
   },
   {
    "id": 253,
@@ -10831,7 +10840,7 @@
    "lore": "A wandering bundle of color and rattling treasures, stitched together by forgotten festival magic. It does not attack, nor does it flee, simply swaying as if waiting for the blow that will break it open. Those who shatter its brittle shell are often rewarded with a rain of curious prizes.",
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_253.gif",
-   "recorded": false
+   "recorded": true
   },
   {
    "id": 255,
@@ -10842,7 +10851,7 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_255.gif",
    "bg": "underground.jpg",
-   "recorded": false
+   "recorded": true
   },
   {
    "id": 256,
@@ -10853,7 +10862,7 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_256.gif",
    "bg": "underground.jpg",
-   "recorded": false
+   "recorded": true
   },
   {
    "id": 257,
@@ -10880,7 +10889,7 @@
    "tab": "boss",
    "icon": "https://www.norroth.com/images/maps/items/enemy_261.gif",
    "bg": "arcane_isle.jpg",
-   "recorded": false
+   "recorded": true
   }
  ]
 }
