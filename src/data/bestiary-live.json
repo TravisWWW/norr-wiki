@@ -1,6 +1,6 @@
 {
  "meta": {
-  "source": "游戏内 Inspect（/modal/inspect_enemy）· 小伴侣导出 · 2 位贡献者合并",
+  "source": "游戏内 Inspect（/modal/inspect_enemy）· 小伴侣导出 · 3 位贡献者合并",
   "fetched": "2026-10-25",
   "version": "1.0",
   "contributors": [
@@ -21,10 +21,19 @@
     "count": 193,
     "recorded": 111,
     "mergedAt": "2026-10-25"
+   },
+   {
+    "file": "char-3114.json",
+    "char": "#3114",
+    "level": 11,
+    "time": "2026-10-25T05:13:22.060Z",
+    "count": 193,
+    "recorded": 8,
+    "mergedAt": "2026-10-25"
    }
   ],
   "count": 199,
-  "recordedCount": 134,
+  "recordedCount": 135,
   "withLore": 198,
   "withStats": 75,
   "withSkills": 94,
@@ -2461,7 +2470,30 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_47.gif",
    "bg": "sewers.jpg",
-   "recorded": false
+   "recorded": true,
+   "levelRange": "1 - 10",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "Low",
+   "defense": "High",
+   "resistance": "Medium",
+   "scavenging": [
+    {
+     "name": "Mucky Chitin",
+     "res": "mucky_chitin",
+     "pct": "14%"
+    },
+    {
+     "name": "Mucky Tendon",
+     "res": "mucky_tendon",
+     "pct": "57%"
+    },
+    {
+     "name": "Mucky Eye",
+     "res": "mucky_eye",
+     "pct": "29%"
+    }
+   ]
   },
   {
    "id": 49,
