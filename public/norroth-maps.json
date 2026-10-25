@@ -1,7 +1,7 @@
 {
  "meta": {
-  "source": "小伴侣地图数据（MapDB）· 5 位贡献者合并",
-  "updated": "2026-10-25T05:14:07.418Z",
+  "source": "小伴侣地图数据（MapDB）· 6 位贡献者合并",
+  "updated": "2026-10-25T06:53:21.546Z",
   "version": "1.0",
   "contributors": [
    {
@@ -41,6 +41,14 @@
     "char": "#3114",
     "level": 11,
     "time": "2026-10-25T05:13:01.421Z",
+    "count": 329,
+    "mergedAt": "2026-10-25"
+   },
+   {
+    "file": "maps-3119.json",
+    "char": "#3119",
+    "level": 7,
+    "time": "2026-10-25T06:53:04.163Z",
     "count": 329,
     "mergedAt": "2026-10-25"
    }
@@ -752,17 +760,17 @@
    ]
   },
   "15": {
-   "at": 1792905178002,
+   "at": 1792911183067,
    "name": "Arodas Beach",
    "type": "Normal",
    "g": [
-    "Shrimp Pier"
+    "Shrimp 碼頭"
    ],
    "gt": [
     [
      32,
      35,
-     "Shrimp Pier"
+     "Shrimp 碼頭"
     ]
    ],
    "m": [
