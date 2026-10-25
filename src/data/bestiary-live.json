@@ -1,7 +1,7 @@
 {
  "meta": {
   "source": "游戏内 Inspect（/modal/inspect_enemy）· 小伴侣导出 · 2 位贡献者合并",
-  "fetched": "2026-10-24",
+  "fetched": "2026-10-25",
   "version": "1.0",
   "contributors": [
    {
@@ -11,7 +11,7 @@
     "time": "2026-10-24T18:27:04.397Z",
     "count": 193,
     "recorded": 123,
-    "mergedAt": "2026-10-24"
+    "mergedAt": "2026-10-25"
    },
    {
     "file": "char-1151.json",
@@ -20,7 +20,7 @@
     "time": "2026-10-24T20:03:37.677Z",
     "count": 193,
     "recorded": 111,
-    "mergedAt": "2026-10-24"
+    "mergedAt": "2026-10-25"
    }
   ],
   "count": 199,
