@@ -1,8 +1,8 @@
 {
-  "version": "2.6.157",
+  "version": "2.6.158",
   "date": "2026-10-26",
-  "notes": "v2.6.157 临时活动优先级 = Overlord > 活动 > 多角色离线：活动进行中不再切号；Overlord 不再被「活动进行中」挡住（只在活动进出切换时让路），活动在 Overlord 期间让路。休整返程回原活动：活动图 / 活动战斗区 / Overlord 房都会记成返程目标（原来只认活动大厅）。",
+  "notes": "v2.6.158 采集开始时机修正：到位后先给游戏 1.2s 自动开采的机会，没开再主动触发一次（只采集原来干等 8s 且先做落位；一键挂机原来刚到位就误判重开）。8s 看门狗与落位/重开阶梯保留。",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 827166,
-  "sha256": "65bd6dd3d18c0eed769efb44226dbcfe1689422c862e45b5657e0b8823346f24"
+  "size": 828313,
+  "sha256": "628e6bb4d1ff46299c31f4e1a76b208fee49444c7dedb7dfe77d7c8430113ef0"
 }

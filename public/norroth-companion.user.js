@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.157
+// @version      2.6.158
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -189,7 +189,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.157';   // 与 @version 保持一致
+  const SCRIPT_VER = '2.6.158';   // 与 @version 保持一致
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -257,6 +257,7 @@
     lastStats: 0,
     gatherRetryAt: 0,
     gatherIdleSince: 0, gatherResync: 0,   // ★ 采集看门狗：进度条不转的累计时间 / 重试次数
+    gatherQuickAt: 0,                      // ★ v2.6.158：本次「到位」后已做过一次快速主动开采的时间戳
     /* ★ 活动自动进入（采集）：phase = idle | enter | in | return */
     event: { on: false, phase: 'idle', busy: false, homeMap: 0, homePoint: '', homeRes: '', homeType: '', pointName: '', enteredAt: 0, lastCheckAt: 0, timeLeft: null, score: null,
              busyAt: 0, checkAt: 0, checkFails: 0, combatSkipAt: 0, lastLogAt: 0, lastHas: null,
@@ -5215,8 +5216,16 @@
        * 上限：不停止，按上面循环。
        * 高级参数：不受影响（8 秒写死）。
        * ─────────────────────────────────────────────────────────── */
-      if (gatheringActive() && gatheringTurning()) { st.phase = 'gather'; st.gatherRetryAt = 0; st.gatherIdleSince = 0; st.gatherResync = 0; setStatus('采集中…（游戏自动循环）'); return; }
+      if (gatheringActive() && gatheringTurning()) { st.phase = 'gather'; st.gatherRetryAt = 0; st.gatherIdleSince = 0; st.gatherResync = 0; st.gatherQuickAt = 0; setStatus('采集中…（游戏自动循环）'); return; }
       if (!st.gatherIdleSince) st.gatherIdleSince = now();
+      /* ★ v2.6.158：到位后先给游戏 1.2s 自动开采的机会 —— 没开就主动触发一次
+         （和「一键挂机」stepAuto 一致）。原来这里直接进 8s 看门狗（第一次还是「走开一格再走回」的落位），
+         表现为「到位后要等两轮才开始正式采集」。 */
+      if (!st.gatherQuickAt && now() - st.gatherIdleSince >= 1200) {
+        st.gatherQuickAt = now();
+        closeGatheringWindows();
+        if (startGatheringHere()) { st.phase = 'wait'; setStatus('开始采集…'); return; }
+      }
       if (now() - st.gatherIdleSince > 8000) {
         st.gatherIdleSince = now();
         st.gatherResync = (st.gatherResync || 0) + 1;
@@ -5246,6 +5255,7 @@
     }
     st.gatherRetryAt = 0;
     st.gatherIdleSince = 0;
+    st.gatherQuickAt = 0;
     startMove(spot.x, spot.y, 'gather', '采集点·' + spot.name);
   }
   /* ======================= 14.6 活动自动进入（采集时） =======================
@@ -6948,7 +6958,10 @@
       const spot = findGatheringSpot(name);
       if (spot) {
         if (character.x === spot.x && character.y === spot.y) {
-          if (gatheringActive() && gatheringTurning()) { st.phase = 'gather'; st.gatherRetryAt = 0; setStatus('采集中…（游戏自动循环）'); return; }
+          if (gatheringActive() && gatheringTurning()) { st.phase = 'gather'; st.gatherRetryAt = 0; st.gatherIdleSince = 0; setStatus('采集中…（游戏自动循环）'); return; }
+          /* ★ v2.6.158：先给游戏 1.2s 自动开采的机会，避免「刚到位、弹窗还没渲染」就误判没在采、白重开一次。 */
+          if (!st.gatherIdleSince) st.gatherIdleSince = now();
+          if (now() - st.gatherIdleSince < 1200) { st.phase = 'wait'; setStatus('已就位，等待采集开始…'); return; }
           if (now() - st.gatherRetryAt > 5000) {
             st.gatherRetryAt = now();
             closeGatheringWindows();
@@ -6957,6 +6970,7 @@
           st.phase = 'wait'; setStatus('已就位，等待采集开始…'); return;
         }
         st.gatherRetryAt = 0;
+        st.gatherIdleSince = 0;
         startMove(spot.x, spot.y, 'gather', '采集点·' + spot.name);
         return;
       }
