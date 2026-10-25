@@ -7,10 +7,10 @@
    {
     "file": "char-1330.json",
     "char": "#1330",
-    "level": 50,
-    "time": "2026-10-24T18:27:04.397Z",
+    "level": 55,
+    "time": "2026-10-25T19:57:49.217Z",
     "count": 193,
-    "recorded": 123,
+    "recorded": 130,
     "mergedAt": "2026-10-25"
    },
    {
@@ -9518,7 +9518,34 @@
    "tab": "overlord",
    "icon": "https://www.norroth.com/images/maps/items/enemy_206.gif",
    "bg": "temple.jpg",
-   "recorded": true
+   "recorded": true,
+   "levelRange": "30 - 30",
+   "alignment": "Light",
+   "health": "High",
+   "defense": "High",
+   "resistance": "High",
+   "drops": [
+    {
+     "name": "Bronze Sestertii",
+     "res": "coin_bronze",
+     "pct": "100%"
+    },
+    {
+     "name": "Steel Blade",
+     "res": "steel_blade",
+     "pct": "12%"
+    },
+    {
+     "name": "Emerald Sapphire",
+     "res": "emerald_sapphire",
+     "pct": "8%"
+    },
+    {
+     "name": "Steel Plating",
+     "res": "steel_plating",
+     "pct": "9%"
+    }
+   ]
   },
   {
    "id": 207,
@@ -10798,7 +10825,60 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_248.gif",
    "bg": "mountain.jpg",
-   "recorded": true
+   "recorded": true,
+   "levelRange": "50 - 60",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "High",
+   "defense": "High",
+   "resistance": "Medium",
+   "scavenging": [
+    {
+     "name": "High Quality Meat",
+     "res": "high_quality_meat",
+     "pct": "13%"
+    },
+    {
+     "name": "High Quality Scale",
+     "res": "high_quality_scale",
+     "pct": "17%"
+    },
+    {
+     "name": "High Quality Bone",
+     "res": "high_quality_bone",
+     "pct": "13%"
+    },
+    {
+     "name": "High Quality Tendon",
+     "res": "high_quality_tendon",
+     "pct": "13%"
+    },
+    {
+     "name": "High Quality Skull",
+     "res": "high_quality_skull",
+     "pct": "4%"
+    },
+    {
+     "name": "High Quality Claw",
+     "res": "high_quality_claw",
+     "pct": "17%"
+    },
+    {
+     "name": "High Quality Wing",
+     "res": "high_quality_wing",
+     "pct": "9%"
+    },
+    {
+     "name": "High Quality Eye",
+     "res": "high_quality_eye",
+     "pct": "9%"
+    },
+    {
+     "name": "High Quality Tail",
+     "res": "high_quality_tail",
+     "pct": "4%"
+    }
+   ]
   },
   {
    "id": 250,
@@ -10809,7 +10889,25 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_250.gif",
    "bg": "mountain.jpg",
-   "recorded": true
+   "recorded": true,
+   "levelRange": "50 - 60",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "High",
+   "defense": "High",
+   "resistance": "Low",
+   "scavenging": [
+    {
+     "name": "Travertine",
+     "res": "travertine",
+     "pct": "80%"
+    },
+    {
+     "name": "Spirit Stone",
+     "res": "spirit_stone",
+     "pct": "20%"
+    }
+   ]
   },
   {
    "id": 251,
@@ -10820,7 +10918,35 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_251.gif",
    "bg": "mountain.jpg",
-   "recorded": true
+   "recorded": true,
+   "levelRange": "50 - 60",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "Medium",
+   "defense": "Low",
+   "resistance": "High",
+   "drops": [
+    {
+     "name": "Bronze Sestertii",
+     "res": "coin_bronze",
+     "pct": "100%"
+    },
+    {
+     "name": "Bamboo Fleece",
+     "res": "bamboo_fleece",
+     "pct": "12%"
+    },
+    {
+     "name": "High Quality Leather Belt Base",
+     "res": "high_quality_leather_belt_base",
+     "pct": "7%"
+    },
+    {
+     "name": "High Quality Leather Shoe Base",
+     "res": "high_quality_leather_shoe_base",
+     "pct": "7%"
+    }
+   ]
   },
   {
    "id": 252,

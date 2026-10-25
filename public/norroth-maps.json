@@ -1,7 +1,7 @@
 {
  "meta": {
   "source": "小伴侣地图数据（MapDB）· 7 位贡献者合并",
-  "updated": "2026-10-25T19:19:48.739Z",
+  "updated": "2026-10-25T19:57:56.768Z",
   "version": "1.0",
   "contributors": [
    {
@@ -15,9 +15,9 @@
    {
     "file": "maps-1330.json",
     "char": "#1330",
-    "level": 50,
-    "time": "2026-10-24T18:26:55.691Z",
-    "count": 342,
+    "level": 55,
+    "time": "2026-10-25T19:57:40.839Z",
+    "count": 348,
     "mergedAt": "2026-10-25"
    },
    {
@@ -61,7 +61,7 @@
     "mergedAt": "2026-10-25"
    }
   ],
-  "count": 346
+  "count": 350
  },
  "maps": {
   "1": {
@@ -835,14 +835,14 @@
    ]
   },
   "16": {
-   "at": 1792930744198,
+   "at": 1792934288081,
    "name": "Elundi",
    "type": "City",
    "g": [
     "Shrimp Pier",
     "Silk Field",
-    "Shrimp 碼頭",
-    "戰鬥訓練",
+    "Shrimp 码头",
+    "战斗训练",
     "Silk 田野"
    ],
    "gt": [
@@ -859,7 +859,7 @@
     [
      16,
      29,
-     "戰鬥訓練"
+     "Combat Training"
     ]
    ],
    "ex": [
@@ -873,13 +873,13 @@
      38,
      10,
      "event_gate",
-     "活動之門"
+     "Event Gate"
     ],
     [
      34,
      22,
      "waygate",
-     "傳送門"
+     "Waygate"
     ],
     [
      29,
@@ -1223,7 +1223,7 @@
    ]
   },
   "22": {
-   "at": 1792938639408,
+   "at": 1792941137898,
    "name": "Owranbu River",
    "type": "Normal",
    "g": [
@@ -1233,10 +1233,10 @@
     "Shrimp Pier",
     "Elm Grove",
     "Silk 田野",
-    "Scrap 修正档",
-    "Iron 采矿",
-    "Shrimp 码头",
-    "Elm 树林"
+    "Scrap 修正檔",
+    "Iron 採礦",
+    "Shrimp 碼頭",
+    "Elm 樹林"
    ],
    "gt": [
     [
@@ -1307,7 +1307,7 @@
    ]
   },
   "23": {
-   "at": 1792941473038,
+   "at": 1792941805122,
    "name": "Owranbu",
    "type": "City",
    "g": [
@@ -1873,7 +1873,7 @@
    ]
   },
   "41": {
-   "at": 1792932837415,
+   "at": 1792941832865,
    "name": "Owranbu Drylands",
    "type": "Normal",
    "m": [
@@ -2585,7 +2585,7 @@
    ]
   },
   "61": {
-   "at": 1792927218248,
+   "at": 1792941877492,
    "name": "Sandstorm Pass",
    "type": "Normal",
    "m": [
@@ -2788,14 +2788,12 @@
    ]
   },
   "65": {
-   "at": 1792914936819,
+   "at": 1792941901009,
    "name": "Mesa Mine Area",
    "type": "Normal",
    "g": [
     "Fieldstone Quarry",
-    "Iron Mine",
-    "Fieldstone 採石場",
-    "Iron 採礦"
+    "Iron Mine"
    ],
    "gt": [
     [
@@ -2850,7 +2848,7 @@
    ]
   },
   "66": {
-   "at": 1792755873372,
+   "at": 1792941950279,
    "name": "Rock Valley",
    "type": "Normal",
    "m": [
@@ -2881,18 +2879,20 @@
      66,
      65,
      14,
-     37
+     37,
+     "gate"
     ],
     [
      66,
      67,
      53,
-     31
+     31,
+     "gate"
     ]
    ]
   },
   "67": {
-   "at": 1792915025259,
+   "at": 1792942042423,
    "name": "Mirage Mountains",
    "type": "Normal",
    "m": [
@@ -2908,7 +2908,7 @@
      44,
      15,
      "smugglers_route",
-     "走私者路線"
+     "Smugglers Route"
     ],
     [
      53,
@@ -2926,7 +2926,7 @@
      31,
      33,
      "waygate",
-     "傳送門"
+     "Waygate"
     ]
    ],
    "visited": true,
@@ -3013,7 +3013,7 @@
    ]
   },
   "72": {
-   "at": 1792755918429,
+   "at": 1792942173438,
    "name": "Shifting Sands",
    "type": "Normal",
    "m": [
@@ -3044,18 +3044,20 @@
      72,
      67,
      18,
-     34
+     34,
+     "gate"
     ],
     [
      72,
      73,
      53,
-     23
+     23,
+     "gate"
     ]
    ]
   },
   "73": {
-   "at": 1792756006017,
+   "at": 1792942215321,
    "name": "Radiant Heat Flats",
    "type": "Normal",
    "m": [
@@ -3086,18 +3088,20 @@
      73,
      72,
      19,
-     35
+     35,
+     "gate"
     ],
     [
      73,
      74,
      53,
-     23
+     23,
+     "gate"
     ]
    ]
   },
   "74": {
-   "at": 1792756038559,
+   "at": 1792942242402,
    "name": "Sunken Sands",
    "type": "Normal",
    "m": [
@@ -3128,18 +3132,20 @@
      74,
      73,
      14,
-     35
+     35,
+     "gate"
     ],
     [
      74,
      75,
      53,
-     25
+     25,
+     "gate"
     ]
    ]
   },
   "75": {
-   "at": 1792756066101,
+   "at": 1792942346922,
    "name": "The Shifting Tides",
    "type": "Normal",
    "m": [
@@ -3188,25 +3194,29 @@
      75,
      74,
      16,
-     34
+     34,
+     "gate"
     ],
     [
      75,
      76,
      23,
-     12
+     12,
+     "gate"
     ],
     [
      75,
      218,
      49,
-     42
+     42,
+     "gate"
     ],
     [
      75,
      226,
      0,
-     0
+     0,
+     "smugglers"
     ]
    ]
   },
@@ -6188,7 +6198,7 @@
    "name": "Taiga"
   },
   "218": {
-   "at": 1792756521678,
+   "at": 1792942435387,
    "name": "Desert of Lost Hope",
    "type": "Normal",
    "g": [
@@ -6229,18 +6239,20 @@
      218,
      75,
      19,
-     7
+     7,
+     "gate"
     ],
     [
      218,
      219,
      37,
-     60
+     60,
+     "gate"
     ]
    ]
   },
   "219": {
-   "at": 1792756569234,
+   "at": 1792942548180,
    "name": "Sandstorm Ridge",
    "type": "Normal",
    "m": [
@@ -6271,18 +6283,20 @@
      219,
      218,
      22,
-     11
+     11,
+     "gate"
     ],
     [
      219,
      220,
      32,
-     60
+     60,
+     "gate"
     ]
    ]
   },
   "220": {
-   "at": 1792853699341,
+   "at": 1792942583667,
    "name": "Burning Moon Sands",
    "m": [
     "Nomadic Cleric",
@@ -6326,7 +6340,7 @@
    ]
   },
   "221": {
-   "at": 1792853762499,
+   "at": 1792942611968,
    "name": "Deserted Cavern",
    "m": [
     "Monstrous Bat",
@@ -6381,7 +6395,7 @@
    ]
   },
   "222": {
-   "at": 1792853808055,
+   "at": 1792942699548,
    "name": "The Living Desert",
    "g": [
     "Fieldstone Quarry"
@@ -6435,7 +6449,7 @@
    ]
   },
   "224": {
-   "at": 1792855308590,
+   "at": 1792942709413,
    "name": "Desert of Illusions",
    "m": [
     "Cassowary",
@@ -6622,7 +6636,7 @@
    ]
   },
   "228": {
-   "at": 1792757121908,
+   "at": 1792941669001,
    "name": "Shrubland",
    "type": "Normal",
    "g": [
@@ -6679,18 +6693,20 @@
      228,
      227,
      14,
-     55
+     55,
+     "gate"
     ],
     [
      228,
      229,
      53,
-     33
+     33,
+     "gate"
     ]
    ]
   },
   "229": {
-   "at": 1792850679433,
+   "at": 1792941685988,
    "name": "Ururg",
    "type": "City",
    "ex": [
@@ -6704,7 +6720,7 @@
      51,
      33,
      "smugglers_route",
-     "走私者路线"
+     "Smugglers Route"
     ],
     [
      14,
@@ -6716,7 +6732,7 @@
      42,
      54,
      "waygate",
-     "传送门"
+     "Waygate"
     ],
     [
      30,
@@ -6726,6 +6742,7 @@
     ]
    ],
    "visited": true,
+   "smith": true,
    "edges": [
     [
      229,
@@ -7351,42 +7368,47 @@
    ]
   },
   "277": {
-   "at": 1792851108739,
+   "at": 1792951866028,
    "name": "Shrubland",
    "g": [
-    "Smallmouth Bass 码头",
-    "Maple 树林",
-    "Nettle 田野",
-    "Medium Quality 修正档"
+    "Smallmouth Bass Pier",
+    "Maple Grove",
+    "Nettle Field",
+    "Medium Quality Patch"
    ],
    "gt": [
     [
      8,
      18,
-     "Smallmouth Bass 码头"
+     "Smallmouth Bass Pier"
     ],
     [
      49,
      29,
-     "Maple 树林"
+     "Maple Grove"
     ],
     [
      44,
      45,
-     "Nettle 田野"
+     "Nettle Field"
     ],
     [
      43,
      50,
-     "Medium Quality 修正档"
+     "Medium Quality Patch"
     ]
    ],
    "m": [
-    "Orc Warrior",
-    "Orc Hunter",
     "Terastodon",
+    "Orc Warrior",
+    "Orc Warlock",
     "Warg",
-    "Orc Warlock"
+    "Orc Hunter",
+    "Orc Hunter (?)",
+    "Terastodon (?)",
+    "Warg (?)",
+    "Orc Warlock (?)",
+    "Orc Warrior (?)"
    ],
    "ex": [
     [
@@ -7399,7 +7421,7 @@
      23,
      46,
      "waygate",
-     "传送门"
+     "Waygate"
     ],
     [
      5,
@@ -7408,6 +7430,7 @@
      "Shrubland (Lv.24)"
     ]
    ],
+   "visited": true,
    "edges": [
     [
      277,
@@ -7558,23 +7581,23 @@
    ]
   },
   "281": {
-   "at": 1792851690133,
+   "at": 1792940579479,
    "name": "Trescan",
    "type": "City",
    "g": [
-    "Nettle 田野",
-    "Medium Quality 修正档"
+    "Nettle Field",
+    "Medium Quality Patch"
    ],
    "gt": [
     [
      15,
      36,
-     "Nettle 田野"
+     "Nettle Field"
     ],
     [
      18,
      38,
-     "Medium Quality 修正档"
+     "Medium Quality Patch"
     ]
    ],
    "ex": [
@@ -7594,7 +7617,7 @@
      36,
      26,
      "waygate",
-     "传送门"
+     "Waygate"
     ],
     [
      51,
@@ -7609,6 +7632,8 @@
      "Shrubland (Lv.36)"
     ]
    ],
+   "visited": true,
+   "smith": true,
    "edges": [
     [
      281,
@@ -8198,9 +8223,8 @@
    ]
   },
   "324": {
-   "at": 1792864798700,
+   "at": 1792886271390,
    "name": "Dark Boreal",
-   "type": "Normal",
    "m": [
     "Dwarven Guard",
     "Dwarven Caster",
@@ -8241,9 +8265,8 @@
    ]
   },
   "325": {
-   "at": 1792864838415,
+   "at": 1792886288371,
    "name": "Dark Boreal",
-   "type": "Normal",
    "g": [
     "Mithril Mine"
    ],
@@ -8360,9 +8383,8 @@
    ]
   },
   "327": {
-   "at": 1792864963101,
+   "at": 1792893701772,
    "name": "Dark Boreal",
-   "type": "Normal",
    "g": [
     "Beech Grove"
    ],
@@ -8444,9 +8466,8 @@
    ]
   },
   "329": {
-   "at": 1792865740914,
+   "at": 1792894653887,
    "name": "Dark Boreal",
-   "type": "Normal",
    "m": [
     "Dwarven Guard",
     "Dwarven Hunter",
@@ -8487,9 +8508,8 @@
    ]
   },
   "330": {
-   "at": 1792866411733,
+   "at": 1792894631570,
    "name": "Dark Boreal",
-   "type": "Normal",
    "g": [
     "Travertine Quarry"
    ],
@@ -8503,9 +8523,9 @@
    "m": [
     "Dwarven Caster",
     "Dwarven Hunter",
+    "Komodo Basilisk",
     "Dwarven Guard",
-    "Armored Ram",
-    "Komodo Basilisk"
+    "Armored Ram"
    ],
    "ex": [
     [
@@ -8626,7 +8646,7 @@
    "name": "The Ember Forge"
   },
   "342": {
-   "at": 1792776711891,
+   "at": 1792896695375,
    "name": "Dark Boreal",
    "m": [
     "Armored Ram",
@@ -8655,18 +8675,20 @@
      342,
      281,
      5,
-     9
+     9,
+     "gate"
     ],
     [
      342,
      343,
      64,
-     60
+     60,
+     "gate"
     ]
    ]
   },
   "343": {
-   "at": 1792776754446,
+   "at": 1792896742537,
    "name": "Dark Boreal",
    "m": [
     "Dwarven Guard",
@@ -8689,23 +8711,26 @@
      "Dark Boreal (Lv.43)"
     ]
    ],
+   "visited": true,
    "edges": [
     [
      343,
      342,
      5,
-     9
+     9,
+     "gate"
     ],
     [
      343,
      344,
      63,
-     59
+     59,
+     "gate"
     ]
    ]
   },
   "344": {
-   "at": 1792777551898,
+   "at": 1792896793447,
    "name": "Dark Boreal",
    "m": [
     "Dwarven Guard",
@@ -8734,20 +8759,21 @@
      344,
      343,
      4,
-     5
+     5,
+     "gate"
     ],
     [
      344,
      345,
      63,
-     64
+     64,
+     "gate"
     ]
    ]
   },
   "345": {
-   "at": 1792729354854,
+   "at": 1792896794932,
    "name": "Dark Boreal",
-   "type": "Normal",
    "m": [
     "Armored Ram",
     "Dwarven Guard",
@@ -8775,20 +8801,21 @@
      345,
      344,
      4,
-     8
+     8,
+     "gate"
     ],
     [
      345,
      346,
      63,
-     59
+     59,
+     "gate"
     ]
    ]
   },
   "346": {
-   "at": 1792729423183,
+   "at": 1792910355227,
    "name": "Dark Boreal",
-   "type": "Normal",
    "g": [
     "Laterite Quarry",
     "Ramie Field",
@@ -8836,20 +8863,29 @@
    "edges": [
     [
      346,
+     293,
+     0,
+     0,
+     "smugglers"
+    ],
+    [
+     346,
      345,
      1,
-     23
+     23,
+     "gate"
     ],
     [
      346,
      347,
      63,
-     36
+     36,
+     "gate"
     ]
    ]
   },
   "347": {
-   "at": 1792866851908,
+   "at": 1792909062662,
    "name": "Dark Boreal",
    "g": [
     "Beech Grove"
@@ -8882,6 +8918,7 @@
      "Dark Boreal (Lv.47)"
     ]
    ],
+   "visited": true,
    "edges": [
     [
      347,
@@ -8900,7 +8937,7 @@
    ]
   },
   "348": {
-   "at": 1792863636933,
+   "at": 1792953535007,
    "name": "Laen Dorei",
    "type": "City",
    "ex": [
@@ -8943,7 +8980,7 @@
    ]
   },
   "349": {
-   "at": 1792872193038,
+   "at": 1792957956177,
    "name": "Dark Boreal",
    "type": "Normal",
    "m": [
@@ -8988,8 +9025,9 @@
    ]
   },
   "350": {
-   "at": 1792866163602,
+   "at": 1792958255120,
    "name": "Dark Boreal",
+   "type": "Normal",
    "g": [
     "Ash Grove"
    ],
@@ -9002,9 +9040,9 @@
    ],
    "m": [
     "Armored Ram",
-    "Dwarven Guard",
     "Komodo Basilisk",
     "Dwarven Caster",
+    "Dwarven Guard",
     "Dwarven Hunter"
    ],
    "ex": [
@@ -9040,8 +9078,9 @@
    ]
   },
   "351": {
-   "at": 1792866078236,
+   "at": 1792957046058,
    "name": "Wardens’ Bridge",
+   "type": "Normal",
    "g": [
     "Northern Pike Pier",
     "High Quality Patch",
@@ -9088,7 +9127,6 @@
      "Wardens’ Bridge (Lv.53)"
     ]
    ],
-   "visited": true,
    "edges": [
     [
      351,
@@ -9107,9 +9145,223 @@
    ]
   },
   "352": {
-   "at": 0,
+   "at": 1792957241708,
    "name": "Wardens’ Bridge",
-   "type": "Normal"
+   "type": "Normal",
+   "m": [
+    "Seafallen Stalker",
+    "Seafallen Oracle",
+    "Seafallen Reaver"
+   ],
+   "ex": [
+    [
+     35,
+     33,
+     "waygate",
+     "Waygate"
+    ],
+    [
+     2,
+     34,
+     "gate",
+     "Wardens’ Bridge (Lv.52)"
+    ],
+    [
+     65,
+     36,
+     "gate",
+     "Wardens’ Bridge (Lv.54)"
+    ]
+   ],
+   "edges": [
+    [
+     352,
+     351,
+     2,
+     34,
+     "gate"
+    ],
+    [
+     352,
+     353,
+     65,
+     36,
+     "gate"
+    ]
+   ]
+  },
+  "353": {
+   "at": 1792957415586,
+   "name": "Wardens’ Bridge",
+   "type": "Normal",
+   "g": [
+    "Travertine Quarry",
+    "Northern Pike Pier"
+   ],
+   "gt": [
+    [
+     59,
+     42,
+     "Travertine Quarry"
+    ],
+    [
+     33,
+     49,
+     "Northern Pike Pier"
+    ]
+   ],
+   "m": [
+    "Seafallen Stalker",
+    "Seafallen Reaver",
+    "Seafallen Oracle"
+   ],
+   "ex": [
+    [
+     64,
+     22,
+     "gate",
+     "Mountain (Lv.55)"
+    ],
+    [
+     2,
+     32,
+     "gate",
+     "Wardens’ Bridge (Lv.53)"
+    ]
+   ],
+   "edges": [
+    [
+     353,
+     352,
+     2,
+     32,
+     "gate"
+    ],
+    [
+     353,
+     354,
+     64,
+     22,
+     "gate"
+    ]
+   ]
+  },
+  "354": {
+   "at": 1792957533715,
+   "name": "Mountain",
+   "type": "Normal",
+   "g": [
+    "Valentaal Mine"
+   ],
+   "gt": [
+    [
+     30,
+     53,
+     "Valentaal Mine"
+    ]
+   ],
+   "m": [
+    "Terramancer",
+    "Stone Dragon",
+    "Mountain Giant"
+   ],
+   "ex": [
+    [
+     3,
+     22,
+     "gate",
+     "Wardens’ Bridge (Lv.54)"
+    ],
+    [
+     40,
+     65,
+     "gate",
+     "Mountain (Lv.57)"
+    ]
+   ],
+   "edges": [
+    [
+     354,
+     353,
+     3,
+     22,
+     "gate"
+    ],
+    [
+     354,
+     355,
+     40,
+     65,
+     "gate"
+    ]
+   ]
+  },
+  "355": {
+   "at": 1792957709698,
+   "name": "Mountain",
+   "type": "Normal",
+   "m": [
+    "Stone Dragon",
+    "Mountain Giant",
+    "Terramancer"
+   ],
+   "ex": [
+    [
+     11,
+     12,
+     "gate",
+     "Mountain (Lv.55)"
+    ],
+    [
+     64,
+     58,
+     "gate",
+     "Mountain (Lv.59)"
+    ]
+   ],
+   "edges": [
+    [
+     355,
+     354,
+     11,
+     12,
+     "gate"
+    ],
+    [
+     355,
+     356,
+     64,
+     58,
+     "gate"
+    ]
+   ]
+  },
+  "356": {
+   "at": 1792957794803,
+   "name": "Mountain",
+   "type": "Normal",
+   "m": [
+    "Stone Dragon",
+    "Mountain Giant",
+    "Terramancer"
+   ],
+   "ex": [
+    [
+     6,
+     7,
+     "gate",
+     "Mountain (Lv.57)"
+    ]
+   ],
+   "edges": [
+    [
+     356,
+     355,
+     6,
+     7,
+     "gate"
+    ]
+   ]
   },
   "360": {
    "at": 0,
@@ -9333,7 +9585,7 @@
    "name": "Fountain of Rebirth"
   },
   "1000": {
-   "at": 1792863602756,
+   "at": 1792895446303,
    "name": "Fountain of Rebirth",
    "type": "Normal",
    "ex": [
@@ -9474,7 +9726,7 @@
    "name": "Sleepy Hollow"
   },
   "1183": {
-   "at": 1792930734944,
+   "at": 1792934206953,
    "name": "The Sacred Wilds Lobby",
    "g": [
     "Quarry",
@@ -9482,44 +9734,38 @@
     "Mine",
     "Pier",
     "Field",
-    "Patch",
-    "採石場",
-    "樹林",
-    "採礦",
-    "碼頭",
-    "田野",
-    "修正檔"
+    "Patch"
    ],
    "gt": [
     [
      42,
      12,
-     "採石場"
+     "Quarry"
     ],
     [
      31,
      14,
-     "樹林"
+     "Grove"
     ],
     [
      38,
      25,
-     "採礦"
+     "Mine"
     ],
     [
      39,
      44,
-     "碼頭"
+     "Pier"
     ],
     [
      22,
      45,
-     "田野"
+     "Field"
     ],
     [
      24,
      45,
-     "修正檔"
+     "Patch"
     ]
    ],
    "ex": [
@@ -9649,7 +9895,7 @@
    ]
   },
   "1189": {
-   "at": 1792863120056,
+   "at": 1792934278708,
    "m": [
     "Wyvern"
    ],
