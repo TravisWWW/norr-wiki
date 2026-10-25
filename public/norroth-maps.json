@@ -1,7 +1,7 @@
 {
  "meta": {
-  "source": "小伴侣地图数据（MapDB）· 4 位贡献者合并",
-  "updated": "2026-10-25T01:46:51.956Z",
+  "source": "小伴侣地图数据（MapDB）· 5 位贡献者合并",
+  "updated": "2026-10-25T05:13:14.767Z",
   "version": "1.0",
   "contributors": [
    {
@@ -35,43 +35,75 @@
     "time": "2026-10-23T08:29:11.845Z",
     "count": 340,
     "mergedAt": "2026-10-25"
+   },
+   {
+    "file": "maps-3114.json",
+    "char": "#3114",
+    "level": 11,
+    "time": "2026-10-25T05:13:01.421Z",
+    "count": 329,
+    "mergedAt": "2026-10-25"
    }
   ],
   "count": 346
  },
  "maps": {
   "1": {
-   "at": 1792244581006,
+   "at": 1792903277855,
    "name": "Fountain of Rebirth",
-   "visited": true,
+   "ex": [
+    [
+     13,
+     33,
+     "gate",
+     "Lower Fountain’s Descent (Lv.1)"
+    ]
+   ],
    "edges": [
     [
      1,
      2,
      13,
-     33
+     33,
+     "gate"
     ]
    ]
   },
   "2": {
-   "at": 1792244612929,
+   "at": 1792903294802,
    "name": "Lower Fountain’s Descent",
-   "visited": true,
+   "ex": [
+    [
+     13,
+     41,
+     "gate",
+     "Sasquatch Grotto (Lv.1)"
+    ]
+   ],
    "edges": [
     [
      2,
      3,
      13,
-     41
+     41,
+     "gate"
     ]
    ]
   },
   "3": {
-   "at": 1792244665726,
+   "at": 1792902317835,
    "name": "Sasquatch Grotto",
    "type": "Normal",
    "m": [
     "Sasquatch"
+   ],
+   "ex": [
+    [
+     43,
+     21,
+     "gate",
+     "Upper Fountain’s Descent (Lv.1)"
+    ]
    ],
    "visited": true,
    "edges": [
@@ -79,12 +111,13 @@
      3,
      4,
      43,
-     21
+     21,
+     "gate"
     ]
    ]
   },
   "4": {
-   "at": 1792244669734,
+   "at": 1792902408694,
    "name": "Upper Fountain’s Descent",
    "type": "Normal",
    "g": [
@@ -101,30 +134,48 @@
     "Hare",
     "Wild Dog"
    ],
+   "ex": [
+    [
+     47,
+     7,
+     "gate",
+     "El Caspar (Lv.1)"
+    ],
+    [
+     17,
+     12,
+     "gate",
+     "Sasquatch Grotto (Lv.1)"
+    ]
+   ],
    "visited": true,
    "edges": [
     [
      4,
      3,
      17,
-     12
+     12,
+     "gate"
     ],
     [
      4,
      5,
      47,
-     7
+     7,
+     "gate"
     ]
    ]
   },
   "5": {
-   "at": 1792724208525,
+   "at": 1792904959170,
    "name": "El Caspar",
    "type": "City",
    "g": [
     "Minnow Pier",
     "Mucky Patch",
-    "Combat Training"
+    "Minnow 码头",
+    "战斗训练",
+    "Mucky 修正档"
    ],
    "gt": [
     [
@@ -142,11 +193,6 @@
      26,
      "Combat Training"
     ]
-   ],
-   "m": [
-    "Hare",
-    "Snake",
-    "Wild Dog"
    ],
    "ex": [
     [
@@ -199,42 +245,48 @@
      5,
      4,
      18,
-     49
+     49,
+     "gate"
     ],
     [
      5,
      6,
      11,
-     32
+     32,
+     "gate"
     ],
     [
      5,
      11,
      38,
-     16
+     16,
+     "gate"
     ],
     [
      5,
      17,
      41,
-     50
+     50,
+     "gate"
     ],
     [
      5,
      20,
      53,
-     31
+     31,
+     "gate"
     ],
     [
      5,
      34,
      39,
-     28
+     28,
+     "gate"
     ]
    ]
   },
   "6": {
-   "at": 1792706358142,
+   "at": 1792904976167,
    "name": "Brisban Pond",
    "type": "Normal",
    "g": [
@@ -291,19 +343,22 @@
      6,
      5,
      57,
-     30
+     30,
+     "gate"
     ],
     [
      6,
      7,
      45,
-     7
+     7,
+     "gate"
     ],
     [
      6,
      14,
      11,
-     7
+     7,
+     "gate"
     ]
    ]
   },
@@ -630,16 +685,13 @@
    ]
   },
   "14": {
-   "at": 1792706323778,
+   "at": 1792903705659,
    "name": "Arodas Lakeshore",
    "type": "Normal",
    "g": [
     "Mucky Patch",
     "Cotton Field",
-    "Minnow Pier",
-    "Mucky 修正档",
-    "Cotton 田野",
-    "Minnow 码头"
+    "Minnow Pier"
    ],
    "gt": [
     [
@@ -687,23 +739,24 @@
      14,
      6,
      49,
-     60
+     60,
+     "gate"
     ],
     [
      14,
      15,
      27,
-     16
+     16,
+     "gate"
     ]
    ]
   },
   "15": {
-   "at": 1792706290153,
+   "at": 1792905178002,
    "name": "Arodas Beach",
    "type": "Normal",
    "g": [
-    "Shrimp Pier",
-    "Shrimp 码头"
+    "Shrimp Pier"
    ],
    "gt": [
     [
@@ -740,26 +793,26 @@
      15,
      14,
      63,
-     31
+     31,
+     "gate"
     ],
     [
      15,
      16,
      36,
-     9
+     9,
+     "gate"
     ]
    ]
   },
   "16": {
-   "at": 1792863127115,
+   "at": 1792904833409,
    "name": "Elundi",
    "type": "City",
    "g": [
     "Shrimp Pier",
-    "Silk Field",
-    "Shrimp 码头",
-    "战斗训练",
-    "Silk 田野"
+    "Combat Training",
+    "Silk Field"
    ],
    "gt": [
     [
@@ -1130,7 +1183,7 @@
    ]
   },
   "22": {
-   "at": 1792725496323,
+   "at": 1792853614040,
    "name": "Owranbu River",
    "type": "Normal",
    "g": [
@@ -1140,10 +1193,10 @@
     "Shrimp Pier",
     "Elm Grove",
     "Silk 田野",
-    "Scrap 修正檔",
-    "Iron 採礦",
-    "Shrimp 碼頭",
-    "Elm 樹林"
+    "Scrap 修正档",
+    "Iron 采矿",
+    "Shrimp 码头",
+    "Elm 树林"
    ],
    "gt": [
     [
@@ -1201,28 +1254,30 @@
      22,
      21,
      9,
-     33
+     33,
+     "gate"
     ],
     [
      22,
      23,
      58,
-     35
+     35,
+     "gate"
     ]
    ]
   },
   "23": {
-   "at": 1792755199089,
+   "at": 1792853456937,
    "name": "Owranbu",
    "type": "City",
    "g": [
-    "Combat Training"
+    "战斗训练"
    ],
    "gt": [
     [
      31,
      28,
-     "Combat Training"
+     "战斗训练"
     ]
    ],
    "ex": [
@@ -1236,7 +1291,7 @@
      33,
      30,
      "waygate",
-     "Waygate"
+     "传送门"
     ],
     [
      9,
@@ -1258,19 +1313,22 @@
      23,
      22,
      9,
-     34
+     34,
+     "gate"
     ],
     [
      23,
      28,
      59,
-     48
+     48,
+     "gate"
     ],
     [
      23,
      41,
      52,
-     12
+     12,
+     "gate"
     ]
    ]
   },
@@ -1604,14 +1662,14 @@
    ]
   },
   "34": {
-   "at": 1792683347859,
+   "at": 1792902649773,
    "name": "Sewers",
    "type": "Normal",
    "m": [
     "Eel",
     "Cockroach",
-    "Leech",
-    "Rat"
+    "Rat",
+    "Leech"
    ],
    "ex": [
     [
@@ -1633,13 +1691,15 @@
      34,
      5,
      54,
-     16
+     16,
+     "gate"
     ],
     [
      34,
      35,
      38,
-     18
+     18,
+     "other"
     ]
    ]
   },
@@ -4865,7 +4925,7 @@
    ]
   },
   "183": {
-   "at": 1792657262068,
+   "at": 1792850581954,
    "name": "Caeltys",
    "type": "City",
    "ex": [
@@ -4873,7 +4933,7 @@
      21,
      12,
      "waygate",
-     "Waygate"
+     "传送门"
     ],
     [
      46,
@@ -4894,26 +4954,27 @@
      "Caeltys’ Yarden (Lv.31)"
     ]
    ],
-   "visited": true,
-   "smith": true,
    "edges": [
     [
      183,
      182,
      7,
-     41
+     41,
+     "gate"
     ],
     [
      183,
      184,
      61,
-     42
+     42,
+     "gate"
     ],
     [
      183,
      189,
      46,
-     12
+     12,
+     "gate"
     ]
    ]
   },
@@ -6344,7 +6405,7 @@
    ]
   },
   "229": {
-   "at": 1792759018421,
+   "at": 1792850679433,
    "name": "Ururg",
    "type": "City",
    "ex": [
@@ -6358,7 +6419,7 @@
      51,
      33,
      "smugglers_route",
-     "Smugglers Route"
+     "走私者路线"
     ],
     [
      14,
@@ -6370,7 +6431,7 @@
      42,
      54,
      "waygate",
-     "Waygate"
+     "传送门"
     ],
     [
      30,
@@ -6380,25 +6441,27 @@
     ]
    ],
    "visited": true,
-   "smith": true,
    "edges": [
     [
      229,
      228,
      14,
-     45
+     45,
+     "gate"
     ],
     [
      229,
      275,
      53,
-     13
+     13,
+     "gate"
     ],
     [
      229,
      269,
      30,
-     60
+     60,
+     "gate"
     ]
    ]
   },
@@ -6903,7 +6966,7 @@
    "name": "Shrubland"
   },
   "275": {
-   "at": 1792676416897,
+   "at": 1792850827762,
    "name": "Shrubland",
    "type": "Normal",
    "m": [
@@ -6934,160 +6997,235 @@
      275,
      229,
      11,
-     47
+     47,
+     "gate"
     ],
     [
      275,
      276,
      55,
-     6
+     6,
+     "gate"
     ]
    ]
   },
   "276": {
-   "at": 1792522276411,
+   "at": 1792850952481,
    "name": "Shrubland",
    "type": "Normal",
    "m": [
-    "Carrion Harpy",
-    "Orc Hunter",
-    "Orc Warlock",
     "Catoblepas",
+    "Carrion Harpy",
+    "Orc Warrior",
+    "Orc Warlock",
     "Terastodon",
-    "Orc Warrior"
+    "Orc Hunter"
    ],
-   "visited": true,
+   "ex": [
+    [
+     46,
+     5,
+     "gate",
+     "Shrubland (Lv.31)"
+    ],
+    [
+     64,
+     39,
+     "dungeon",
+     "Yurk’s Yard (Lv.30)"
+    ],
+    [
+     10,
+     58,
+     "gate",
+     "Shrubland (Lv.21)"
+    ]
+   ],
    "edges": [
     [
      276,
      68,
      64,
-     39
+     39,
+     "other"
     ],
     [
      276,
      275,
      10,
-     58
+     58,
+     "gate"
     ],
     [
      276,
      277,
      46,
-     5
+     5,
+     "gate"
     ]
    ]
   },
   "277": {
-   "at": 1792522062686,
+   "at": 1792851108739,
    "name": "Shrubland",
    "g": [
-    "Smallmouth Bass Pier",
-    "Maple Grove",
-    "Nettle Field",
-    "Medium Quality Patch"
+    "Smallmouth Bass 码头",
+    "Maple 树林",
+    "Nettle 田野",
+    "Medium Quality 修正档"
    ],
    "gt": [
     [
      8,
      18,
-     "Smallmouth Bass Pier"
+     "Smallmouth Bass 码头"
     ],
     [
      49,
      29,
-     "Maple Grove"
+     "Maple 树林"
     ],
     [
      44,
      45,
-     "Nettle Field"
+     "Nettle 田野"
     ],
     [
      43,
      50,
-     "Medium Quality Patch"
+     "Medium Quality 修正档"
     ]
    ],
    "m": [
-    "Terastodon",
     "Orc Warrior",
-    "Orc Warlock",
+    "Orc Hunter",
+    "Terastodon",
     "Warg",
-    "Orc Hunter"
+    "Orc Warlock"
    ],
-   "visited": true,
+   "ex": [
+    [
+     52,
+     7,
+     "gate",
+     "Shrubland (Lv.34)"
+    ],
+    [
+     23,
+     46,
+     "waygate",
+     "传送门"
+    ],
+    [
+     5,
+     57,
+     "gate",
+     "Shrubland (Lv.24)"
+    ]
+   ],
    "edges": [
     [
      277,
      276,
      5,
-     57
+     57,
+     "gate"
     ],
     [
      277,
      278,
      52,
-     7
+     7,
+     "gate"
     ]
    ]
   },
   "278": {
-   "at": 1792613857403,
+   "at": 1792851171273,
    "name": "Shrubland",
    "m": [
     "Orc Hunter",
-    "Orc Warrior",
-    "Warg",
     "Orc Warlock",
-    "Terastodon"
+    "Orc Warrior",
+    "Terastodon",
+    "Warg"
    ],
-   "visited": true,
+   "ex": [
+    [
+     48,
+     7,
+     "gate",
+     "Ancient Worm Tunnel (Lv.34)"
+    ],
+    [
+     10,
+     64,
+     "gate",
+     "Shrubland (Lv.31)"
+    ]
+   ],
    "edges": [
     [
      278,
      277,
      10,
-     64
+     64,
+     "gate"
     ],
     [
      278,
      279,
      48,
-     7
+     7,
+     "gate"
     ]
    ]
   },
   "279": {
-   "at": 1792613848895,
+   "at": 1792851356415,
    "name": "Ancient Worm Tunnel",
    "g": [
-    "Coal Mine"
+    "Coal 采矿"
    ],
    "gt": [
     [
      35,
      23,
-     "Coal Mine"
+     "Coal 采矿"
     ]
    ],
    "m": [
-    "Stone Hulk",
-    "Drow"
+    "Drow",
+    "Stone Hulk"
    ],
-   "visited": true,
+   "ex": [
+    [
+     41,
+     13,
+     "gate",
+     "Shrubland (Lv.36)"
+    ],
+    [
+     22,
+     52,
+     "gate",
+     "Shrubland (Lv.34)"
+    ]
+   ],
    "edges": [
     [
      279,
      278,
      22,
-     52
+     52,
+     "gate"
     ],
     [
      279,
      280,
      41,
-     13
+     13,
+     "gate"
     ]
    ]
   },
@@ -7135,23 +7273,23 @@
    ]
   },
   "281": {
-   "at": 1792850631743,
+   "at": 1792851690133,
    "name": "Trescan",
    "type": "City",
    "g": [
-    "Nettle Field",
-    "Medium Quality Patch"
+    "Nettle 田野",
+    "Medium Quality 修正档"
    ],
    "gt": [
     [
      15,
      36,
-     "Nettle Field"
+     "Nettle 田野"
     ],
     [
      18,
      38,
-     "Medium Quality Patch"
+     "Medium Quality 修正档"
     ]
    ],
    "ex": [
@@ -7171,7 +7309,7 @@
      36,
      26,
      "waygate",
-     "Waygate"
+     "传送门"
     ],
     [
      51,
@@ -7186,8 +7324,6 @@
      "Shrubland (Lv.36)"
     ]
    ],
-   "visited": true,
-   "smith": true,
    "edges": [
     [
      281,
@@ -7461,53 +7597,69 @@
    ]
   },
   "290": {
-   "at": 1792603896310,
+   "at": 1792849889728,
    "name": "Itham’s Old Bay",
    "type": "Normal",
    "m": [
-    "Merfolk",
-    "Faery"
+    "Faery",
+    "Merfolk"
    ],
-   "visited": true,
+   "ex": [
+    [
+     4,
+     17,
+     "gate",
+     "Itham’s Crator (Lv.34)"
+    ],
+    [
+     54,
+     62,
+     "gate",
+     "Itham’s Anchorage (Lv.36)"
+    ]
+   ],
    "edges": [
     [
      290,
      289,
      4,
-     17
+     17,
+     "gate"
     ],
     [
      290,
      291,
      54,
-     62
+     62,
+     "gate"
     ]
    ]
   },
   "291": {
-   "at": 1792669384258,
+   "at": 1792849936853,
    "name": "Itham’s Anchorage",
    "type": "Normal",
    "g": [
     "Coal Mine",
-    "Smallmouth Bass Pier"
+    "Smallmouth Bass Pier",
+    "Coal 采矿",
+    "Smallmouth Bass 码头"
    ],
    "gt": [
     [
      7,
      7,
-     "Coal Mine"
+     "Coal 采矿"
     ],
     [
      35,
      41,
-     "Smallmouth Bass Pier"
+     "Smallmouth Bass 码头"
     ]
    ],
    "m": [
-    "Faery",
     "Merfolk",
-    "Oculus"
+    "Faery"
    ],
    "ex": [
     [
@@ -7520,7 +7672,7 @@
      51,
      21,
      "waygate",
-     "Waygate"
+     "传送门"
     ]
    ],
    "visited": true,
@@ -7529,7 +7681,8 @@
      291,
      290,
      37,
-     2
+     2,
+     "gate"
     ]
    ]
   },
@@ -9036,7 +9189,7 @@
    "name": "Sleepy Hollow"
   },
   "1183": {
-   "at": 1792862113820,
+   "at": 1792903787667,
    "name": "The Sacred Wilds Lobby",
    "g": [
     "Quarry",
@@ -9105,8 +9258,29 @@
    ]
   },
   "1184": {
-   "at": 0,
-   "name": "The Sacred Wilds"
+   "at": 1792904760786,
+   "name": "The Sacred Wilds",
+   "m": [
+    "Wyvern"
+   ],
+   "ex": [
+    [
+     56,
+     11,
+     "gate",
+     "The Sacred Wilds Lobby (Lv.100)"
+    ]
+   ],
+   "visited": true,
+   "edges": [
+    [
+     1184,
+     1183,
+     56,
+     11,
+     "gate"
+    ]
+   ]
   },
   "1185": {
    "at": 0,
