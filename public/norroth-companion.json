@@ -1,8 +1,8 @@
 {
-  "version": "2.6.160",
-  "date": "2026-10-26",
-  "notes": "v2.6.159 Overlord 自动参战兜底：进房没开打/没退出的修复（房内地图锁定、boss 磁贴兜底索敌、空等离场 600s、打完 60s 无 boss 才走）；v2.6.160 兜底[回图]：采集/一键挂机/战斗期间被非阵亡原因（活动弹出、游戏自身传送等）带离挂机地图时自动导航回图。",
+  "version": "2.6.161",
+  "date": "2026-10-27",
+  "notes": "v2.6.161 修复走私路线换图后下一张图导航失败：rideSmugglers 换图后等 renderSynced（新图 door_tiles 就绪）再返回，避免下一跳拿上一张图的门规划。",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 848463,
-  "sha256": "805b074179e4460454b7ccec0e1f4be671d8f694d5eded7b80f9b201be8fbe1e"
+  "size": 849128,
+  "sha256": "5a09415740f0876a541410ed3e666534c13a34a81a31beb0cbb7abf00ab58e7a"
 }

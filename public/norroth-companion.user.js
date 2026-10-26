@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.160
+// @version      2.6.161
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -190,7 +190,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.160';   // 与 @version 保持一致
+  const SCRIPT_VER = '2.6.161';   // 与 @version 保持一致
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -10575,6 +10575,15 @@
       try { closeFrameById('frame_SmugglersRoute'); } catch (e) { /* ignore */ }
       return 0;
     }
+    /* ★ v2.6.161：换图后**必须等新图渲染完成**（window.map.id === character.current_map）再返回。
+       否则紧接着的下一跳会拿上一张图的 window.door_tiles 规划 → 找不到门 → 过图失败
+       （症状：过了 smuggler route 之后下一张图的导航卡住 / 走不动）。对照 navHop 换图后的 sleep(2500)。 */
+    const readyUntil = now() + 12000;
+    while (!renderSynced() && now() < readyUntil) {
+      if (alive && !alive()) break;
+      await sleep(200);
+    }
+    if (!renderSynced()) logEvent('走私路线：新图渲染未确认（door_tiles 可能未就绪），下一跳会重试');
     logEvent('走私路线：已到达 ' + currentMapName());
     return character.current_map;
   }
