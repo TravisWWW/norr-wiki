@@ -1,6 +1,6 @@
 {
  "meta": {
-  "source": "游戏内 Inspect（/modal/inspect_enemy）· 小伴侣导出 · 4 位贡献者合并",
+  "source": "游戏内 Inspect（/modal/inspect_enemy）· 小伴侣导出 · 5 位贡献者合并",
   "fetched": "2026-10-26",
   "version": "1.0",
   "contributors": [
@@ -39,13 +39,22 @@
     "count": 193,
     "recorded": 193,
     "mergedAt": "2026-10-26"
+   },
+   {
+    "file": "char-2757.json",
+    "char": "#2757",
+    "level": 15,
+    "time": "2026-10-26T16:32:38.293Z",
+    "count": 193,
+    "recorded": 137,
+    "mergedAt": "2026-10-26"
    }
   ],
   "count": 199,
   "recordedCount": 193,
   "withLore": 198,
-  "withStats": 75,
-  "withSkills": 94,
+  "withStats": 76,
+  "withSkills": 96,
   "withBg": 183,
   "tabs": {
    "normal": 163,
@@ -1665,7 +1674,45 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_24.gif",
    "bg": "rainforest.jpg",
-   "recorded": true
+   "recorded": true,
+   "levelRange": "31 - 50",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "Medium",
+   "defense": "Medium",
+   "resistance": "High",
+   "drops": [
+    {
+     "name": "Bronze Sestertii",
+     "res": "coin_bronze",
+     "pct": "100%"
+    },
+    {
+     "name": "Medium Quality Shaped Skull",
+     "res": "medium_quality_shaped_skull",
+     "pct": "10%"
+    },
+    {
+     "name": "Maple Rod",
+     "res": "maple_rod",
+     "pct": "8%"
+    },
+    {
+     "name": "Maple Gall Ink",
+     "res": "maple_gall_ink",
+     "pct": "8%"
+    },
+    {
+     "name": "Medium Quality Fruits",
+     "res": "medium_quality_fruits",
+     "pct": "12%"
+    },
+    {
+     "name": "Medium Quality Scroll",
+     "res": "medium_quality_scroll",
+     "pct": "12%"
+    }
+   ]
   },
   {
    "id": 25,
@@ -1676,7 +1723,60 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_25.gif",
    "bg": "rainforest.jpg",
-   "recorded": true
+   "recorded": true,
+   "levelRange": "30 - 49",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "Low",
+   "defense": "High",
+   "resistance": "Low",
+   "scavenging": [
+    {
+     "name": "Medium Quality Meat",
+     "res": "medium_quality_meat",
+     "pct": "17%"
+    },
+    {
+     "name": "Medium Quality Hide",
+     "res": "medium_quality_hide",
+     "pct": "30%"
+    },
+    {
+     "name": "Medium Quality Fang",
+     "res": "medium_quality_fang",
+     "pct": "7%"
+    },
+    {
+     "name": "Medium Quality Bone",
+     "res": "medium_quality_bone",
+     "pct": "10%"
+    },
+    {
+     "name": "Medium Quality Tendon",
+     "res": "medium_quality_tendon",
+     "pct": "10%"
+    },
+    {
+     "name": "Medium Quality Skull",
+     "res": "medium_quality_skull",
+     "pct": "3%"
+    },
+    {
+     "name": "Medium Quality Claw",
+     "res": "medium_quality_claw",
+     "pct": "13%"
+    },
+    {
+     "name": "Medium Quality Eye",
+     "res": "medium_quality_eye",
+     "pct": "7%"
+    },
+    {
+     "name": "Medium Quality Tail",
+     "res": "medium_quality_tail",
+     "pct": "3%"
+    }
+   ]
   },
   {
    "id": 27,
@@ -9463,7 +9563,67 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_201.gif",
    "bg": "rainforest.jpg",
-   "recorded": true
+   "recorded": true,
+   "levelRange": "31 - 50",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "Low",
+   "defense": "High",
+   "resistance": "Low",
+   "drops": [
+    {
+     "name": "Bronze Sestertii",
+     "res": "coin_bronze",
+     "pct": "100%"
+    },
+    {
+     "name": "Maple Rod",
+     "res": "maple_rod",
+     "pct": "9%"
+    },
+    {
+     "name": "Maple Gall",
+     "res": "maple_gall",
+     "pct": "8%"
+    },
+    {
+     "name": "Medium Quality String",
+     "res": "medium_quality_string",
+     "pct": "7%"
+    },
+    {
+     "name": "Nettle Fleece",
+     "res": "nettle_fleece",
+     "pct": "6%"
+    }
+   ],
+   "skills": [
+    {
+     "name": "basic_arrow",
+     "id": 3,
+     "level": 6
+    },
+    {
+     "name": "pin_down",
+     "id": 97,
+     "level": 6
+    }
+   ],
+   "stats": {
+    "Base Damage": 15,
+    "Physical Damage": 3,
+    "Blunt Damage": 0,
+    "Spell Damage": 0,
+    "Bleed Damage": 0,
+    "Arcane Damage": 0,
+    "Cold Damage": 0,
+    "Dark Damage": 0,
+    "Fire Damage": 0,
+    "Light Damage": 0,
+    "Lightning Damage": 0,
+    "Poison Damage": 10,
+    "Thorn Damage": 0
+   }
   },
   {
    "id": 202,
@@ -9474,7 +9634,42 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_202.gif",
    "bg": "rainforest.jpg",
-   "recorded": true
+   "recorded": true,
+   "levelRange": "31 - 50",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "Low",
+   "defense": "Medium",
+   "resistance": "Low",
+   "scavenging": [
+    {
+     "name": "Nettle",
+     "res": "nettle",
+     "pct": "67%"
+    },
+    {
+     "name": "Spirit Berry",
+     "res": "spirit_berry",
+     "pct": "33%"
+    }
+   ],
+   "skills": [
+    {
+     "name": "sharp_leaf_strike",
+     "id": 10048,
+     "level": 6
+    },
+    {
+     "name": "root",
+     "id": 10086,
+     "level": 6
+    },
+    {
+     "name": "explosive_demise",
+     "id": 10104,
+     "level": 6
+    }
+   ]
   },
   {
    "id": 203,
@@ -9485,7 +9680,40 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_203.gif",
    "bg": "rainforest.jpg",
-   "recorded": true
+   "recorded": true,
+   "levelRange": "31 - 50",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "High",
+   "defense": "High",
+   "resistance": "Low",
+   "drops": [
+    {
+     "name": "Bronze Sestertii",
+     "res": "coin_bronze",
+     "pct": "100%"
+    },
+    {
+     "name": "Maple Club",
+     "res": "maple_club",
+     "pct": "9%"
+    },
+    {
+     "name": "Medium Quality Sharpened Tooth",
+     "res": "medium_quality_sharpened_tooth",
+     "pct": "8%"
+    },
+    {
+     "name": "Medium Quality Leather",
+     "res": "medium_quality_leather",
+     "pct": "9%"
+    },
+    {
+     "name": "Steel Plating",
+     "res": "steel_plating",
+     "pct": "6%"
+    }
+   ]
   },
   {
    "id": 204,
@@ -9556,7 +9784,19 @@
    "tab": "overlord",
    "icon": "https://www.norroth.com/images/maps/items/enemy_207.gif",
    "bg": "itham_s_heart.jpg",
-   "recorded": true
+   "recorded": true,
+   "levelRange": "30 - 30",
+   "alignment": "Neutral",
+   "health": "High",
+   "defense": "High",
+   "resistance": "High",
+   "drops": [
+    {
+     "name": "Bronze Sestertii",
+     "res": "coin_bronze",
+     "pct": "100%"
+    }
+   ]
   },
   {
    "id": 208,
@@ -9843,7 +10083,34 @@
    "tab": "boss",
    "icon": "https://www.norroth.com/images/maps/items/enemy_218.gif",
    "bg": "ape_temple.jpg",
-   "recorded": true
+   "recorded": true,
+   "levelRange": "40 - 40",
+   "alignment": "Neutral",
+   "health": "High",
+   "defense": "High",
+   "resistance": "Medium",
+   "drops": [
+    {
+     "name": "Bronze Sestertii",
+     "res": "coin_bronze",
+     "pct": "100%"
+    },
+    {
+     "name": "Beech Club",
+     "res": "beech_club",
+     "pct": "15%"
+    },
+    {
+     "name": "Quality Shaped Skull",
+     "res": "quality_shaped_skull",
+     "pct": "12%"
+    },
+    {
+     "name": "Ramie Fleece",
+     "res": "ramie_fleece",
+     "pct": "12%"
+    }
+   ]
   },
   {
    "id": 221,
