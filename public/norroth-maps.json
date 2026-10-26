@@ -1,7 +1,7 @@
 {
  "meta": {
-  "source": "小伴侣地图数据（MapDB）· 7 位贡献者合并",
-  "updated": "2026-10-26T16:13:45.209Z",
+  "source": "小伴侣地图数据（MapDB）· 8 位贡献者合并",
+  "updated": "2026-10-26T16:32:42.168Z",
   "version": "1.0",
   "contributors": [
    {
@@ -58,6 +58,14 @@
     "level": 20,
     "time": "2026-10-25T15:23:23.326Z",
     "count": 346,
+    "mergedAt": "2026-10-26"
+   },
+   {
+    "file": "maps-2757.json",
+    "char": "#2757",
+    "level": 15,
+    "time": "2026-10-26T16:32:27.382Z",
+    "count": 350,
     "mergedAt": "2026-10-26"
    }
   ],
@@ -184,7 +192,7 @@
    ]
   },
   "5": {
-   "at": 1792938446249,
+   "at": 1792961372015,
    "name": "El Caspar",
    "type": "City",
    "g": [
@@ -208,8 +216,13 @@
     [
      48,
      26,
-     "戰鬥訓練"
+     "Combat Training"
     ]
+   ],
+   "m": [
+    "Hare",
+    "Snake",
+    "Wild Dog"
    ],
    "ex": [
     [
@@ -240,7 +253,7 @@
      28,
      32,
      "waygate",
-     "傳送門"
+     "Waygate"
     ],
     [
      18,
@@ -835,7 +848,7 @@
    ]
   },
   "16": {
-   "at": 1792934288081,
+   "at": 1792959665055,
    "name": "Elundi",
    "type": "City",
    "g": [
@@ -4070,9 +4083,33 @@
    ]
   },
   "113": {
-   "at": 1792614612410,
+   "at": 1792976568655,
    "name": "Vileton",
    "type": "City",
+   "m": [
+    "Wisp Phantom",
+    "Mutated Lizardman"
+   ],
+   "ex": [
+    [
+     10,
+     12,
+     "gate",
+     "Vileton Entrance (Lv.14)"
+    ],
+    [
+     24,
+     23,
+     "waygate",
+     "Waygate"
+    ],
+    [
+     49,
+     35,
+     "gate",
+     "Swamp (Lv.21)"
+    ]
+   ],
    "visited": true,
    "smith": true,
    "edges": [
@@ -4080,13 +4117,15 @@
      113,
      112,
      10,
-     12
+     12,
+     "gate"
     ],
     [
      113,
      120,
      49,
-     35
+     35,
+     "gate"
     ]
    ]
   },
@@ -4912,7 +4951,7 @@
    ]
   },
   "169": {
-   "at": 1792939706262,
+   "at": 1792988242754,
    "name": "Bungavik",
    "type": "City",
    "ex": [
@@ -5680,7 +5719,7 @@
    ]
   },
   "195": {
-   "at": 1792744121633,
+   "at": 1792972773477,
    "name": "Savanna",
    "type": "Normal",
    "g": [
@@ -5691,14 +5730,14 @@
    ],
    "gt": [
     [
-     38,
-     25,
-     "Tin 採礦"
-    ],
-    [
      27,
      28,
-     "Soapstone 採石場"
+     "Soapstone Quarry"
+    ],
+    [
+     38,
+     25,
+     "Tin Mine"
     ]
    ],
    "m": [
@@ -5729,18 +5768,20 @@
      195,
      194,
      19,
-     60
+     60,
+     "gate"
     ],
     [
      195,
      196,
      45,
-     7
+     7,
+     "gate"
     ]
    ]
   },
   "196": {
-   "at": 1792939573838,
+   "at": 1792976732038,
    "name": "Savanna",
    "type": "Normal",
    "m": [
@@ -7576,7 +7617,7 @@
    ]
   },
   "281": {
-   "at": 1792940579479,
+   "at": 1792989230812,
    "name": "Trescan",
    "type": "City",
    "g": [
@@ -7992,11 +8033,19 @@
    ]
   },
   "292": {
-   "at": 0,
+   "at": 1793005523216,
    "name": "Itham’s Heart",
    "type": "Secret",
    "m": [
     "Thornweaver Itham"
+   ],
+   "ex": [
+    [
+     49,
+     34,
+     "gate",
+     "Itham’s Anchorage (Lv.36)"
+    ]
    ],
    "visited": true,
    "edges": [
@@ -8004,53 +8053,551 @@
      292,
      291,
      49,
-     34
+     34,
+     "gate"
     ]
    ]
   },
   "293": {
-   "at": 0,
-   "name": "Rainforest"
+   "at": 1793028061555,
+   "name": "Rainforest",
+   "m": [
+    "Vine Sniper",
+    "Foliage Shaman",
+    "Tiger",
+    "Luminous Plant",
+    "Ape Brute"
+   ],
+   "ex": [
+    [
+     6,
+     6,
+     "smugglers_route",
+     "Smugglers Route"
+    ],
+    [
+     62,
+     57,
+     "gate",
+     "Rainforest (Lv.31)"
+    ]
+   ],
+   "edges": [
+    [
+     293,
+     346,
+     0,
+     0,
+     "smugglers"
+    ],
+    [
+     293,
+     294,
+     62,
+     57,
+     "gate"
+    ]
+   ]
   },
   "294": {
-   "at": 0,
-   "name": "Rainforest"
+   "at": 1793028123831,
+   "name": "Rainforest",
+   "g": [
+    "Smallmouth Bass Pier",
+    "Maple Grove"
+   ],
+   "gt": [
+    [
+     49,
+     14,
+     "Smallmouth Bass Pier"
+    ],
+    [
+     37,
+     27,
+     "Maple Grove"
+    ],
+    [
+     26,
+     58,
+     "Smallmouth Bass Pier"
+    ]
+   ],
+   "m": [
+    "Foliage Shaman",
+    "Tiger",
+    "Vine Sniper",
+    "Luminous Plant",
+    "Ape Brute"
+   ],
+   "ex": [
+    [
+     6,
+     16,
+     "gate",
+     "Rainforest (Lv.31)"
+    ],
+    [
+     63,
+     54,
+     "gate",
+     "Rainforest (Lv.33)"
+    ]
+   ],
+   "edges": [
+    [
+     294,
+     293,
+     6,
+     16,
+     "gate"
+    ],
+    [
+     294,
+     295,
+     63,
+     54,
+     "gate"
+    ]
+   ]
   },
   "295": {
-   "at": 0,
-   "name": "Rainforest"
+   "at": 1793028176897,
+   "name": "Rainforest",
+   "g": [
+    "Coal Mine"
+   ],
+   "gt": [
+    [
+     32,
+     35,
+     "Coal Mine"
+    ]
+   ],
+   "m": [
+    "Luminous Plant",
+    "Vine Sniper",
+    "Foliage Shaman",
+    "Tiger",
+    "Ape Brute"
+   ],
+   "ex": [
+    [
+     5,
+     22,
+     "gate",
+     "Rainforest (Lv.31)"
+    ],
+    [
+     31,
+     60,
+     "gate",
+     "Rainforest (Lv.33)"
+    ]
+   ],
+   "edges": [
+    [
+     295,
+     294,
+     5,
+     22,
+     "gate"
+    ],
+    [
+     295,
+     296,
+     31,
+     60,
+     "gate"
+    ]
+   ]
   },
   "296": {
-   "at": 0,
-   "name": "Rainforest"
+   "at": 1793028304790,
+   "name": "Rainforest",
+   "m": [
+    "Vine Sniper",
+    "Tiger",
+    "Luminous Plant",
+    "Foliage Shaman",
+    "Ape Brute"
+   ],
+   "ex": [
+    [
+     18,
+     3,
+     "gate",
+     "Rainforest (Lv.33)"
+    ],
+    [
+     3,
+     29,
+     "gate",
+     "Rainforest (Lv.35)"
+    ],
+    [
+     57,
+     41,
+     "gate",
+     "Rainforest (Lv.31)"
+    ]
+   ],
+   "edges": [
+    [
+     296,
+     295,
+     18,
+     3,
+     "gate"
+    ],
+    [
+     296,
+     297,
+     3,
+     29,
+     "gate"
+    ],
+    [
+     296,
+     301,
+     57,
+     41,
+     "gate"
+    ]
+   ]
   },
   "297": {
-   "at": 0,
-   "name": "Rainforest"
+   "at": 1793028800534,
+   "name": "Rainforest",
+   "g": [
+    "Maple Grove"
+   ],
+   "gt": [
+    [
+     38,
+     20,
+     "Maple Grove"
+    ],
+    [
+     38,
+     39,
+     "Maple Grove"
+    ],
+    [
+     15,
+     40,
+     "Maple Grove"
+    ]
+   ],
+   "m": [
+    "Ape Brute",
+    "Foliage Shaman",
+    "Tiger",
+    "Vine Sniper",
+    "Luminous Plant"
+   ],
+   "ex": [
+    [
+     9,
+     29,
+     "gate",
+     "Rainforest (Lv.35)"
+    ],
+    [
+     59,
+     29,
+     "gate",
+     "Rainforest (Lv.33)"
+    ]
+   ],
+   "edges": [
+    [
+     297,
+     296,
+     59,
+     29,
+     "gate"
+    ],
+    [
+     297,
+     298,
+     9,
+     29,
+     "gate"
+    ]
+   ]
   },
   "298": {
-   "at": 0,
-   "name": "Rainforest"
+   "at": 1793028983384,
+   "name": "Rainforest",
+   "m": [
+    "Foliage Shaman",
+    "Tiger",
+    "Ape Brute",
+    "Vine Sniper",
+    "Luminous Plant"
+   ],
+   "ex": [
+    [
+     61,
+     28,
+     "gate",
+     "Rainforest (Lv.35)"
+    ],
+    [
+     42,
+     48,
+     "waygate",
+     "Waygate"
+    ],
+    [
+     59,
+     59,
+     "gate",
+     "Rainforest (Lv.37)"
+    ]
+   ],
+   "edges": [
+    [
+     298,
+     297,
+     61,
+     28,
+     "gate"
+    ],
+    [
+     298,
+     304,
+     59,
+     59,
+     "gate"
+    ]
+   ]
   },
   "301": {
-   "at": 0,
-   "name": "Rainforest"
+   "at": 1793028362542,
+   "name": "Rainforest",
+   "m": [
+    "Luminous Plant",
+    "Ape Brute",
+    "Foliage Shaman",
+    "Vine Sniper",
+    "Tiger"
+   ],
+   "ex": [
+    [
+     9,
+     10,
+     "gate",
+     "Rainforest (Lv.33)"
+    ],
+    [
+     62,
+     55,
+     "gate",
+     "Coveted Blossom (Lv.31)"
+    ]
+   ],
+   "edges": [
+    [
+     301,
+     296,
+     9,
+     10,
+     "gate"
+    ],
+    [
+     301,
+     302,
+     62,
+     55,
+     "gate"
+    ]
+   ]
   },
   "302": {
-   "at": 0,
-   "name": "Coveted Blossom"
+   "at": 1793028424777,
+   "name": "Coveted Blossom",
+   "m": [
+    "Foliage Shaman",
+    "Ape Brute",
+    "Tiger",
+    "Luminous Plant",
+    "Vine Sniper"
+   ],
+   "ex": [
+    [
+     2,
+     25,
+     "gate",
+     "Rainforest (Lv.31)"
+    ],
+    [
+     45,
+     44,
+     "dungeon",
+     "Goliathor’s Temple (Lv.40)"
+    ]
+   ],
+   "edges": [
+    [
+     302,
+     301,
+     2,
+     25,
+     "gate"
+    ],
+    [
+     302,
+     321,
+     45,
+     44,
+     "other"
+    ]
+   ]
   },
   "304": {
-   "at": 0,
-   "name": "Rainforest"
+   "at": 1793029196228,
+   "name": "Rainforest",
+   "m": [
+    "Foliage Shaman",
+    "Ape Brute",
+    "Tiger",
+    "Vine Sniper",
+    "Luminous Plant"
+   ],
+   "ex": [
+    [
+     15,
+     6,
+     "gate",
+     "Rainforest (Lv.35)"
+    ],
+    [
+     37,
+     64,
+     "gate",
+     "Rainforest (Lv.39)"
+    ]
+   ],
+   "edges": [
+    [
+     304,
+     298,
+     15,
+     6,
+     "gate"
+    ],
+    [
+     304,
+     306,
+     37,
+     64,
+     "gate"
+    ]
+   ]
   },
   "306": {
-   "at": 0,
-   "name": "Rainforest"
+   "at": 1793029425528,
+   "name": "Rainforest",
+   "g": [
+    "Largemouth Bass Pier"
+   ],
+   "gt": [
+    [
+     61,
+     45,
+     "Largemouth Bass Pier"
+    ]
+   ],
+   "m": [
+    "Foliage Shaman",
+    "Ape Brute",
+    "Tiger",
+    "Luminous Plant",
+    "Vine Sniper"
+   ],
+   "ex": [
+    [
+     14,
+     4,
+     "gate",
+     "Rainforest (Lv.37)"
+    ],
+    [
+     17,
+     63,
+     "gate",
+     "Rainforest (Lv.41)"
+    ]
+   ],
+   "edges": [
+    [
+     306,
+     304,
+     14,
+     4,
+     "gate"
+    ],
+    [
+     306,
+     307,
+     17,
+     63,
+     "gate"
+    ]
+   ]
   },
   "307": {
-   "at": 0,
-   "name": "Rainforest"
+   "at": 1793029567331,
+   "name": "Rainforest",
+   "g": [
+    "Beech Grove"
+   ],
+   "gt": [
+    [
+     21,
+     12,
+     "Beech Grove"
+    ]
+   ],
+   "m": [
+    "Foliage Shaman",
+    "Ape Brute",
+    "Tiger",
+    "Vine Sniper",
+    "Luminous Plant"
+   ],
+   "ex": [
+    [
+     35,
+     2,
+     "gate",
+     "Rainforest (Lv.39)"
+    ],
+    [
+     31,
+     62,
+     "gate",
+     "Rainforest (Lv.43)"
+    ]
+   ],
+   "edges": [
+    [
+     307,
+     306,
+     35,
+     2,
+     "gate"
+    ],
+    [
+     307,
+     316,
+     31,
+     62,
+     "gate"
+    ]
+   ]
   },
   "308": {
    "at": 0,
@@ -8134,13 +8681,100 @@
    ]
   },
   "316": {
-   "at": 0,
-   "name": "Rainforest"
+   "at": 1793030570170,
+   "name": "Rainforest",
+   "g": [
+    "Quality Patch",
+    "Ramie Field"
+   ],
+   "gt": [
+    [
+     27,
+     49,
+     "Quality Patch"
+    ],
+    [
+     25,
+     50,
+     "Quality Patch"
+    ],
+    [
+     30,
+     51,
+     "Ramie Field"
+    ],
+    [
+     29,
+     53,
+     "Ramie Field"
+    ]
+   ],
+   "m": [
+    "Luminous Plant",
+    "Tiger",
+    "Ape Brute",
+    "Foliage Shaman",
+    "Vine Sniper"
+   ],
+   "ex": [
+    [
+     36,
+     28,
+     "gate",
+     "Rainforest (Lv.41)"
+    ],
+    [
+     49,
+     57,
+     "gate",
+     "Galkathos (Lv.45)"
+    ]
+   ],
+   "visited": true,
+   "edges": [
+    [
+     316,
+     307,
+     36,
+     28,
+     "gate"
+    ],
+    [
+     316,
+     317,
+     49,
+     57,
+     "gate"
+    ]
+   ]
   },
   "317": {
-   "at": 0,
+   "at": 1793030007243,
    "name": "Galkathos",
-   "type": "City"
+   "type": "City",
+   "ex": [
+    [
+     30,
+     12,
+     "waygate",
+     "Waygate"
+    ],
+    [
+     2,
+     44,
+     "gate",
+     "Rainforest (Lv.43)"
+    ]
+   ],
+   "edges": [
+    [
+     317,
+     316,
+     2,
+     44,
+     "gate"
+    ]
+   ]
   },
   "318": {
    "at": 0,
@@ -8183,12 +8817,69 @@
    "name": "Glacierbane’s Hollow"
   },
   "321": {
-   "at": 0,
-   "name": "Goliathor’s Temple"
+   "at": 1793028464174,
+   "name": "Goliathor’s Temple",
+   "m": [
+    "Foliage Shaman",
+    "Tiger",
+    "Vine Sniper",
+    "Luminous Plant",
+    "Ape Brute"
+   ],
+   "ex": [
+    [
+     34,
+     32,
+     "gate",
+     "Goliathor’s Throne Room (Lv.40)"
+    ],
+    [
+     35,
+     66,
+     "gate",
+     "Coveted Blossom (Lv.31)"
+    ]
+   ],
+   "edges": [
+    [
+     321,
+     302,
+     35,
+     66,
+     "gate"
+    ],
+    [
+     321,
+     322,
+     34,
+     32,
+     "gate"
+    ]
+   ]
   },
   "322": {
-   "at": 0,
-   "name": "Goliathor’s Throne Room"
+   "at": 1793028484174,
+   "name": "Goliathor’s Throne Room",
+   "m": [
+    "Ape King Goliathor"
+   ],
+   "ex": [
+    [
+     34,
+     8,
+     "gate",
+     "Goliathor’s Temple (Lv.40)"
+    ]
+   ],
+   "edges": [
+    [
+     322,
+     321,
+     34,
+     8,
+     "gate"
+    ]
+   ]
   },
   "323": {
    "at": 1792606552065,
@@ -8641,8 +9332,7 @@
    "name": "The Ember Forge"
   },
   "342": {
-   "at": 1792896695375,
-   "name": "Dark Boreal",
+   "at": 1792989239792,
    "m": [
     "Armored Ram",
     "Dwarven Guard",
@@ -8809,8 +9499,7 @@
    ]
   },
   "346": {
-   "at": 1792910355227,
-   "name": "Dark Boreal",
+   "at": 1793031616429,
    "g": [
     "Laterite Quarry",
     "Ramie Field",
@@ -8880,8 +9569,7 @@
    ]
   },
   "347": {
-   "at": 1792909062662,
-   "name": "Dark Boreal",
+   "at": 1793031564042,
    "g": [
     "Beech Grove"
    ],
@@ -8932,7 +9620,7 @@
    ]
   },
   "348": {
-   "at": 1792953535007,
+   "at": 1793014160900,
    "name": "Laen Dorei",
    "type": "City",
    "ex": [
@@ -8975,9 +9663,7 @@
    ]
   },
   "349": {
-   "at": 1792957956177,
-   "name": "Dark Boreal",
-   "type": "Normal",
+   "at": 1792961315415,
    "m": [
     "Dwarven Guard (?)",
     "Dwarven Guard",
@@ -9020,9 +9706,7 @@
    ]
   },
   "350": {
-   "at": 1792958255120,
-   "name": "Dark Boreal",
-   "type": "Normal",
+   "at": 1792961357321,
    "g": [
     "Ash Grove"
    ],
@@ -9073,9 +9757,7 @@
    ]
   },
   "351": {
-   "at": 1792957046058,
-   "name": "Wardens’ Bridge",
-   "type": "Normal",
+   "at": 1792961208208,
    "g": [
     "Northern Pike Pier",
     "High Quality Patch",
@@ -9122,6 +9804,7 @@
      "Wardens’ Bridge (Lv.53)"
     ]
    ],
+   "visited": true,
    "edges": [
     [
      351,
@@ -9721,7 +10404,7 @@
    "name": "Sleepy Hollow"
   },
   "1183": {
-   "at": 1792934206953,
+   "at": 1792991976763,
    "name": "The Sacred Wilds Lobby",
    "g": [
     "Quarry",
@@ -9890,7 +10573,7 @@
    ]
   },
   "1189": {
-   "at": 1792934278708,
+   "at": 1792991822053,
    "m": [
     "Wyvern"
    ],
