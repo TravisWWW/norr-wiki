@@ -1,8 +1,8 @@
 {
-  "version": "2.6.161",
+  "version": "2.6.162",
   "date": "2026-10-27",
-  "notes": "v2.6.161 修复走私路线换图后下一张图导航失败：rideSmugglers 换图后等 renderSynced（新图 door_tiles 就绪）再返回，避免下一跳拿上一张图的门规划。",
+  "notes": "v2.6.162 资源点名字归一化：把别人用中文/翻译录进来的点位名（Minnow 碼頭 等）还原成英文并去重，世界地图 tooltip 资源点统一成英文一种；合并脚本对历史公共库 + 新上传都归一化。",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 849128,
-  "sha256": "5a09415740f0876a541410ed3e666534c13a34a81a31beb0cbb7abf00ab58e7a"
+  "size": 851609,
+  "sha256": "970ad05da5e084d092b6c1be41c3d198ecc3baec5bef3ffea8fa8e5e2b5a7a6e"
 }

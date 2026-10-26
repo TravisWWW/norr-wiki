@@ -1,7 +1,7 @@
 {
  "meta": {
   "source": "小伴侣地图数据（MapDB）· 8 位贡献者合并",
-  "updated": "2026-10-26T16:32:42.168Z",
+  "updated": "2026-10-26T20:13:04.897Z",
   "version": "1.0",
   "contributors": [
    {
@@ -145,8 +145,7 @@
    "name": "Upper Fountain’s Descent",
    "type": "Normal",
    "g": [
-    "Mucky Patch",
-    "Mucky 修正檔"
+    "Mucky Patch"
    ],
    "gt": [
     [
@@ -198,9 +197,7 @@
    "g": [
     "Minnow Pier",
     "Mucky Patch",
-    "Minnow 码头",
-    "战斗训练",
-    "Mucky 修正档"
+    "Combat Training"
    ],
    "gt": [
     [
@@ -321,9 +318,7 @@
    "type": "Normal",
    "g": [
     "Slate Quarry",
-    "Minnow Pier",
-    "Slate 採石場",
-    "Minnow 碼頭"
+    "Minnow Pier"
    ],
    "gt": [
     [
@@ -535,8 +530,7 @@
    "name": "Elena’s Crossroad",
    "type": "Normal",
    "g": [
-    "Cotton Field",
-    "Cotton 田野"
+    "Cotton Field"
    ],
    "gt": [
     [
@@ -680,8 +674,7 @@
    "name": "Tree of Life",
    "type": "Normal",
    "g": [
-    "Minnow Pier",
-    "Minnow 码头"
+    "Minnow Pier"
    ],
    "gt": [
     [
@@ -729,10 +722,7 @@
    "g": [
     "Mucky Patch",
     "Cotton Field",
-    "Minnow Pier",
-    "Mucky 修正檔",
-    "Cotton 田野",
-    "Minnow 碼頭"
+    "Minnow Pier"
    ],
    "gt": [
     [
@@ -797,8 +787,7 @@
    "name": "Arodas Beach",
    "type": "Normal",
    "g": [
-    "Shrimp Pier",
-    "Shrimp 碼頭"
+    "Shrimp Pier"
    ],
    "gt": [
     [
@@ -854,9 +843,7 @@
    "g": [
     "Shrimp Pier",
     "Silk Field",
-    "Shrimp 码头",
-    "战斗训练",
-    "Silk 田野"
+    "Combat Training"
    ],
    "gt": [
     [
@@ -1093,10 +1080,7 @@
    "g": [
     "Minnow Pier",
     "Aspen Grove",
-    "Cotton Field",
-    "Minnow 碼頭",
-    "Aspen 樹林",
-    "Cotton 田野"
+    "Cotton Field"
    ],
    "gt": [
     [
@@ -1182,8 +1166,7 @@
    "name": "Forest Of Owranbu",
    "type": "Normal",
    "g": [
-    "Aspen Grove",
-    "Aspen 樹林"
+    "Aspen Grove"
    ],
    "gt": [
     [
@@ -1240,37 +1223,37 @@
    "name": "Owranbu River",
    "type": "Normal",
    "g": [
-    "Silk 田野",
-    "Scrap 修正檔",
-    "Iron 採礦",
-    "Shrimp 碼頭",
-    "Elm 樹林"
+    "Silk Field",
+    "Scrap Patch",
+    "Iron Mine",
+    "Shrimp Pier",
+    "Elm Grove"
    ],
    "gt": [
     [
      22,
      9,
-     "Silk 田野"
+     "Silk Field"
     ],
     [
      19,
      11,
-     "Scrap 修正檔"
+     "Scrap Patch"
     ],
     [
      55,
      14,
-     "Iron 採礦"
+     "Iron Mine"
     ],
     [
      27,
      19,
-     "Shrimp 碼頭"
+     "Shrimp Pier"
     ],
     [
      44,
      25,
-     "Elm 樹林"
+     "Elm Grove"
     ]
    ],
    "m": [
@@ -1534,9 +1517,7 @@
    "type": "Normal",
    "g": [
     "Elm Grove",
-    "Shrimp Pier",
-    "Elm 树林",
-    "Shrimp 码头"
+    "Shrimp Pier"
    ],
    "gt": [
     [
@@ -1730,7 +1711,7 @@
      38,
      18,
      "entrance",
-     "入口"
+     "Entrance"
     ]
    ],
    "visited": true,
@@ -3772,7 +3753,7 @@
      24,
      26,
      "waygate",
-     "傳送門"
+     "Portal"
     ],
     [
      53,
@@ -3885,7 +3866,7 @@
      36,
      53,
      "smugglers_route",
-     "走私者路線"
+     "Smugglers Route"
     ]
    ],
    "visited": true,
@@ -3919,9 +3900,7 @@
    "type": "Normal",
    "g": [
     "Scrap Patch",
-    "Silk Field",
-    "Scrap 修正檔",
-    "Silk 田野"
+    "Silk Field"
    ],
    "gt": [
     [
@@ -4435,10 +4414,7 @@
    "g": [
     "Smallmouth Bass Pier",
     "Maple Grove",
-    "Medium Quality Patch",
-    "Smallmouth Bass 码头",
-    "Maple 树林",
-    "Medium Quality 修正档"
+    "Medium Quality Patch"
    ],
    "gt": [
     [
@@ -5222,7 +5198,7 @@
      21,
      12,
      "waygate",
-     "传送门"
+     "Portal"
     ],
     [
      46,
@@ -5724,9 +5700,7 @@
    "type": "Normal",
    "g": [
     "Tin Mine",
-    "Soapstone Quarry",
-    "Tin 採礦",
-    "Soapstone 採石場"
+    "Soapstone Quarry"
    ],
    "gt": [
     [
@@ -7529,13 +7503,13 @@
    "at": 1792851356415,
    "name": "Ancient Worm Tunnel",
    "g": [
-    "Coal 采矿"
+    "Coal Mine"
    ],
    "gt": [
     [
      35,
      23,
-     "Coal 采矿"
+     "Coal Mine"
     ]
    ],
    "m": [
@@ -7987,20 +7961,18 @@
    "type": "Normal",
    "g": [
     "Coal Mine",
-    "Smallmouth Bass Pier",
-    "Coal 采矿",
-    "Smallmouth Bass 码头"
+    "Smallmouth Bass Pier"
    ],
    "gt": [
     [
      7,
      7,
-     "Coal 采矿"
+     "Coal Mine"
     ],
     [
      35,
      41,
-     "Smallmouth Bass 码头"
+     "Smallmouth Bass Pier"
     ]
    ],
    "m": [
@@ -8018,7 +7990,7 @@
      51,
      21,
      "waygate",
-     "传送门"
+     "Portal"
     ]
    ],
    "visited": true,
