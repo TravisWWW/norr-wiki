@@ -1,7 +1,7 @@
 {
  "meta": {
   "source": "小伴侣地图数据（MapDB）· 7 位贡献者合并",
-  "updated": "2026-10-26T03:34:40.658Z",
+  "updated": "2026-10-26T06:10:42.913Z",
   "version": "1.0",
   "contributors": [
    {
@@ -31,9 +31,9 @@
    {
     "file": "maps-2838.json",
     "char": "#2838",
-    "level": 19,
-    "time": "2026-10-23T08:29:11.845Z",
-    "count": 340,
+    "level": 40,
+    "time": "2026-10-26T06:10:26.587Z",
+    "count": 329,
     "mergedAt": "2026-10-26"
    },
    {
@@ -1223,15 +1223,10 @@
    ]
   },
   "22": {
-   "at": 1792941137898,
+   "at": 1792994983857,
    "name": "Owranbu River",
    "type": "Normal",
    "g": [
-    "Silk Field",
-    "Scrap Patch",
-    "Iron Mine",
-    "Shrimp Pier",
-    "Elm Grove",
     "Silk 田野",
     "Scrap 修正檔",
     "Iron 採礦",
@@ -1240,29 +1235,29 @@
    ],
    "gt": [
     [
-     19,
-     11,
-     "Scrap Patch"
-    ],
-    [
      22,
      9,
-     "Silk Field"
+     "Silk 田野"
     ],
     [
-     27,
      19,
-     "Shrimp Pier"
-    ],
-    [
-     44,
-     25,
-     "Elm Grove"
+     11,
+     "Scrap 修正檔"
     ],
     [
      55,
      14,
-     "Iron Mine"
+     "Iron 採礦"
+    ],
+    [
+     27,
+     19,
+     "Shrimp 碼頭"
+    ],
+    [
+     44,
+     25,
+     "Elm 樹林"
     ]
    ],
    "m": [
