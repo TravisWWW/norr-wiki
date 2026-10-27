@@ -1,7 +1,7 @@
 {
  "meta": {
   "source": "小伴侣地图数据（MapDB）· 9 位贡献者合并",
-  "updated": "2026-10-27T20:38:56.551Z",
+  "updated": "2026-10-27T21:03:20.938Z",
   "version": "1.0",
   "contributors": [
    {
@@ -15,9 +15,9 @@
    {
     "file": "maps-1330.json",
     "char": "#1330",
-    "level": 55,
-    "time": "2026-10-25T19:57:40.839Z",
-    "count": 348,
+    "level": 56,
+    "time": "2026-10-27T21:03:05.031Z",
+    "count": 350,
     "mergedAt": "2026-10-27"
    },
    {
@@ -199,7 +199,7 @@
    ]
   },
   "5": {
-   "at": 1792961372015,
+   "at": 1793104926109,
    "name": "El Caspar",
    "type": "City",
    "g": [
@@ -845,7 +845,7 @@
    ]
   },
   "16": {
-   "at": 1792959665055,
+   "at": 1793080165224,
    "name": "Elundi",
    "type": "City",
    "g": [
@@ -916,7 +916,7 @@
    ]
   },
   "17": {
-   "at": 1792292242515,
+   "at": 1793034157103,
    "name": "Southern Foothill",
    "type": "Normal",
    "g": [
@@ -970,30 +970,53 @@
     "Beaver",
     "Badger"
    ],
+   "ex": [
+    [
+     31,
+     8,
+     "gate",
+     "El Caspar (Lv.1)"
+    ],
+    [
+     22,
+     24,
+     "gate",
+     "Farmer’s House (Lv.4)"
+    ],
+    [
+     40,
+     62,
+     "gate",
+     "Bay’s Alley (Lv.4)"
+    ]
+   ],
    "visited": true,
    "edges": [
     [
      17,
      5,
      31,
-     8
+     8,
+     "gate"
     ],
     [
      17,
      18,
      40,
-     62
+     62,
+     "gate"
     ],
     [
      17,
      44,
      22,
-     24
+     24,
+     "gate"
     ]
    ]
   },
   "18": {
-   "at": 0,
+   "at": 1793036065564,
    "name": "Bay’s Alley",
    "type": "Normal",
    "g": [
@@ -1021,30 +1044,53 @@
     "Crocodile",
     "Snapping Turtle"
    ],
+   "ex": [
+    [
+     36,
+     17,
+     "gate",
+     "Secret Cave Tunnel (Lv.7)"
+    ],
+    [
+     5,
+     36,
+     "gate",
+     "Southern Foothill (Lv.1)"
+    ],
+    [
+     60,
+     37,
+     "gate",
+     "Bay’s Alley (Lv.7)"
+    ]
+   ],
    "visited": true,
    "edges": [
     [
      18,
      17,
      5,
-     36
+     36,
+     "gate"
     ],
     [
      18,
      19,
      60,
-     37
+     37,
+     "gate"
     ],
     [
      18,
      130,
      36,
-     17
+     17,
+     "gate"
     ]
    ]
   },
   "19": {
-   "at": 0,
+   "at": 1793036102957,
    "name": "Bay’s Alley",
    "type": "Normal",
    "g": [
@@ -1065,19 +1111,35 @@
     "Toxic Toad",
     "Toad"
    ],
+   "ex": [
+    [
+     10,
+     36,
+     "gate",
+     "Bay’s Alley (Lv.4)"
+    ],
+    [
+     58,
+     37,
+     "gate",
+     "Pirate Wreck Foothill (Lv.11)"
+    ]
+   ],
    "visited": true,
    "edges": [
     [
      19,
      18,
      10,
-     36
+     36,
+     "gate"
     ],
     [
      19,
      31,
      58,
-     37
+     37,
+     "gate"
     ]
    ]
   },
@@ -1606,7 +1668,7 @@
    ]
   },
   "31": {
-   "at": 0,
+   "at": 1793036135761,
    "name": "Pirate Wreck Foothill",
    "type": "Normal",
    "m": [
@@ -1615,24 +1677,40 @@
     "Mountain Troll",
     "Lizardman"
    ],
+   "ex": [
+    [
+     9,
+     31,
+     "gate",
+     "Bay’s Alley (Lv.7)"
+    ],
+    [
+     58,
+     33,
+     "gate",
+     "Pirate Wreck Beach (Lv.14)"
+    ]
+   ],
    "visited": true,
    "edges": [
     [
      31,
      19,
      9,
-     31
+     31,
+     "gate"
     ],
     [
      31,
      32,
      58,
-     33
+     33,
+     "gate"
     ]
    ]
   },
   "32": {
-   "at": 0,
+   "at": 1793036178478,
    "name": "Pirate Wreck Beach",
    "type": "Normal",
    "g": [
@@ -1651,25 +1729,48 @@
     "Lizardman",
     "Merfolk"
    ],
+   "ex": [
+    [
+     9,
+     20,
+     "gate",
+     "Pirate Wreck Foothill (Lv.11)"
+    ],
+    [
+     59,
+     22,
+     "gate",
+     "Vileton Entrance (Lv.14)"
+    ],
+    [
+     30,
+     34,
+     "gate",
+     "The Pirate Wreck (Lv.15)"
+    ]
+   ],
    "visited": true,
    "edges": [
     [
      32,
      31,
      9,
-     20
+     20,
+     "gate"
     ],
     [
      32,
      33,
      30,
-     34
+     34,
+     "gate"
     ],
     [
      32,
      112,
      59,
-     22
+     22,
+     "gate"
     ]
    ]
   },
@@ -1954,10 +2055,18 @@
    ]
   },
   "44": {
-   "at": 0,
+   "at": 1793036008064,
    "name": "Farmer’s House",
    "m": [
     "Peasant"
+   ],
+   "ex": [
+    [
+     41,
+     29,
+     "gate",
+     "Southern Foothill (Lv.1)"
+    ]
    ],
    "visited": true,
    "edges": [
@@ -1965,7 +2074,8 @@
      44,
      17,
      41,
-     29
+     29,
+     "gate"
     ]
    ]
   },
@@ -3450,7 +3560,7 @@
    ]
   },
   "90": {
-   "at": 1792941347398,
+   "at": 1793042270569,
    "name": "Whispering Sands",
    "type": "Normal",
    "m": [
@@ -3507,7 +3617,7 @@
    ]
   },
   "91": {
-   "at": 1792941141945,
+   "at": 1793040604476,
    "name": "Drouver",
    "type": "City",
    "ex": [
@@ -3846,7 +3956,7 @@
    ]
   },
   "99": {
-   "at": 1792915908918,
+   "at": 1793038998998,
    "name": "Burnt Sienna Wastes",
    "type": "Normal",
    "m": [
@@ -4044,7 +4154,7 @@
    ]
   },
   "112": {
-   "at": 1792451638064,
+   "at": 1793038686176,
    "name": "Vileton Entrance",
    "type": "Normal",
    "m": [
@@ -4053,19 +4163,35 @@
     "Goblin Pyro",
     "Goblin Soldier"
    ],
+   "ex": [
+    [
+     53,
+     18,
+     "gate",
+     "Vileton (Lv.15)"
+    ],
+    [
+     5,
+     21,
+     "gate",
+     "Pirate Wreck Beach (Lv.14)"
+    ]
+   ],
    "visited": true,
    "edges": [
     [
      112,
      32,
      5,
-     21
+     21,
+     "gate"
     ],
     [
      112,
      113,
      53,
-     18
+     18,
+     "gate"
     ]
    ]
   },
@@ -5529,9 +5655,8 @@
    ]
   },
   "191": {
-   "at": 1792939289635,
+   "at": 1793042577595,
    "name": "Savanna",
-   "type": "Normal",
    "m": [
     "Carrion Harpy",
     "Gnoll Warlock",
@@ -5573,9 +5698,8 @@
    ]
   },
   "192": {
-   "at": 1792939354930,
+   "at": 1793042652975,
    "name": "Savanna",
-   "type": "Normal",
    "m": [
     "Terastodon",
     "Scorpion",
@@ -5617,9 +5741,8 @@
    ]
   },
   "193": {
-   "at": 1792939424150,
+   "at": 1793042693275,
    "name": "Savanna",
-   "type": "Normal",
    "m": [
     "Gnoll Warrior",
     "Terastodon",
@@ -5763,7 +5886,7 @@
    ]
   },
   "196": {
-   "at": 1792976732038,
+   "at": 1793049349509,
    "name": "Savanna",
    "type": "Normal",
    "m": [
@@ -6654,7 +6777,7 @@
    ]
   },
   "228": {
-   "at": 1793069445284,
+   "at": 1793106430143,
    "name": "Shrubland",
    "type": "Normal",
    "g": [
@@ -6685,7 +6808,11 @@
     "Carrion Harpy",
     "Catoblepas",
     "Orc Warlock",
-    "Terastodon"
+    "Terastodon",
+    "Catoblepas (?)",
+    "Orc Warlock (?)",
+    "Terastodon (?)",
+    "Orc Warrior (?)"
    ],
    "ex": [
     [
@@ -6720,7 +6847,7 @@
    ]
   },
   "229": {
-   "at": 1793069465511,
+   "at": 1793107565891,
    "name": "Ururg",
    "type": "City",
    "ex": [
@@ -6746,7 +6873,7 @@
      42,
      54,
      "waygate",
-     "Portal"
+     "Waygate"
     ],
     [
      30,
@@ -7210,7 +7337,7 @@
    "name": "Taiga"
   },
   "269": {
-   "at": 1792676451940,
+   "at": 1793127327080,
    "name": "Orc’s Bone Road",
    "g": [
     "Ramie Field"
@@ -7251,35 +7378,243 @@
      269,
      229,
      39,
-     5
+     5,
+     "gate"
     ],
     [
      269,
      270,
      37,
-     65
+     65,
+     "gate"
     ]
    ]
   },
   "270": {
-   "at": 0,
-   "name": "Shrubland"
+   "at": 1793127359335,
+   "name": "Orc’s Bone Road",
+   "m": [
+    "Orc Warlock",
+    "Orc Hunter",
+    "Orc Warrior",
+    "Terastodon"
+   ],
+   "ex": [
+    [
+     24,
+     3,
+     "gate",
+     "Orc’s Bone Road (Lv.40)"
+    ],
+    [
+     38,
+     59,
+     "gate",
+     "Orc’s Bone Road (Lv.43)"
+    ]
+   ],
+   "edges": [
+    [
+     270,
+     269,
+     24,
+     3,
+     "gate"
+    ],
+    [
+     270,
+     271,
+     38,
+     59,
+     "gate"
+    ]
+   ]
   },
   "271": {
-   "at": 0,
-   "name": "Orc’s Bone Road"
+   "at": 1793127389379,
+   "name": "Orc’s Bone Road",
+   "g": [
+    "Beech Grove"
+   ],
+   "gt": [
+    [
+     20,
+     35,
+     "Beech Grove"
+    ]
+   ],
+   "m": [
+    "Orc Warlock",
+    "Orc Warrior",
+    "Orc Hunter",
+    "Terastodon"
+   ],
+   "ex": [
+    [
+     17,
+     3,
+     "gate",
+     "Orc’s Bone Road (Lv.41)"
+    ],
+    [
+     36,
+     19,
+     "waygate",
+     "Waygate"
+    ],
+    [
+     33,
+     62,
+     "gate",
+     "Shrubland (Lv.45)"
+    ]
+   ],
+   "edges": [
+    [
+     271,
+     270,
+     17,
+     3,
+     "gate"
+    ],
+    [
+     271,
+     272,
+     33,
+     62,
+     "gate"
+    ]
+   ]
   },
   "272": {
-   "at": 0,
-   "name": "Shrubland"
+   "at": 1793127992564,
+   "name": "Shrubland",
+   "g": [
+    "Largemouth Bass Pier"
+   ],
+   "gt": [
+    [
+     23,
+     26,
+     "Largemouth Bass Pier"
+    ]
+   ],
+   "m": [
+    "Orc Warrior",
+    "Orc Hunter",
+    "Orc Warlock",
+    "Terastodon"
+   ],
+   "ex": [
+    [
+     15,
+     2,
+     "gate",
+     "Orc’s Bone Road (Lv.43)"
+    ],
+    [
+     56,
+     65,
+     "gate",
+     "Shrubland (Lv.47)"
+    ]
+   ],
+   "edges": [
+    [
+     272,
+     271,
+     15,
+     2,
+     "gate"
+    ],
+    [
+     272,
+     273,
+     56,
+     65,
+     "gate"
+    ]
+   ]
   },
   "273": {
-   "at": 0,
-   "name": "Shrubland"
+   "at": 1793128107542,
+   "name": "Shrubland",
+   "m": [
+    "Orc Warrior",
+    "Orc Hunter",
+    "Orc Warlock",
+    "Terastodon"
+   ],
+   "ex": [
+    [
+     2,
+     13,
+     "gate",
+     "Shrubland (Lv.45)"
+    ],
+    [
+     64,
+     48,
+     "gate",
+     "Shrubland (Lv.49)"
+    ]
+   ],
+   "edges": [
+    [
+     273,
+     272,
+     2,
+     13,
+     "gate"
+    ],
+    [
+     273,
+     274,
+     64,
+     48,
+     "gate"
+    ]
+   ]
   },
   "274": {
-   "at": 0,
-   "name": "Shrubland"
+   "at": 1793128348478,
+   "name": "Shrubland",
+   "m": [
+    "Orc Warrior",
+    "Orc Hunter",
+    "Orc Warlock",
+    "Terastodon"
+   ],
+   "ex": [
+    [
+     58,
+     26,
+     "gate",
+     "Dominion Spire (Lv.50)"
+    ],
+    [
+     6,
+     30,
+     "gate",
+     "Shrubland (Lv.47)"
+    ]
+   ],
+   "edges": [
+    [
+     274,
+     273,
+     6,
+     30,
+     "gate"
+    ],
+    [
+     274,
+     360,
+     58,
+     26,
+     "gate"
+    ]
+   ]
   },
   "275": {
    "at": 1792850827762,
@@ -7595,7 +7930,7 @@
    ]
   },
   "281": {
-   "at": 1792989230812,
+   "at": 1793095242674,
    "name": "Trescan",
    "type": "City",
    "g": [
@@ -8725,7 +9060,7 @@
    ]
   },
   "317": {
-   "at": 1793030007243,
+   "at": 1793104877061,
    "name": "Galkathos",
    "type": "City",
    "ex": [
@@ -8742,6 +9077,8 @@
      "Rainforest (Lv.43)"
     ]
    ],
+   "visited": true,
+   "smith": true,
    "edges": [
     [
      317,
@@ -8858,7 +9195,7 @@
    ]
   },
   "323": {
-   "at": 1792606552065,
+   "at": 1793049456614,
    "name": "Trescan’s Dock",
    "g": [
     "Smallmouth Bass Pier"
@@ -8872,7 +9209,17 @@
    ],
    "m": [
     "Faery",
-    "Merfolk"
+    "Merfolk",
+    "Merfolk (?)",
+    "Faery (?)"
+   ],
+   "ex": [
+    [
+     57,
+     38,
+     "gate",
+     "Trescan (Lv.30)"
+    ]
    ],
    "visited": true,
    "edges": [
@@ -8880,7 +9227,8 @@
      323,
      281,
      57,
-     38
+     38,
+     "gate"
     ]
    ]
   },
@@ -9475,7 +9823,8 @@
    ]
   },
   "346": {
-   "at": 1793031616429,
+   "at": 1793091828261,
+   "name": "Dark Boreal",
    "g": [
     "Laterite Quarry",
     "Ramie Field",
@@ -9503,7 +9852,11 @@
     "Dwarven Guard",
     "Dwarven Hunter",
     "Dwarven Caster",
-    "Komodo Basilisk"
+    "Komodo Basilisk",
+    "Dwarven Hunter (?)",
+    "Dwarven Caster (?)",
+    "Komodo Basilisk (?)",
+    "Armored Ram (?)"
    ],
    "ex": [
     [
@@ -9545,7 +9898,8 @@
    ]
   },
   "347": {
-   "at": 1793031564042,
+   "at": 1793089667366,
+   "name": "Dark Boreal",
    "g": [
     "Beech Grove"
    ],
@@ -9596,7 +9950,7 @@
    ]
   },
   "348": {
-   "at": 1793014160900,
+   "at": 1793077063607,
    "name": "Laen Dorei",
    "type": "City",
    "ex": [
@@ -10018,16 +10372,52 @@
    ]
   },
   "360": {
-   "at": 0,
+   "at": 1793128470924,
    "name": "Dominion Spire",
-   "type": "City"
+   "type": "City",
+   "ex": [
+    [
+     34,
+     19,
+     "waygate",
+     "Waygate"
+    ],
+    [
+     15,
+     27,
+     "gate",
+     "Shrubland (Lv.49)"
+    ],
+    [
+     34,
+     30,
+     "gate",
+     "Dominion Spire 2nd Floor (Lv.50)"
+    ]
+   ],
+   "edges": [
+    [
+     360,
+     274,
+     15,
+     27,
+     "gate"
+    ],
+    [
+     360,
+     361,
+     34,
+     30,
+     "gate"
+    ]
+   ]
   },
   "363": {
    "at": 0,
    "name": "Moldrir Depths"
   },
   "900": {
-   "at": 1792696897849,
+   "at": 1793107568393,
    "name": "Abyssal Tower Entrance",
    "ex": [
     [
@@ -10089,7 +10479,7 @@
    ]
   },
   "902": {
-   "at": 1792697248434,
+   "at": 1793104483444,
    "name": "Abyssal Tower",
    "m": [
     "Knight",
@@ -10138,18 +10528,20 @@
      902,
      900,
      42,
-     41
+     41,
+     "gate"
     ],
     [
      902,
      902,
      44,
-     31
+     31,
+     "gate"
     ]
    ]
   },
   "903": {
-   "at": 0,
+   "at": 1793107329348,
    "name": "Abyssal Tower",
    "m": [
     "Scorpion",
@@ -10160,23 +10552,46 @@
     "Phoenix",
     "Nomadic Cleric"
    ],
+   "ex": [
+    [
+     26,
+     32,
+     "entrance",
+     "Entrance"
+    ],
+    [
+     26,
+     36,
+     "gate",
+     "Abyssal Tower (Lv.20)"
+    ],
+    [
+     42,
+     41,
+     "gate",
+     "Abyssal Tower Entrance (Lv.1)"
+    ]
+   ],
+   "visited": true,
    "edges": [
     [
      903,
      900,
      42,
-     41
+     41,
+     "gate"
     ],
     [
      903,
      903,
      26,
-     36
+     36,
+     "gate"
     ]
    ]
   },
   "904": {
-   "at": 0,
+   "at": 1793108991482,
    "name": "Abyssal Tower",
    "m": [
     "Goblin Pyro",
@@ -10187,18 +10602,53 @@
     "Wandering Ent",
     "Owlbear"
    ],
+   "ex": [
+    [
+     26,
+     32,
+     "gate",
+     "Abyssal Tower (Lv.30)"
+    ],
+    [
+     26,
+     36,
+     "entrance",
+     "Entrance"
+    ],
+    [
+     36,
+     39,
+     "gate",
+     "Abyssal Tower (Lv.30)"
+    ],
+    [
+     38,
+     39,
+     "gate",
+     "Abyssal Tower (Lv.30)"
+    ],
+    [
+     42,
+     41,
+     "gate",
+     "Abyssal Tower Entrance (Lv.1)"
+    ]
+   ],
+   "visited": true,
    "edges": [
     [
      904,
      900,
      42,
-     41
+     41,
+     "gate"
     ],
     [
      904,
      904,
      38,
-     39
+     39,
+     "gate"
     ]
    ]
   },
@@ -10380,7 +10830,7 @@
    "name": "Sleepy Hollow"
   },
   "1183": {
-   "at": 1792991976763,
+   "at": 1793095252431,
    "name": "The Sacred Wilds Lobby",
    "g": [
     "Quarry",
@@ -10492,11 +10942,19 @@
    ]
   },
   "1186": {
-   "at": 1792413715580,
+   "at": 1793095766855,
    "name": "The Sacred Wilds",
    "m": [
     "Wyvern",
     "Drake Boss"
+   ],
+   "ex": [
+    [
+     56,
+     11,
+     "gate",
+     "The Sacred Wilds Lobby (Lv.100)"
+    ]
    ],
    "visited": true,
    "edges": [
@@ -10504,7 +10962,8 @@
      1186,
      1183,
      56,
-     11
+     11,
+     "gate"
     ]
    ]
   },
@@ -10549,7 +11008,9 @@
    ]
   },
   "1189": {
-   "at": 1792991822053,
+   "at": 1793134976819,
+   "name": "The Sacred Wilds",
+   "type": "Secret",
    "m": [
     "Wyvern"
    ],
