@@ -1,8 +1,8 @@
 {
-  "version": "2.6.164",
-  "date": "2026-10-27",
-  "notes": "v2.6.164 爬塔房间门修复：确认传送后才标记已走过（修『entrance 没自动进 / 还有怪够不到』）；没有没走过的门时退回走已验证的门；卡住时输出门/可达性诊断日志。",
+  "version": "2.6.165",
+  "date": "2026-10-28",
+  "notes": "v2.6.165 爬塔房间门：过门后记住刚走过的门，下楼时优先走别的门，避免 A→B→C 三片区在 B↔C 来回穿门；只有一扇门时仍会走它。",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 866285,
-  "sha256": "1a4238d7844699094fe1234d13cc2c4924be6f97cf34c7d9aa8d3aca84f044a3"
+  "size": 866964,
+  "sha256": "2570d2f08ae819531adab58ae0e007baff5b4ba70e24294210d7d786597022da"
 }
