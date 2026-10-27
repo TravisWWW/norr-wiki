@@ -1,7 +1,7 @@
 {
  "meta": {
   "source": "小伴侣地图数据（MapDB）· 8 位贡献者合并",
-  "updated": "2026-10-27T00:22:50.476Z",
+  "updated": "2026-10-27T02:17:06.030Z",
   "version": "1.0",
   "contributors": [
    {
@@ -32,7 +32,7 @@
     "file": "maps-2838.json",
     "char": "#2838",
     "level": 40,
-    "time": "2026-10-26T06:10:26.587Z",
+    "time": "2026-10-27T02:16:51.164Z",
     "count": 329,
     "mergedAt": "2026-10-27"
    },
@@ -6646,7 +6646,7 @@
    ]
   },
   "228": {
-   "at": 1792941669001,
+   "at": 1793067210450,
    "name": "Shrubland",
    "type": "Normal",
    "g": [
@@ -6677,11 +6677,7 @@
     "Carrion Harpy",
     "Catoblepas",
     "Orc Warlock",
-    "Terastodon",
-    "Catoblepas (?)",
-    "Orc Warlock (?)",
-    "Terastodon (?)",
-    "Orc Warrior (?)"
+    "Terastodon"
    ],
    "ex": [
     [
