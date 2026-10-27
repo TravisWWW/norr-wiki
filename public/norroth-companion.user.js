@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.162
+// @version      2.6.163
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -190,7 +190,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.162';   // 与 @version 保持一致
+  const SCRIPT_VER = '2.6.163';   // 与 @version 保持一致
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -296,7 +296,7 @@
     towerFloor: 0, towerGateSeen: false, towerEntered: 0,       // 爬塔：层数 / 本层已见塔门 / 进入塔的时间
     towerGateAt: 0, towerOff: null, tq: null,                   // 爬塔：塔门重触发时间 / 走开再走回 / 前置任务跟随
     towerNavAt: 0, towerOpenAt: 0, towerQuestLogAt: 0,          // 爬塔：去城镇节流 / 开塔节流 / 任务提示日志节流
-    towerRoomTries: 0, towerDoorAt: 0, towerRemainLogAt: 0,     // ★ v2.6.107：过房间门次数 / 房间门重触发节流 / 「还剩 N 只」日志节流
+    towerRoomTries: 0, towerDoorAt: 0, towerRemainLogAt: 0, towerRemain: 0, towerSearchDone: false,     // ★ v2.6.107：过房间门次数 / 房间门重触发节流 / 「还剩 N 只」日志节流
     towerDoorsUsed: {}, towerDoorLogAt: 0,                      // ★ v2.6.108：本层已走过的房间门 / 「门都试过了」日志节流
     idleActAt: 0, idleActBusy: false,                           // 随机浏览面板：下次允许 / 正在浏览
     mapSwitch: { active: false, lastAt: 0, idleSince: 0 },    // 自动切图刷怪
@@ -734,6 +734,87 @@
      （清掉正在走的队列）+ 日志刷「无法前往 X，已跳过」。
      'deferred' = 真人化延迟发出，真实结果由回调回写。 */
   function walkStarted(r) { return r !== false && r !== 'deferred'; }
+
+  /* ★ v2.6.163：陷阱（action="trap"）—— 游戏自己的寻路**不避让**陷阱（踩上去触发 triggerTravelTrap 掉血）。
+     这里在发起走位前检查：若游戏算出的路线上有陷阱，就先走到「绕开陷阱的下一段终点」，到了再走真目标。
+     只在本图真的有陷阱、且直路真的踩陷阱时才生效；否则行为与原来完全一致。 */
+  function trapTiles() {
+    try {
+      const c = st.trap;
+      if (c && c.map === character.current_map) return c.set;
+      const set = new Set();
+      $$q('.map_table [action="trap"]').forEach(function (el) {
+        const p = (el.getAttribute('coords') || '').split('-');
+        const x = +p[0], y = +p[1];
+        if (x > 0 && y > 0) set.add(x + ',' + y);
+      });
+      st.trap = { map: character.current_map, set: set };
+      return set;
+    } catch (e) { return new Set(); }
+  }
+  function pathTouchesTrap(path, traps) {
+    if (!Array.isArray(path)) return false;
+    for (let i = 0; i < path.length; i++) {
+      const p = String(path[i]).split('-');
+      if (traps.has((+p[0]) + ',' + (+p[1]))) return true;
+    }
+    return false;
+  }
+  /* 避开陷阱的 BFS 路径（8 邻接，和游戏一致）；终点取「目标格或其紧邻的可走格」。找不到返回 null。 */
+  function trapFreePath(sx, sy, tx, ty, traps) {
+    const pts = window.points || [];
+    if (!pts.length) return null;
+    const K = function (x, y) { return x + ',' + y; };
+    const grid = new Set();
+    pts.forEach(function (p) { const k = K(p.x, p.y); if (!traps.has(k)) grid.add(k); });
+    if (!grid.has(K(sx, sy))) return null;
+    const goal = new Set();
+    if (grid.has(K(tx, ty))) goal.add(K(tx, ty));                                  /* 目标可走 → 就到目标 */
+    else for (let dx = -1; dx <= 1; dx++) for (let dy = -1; dy <= 1; dy++) goal.add(K(tx + dx, ty + dy));  /* 目标不可走（怪）→ 到它紧邻的可走格 */
+    const dirs = [[1, 0], [-1, 0], [0, 1], [0, -1], [1, 1], [1, -1], [-1, 1], [-1, -1]];
+    const prev = Object.create(null), seen = new Set([K(sx, sy)]), q = [[sx, sy]];
+    let head = 0, endKey = null;
+    while (head < q.length) {
+      const cur = q[head++], cx = cur[0], cy = cur[1], ck = K(cx, cy);
+      if (goal.has(ck)) { endKey = ck; break; }
+      for (let i = 0; i < dirs.length; i++) {
+        const nx = cx + dirs[i][0], ny = cy + dirs[i][1], nk = K(nx, ny);
+        if (seen.has(nk) || !grid.has(nk)) continue;
+        seen.add(nk); prev[nk] = ck; q.push([nx, ny]);
+      }
+    }
+    if (!endKey) return null;
+    const out = []; let k = endKey;
+    while (k) { const p = k.split(','); out.unshift([+p[0], +p[1]]); k = prev[k]; }
+    return out;
+  }
+  /* 需要绕路时返回「下一段终点」{x,y}；不需要（无陷阱 / 直路安全 / 算不出）返回 null。 */
+  function trapDetour(x, y) {
+    if (typeof window.findWalkPath !== 'function') return null;
+    const traps = trapTiles();
+    if (!traps.size) return null;
+    const sx = character.x, sy = character.y;
+    if (sx === x && sy === y) return null;
+    const K = function (a, b) { return a + ',' + b; };
+    if (traps.has(K(sx, sy)) || traps.has(K(x, y))) return null;   /* 自己/目标就在陷阱上 → 不折腾 */
+    const P = trapFreePath(sx, sy, x, y, traps);
+    if (!P || P.length < 2) return null;
+    const En = P[P.length - 1];
+    let G = null;
+    try { G = window.findWalkPath(sx, sy, En[0], En[1]); } catch (e) { G = null; }
+    if (Array.isArray(G) && G.length && !pathTouchesTrap(G, traps)) return null;   /* 直路不踩陷阱 → 不绕 */
+    for (let k = P.length - 1; k >= 1; k--) {
+      const p = P[k];
+      if (p[0] === sx && p[1] === sy) continue;
+      if (tileActionAt(p[0], p[1])) continue;                    /* 中途点别选在「有交互的格子」上 */
+      let sub = null;
+      try { sub = window.findWalkPath(sx, sy, p[0], p[1]); } catch (e) { sub = null; }
+      if (Array.isArray(sub) && sub.length && !pathTouchesTrap(sub, traps)) return { x: p[0], y: p[1] };
+    }
+    const n1 = P[1];
+    if (n1 && !(n1[0] === sx && n1[1] === sy) && !tileActionAt(n1[0], n1[1])) return { x: n1[0], y: n1[1] };
+    return null;
+  }
 
   const manhattan = (ax, ay, bx, by) => Math.abs(ax - bx) + Math.abs(ay - by);
 
@@ -1813,6 +1894,28 @@
     opts = opts || {};
     if (!canAct()) return false;
     if (!st.move && !opts.finalLeg) st.retargetHist = {};   /* 新目标清历史；分段最后一格沿用本次历史 */
+    /* ★ v2.6.163：陷阱避让 —— 直路踩陷阱时，先走到「绕开陷阱的下一段终点」，到了再走真目标（after 链）。 */
+    if (!st.move) {
+      const det = trapDetour(x, y);
+      if (det) {
+        const rw = safeWalkTo(det.x, det.y, function (ok) {
+          const mm = st.move;
+          if (!mm || mm.tx !== det.x || mm.ty !== det.y) return;
+          mm.pending = false;
+          mm.started = walkStarted(ok) || character.walk_to === (det.x + '-' + det.y);
+          if (!mm.started) { mm.retryAt = 0; mm.retries = 0; }
+        });
+        markAct();
+        st.move = { tx: det.x, ty: det.y, kind: kind, label: label, at: now(), started: walkStarted(rw), retryAt: now(), retries: 0,
+                    pending: (rw === 'deferred'), pendingAt: (rw === 'deferred') ? now() : 0,
+                    d: manhattan(character.x, character.y, det.x, det.y),
+                    after: { tx: x, ty: y, kind: kind, label: label } };
+        st.phase = 'move';
+        setStatus('前往 ' + label + '（绕开陷阱 → ' + det.x + '-' + det.y + '）');
+        logEvent('陷阱避让：直路踩陷阱 → 先走到 ' + det.x + '-' + det.y + '（目标 ' + x + '-' + y + '）');
+        return true;
+      }
+    }
     /* ── 兜底[抢怪·出发前确认] ───────────────────────────────────
      * 症状：同一张图很多人一起打怪时，画面上还挂着**已经被别人杀掉**的怪 →
      *       走过去 / 点它 → 服务端回 "Enemy Not Found"（这次是真的没怪，不是位置不同步）。
@@ -3672,6 +3775,15 @@
     const onTile = function () { return character.x === gx && character.y === gy; };
     const mapChanged = function () { return character.current_map !== from; };
     const pts = window.points || [];
+    /* ★ v2.6.163：陷阱避让 —— 直路踩陷阱时先走到「绕开陷阱的下一段终点」，到了再续走（不等卡住超时）。 */
+    let trapWp = null;
+    const issueWalk = function () {
+      try {
+        const det = trapDetour(gx, gy);
+        if (det) { trapWp = det; safeWalkTo(det.x, det.y); }
+        else { trapWp = null; safeWalkTo(gx, gy); }
+      } catch (e) { try { safeWalkTo(gx, gy); } catch (e2) { /* ignore */ } }
+    };
     /* ★ v2.6.120：邻格也用 8 邻接（和游戏一致）；顺序仍是「右→左→下→上→斜」，stepAside 取第一个可走格的行为不变。 */
     const nb = function (x, y) { return [[x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1], [x + 1, y + 1], [x + 1, y - 1], [x - 1, y + 1], [x - 1, y - 1]]
       .filter(function (p) { return pts.some(function (q) { return q.x === p[0] && q.y === p[1]; }); }); };
@@ -3717,7 +3829,7 @@
         setStatus('到位没触发动作，走开再走回重触发…');
         await stepAside();
         if (!alive()) return;
-        try { safeWalkTo(gx, gy); } catch (e) { /* ignore */ }
+        issueWalk();
         await sleep(1200);
       }
     };
@@ -3746,7 +3858,7 @@
     /* ★ v2.6.134：入口立刻发一次走位。
        原来这里没有发走位，第一次 walkTo 要等 2.5s 的「重发走路指令」兜底才发出：
        既白白卡 2.5s，而且那次重发会清掉两段式标记（seg=null）→ 分段导航永远不生效。 */
-    if (!cond()) { try { safeWalkTo(gx, gy); } catch (e) { /* ignore */ } }
+    if (!cond()) issueWalk();
 
     /* ★ 走到目标格后先原地同步一次服务端位置，再交给调用方做交互（换图/采集/维修） */
     const okOut = function () { syncServerPos(); return 'ok'; };
@@ -3764,6 +3876,8 @@
       if (!alive()) return cancel();
       if (cond()) { await settleArriveAction(); return alive() ? okOut() : cancel(); }
       if (!inGame()) return 'cancel';
+      /* ★ v2.6.163：到了「避陷阱中途点」→ 立刻续走（别等 2.5s 卡住超时） */
+      if (trapWp && character.x === trapWp.x && character.y === trapWp.y) { trapWp = null; issueWalk(); await sleep(400); continue; }
 
       /* 阵亡：点复活，等待期间不计入超时 */
       const df = document.getElementById('battle_defeat');
@@ -3827,7 +3941,7 @@
         paused += now() - p0;
         if (!alive()) return cancel();
         lastMove = now(); bestAt = now();                     /* 别把停顿误判成卡住 */
-        safeWalkTo(gx, gy);
+        issueWalk();
         segDone = true;                                       /* ★ v2.6.130：第二段已发出 */
         await sleep(500);
         continue;
@@ -3837,7 +3951,7 @@
        * 2) 已经换过图了 —— 旧地图的坐标在新地图上指向完全不同的地方
        * ★ 只在「位置真的不动了」才重发：无条件重发会 clearQueue 打断正在播的走格动画 */
       const stalled = now() - lastMove > 2500;
-      if (!onTile() && !mapChanged() && stalled && now() - lastTry > 2000) { lastTry = now(); safeWalkTo(gx, gy); }
+      if (!onTile() && !mapChanged() && stalled && now() - lastTry > 2000) { lastTry = now(); issueWalk(); }
       await sleep(300);
     }
     /* 重触发场景：站到目标格但条件仍未成立 → 走开一格再走回，试几次（门要重踩才触发） */
@@ -3846,7 +3960,7 @@
         for (let w = 0; w < 9; w++) { await sleep(700); if (!alive()) return cancel(); if (cond()) return okOut(); clearBlockers(); }
         await stepAside();
         if (!alive()) return cancel();
-        try { safeWalkTo(gx, gy); } catch (e) { /* ignore */ }
+        issueWalk();
         for (let w = 0; w < 9; w++) { await sleep(700); if (!alive()) return cancel(); if (cond()) return okOut(); }
       }
     }
@@ -6672,7 +6786,7 @@
   /* ★ v2.6.107：本层「房间之间的门」—— 一层塔被一道门分成两个房间，先清一边、过门、再清另一边。
      实测/用户确认：第 1 层的门是 entrance（通往上半区，且被任务锁住）；其它层是名字含 Abyssal Tower 的 gate。
      真正的「下一层入口」是 tower_gate，这里必须排除它。 */
-  function towerRoomDoor() {
+  function towerRoomDoor(ignoreUsed) {
     const cur = +character.current_map;
     const dt = window.door_tiles || {};
     const out = [];
@@ -6693,7 +6807,7 @@
     /* ★ v2.6.108：优先「本层还没走过的门」—— 一层可能被多道门切成多个区域，
        要「清一个区域 → 过一道没走过的门 → 再清」反复，直到本层清空。
        门都走过了还够不到怪 → 返回 null（上层报状态，不再来回穿门）。 */
-    const used = st.towerDoorsUsed || {};
+    const used = ignoreUsed ? {} : (st.towerDoorsUsed || {});
     const fresh = out.filter(function (t) { return !used[t.x + '-' + t.y]; });
     if (!fresh.length) return null;
     const reach = fresh.filter(function (t) { return isReachable(t.x, t.y); });
@@ -6823,6 +6937,33 @@
   }
 
   /* 塔内主循环：复用战斗引擎杀怪，清完就走下一层入口 */
+  /* ★ v2.6.163：踩一道房间门过去（走到 → 触发 → 标记已走过）；返回 true = 本 tick 已处理。 */
+  function towerStepThroughDoor(door) {
+    if (!door) return false;
+    if (character.x === door.x && character.y === door.y) {
+      st.phase = 'wait'; setStatus('爬塔：过房间门 → 下一个区域…');
+      if (!st.towerDoorAt) st.towerDoorAt = now();
+      if (now() - st.towerDoorAt > 2500) {
+        st.towerDoorAt = now();
+        const dk = door.x + '-' + door.y;
+        st.towerDoorsUsed = st.towerDoorsUsed || {};
+        st.towerDoorsUsed[dk] = 1;                 /* 这道门走过了 → 下次换别的门 */
+        let done = false;
+        try {
+          const act = (typeof window.getTileActionAt === 'function') ? window.getTileActionAt(door.x, door.y) : null;
+          if (act && typeof window.execTileAction === 'function') { window.execTileAction(act, false); logEvent('爬塔：触发房间门（' + act + ' @' + dk + '）'); done = true; }
+        } catch (e) { /* ignore */ }
+        if (!done) {
+          const off = towerAdjacentTile(door.x, door.y);
+          if (off) { st.towerOff = { x: off.x, y: off.y, gx: door.x, gy: door.y }; st.towerDoorAt = 0; logEvent('爬塔：房间门未触发 → 走开再走回'); }
+          else safeWalkTo(door.x, door.y);
+        }
+      }
+      return true;
+    }
+    if (isReachable(door.x, door.y)) { st.target = null; startMove(door.x, door.y, 'tower', '房间门'); return true; }
+    return false;
+  }
   function stepTower() {
     if (!inGame()) { setStatus('等待进入游戏…'); return; }
     if (!isTowerMap(character.current_map)) { st.phase = 'idle'; stepTowerEnter(); return; }
@@ -6831,7 +6972,7 @@
     if (+character.current_map === TOWER_MAP_MIN) st.towerFloor = 0;
     else if (!tg && st.towerGateSeen) {
       st.towerGateSeen = false; st.towerFloor = (st.towerFloor || 0) + 1;
-      st.towerRoomTries = 0; st.towerDoorsUsed = {};
+      st.towerRoomTries = 0; st.towerDoorsUsed = {}; st.towerRemain = 0; st.towerSearchDone = false;
       logEvent('爬塔：进入第 ' + st.towerFloor + ' 层');
     } else if (!st.towerFloor) st.towerFloor = 1;
 
@@ -6857,6 +6998,7 @@
       const remainM = /(\d+)\s*remaining/i.exec(tg.textContent || '');
       const remain = remainM ? +remainM[1] : 0;
       if (remain > 0) {
+        st.towerRemain = remain;   /* ★ v2.6.163：塔门说还有剩余 → 下一 tick 去过房间门找 */
         st.phase = 'wait';
         setStatus('爬塔：本层还剩 ' + remain + ' 只怪，先清完再下楼');
         if (now() - (st.towerRemainLogAt || 0) > 20000) { st.towerRemainLogAt = now(); logEvent('爬塔：塔门提示还剩 ' + remain + ' 只怪 → 先回去清完'); }
@@ -6864,6 +7006,9 @@
         try { closeFrameById('frame_TowerGate'); } catch (e) { /* ignore */ }
         return;
       }
+      st.towerRemain = 0;        /* ★ v2.6.163：塔门说已清空 */
+      st.towerSearchDone = false;
+      st.towerDoorsUsed = {};
       st.towerGateSeen = true;
       st.phase = 'wait'; setStatus('爬塔：进入下一层…');
       if (!st.towerEntered || now() - st.towerEntered > 8000) {
@@ -6921,53 +7066,36 @@
        通用做法（不假定只有 2 个房间）：只要还有够不到的怪，就去踩一道「本层还没走过的」房间门，
        过门继续清；反复「清区域 → 过门」直到本层一只怪都不剩，才去下一层入口。
        房间门判据 = door_tiles 里「目的地 = 本图自己」的自环门（实测 map 901：901→901 @26,36）。 */
-    if (unreachableEnemies() > 0) {
+    /* ★ v2.6.163：够不到的怪 / 塔门提示还有剩余 → 过房间门去找怪（清完本片区后，若怪在门另一侧会卡住）。 */
+    const _unreach = unreachableEnemies();
+    if (_unreach > 0 || ((st.towerRemain || 0) > 0 && !st.towerSearchDone)) {
       const door = towerRoomDoor();
       if (!door) {
-        st.phase = 'idle';
-        setStatus('爬塔：还剩 ' + unreachableEnemies() + ' 只怪够不到（本层房间门都走过了）…');
-        if (now() - (st.towerDoorLogAt || 0) > 30000) { st.towerDoorLogAt = now(); logEvent('爬塔：本层还有 ' + unreachableEnemies() + ' 只怪够不到，房间门都试过了 → 这层可能有走不到的区域'); }
-        return;
-      }
-      /* 第 1 层的房间门是 entrance，可能被前置任务锁住 → 交给 stepTowerQuest */
-      if (door.action === 'entrance') {
-        const ef = document.getElementById('frame_Entrance');
-        if (ef && ef.querySelector('a[onclick*="guidePath"]')) {
-          st.phase = 'quest';
-          if (stepTowerQuest()) return;
+        if (_unreach > 0) {
+          st.phase = 'idle';
+          setStatus('爬塔：还剩 ' + _unreach + ' 只怪够不到（本层房间门都走过了）…');
+          if (now() - (st.towerDoorLogAt || 0) > 30000) { st.towerDoorLogAt = now(); logEvent('爬塔：本层还有 ' + _unreach + ' 只怪够不到，房间门都试过了 → 这层可能有走不到的区域'); }
+          return;
         }
-      }
-      if (character.x === door.x && character.y === door.y) {
-        st.phase = 'wait'; setStatus('爬塔：过房间门 → 下一个区域…');
-        if (!st.towerDoorAt) st.towerDoorAt = now();
-        if (now() - st.towerDoorAt > 2500) {
-          st.towerDoorAt = now();
-          const dk = door.x + '-' + door.y;
-          st.towerDoorsUsed = st.towerDoorsUsed || {};
-          st.towerDoorsUsed[dk] = 1;                 /* 这道门走过了 → 下次换别的门 */
-          let done = false;
-          try {
-            const act = (typeof window.getTileActionAt === 'function') ? window.getTileActionAt(door.x, door.y) : null;
-            if (act && typeof window.execTileAction === 'function') { window.execTileAction(act, false); logEvent('爬塔：触发房间门（' + act + ' @' + dk + '）'); done = true; }
-          } catch (e) { /* ignore */ }
-          if (!done) {
-            const off = towerAdjacentTile(door.x, door.y);
-            if (off) { st.towerOff = { x: off.x, y: off.y, gx: door.x, gy: door.y }; st.towerDoorAt = 0; logEvent('爬塔：房间门未触发 → 走开再走回'); }
-            else safeWalkTo(door.x, door.y);
+        /* 没够不到的怪、只是塔门说还有剩余但门都试过了 → 本次搜索到此为止，落到下面去下一层入口 */
+        st.towerSearchDone = true;
+      } else {
+        /* 第 1 层的房间门是 entrance，可能被前置任务锁住 → 交给 stepTowerQuest */
+        if (door.action === 'entrance') {
+          const ef = document.getElementById('frame_Entrance');
+          if (ef && ef.querySelector('a[onclick*="guidePath"]')) {
+            st.phase = 'quest';
+            if (stepTowerQuest()) return;
           }
         }
-        return;
+        if (towerStepThroughDoor(door)) { st.towerRemain = 0; st.towerSearchDone = false; return; }
+        if (_unreach > 0) {
+          st.phase = 'idle';
+          setStatus('爬塔：房间门（' + door.x + '-' + door.y + '）走不到…');
+          return;
+        }
       }
-      if (isReachable(door.x, door.y)) {
-        st.target = null;
-        startMove(door.x, door.y, 'tower', '房间门');
-        return;
-      }
-      st.phase = 'idle';
-      setStatus('爬塔：房间门（' + door.x + '-' + door.y + '）走不到…');
-      return;
     }
-    st.towerDoorsUsed = {};   /* 本层清空 → 清掉「已走过的门」，下一层重新开始 */
 
     /* 2) 本层清完 → 去下一层入口 */
     const gate = towerNextGate();
@@ -7009,6 +7137,13 @@
       return;
     }
     if (!isReachable(gate.x, gate.y)) {
+      /* ★ v2.6.163：下一层入口在别的片区（走不到）→ 试着踩一道本层房间门过去，别干等。
+         （用户反馈：清完本片区后，若入口在门另一侧，脚本会一直卡在「走不到，等待」。） */
+      const door = towerRoomDoor(true);
+      if (door) {
+        if (now() - (st.towerDoorLogAt || 0) > 20000) { st.towerDoorLogAt = now(); logEvent('爬塔：下一层入口走不到 → 先过房间门 ' + door.x + '-' + door.y); }
+        if (towerStepThroughDoor(door)) return;
+      }
       st.phase = 'idle';
       setStatus('爬塔：下一层入口（' + gate.x + '-' + gate.y + '）走不到，等待…');
       return;

@@ -1,8 +1,8 @@
 {
-  "version": "2.6.162",
+  "version": "2.6.163",
   "date": "2026-10-27",
-  "notes": "v2.6.162 资源点名字归一化：把别人用中文/翻译录进来的点位名（Minnow 碼頭 等）还原成英文并去重，世界地图 tooltip 资源点统一成英文一种；合并脚本对历史公共库 + 新上传都归一化。",
+  "notes": "v2.6.163 爬塔增强：两套走路引擎（startMove + navWalkTile）都避让陷阱；塔内没有到怪的短路时过房间门去找怪（含塔门报剩余、下一层入口走不到两种情况）。",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 851609,
-  "sha256": "970ad05da5e084d092b6c1be41c3d198ecc3baec5bef3ffea8fa8e5e2b5a7a6e"
+  "size": 859346,
+  "sha256": "8b27a792e1450975c636000a540249f5bf0aef1355b1adb078833e413e868d41"
 }
