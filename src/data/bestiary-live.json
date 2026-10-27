@@ -1,6 +1,6 @@
 {
  "meta": {
-  "source": "游戏内 Inspect（/modal/inspect_enemy）· 小伴侣导出 · 5 位贡献者合并",
+  "source": "游戏内 Inspect（/modal/inspect_enemy）· 小伴侣导出 · 6 位贡献者合并",
   "fetched": "2026-10-27",
   "version": "1.0",
   "contributors": [
@@ -48,13 +48,22 @@
     "count": 193,
     "recorded": 137,
     "mergedAt": "2026-10-27"
+   },
+   {
+    "file": "char-2838.json",
+    "char": "#2838",
+    "level": 40,
+    "time": "2026-10-27T02:17:45.099Z",
+    "count": 193,
+    "recorded": 193,
+    "mergedAt": "2026-10-27"
    }
   ],
   "count": 199,
   "recordedCount": 193,
   "withLore": 198,
   "withStats": 76,
-  "withSkills": 96,
+  "withSkills": 97,
   "withBg": 183,
   "tabs": {
    "normal": 163,
@@ -2613,7 +2622,25 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_49.gif",
    "bg": "marsh.jpg",
-   "recorded": true
+   "recorded": true,
+   "levelRange": "10 - 15",
+   "skills": [
+    {
+     "name": "lethal_bite",
+     "id": 10019,
+     "level": 2
+    },
+    {
+     "name": "chitin_armor",
+     "id": 10146,
+     "level": 2
+    },
+    {
+     "name": "bite",
+     "id": 10009,
+     "level": 2
+    }
+   ]
   },
   {
    "id": 50,
@@ -5999,19 +6026,40 @@
     }
    ],
    "stats": {
-    "Base Damage": 20,
-    "Physical Damage": 3,
-    "Blunt Damage": 0,
-    "Spell Damage": 0,
-    "Bleed Damage": 0,
-    "Arcane Damage": 0,
-    "Cold Damage": 0,
-    "Dark Damage": 0,
-    "Fire Damage": 0,
-    "Light Damage": 0,
-    "Lightning Damage": 0,
-    "Poison Damage": 0,
-    "Thorn Damage": 0
+    "基礎傷害": 20,
+    "物理傷害": 3,
+    "鈍擊傷害": 0,
+    "法術傷害": 0,
+    "流血傷害": 0,
+    "秘法傷害": 0,
+    "冰冷傷害": 0,
+    "黑暗傷害": 0,
+    "火焰傷害": 0,
+    "光輝傷害": 0,
+    "閃電傷害": 0,
+    "毒素傷害": 0,
+    "荊棘傷害": 0,
+    "防禦": 20,
+    "格擋機率": 0,
+    "格擋值": 0,
+    "秘法抗性": 5,
+    "冰冷抗性": 5,
+    "黑暗抗性": 5,
+    "火抗": 5,
+    "光抗": 5,
+    "電抗": 5,
+    "毒素抗性": 5,
+    "閃避": 5,
+    "暴擊率": 4,
+    "暴擊": 2,
+    "命中率": 40,
+    "攻擊速度": 6,
+    "物理穿透": 1,
+    "吸血": 0,
+    "法力竊取": 0,
+    "生命回復": 0,
+    "法力回復": 0,
+    "最大生命值": 110
    }
   },
   {
@@ -6085,29 +6133,40 @@
     }
    ],
    "stats": {
-    "Base Damage": 20,
-    "Physical Damage": 3,
-    "Blunt Damage": 0,
-    "Spell Damage": 0,
-    "Bleed Damage": 5,
-    "Arcane Damage": 0,
-    "Cold Damage": 0,
-    "Dark Damage": 0,
-    "Fire Damage": 0,
-    "Light Damage": 0,
-    "Lightning Damage": 0,
-    "Poison Damage": 0,
-    "Thorn Damage": 0,
-    "Defense": 20,
-    "Block Chance": 30,
-    "Block Rating": 6,
-    "Arcane Resist": 5,
-    "Cold Resist": 5,
-    "Dark Resist": 5,
-    "Fire Resist": 5,
-    "Light Resist": 5,
-    "Lightning Resist": 5,
-    "Poison Resist": 5
+    "基礎傷害": 20,
+    "物理傷害": 3,
+    "鈍擊傷害": 0,
+    "法術傷害": 0,
+    "流血傷害": 5,
+    "秘法傷害": 0,
+    "冰冷傷害": 0,
+    "黑暗傷害": 0,
+    "火焰傷害": 0,
+    "光輝傷害": 0,
+    "閃電傷害": 0,
+    "毒素傷害": 0,
+    "荊棘傷害": 0,
+    "防禦": 20,
+    "格擋機率": 30,
+    "格擋值": 6,
+    "秘法抗性": 5,
+    "冰冷抗性": 5,
+    "黑暗抗性": 5,
+    "火抗": 5,
+    "光抗": 5,
+    "電抗": 5,
+    "毒素抗性": 5,
+    "閃避": 5,
+    "暴擊率": 3,
+    "暴擊": 2,
+    "命中率": 30,
+    "攻擊速度": 6,
+    "物理穿透": 1,
+    "吸血": 0,
+    "法力竊取": 0,
+    "生命回復": 2,
+    "法力回復": 0,
+    "最大生命值": 80
    }
   },
   {
@@ -7251,19 +7310,29 @@
     }
    ],
    "stats": {
-    "Base Damage": 10,
-    "Physical Damage": 0,
-    "Blunt Damage": 0,
-    "Spell Damage": 3,
-    "Bleed Damage": 0,
-    "Arcane Damage": 0,
-    "Cold Damage": 0,
-    "Dark Damage": 0,
-    "Fire Damage": 5,
-    "Light Damage": 0,
-    "Lightning Damage": 5,
-    "Poison Damage": 0,
-    "Thorn Damage": 0
+    "基礎傷害": 10,
+    "物理傷害": 0,
+    "鈍擊傷害": 0,
+    "法術傷害": 3,
+    "流血傷害": 0,
+    "秘法傷害": 0,
+    "冰冷傷害": 0,
+    "黑暗傷害": 0,
+    "火焰傷害": 5,
+    "光輝傷害": 0,
+    "閃電傷害": 5,
+    "毒素傷害": 0,
+    "荊棘傷害": 0,
+    "防禦": 10,
+    "格擋機率": 0,
+    "格擋值": 0,
+    "秘法抗性": 20,
+    "冰冷抗性": 20,
+    "黑暗抗性": 20,
+    "火抗": 20,
+    "光抗": 20,
+    "電抗": 0,
+    "毒素抗性": 20
    }
   },
   {
@@ -9841,7 +9910,8 @@
    "tab": "overlord",
    "icon": "https://www.norroth.com/images/maps/items/enemy_210.gif",
    "bg": "vulcanic_underground.jpg",
-   "recorded": true
+   "recorded": true,
+   "levelRange": "30 - 30"
   },
   {
    "id": 211,
