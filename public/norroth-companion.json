@@ -1,8 +1,8 @@
 {
-  "version": "2.6.163",
+  "version": "2.6.164",
   "date": "2026-10-27",
-  "notes": "v2.6.163 爬塔增强：两套走路引擎（startMove + navWalkTile）都避让陷阱；塔内没有到怪的短路时过房间门去找怪（含塔门报剩余、下一层入口走不到两种情况）。",
+  "notes": "v2.6.164 爬塔房间门修复：确认传送后才标记已走过（修『entrance 没自动进 / 还有怪够不到』）；没有没走过的门时退回走已验证的门；卡住时输出门/可达性诊断日志。",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 859346,
-  "sha256": "8b27a792e1450975c636000a540249f5bf0aef1355b1adb078833e413e868d41"
+  "size": 866285,
+  "sha256": "1a4238d7844699094fe1234d13cc2c4924be6f97cf34c7d9aa8d3aca84f044a3"
 }
