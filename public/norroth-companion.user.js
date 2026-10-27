@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.165
+// @version      2.6.166
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -190,7 +190,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.165';   // 与 @version 保持一致
+  const SCRIPT_VER = '2.6.166';   // 与 @version 保持一致
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -298,7 +298,8 @@
     towerNavAt: 0, towerOpenAt: 0, towerQuestLogAt: 0,          // 爬塔：去城镇节流 / 开塔节流 / 任务提示日志节流
     towerRoomTries: 0, towerDoorAt: 0, towerRemainLogAt: 0, towerRemain: 0, towerSearchDone: false,     // ★ v2.6.107：过房间门次数 / 房间门重触发节流 / 「还剩 N 只」日志节流
     towerDoorsUsed: {}, towerDoorLogAt: 0,                      // ★ v2.6.108：本层已走过的房间门 / 「门都试过了」日志节流
-    towerDoorsOk: {}, towerDoorFired: null, towerDoorTries: {}, towerDoorReuseAt: 0, towerDoorReuseCount: 0, towerLastDoor: '',  // ★ v2.6.164：已确认能传的房间门 / 当前触发中的门 / 每扇门重试次数 / 回退重用节流
+    towerDoorsOk: {}, towerDoorFired: null, towerDoorTries: {},  // ★ v2.6.164：已确认能传的房间门 / 当前触发中的门 / 每扇门重试次数
+    towerPath: [], towerProgressAt: 0, towerStuckLogAt: 0,     // ★ v2.6.166：房间图遍历的「来路」栈（回溯用）/ 最近一次有进展的时间 / 无进展提示日志节流
     idleActAt: 0, idleActBusy: false,                           // 随机浏览面板：下次允许 / 正在浏览
     mapSwitch: { active: false, lastAt: 0, idleSince: 0 },    // 自动切图刷怪
     roam: { idx: 0, bad: {} },                                // ★ v2.6.151：切图刷怪 —— 邻图轮转下标 / 不合格邻图（id→过期时间）
@@ -6787,7 +6788,7 @@
   /* ★ v2.6.107：本层「房间之间的门」—— 一层塔被一道门分成两个房间，先清一边、过门、再清另一边。
      实测/用户确认：第 1 层的门是 entrance（通往上半区，且被任务锁住）；其它层是名字含 Abyssal Tower 的 gate。
      真正的「下一层入口」是 tower_gate，这里必须排除它。 */
-  function towerRoomDoor(ignoreUsed, avoidKey) {
+  function towerRoomDoor() {
     const cur = +character.current_map;
     const dt = window.door_tiles || {};
     const out = [];
@@ -6808,12 +6809,10 @@
     /* ★ v2.6.108：优先「本层还没走过的门」—— 一层可能被多道门切成多个区域，
        要「清一个区域 → 过一道没走过的门 → 再清」反复，直到本层清空。
        门都走过了还够不到怪 → 返回 null（上层报状态，不再来回穿门）。 */
-    /* ★ v2.6.165：先排除「刚刚走过的那扇门」（避免 A→B→C 三片区时在 B↔C 来回穿门）。
-       只有在还有别的候选时才排除；实在只剩这一扇就还是要走它。 */
-    let cand = out;
-    if (avoidKey) { const f = out.filter(function (t) { return (t.x + '-' + t.y) !== avoidKey; }); if (f.length) cand = f; }
-    const used = ignoreUsed ? {} : (st.towerDoorsUsed || {});
-    const fresh = cand.filter(function (t) { return !used[t.x + '-' + t.y]; });
+    /* ★ v2.6.166：只返回「本层还没走过」的房间门（图遍历的「前进」）。
+       回溯（走回来路）由 towerBacktrackDoor() 负责，不再需要 ignoreUsed / avoidKey。 */
+    const used = st.towerDoorsUsed || {};
+    const fresh = out.filter(function (t) { return !used[t.x + '-' + t.y]; });
     if (!fresh.length) return null;
     const reach = fresh.filter(function (t) { return isReachable(t.x, t.y); });
     const list = reach.length ? reach : fresh;
@@ -6952,28 +6951,12 @@
       return set.size + ':' + h;
     } catch (e) { return ''; }
   }
-  /* ★ v2.6.164：本层「确认能传」的房间门里最近的一扇（含已走过）—— 用于「还有怪够不到但没有没走过的门」时退回去走已验证的门。 */
-  function towerRoomDoorAny(avoidKey) {
-    const cur = +character.current_map;
-    const dt = window.door_tiles || {};
-    const out = [];
-    Object.keys(dt).forEach(function (to) {
-      if (+to !== cur) return;
-      const p = String(dt[to]).replace('ID', '').split('-');
-      const x = +p[0], y = +p[1];
-      if (!(x > 0 && y > 0)) return;
-      const el = document.querySelector('.map_table .tile_poi[coords="' + x + '-' + y + '"]');
-      out.push({ x: x, y: y, action: el ? String(el.getAttribute('action') || '') : '', name: el ? String(el.getAttribute('name') || '') : '' });
-    });
-    if (!out.length) towerTiles().forEach(function (t) { if (t.action === 'entrance') out.push(t); });
-    if (!out.length) return null;
-    let cand = out;
-    if (avoidKey) { const f = out.filter(function (t) { return (t.x + '-' + t.y) !== avoidKey; }); if (f.length) cand = f; }
-    const reach = cand.filter(function (t) { return isReachable(t.x, t.y); });
-    const list = reach.length ? reach : cand;
-    let best = null, bd = Infinity;
-    list.forEach(function (t) { const d = manhattan(character.x, character.y, t.x, t.y); if (d < bd) { bd = d; best = t; } });
-    return best;
+  /* ★ v2.6.166：回溯目标 = st.towerPath 栈顶那扇门（我们就是从它进来的）。 */
+  function towerBacktrackDoor() {
+    const path = st.towerPath || [];
+    if (!path.length) return null;
+    const top = path[path.length - 1];
+    return { x: top.x, y: top.y, action: '', name: '' };
   }
   /* ★ v2.6.164：卡在「还有怪够不到」时把关键状态打进日志，便于定位（门数据 / 可达性 / 已走过）。 */
   function towerDoorDiag() {
@@ -6994,7 +6977,7 @@
      于是门被误标已走过 → towerRoomDoor() 认为「门都试过了」→ 再也不进 → 卡在「还有怪够不到」。
      新逻辑：触发后等角色被传走（可达片区指纹变化）才算成功；没传走就「走开再走回」逼游戏在
      走进这一格时执行格子动作；连续多次仍无效才把这扇门标记已试过（换别的门）。 */
-  function towerStepThroughDoor(door) {
+  function towerStepThroughDoor(door, isBack) {
     if (!door) return false;
     const dk = door.x + '-' + door.y;
     st.towerDoorsUsed = st.towerDoorsUsed || {};
@@ -7007,9 +6990,19 @@
       const sig = regionSig();
       if (sig && fired.sig && sig !== fired.sig) {
         st.towerDoorFired = null; st.towerDoorAt = 0;
-        st.towerDoorsUsed[dk] = 1; st.towerDoorsOk[dk] = 1; st.towerLastDoor = dk;
+        st.towerDoorsUsed[dk] = 1; st.towerDoorsOk[dk] = 1;
         st.towerRemain = 0; st.towerSearchDone = false;
-        logEvent('爬塔：房间门 ' + dk + ' 已传送 → 换区域');
+        st.towerPath = st.towerPath || []; st.towerProgressAt = now();
+        if (fired.back) {
+          /* 回溯：弹出栈顶（走回上一间房） */
+          const top = st.towerPath[st.towerPath.length - 1];
+          if (top && top.dk === dk) st.towerPath.pop();
+          logEvent('爬塔：回溯 → 走回房间门 ' + dk + '（来路剩 ' + st.towerPath.length + ' 层）');
+        } else {
+          /* 前进：压栈（记住来路，便于回溯） */
+          if (!st.towerPath.some(function (p) { return p.dk === dk; })) st.towerPath.push({ x: door.x, y: door.y, dk: dk });
+          logEvent('爬塔：房间门 ' + dk + ' 已传送 → 换区域（来路 ' + st.towerPath.length + ' 层）');
+        }
         return true;
       }
       if (!onDoor) return true;                    /* 走开再走回途中 → 等 */
@@ -7040,7 +7033,7 @@
         const act = (typeof window.getTileActionAt === 'function') ? window.getTileActionAt(door.x, door.y) : null;
         if (act && typeof window.execTileAction === 'function') { window.execTileAction(act, false); logEvent('爬塔：触发房间门（' + act + ' @' + dk + '）'); done = true; }
       } catch (e) { /* ignore */ }
-      if (done) { st.towerDoorFired = { dk: dk, at: now(), sig: sig }; return true; }
+      if (done) { st.towerDoorFired = { dk: dk, at: now(), sig: sig, back: !!isBack }; return true; }
       const off = towerAdjacentTile(door.x, door.y);
       if (off) { st.towerOff = { x: off.x, y: off.y, gx: door.x, gy: door.y }; logEvent('爬塔：房间门读不到动作 → 走开再走回'); }
       else { st.towerDoorsUsed[dk] = 1; }
@@ -7058,7 +7051,8 @@
     if (+character.current_map === TOWER_MAP_MIN) st.towerFloor = 0;
     else if (!tg && st.towerGateSeen) {
       st.towerGateSeen = false; st.towerFloor = (st.towerFloor || 0) + 1;
-      st.towerRoomTries = 0; st.towerDoorsUsed = {}; st.towerDoorsOk = {}; st.towerDoorFired = null; st.towerDoorTries = {}; st.towerDoorReuseCount = 0; st.towerDoorReuseAt = 0; st.towerLastDoor = ''; st.towerRemain = 0; st.towerSearchDone = false;
+      st.towerRoomTries = 0; st.towerDoorsUsed = {}; st.towerDoorsOk = {}; st.towerDoorFired = null; st.towerDoorTries = {}; st.towerPath = []; st.towerProgressAt = 0; st.towerRemain = 0; st.towerSearchDone = false;
+      st.towerProgressAt = now();
       logEvent('爬塔：进入第 ' + st.towerFloor + ' 层');
     } else if (!st.towerFloor) st.towerFloor = 1;
 
@@ -7067,6 +7061,12 @@
     if (cfg.towerStopSupply && suppliesEmpty()) { stop('爬塔：补给耗尽，按设置停止'); return; }
     if (cfg.towerStopFloor > 0 && st.towerFloor >= cfg.towerStopFloor && !document.getElementById('frame_TowerGate')) { stop('爬塔：已到第 ' + st.towerFloor + ' 层，按设置停止'); return; }
 
+    /* ★ v2.6.166：长时间无进展（没打怪 / 没过门 / 没换层）→ 提示可能遇到需人工介入的特殊任务（如每 10 层）。只提示，不停。 */
+    if (!st.towerProgressAt) st.towerProgressAt = now();
+    if (now() - st.towerProgressAt > 180000 && now() - (st.towerStuckLogAt || 0) > 60000) {
+      st.towerStuckLogAt = now();
+      logEvent('爬塔：本层已 ' + Math.round((now() - st.towerProgressAt) / 60000) + ' 分钟无进展（没打怪 / 没过门 / 没换层）→ 可能遇到需人工介入的特殊任务（如每 10 层），请耐心等待或手动处理  ｜ ' + towerDoorDiag());
+    }
     if (hasFrame('frame_Combat')) { noteCombat(); setStatus('爬塔：战斗中…（游戏自动战斗）'); return; }
     if (handleFrames()) return;
     /* ★ 前置任务跟随：一旦开始（有目标 / 正在走开走回），每 tick 都优先跑，
@@ -7078,6 +7078,11 @@
        实测（2026-10-20）：走到 tower_gate 会打开 frame_TowerGate（标题 'Prove Yourself Worthy'，
        正文 'Clear the floor / Slay the N remaining enemies'），里面有「Enter」按钮（/modal/tower_gate?enter）。 */
     if (tg) {
+      /* ★ v2.6.166：每 10 层可能需要交钥匙 / 特殊任务（需人工介入）→ 不自动处理，直接停止并提示。 */
+      if (/key|钥匙/i.test(tg.textContent || '')) {
+        stop('爬塔：第 ' + (st.towerFloor || '?') + ' 层需要交钥匙 / 特殊任务，需人工介入 → 已停止');
+        return;
+      }
       /* ★ v2.6.107：塔门弹窗正文写着「Clear the floor / Slay the N remaining enemies」。
          N > 0 = 本层还没清完（另一半房间的怪）→ 盲目点 Enter 没用，会在这里死循环。
          读不到数字就按老逻辑走（保守）。 */
@@ -7094,7 +7099,7 @@
       }
       st.towerRemain = 0;        /* ★ v2.6.163：塔门说已清空 */
       st.towerSearchDone = false;
-      st.towerDoorsUsed = {}; st.towerDoorsOk = {}; st.towerDoorFired = null; st.towerDoorTries = {}; st.towerDoorReuseCount = 0; st.towerDoorReuseAt = 0; st.towerLastDoor = '';
+      st.towerDoorsUsed = {}; st.towerDoorsOk = {}; st.towerDoorFired = null; st.towerDoorTries = {}; st.towerPath = []; st.towerProgressAt = 0;
       st.towerGateSeen = true;
       st.phase = 'wait'; setStatus('爬塔：进入下一层…');
       if (!st.towerEntered || now() - st.towerEntered > 8000) {
@@ -7138,6 +7143,7 @@
     const t = pickTarget();
     if (t) {
       if (t.skip) return;
+      st.towerProgressAt = now();
       st.target = t.enemy || null;
       startMove(t.x, t.y, t.kind, t.label);
       return;
@@ -7153,30 +7159,15 @@
        过门继续清；反复「清区域 → 过门」直到本层一只怪都不剩，才去下一层入口。
        房间门判据 = door_tiles 里「目的地 = 本图自己」的自环门（实测 map 901：901→901 @26,36）。 */
     /* ★ v2.6.163：够不到的怪 / 塔门提示还有剩余 → 过房间门去找怪（清完本片区后，若怪在门另一侧会卡住）。 */
+    /* ★ v2.6.166：房间门按「图遍历（DFS）」的思路做：
+       前进 = 走一扇「本层还没走过」的门去探索新房间；
+       回溯 = 没有新门了就走回「来路」（st.towerPath 栈顶那扇门），去别的房间继续找怪 / 找下楼口。
+       不再需要「最近的可达门 / 避开上一扇门 / 复用计数」这些启发式。 */
     const _unreach = unreachableEnemies();
     if (_unreach > 0 || ((st.towerRemain || 0) > 0 && !st.towerSearchDone)) {
+      /* 前进：一扇没走过的门 */
       const door = towerRoomDoor();
-      if (!door) {
-        if (_unreach > 0) {
-          /* ★ v2.6.164：没有「没走过」的门了，但还有怪够不到 → 退回走一扇「已确认能传」的门
-             （怪可能在上一片区；例如 A→B→C 三片区，从 B 清完要回 A 再走另一扇门去 C）。 */
-          const back = towerRoomDoorAny(st.towerLastDoor);
-          const backKey = back ? (back.x + '-' + back.y) : '';
-          const canReuse = back && isReachable(back.x, back.y) && st.towerDoorsOk && st.towerDoorsOk[backKey]
-            && (st.towerDoorReuseCount || 0) < 6 && now() - (st.towerDoorReuseAt || 0) > 12000;
-          if (canReuse) {
-            st.towerDoorReuseAt = now(); st.towerDoorReuseCount = (st.towerDoorReuseCount || 0) + 1;
-            logEvent('爬塔：还有 ' + _unreach + ' 只怪够不到、没有没走过的门 → 退回走已确认的房间门 ' + backKey + '（第 ' + st.towerDoorReuseCount + ' 次）');
-            if (towerStepThroughDoor(back)) return;
-          }
-          st.phase = 'idle';
-          setStatus('爬塔：还剩 ' + _unreach + ' 只怪够不到（本层房间门都走过了）…');
-          if (now() - (st.towerDoorLogAt || 0) > 30000) { st.towerDoorLogAt = now(); logEvent('爬塔：本层还有 ' + _unreach + ' 只怪够不到，房间门都试过了 → 这层可能有走不到的区域 ｜ ' + towerDoorDiag()); }
-          return;
-        }
-        /* 没够不到的怪、只是塔门说还有剩余但门都试过了 → 本次搜索到此为止，落到下面去下一层入口 */
-        st.towerSearchDone = true;
-      } else {
+      if (door) {
         /* 第 1 层的房间门是 entrance，可能被前置任务锁住 → 交给 stepTowerQuest */
         if (door.action === 'entrance') {
           const ef = document.getElementById('frame_Entrance');
@@ -7185,13 +7176,27 @@
             if (stepTowerQuest()) return;
           }
         }
-        if (towerStepThroughDoor(door)) { st.towerRemain = 0; st.towerSearchDone = false; return; }
+        if (towerStepThroughDoor(door, false)) { st.towerRemain = 0; st.towerSearchDone = false; return; }
         if (_unreach > 0) {
           st.phase = 'idle';
           setStatus('爬塔：房间门（' + door.x + '-' + door.y + '）走不到…');
           if (now() - (st.towerDoorLogAt || 0) > 30000) { st.towerDoorLogAt = now(); logEvent('爬塔：房间门 ' + door.x + '-' + door.y + ' 走不到 ｜ ' + towerDoorDiag()); }
           return;
         }
+      } else {
+        /* 没有新门了 → 回溯：走回上一扇门，去别的房间 */
+        const back = towerBacktrackDoor();
+        if (back && isReachable(back.x, back.y)) {
+          if (towerStepThroughDoor(back, true)) return;
+        }
+        if (_unreach > 0) {
+          st.phase = 'idle';
+          setStatus('爬塔：还剩 ' + _unreach + ' 只怪够不到（本层房间门都走过了）…');
+          if (now() - (st.towerDoorLogAt || 0) > 30000) { st.towerDoorLogAt = now(); logEvent('爬塔：本层还有 ' + _unreach + ' 只怪够不到，房间门都试过了 → 这层可能有走不到的区域 ｜ ' + towerDoorDiag()); }
+          return;
+        }
+        /* 没够不到的怪、只是塔门说还有剩余但门都试过了 → 本次搜索到此为止，落到下面去下一层入口 */
+        st.towerSearchDone = true;
       }
     }
 
@@ -7235,12 +7240,11 @@
       return;
     }
     if (!isReachable(gate.x, gate.y)) {
-      /* ★ v2.6.163：下一层入口在别的片区（走不到）→ 试着踩一道本层房间门过去，别干等。
-         （用户反馈：清完本片区后，若入口在门另一侧，脚本会一直卡在「走不到，等待」。） */
-      const door = towerRoomDoor(true, st.towerLastDoor);
-      if (door) {
-        if (now() - (st.towerDoorLogAt || 0) > 20000) { st.towerDoorLogAt = now(); logEvent('爬塔：下一层入口走不到 → 先过房间门 ' + door.x + '-' + door.y); }
-        if (towerStepThroughDoor(door)) return;
+      /* ★ v2.6.166：下一层入口在别的片区 → 回溯（走回上一扇门），直到入口可达。 */
+      const back = towerBacktrackDoor();
+      if (back && isReachable(back.x, back.y)) {
+        if (now() - (st.towerDoorLogAt || 0) > 20000) { st.towerDoorLogAt = now(); logEvent('爬塔：下一层入口走不到 → 回溯走房间门 ' + back.x + '-' + back.y + '（来路 ' + ((st.towerPath || []).length) + ' 层）'); }
+        if (towerStepThroughDoor(back, true)) return;
       }
       st.phase = 'idle';
       setStatus('爬塔：下一层入口（' + gate.x + '-' + gate.y + '）走不到，等待…');
@@ -9998,7 +10002,7 @@
       st.towerGateAt = 0; st.towerOff = null; st.tq = null;
       st.towerNavAt = 0; st.towerOpenAt = 0; st.towerQuestLogAt = 0;
       st.towerRoomTries = 0; st.towerDoorAt = 0; st.towerRemainLogAt = 0;
-      st.towerDoorsUsed = {}; st.towerDoorLogAt = 0; st.towerDoorsOk = {}; st.towerDoorFired = null; st.towerDoorTries = {}; st.towerDoorReuseCount = 0; st.towerDoorReuseAt = 0; st.towerLastDoor = '';
+      st.towerDoorsUsed = {}; st.towerDoorLogAt = 0; st.towerDoorsOk = {}; st.towerDoorFired = null; st.towerDoorTries = {}; st.towerPath = []; st.towerProgressAt = 0;
     }
     // ★ 详细统计按「本次挂机」重置
     st.killsByName = {}; st.gathersByKind = {}; st.gainedByKey = {}; st.gainedByRarity = {}; st.soldByRarity = {}; st.deaths = 0;

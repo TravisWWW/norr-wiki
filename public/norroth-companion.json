@@ -1,8 +1,8 @@
 {
-  "version": "2.6.165",
+  "version": "2.6.166",
   "date": "2026-10-28",
-  "notes": "v2.6.165 爬塔房间门：过门后记住刚走过的门，下楼时优先走别的门，避免 A→B→C 三片区在 B↔C 来回穿门；只有一扇门时仍会走它。",
+  "notes": "v2.6.166 爬塔房间门：按图遍历（DFS）思路重做——前进走没走过的门、没新门就回溯走来路（towerPath 栈），去掉最近门/避开上一扇/复用计数等启发式；塔门要求交钥匙等特殊任务时不自动处理、直接停止提示；长时间无进展只提示不停。",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 866964,
-  "sha256": "2570d2f08ae819531adab58ae0e007baff5b4ba70e24294210d7d786597022da"
+  "size": 867074,
+  "sha256": "59f87b4d443474535a34adbfc2ab1a7ff8e52b6c9ff5722d73116f144dcdaf09"
 }
