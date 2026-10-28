@@ -1,7 +1,7 @@
 {
  "meta": {
   "source": "小伴侣地图数据（MapDB）· 10 位贡献者合并",
-  "updated": "2026-10-28T05:28:35.336Z",
+  "updated": "2026-10-28T08:52:52.748Z",
   "version": "1.0",
   "contributors": [
    {
@@ -47,9 +47,9 @@
    {
     "file": "maps-3119.json",
     "char": "#3119",
-    "level": 7,
-    "time": "2026-10-25T06:53:04.163Z",
-    "count": 329,
+    "level": 33,
+    "time": "2026-10-28T08:52:34.751Z",
+    "count": 347,
     "mergedAt": "2026-10-28"
    },
    {
@@ -85,11 +85,11 @@
     "mergedAt": "2026-10-28"
    }
   ],
-  "count": 350
+  "count": 351
  },
  "maps": {
   "1": {
-   "at": 1792975252975,
+   "at": 1793033466222,
    "name": "Fountain of Rebirth",
    "ex": [
     [
@@ -110,7 +110,7 @@
    ]
   },
   "2": {
-   "at": 1792975273060,
+   "at": 1793034088073,
    "name": "Lower Fountain’s Descent",
    "ex": [
     [
@@ -207,7 +207,7 @@
    ]
   },
   "5": {
-   "at": 1793104926109,
+   "at": 1793169680510,
    "name": "El Caspar",
    "type": "City",
    "g": [
@@ -231,11 +231,6 @@
      26,
      "Combat Training"
     ]
-   ],
-   "m": [
-    "Hare",
-    "Snake",
-    "Wild Dog"
    ],
    "ex": [
     [
@@ -406,7 +401,7 @@
    ]
   },
   "7": {
-   "at": 1792935543511,
+   "at": 1793032951686,
    "name": "Akelay Foothills",
    "type": "Normal",
    "m": [
@@ -794,7 +789,7 @@
    ]
   },
   "14": {
-   "at": 1792934133513,
+   "at": 1793032355522,
    "name": "Arodas Lakeshore",
    "type": "Normal",
    "g": [
@@ -861,7 +856,7 @@
    ]
   },
   "15": {
-   "at": 1792934114131,
+   "at": 1793032772622,
    "name": "Arodas Beach",
    "type": "Normal",
    "g": [
@@ -915,7 +910,7 @@
    ]
   },
   "16": {
-   "at": 1793164421257,
+   "at": 1793169846217,
    "name": "Elundi",
    "type": "City",
    "g": [
@@ -930,14 +925,14 @@
      "Shrimp Pier"
     ],
     [
-     16,
-     29,
-     "Combat Training"
-    ],
-    [
      14,
      40,
      "Silk Field"
+    ],
+    [
+     16,
+     29,
+     "Combat Training"
     ]
    ],
    "ex": [
@@ -951,13 +946,13 @@
      38,
      10,
      "event_gate",
-     "活动之门"
+     "Event Gate"
     ],
     [
      34,
      22,
      "waygate",
-     "Portal"
+     "Waygate"
     ],
     [
      29,
@@ -4303,7 +4298,7 @@
    ]
   },
   "106": {
-   "at": 1792976011706,
+   "at": 1793068217354,
    "name": "Savanna",
    "type": "Normal",
    "m": [
@@ -4353,7 +4348,7 @@
    ]
   },
   "107": {
-   "at": 1792975986628,
+   "at": 1793068179935,
    "name": "Savanna",
    "type": "Normal",
    "m": [
@@ -4397,9 +4392,49 @@
    ]
   },
   "110": {
-   "at": 0,
+   "at": 1792957158187,
    "name": "Corduin",
-   "type": "Normal"
+   "type": "Normal",
+   "m": [
+    "Goblin Pyro",
+    "Raider"
+   ],
+   "ex": [
+    [
+     35,
+     20,
+     "gate",
+     "Desert of Whispers (Lv.22)"
+    ],
+    [
+     49,
+     37,
+     "waygate",
+     "Waygate"
+    ],
+    [
+     31,
+     50,
+     "smugglers_route",
+     "Smugglers Route"
+    ]
+   ],
+   "edges": [
+    [
+     110,
+     239,
+     0,
+     0,
+     "smugglers"
+    ],
+    [
+     110,
+     203,
+     35,
+     20,
+     "gate"
+    ]
+   ]
   },
   "111": {
    "at": 0,
@@ -4464,12 +4499,14 @@
    ]
   },
   "113": {
-   "at": 1792976568655,
+   "at": 1793144658754,
    "name": "Vileton",
    "type": "City",
    "m": [
     "Wisp Phantom",
-    "Mutated Lizardman"
+    "Mutated Lizardman",
+    "Swamp Dragon",
+    "Hydra"
    ],
    "ex": [
     [
@@ -4643,13 +4680,39 @@
    ]
   },
   "118": {
-   "at": 1792514412222,
+   "at": 1793145978701,
    "name": "Swamp",
    "m": [
     "Wisp Phantom",
     "Swamp Dragon",
     "Hydra",
     "Mutated Lizardman"
+   ],
+   "ex": [
+    [
+     35,
+     7,
+     "gate",
+     "Swamp (Lv.24)"
+    ],
+    [
+     14,
+     27,
+     "gate",
+     "Swamp (Lv.24)"
+    ],
+    [
+     52,
+     27,
+     "gate",
+     "Marsh (Lv.19)"
+    ],
+    [
+     37,
+     59,
+     "gate",
+     "Swamp (Lv.29)"
+    ]
    ],
    "visited": true,
    "edges": [
@@ -4657,30 +4720,34 @@
      118,
      117,
      35,
-     7
+     7,
+     "gate"
     ],
     [
      118,
      119,
      14,
-     27
+     27,
+     "gate"
     ],
     [
      118,
      121,
      52,
-     27
+     27,
+     "gate"
     ],
     [
      118,
      123,
      37,
-     59
+     59,
+     "gate"
     ]
    ]
   },
   "119": {
-   "at": 1792514514749,
+   "at": 1793144737235,
    "name": "Swamp",
    "m": [
     "Wisp Phantom",
@@ -4688,24 +4755,40 @@
     "Swamp Dragon",
     "Mutated Lizardman"
    ],
+   "ex": [
+    [
+     18,
+     10,
+     "gate",
+     "Swamp (Lv.21)"
+    ],
+    [
+     53,
+     47,
+     "gate",
+     "Swamp (Lv.26)"
+    ]
+   ],
    "visited": true,
    "edges": [
     [
      119,
      118,
      53,
-     47
+     47,
+     "gate"
     ],
     [
      119,
      120,
      18,
-     10
+     10,
+     "gate"
     ]
    ]
   },
   "120": {
-   "at": 1792514506294,
+   "at": 1793144685698,
    "name": "Swamp",
    "type": "Normal",
    "m": [
@@ -4714,50 +4797,96 @@
     "Hydra",
     "Wisp Phantom"
    ],
+   "ex": [
+    [
+     52,
+     20,
+     "gate",
+     "Swamp (Lv.24)"
+    ],
+    [
+     14,
+     35,
+     "gate",
+     "Vileton (Lv.15)"
+    ]
+   ],
    "visited": true,
    "edges": [
     [
      120,
      113,
      14,
-     35
+     35,
+     "gate"
     ],
     [
      120,
      119,
      52,
-     20
+     20,
+     "gate"
     ]
    ]
   },
   "121": {
-   "at": 0,
+   "at": 1793145887800,
    "name": "Marsh",
    "m": [
+    "Blood Queen",
+    "Tarn Linnorm",
     "Bog Worm",
     "Boggard",
-    "Tarn Linnorm",
-    "Blood Queen",
     "Bogleech"
    ],
+   "ex": [
+    [
+     40,
+     7,
+     "gate",
+     "Marsh (Lv.19)"
+    ],
+    [
+     14,
+     21,
+     "gate",
+     "Swamp (Lv.26)"
+    ],
+    [
+     37,
+     28,
+     "waygate",
+     "Waygate"
+    ],
+    [
+     34,
+     60,
+     "gate",
+     "Marsh (Lv.19)"
+    ]
+   ],
+   "visited": true,
    "edges": [
     [
      121,
      118,
      14,
-     21
+     21,
+     "gate"
     ],
     [
      121,
      122,
      40,
-     7
+     7,
+     "gate"
     ],
     [
      121,
      127,
      34,
-     60
+     60,
+     "gate"
     ]
    ]
   },
@@ -4810,7 +4939,7 @@
    ]
   },
   "123": {
-   "at": 1792614438324,
+   "at": 1793146111343,
    "name": "Swamp",
    "type": "Normal",
    "g": [
@@ -4841,19 +4970,35 @@
     "Mutated Lizardman",
     "Hydra"
    ],
+   "ex": [
+    [
+     35,
+     7,
+     "gate",
+     "Swamp (Lv.26)"
+    ],
+    [
+     44,
+     60,
+     "gate",
+     "Swamp (Lv.26)"
+    ]
+   ],
    "visited": true,
    "edges": [
     [
      123,
      118,
      35,
-     7
+     7,
+     "gate"
     ],
     [
      123,
      124,
      44,
-     60
+     60,
+     "gate"
     ]
    ]
   },
@@ -6226,7 +6371,7 @@
    ]
   },
   "197": {
-   "at": 1792976036907,
+   "at": 1793068265336,
    "name": "Desert",
    "type": "Normal",
    "m": [
@@ -6270,7 +6415,7 @@
    ]
   },
   "198": {
-   "at": 1792976057072,
+   "at": 1793068298789,
    "name": "Desert",
    "m": [
     "Gnoll Warrior",
@@ -6313,7 +6458,7 @@
    ]
   },
   "199": {
-   "at": 1792976082163,
+   "at": 1793068344090,
    "name": "Desert",
    "m": [
     "Carrion Harpy",
@@ -6356,7 +6501,7 @@
    ]
   },
   "200": {
-   "at": 1792991515235,
+   "at": 1793068442040,
    "name": "Haunted Forest",
    "type": "Normal",
    "g": [
@@ -6426,7 +6571,7 @@
    ]
   },
   "201": {
-   "at": 1793005041494,
+   "at": 1793080028820,
    "name": "Saurville",
    "type": "City",
    "m": [
@@ -6449,7 +6594,7 @@
      24,
      34,
      "waygate",
-     "Portal"
+     "Waygate"
     ],
     [
      34,
@@ -6490,8 +6635,44 @@
    "type": "Normal"
   },
   "203": {
-   "at": 0,
-   "name": "Desert of Whispers"
+   "at": 1792957218920,
+   "name": "Desert of Whispers",
+   "m": [
+    "Skeleton Archer",
+    "Skeleton Mage",
+    "Skeleton Warrior",
+    "Zombie Horse"
+   ],
+   "ex": [
+    [
+     13,
+     3,
+     "gate",
+     "Haunted Forest (Lv.21)"
+    ],
+    [
+     51,
+     62,
+     "gate",
+     "Corduin (Lv.24)"
+    ]
+   ],
+   "edges": [
+    [
+     203,
+     110,
+     51,
+     62,
+     "gate"
+    ],
+    [
+     203,
+     202,
+     13,
+     3,
+     "gate"
+    ]
+   ]
   },
   "204": {
    "at": 0,
@@ -6542,7 +6723,7 @@
    ]
   },
   "210": {
-   "at": 0,
+   "at": 1793080054480,
    "name": "Crimson Dust",
    "type": "Normal",
    "m": [
@@ -6551,19 +6732,35 @@
     "Dune Glider",
     "Raider"
    ],
+   "ex": [
+    [
+     13,
+     26,
+     "gate",
+     "Savanna (Lv.19)"
+    ],
+    [
+     53,
+     41,
+     "gate",
+     "Saurville (Lv.20)"
+    ]
+   ],
    "visited": true,
    "edges": [
     [
      210,
      201,
      53,
-     41
+     41,
+     "gate"
     ],
     [
      210,
      209,
      13,
-     26
+     26,
+     "gate"
     ]
    ]
   },
@@ -7163,7 +7360,7 @@
    ]
   },
   "228": {
-   "at": 1793106430143,
+   "at": 1793169898962,
    "name": "Shrubland",
    "type": "Normal",
    "g": [
@@ -7233,17 +7430,9 @@
    ]
   },
   "229": {
-   "at": 1793164764892,
+   "at": 1793169873053,
    "name": "Ururg",
    "type": "City",
-   "m": [
-    "Orc Warrior",
-    "Orc Hunter",
-    "Terastodon",
-    "Catoblepas",
-    "Orc Warlock",
-    "Carrion Harpy"
-   ],
    "ex": [
     [
      53,
@@ -7267,7 +7456,7 @@
      42,
      54,
      "waygate",
-     "Portal"
+     "Waygate"
     ],
     [
      30,
@@ -10882,6 +11071,30 @@
     ]
    ]
   },
+  "358": {
+   "at": 1793124029814,
+   "m": [
+    "Vulkaron, the Scorchbound"
+   ],
+   "ex": [
+    [
+     13,
+     32,
+     "gate",
+     "Red Desert Cave (Lv.53)"
+    ]
+   ],
+   "visited": true,
+   "edges": [
+    [
+     358,
+     357,
+     13,
+     32,
+     "gate"
+    ]
+   ]
+  },
   "360": {
    "at": 1793150244977,
    "name": "Dominion Spire",
@@ -10941,7 +11154,7 @@
    "visited": true
   },
   "901": {
-   "at": 1792693910962,
+   "at": 1792978578881,
    "name": "Abyssal Tower",
    "m": [
     "Snake",
@@ -10979,13 +11192,15 @@
      901,
      900,
      42,
-     41
+     41,
+     "gate"
     ],
     [
      901,
      901,
      26,
-     36
+     36,
+     "other"
     ]
    ]
   },
@@ -11341,9 +11556,8 @@
    "name": "Sleepy Hollow"
   },
   "1183": {
-   "at": 1793148845142,
+   "at": 1793169904904,
    "name": "The Sacred Wilds Lobby",
-   "type": "Secret",
    "g": [
     "Quarry",
     "Grove",
@@ -11394,6 +11608,13 @@
    ],
    "visited": true,
    "edges": [
+    [
+     1183,
+     5,
+     24,
+     35,
+     "gate"
+    ],
     [
      1183,
      16,
@@ -11447,7 +11668,7 @@
    ]
   },
   "1186": {
-   "at": 1793095766855,
+   "at": 1793096239467,
    "name": "The Sacred Wilds",
    "m": [
     "Wyvern",
@@ -11473,9 +11694,8 @@
    ]
   },
   "1187": {
-   "at": 1793150040121,
+   "at": 1793173816949,
    "name": "The Sacred Wilds",
-   "type": "Secret",
    "m": [
     "Wyvern"
    ],
