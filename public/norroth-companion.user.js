@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.167
+// @version      2.6.168
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -43,8 +43,8 @@
   /* ======================= 1. 常量 / 默认配置 ======================= */
 
   const RANKS = ['Elite', 'Rare', 'Champion', 'Normal'];   // ★ 默认优先级：3星 > 2星 > 1星 > 普通
-  const RANK_CN = { Elite: '精英', Rare: '稀有', Champion: '冠军', Normal: '普通' };
-  const RANK_STAR = { Elite: '★★★', Rare: '★★', Champion: '★', Normal: '—' };
+  const RANK_CN = { Boss: '首领', Elite: '精英', Rare: '稀有', Champion: '冠军', Normal: '普通' };
+  const RANK_STAR = { Boss: '☠', Elite: '★★★', Rare: '★★', Champion: '★', Normal: '—' };
   const RANK_STARS = { Elite: 3, Rare: 2, Champion: 1, Normal: 0 };   // ★ 星级数值（用于「采集中断条件」过滤）
   /* ★ v2.6.19：采集点类型 —— 直接用游戏自己的 data-poi → 采集技能 映射
      （travel.min.js 的 gathering_names，实测：poi_1 fishing / poi_2 mining / poi_3 chopping / poi_4 farming / poi_61 quarrying / poi_81 foraging）。
@@ -191,7 +191,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.167';   // 与 @version 保持一致
+  const SCRIPT_VER = '2.6.168';   // 与 @version 保持一致
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -1393,6 +1393,9 @@
     const rankEl = el.querySelector('.char_name_tag.text_small');
     if (rankEl) {
       const txt = (rankEl.textContent || '').trim().toLowerCase();
+      /* ★ v2.6.168：游戏有专门的 rarity 字段，取值含 'Boss'（渲染成 /images/icons/boss.gif）。
+         先认 Boss，再认其他星级。 */
+      if (/boss|首领/.test(txt)) return 'Boss';
       if (/elite/.test(txt)) return 'Elite';
       if (/rare/.test(txt)) return 'Rare';
       if (/champion/.test(txt)) return 'Champion';
@@ -1401,6 +1404,7 @@
     // 图标兜底（文本可能被本地化/改版）
     const imgs = $$q('img', rankEl || el).map(i => (i.getAttribute('src') || '').toLowerCase());
     const has = n => imgs.some(s => new RegExp('(^|/)' + n + '\\.gif$').test(s));
+    if (has('boss')) return 'Boss';
     if (has('elite')) return 'Elite';
     if (has('rare')) return 'Rare';
     if (has('champion')) return 'Champion';
@@ -1707,8 +1711,9 @@
   }
   function isBossEnemy(e, bossTiles) {
     if (!e) return false;
-    if (/\bboss\b/i.test(String(e.name || ''))) return true;
-    if (bossTiles && bossTiles.has(e.x + '-' + e.y)) return true;
+    if (e.rank === 'Boss') return true;                       /* ★ 主判据：游戏 rarity 字段 = Boss */
+    if (/\bboss\b/i.test(String(e.name || ''))) return true;  /* 兜底：名字含 Boss */
+    if (bossTiles && bossTiles.has(e.x + '-' + e.y)) return true;  /* 兜底：站在 Boss 格上 */
     return false;
   }
   /* ★ v2.6.167：本次是否要跳过 Boss —— 塔内不跳（塔里清完整层才能下楼）。 */

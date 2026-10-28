@@ -1,8 +1,8 @@
 {
-  "version": "2.6.167",
+  "version": "2.6.168",
   "date": "2026-10-28",
-  "notes": "v2.6.167 新增「不打 Boss」：名字含 Boss 或站在 Boss 格（action=boss/overlord 或 data-poi=boss_on）的怪不再自动攻击（活动图 Drake Boss 这类不一定打得过）；塔内不生效（塔必须清完整层）；世界 Boss 由「自动打 Overlord」单独控制。战斗面板可关。",
+  "notes": "v2.6.168 Boss 判据改为用游戏自己的 rarity 字段：detectRank 识别 Boss（.char_name_tag.text_small 文本或 /images/icons/boss.gif），isBossEnemy 以 rank==='Boss' 为主判据（名字/Boss 格为兜底）。",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 868858,
-  "sha256": "ad590acccc687d09d9961093aa3c0027f6663a49864bc8a7eb857f7e3db9319d"
+  "size": 869321,
+  "sha256": "8be600e99644f3e3906db6ed64d25aabba84cadccc4acf8e96492e59776422b6"
 }
