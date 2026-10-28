@@ -1,7 +1,7 @@
 {
  "meta": {
   "source": "小伴侣地图数据（MapDB）· 10 位贡献者合并",
-  "updated": "2026-10-28T01:28:34.792Z",
+  "updated": "2026-10-28T05:20:34.178Z",
   "version": "1.0",
   "contributors": [
    {
@@ -39,8 +39,8 @@
    {
     "file": "maps-3114.json",
     "char": "#3114",
-    "level": 36,
-    "time": "2026-10-28T01:27:29.330Z",
+    "level": 37,
+    "time": "2026-10-28T05:20:14.808Z",
     "count": 329,
     "mergedAt": "2026-10-28"
    },
@@ -915,7 +915,7 @@
    ]
   },
   "16": {
-   "at": 1793150043872,
+   "at": 1793164421257,
    "name": "Elundi",
    "type": "City",
    "g": [
@@ -930,14 +930,14 @@
      "Shrimp Pier"
     ],
     [
-     14,
-     40,
-     "Silk Field"
-    ],
-    [
      16,
      29,
      "Combat Training"
+    ],
+    [
+     14,
+     40,
+     "Silk Field"
     ]
    ],
    "ex": [
@@ -1438,7 +1438,7 @@
    ]
   },
   "23": {
-   "at": 1793150777551,
+   "at": 1793164289028,
    "name": "Owranbu",
    "type": "City",
    "g": [
@@ -1450,6 +1450,21 @@
      28,
      "Combat Training"
     ]
+   ],
+   "m": [
+    "Badger",
+    "Wild Hog",
+    "Peasant",
+    "Woodland Spider",
+    "Bear",
+    "Woodland Snake",
+    "Wolf",
+    "Bone Scarab",
+    "Nomadic Cleric",
+    "Dune Glider",
+    "Cassowary",
+    "Scorpion",
+    "Raider"
    ],
    "ex": [
     [
@@ -3892,7 +3907,7 @@
    ]
   },
   "92": {
-   "at": 0,
+   "at": 1792468201579,
    "name": "Savanna",
    "m": [
     "Gnoll Warlock",
@@ -3908,18 +3923,20 @@
      92,
      91,
      57,
-     20
+     20,
+     "gate"
     ],
     [
      92,
      93,
      20,
-     19
+     19,
+     "gate"
     ]
    ]
   },
   "93": {
-   "at": 0,
+   "at": 1792468182784,
    "name": "Savanna",
    "type": "Normal",
    "m": [
@@ -3936,18 +3953,20 @@
      93,
      92,
      53,
-     16
+     16,
+     "gate"
     ],
     [
      93,
      94,
      14,
-     36
+     36,
+     "gate"
     ]
    ]
   },
   "94": {
-   "at": 0,
+   "at": 1792468164777,
    "name": "Scorpion`s Nest",
    "g": [
     "Iron Mine"
@@ -3973,19 +3992,22 @@
      94,
      93,
      49,
-     7
+     7,
+     "gate"
     ],
     [
      94,
      95,
      14,
-     16
+     16,
+     "gate"
     ],
     [
      94,
      96,
      20,
-     60
+     60,
+     "gate"
     ]
    ]
   },
@@ -4028,7 +4050,7 @@
    ]
   },
   "96": {
-   "at": 0,
+   "at": 1792468136774,
    "name": "Dune Sea",
    "m": [
     "Dune Glider",
@@ -4044,13 +4066,15 @@
      96,
      94,
      32,
-     7
+     7,
+     "gate"
     ],
     [
      96,
      97,
      29,
-     59
+     59,
+     "gate"
     ]
    ]
   },
@@ -7209,9 +7233,17 @@
    ]
   },
   "229": {
-   "at": 1793107565891,
+   "at": 1793164764892,
    "name": "Ururg",
    "type": "City",
+   "m": [
+    "Orc Warrior",
+    "Orc Hunter",
+    "Terastodon",
+    "Catoblepas",
+    "Orc Warlock",
+    "Carrion Harpy"
+   ],
    "ex": [
     [
      53,
@@ -7235,7 +7267,7 @@
      42,
      54,
      "waygate",
-     "Waygate"
+     "Portal"
     ],
     [
      30,
@@ -8774,7 +8806,7 @@
    ]
   },
   "291": {
-   "at": 1793150707399,
+   "at": 1793164809985,
    "name": "Itham’s Anchorage",
    "type": "Normal",
    "g": [
