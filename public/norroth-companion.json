@@ -1,8 +1,8 @@
 {
-  "version": "2.6.166",
+  "version": "2.6.167",
   "date": "2026-10-28",
-  "notes": "v2.6.166 爬塔房间门：按图遍历（DFS）思路重做——前进走没走过的门、没新门就回溯走来路（towerPath 栈），去掉最近门/避开上一扇/复用计数等启发式；塔门要求交钥匙等特殊任务时不自动处理、直接停止提示；长时间无进展只提示不停。",
+  "notes": "v2.6.167 新增「不打 Boss」：名字含 Boss 或站在 Boss 格（action=boss/overlord 或 data-poi=boss_on）的怪不再自动攻击（活动图 Drake Boss 这类不一定打得过）；塔内不生效（塔必须清完整层）；世界 Boss 由「自动打 Overlord」单独控制。战斗面板可关。",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 867074,
-  "sha256": "59f87b4d443474535a34adbfc2ab1a7ff8e52b6c9ff5722d73116f144dcdaf09"
+  "size": 868858,
+  "sha256": "ad590acccc687d09d9961093aa3c0027f6663a49864bc8a7eb857f7e3db9319d"
 }

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.166
+// @version      2.6.167
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -70,6 +70,7 @@
     worldMapUnlock: true,    // ★ v2.6.80：世界地图解锁 —— 补齐所有未访问地图点 + 去掉战争迷雾（显示上解锁）
     monsterLvMin: 0,         // ★ 融合：只打等级 ≥ 此值的怪（0 = 不限）
     monsterLvMax: 0,         // ★ 融合：只打等级 ≤ 此值的怪（0 = 不限）
+    skipBoss: true,          // ★ v2.6.167：不打 Boss（名字含 Boss 或 站在 Boss 格上）—— 活动图的 Drake Boss 这类不一定打得过；塔内不生效（塔必须清完才能下楼）
 
     /* 补给 */
     autoPotion: true,
@@ -190,7 +191,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.166';   // 与 @version 保持一致
+  const SCRIPT_VER = '2.6.167';   // 与 @version 保持一致
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -1692,12 +1693,36 @@
     return true;
   }
 
+  /* ★ v2.6.167：Boss 识别 —— 名字含 Boss，或站在「Boss 格」上（action=boss/overlord 或 data-poi=boss_on）。
+     活动图里的 Drake Boss 这类不一定打得过 → 默认不打（cfg.skipBoss）。塔内不生效（塔必须清完才能下楼）。 */
+  function bossTileSet() {
+    const set = new Set();
+    try {
+      $$q('.map_table [action="boss"], .map_table [action="overlord"], .map_table [data-poi="boss_on"]').forEach(function (el) {
+        const c = String(el.getAttribute('coords') || '');
+        if (c) set.add(c);
+      });
+    } catch (e) { /* ignore */ }
+    return set;
+  }
+  function isBossEnemy(e, bossTiles) {
+    if (!e) return false;
+    if (/\bboss\b/i.test(String(e.name || ''))) return true;
+    if (bossTiles && bossTiles.has(e.x + '-' + e.y)) return true;
+    return false;
+  }
+  /* ★ v2.6.167：本次是否要跳过 Boss —— 塔内不跳（塔里清完整层才能下楼）。 */
+  function skipBossNow() {
+    return !!cfg.skipBoss && st.mode !== 'tower';
+  }
   function attackableFrom(list) {
     if (!inGame() || !list) return [];
     const cx = character.x, cy = character.y;
+    const skipBoss = skipBossNow();
+    const bossTiles = skipBoss ? bossTileSet() : null;
     return list
       .filter(e => e.rank !== 'Player' && nameAllowed(e.name) && !mobBlacklisted(e.name) && rankAllowed(e.rank) && lvAllowed(e.lv) &&
-                   !isBlacklisted(e.key) && isReachable(e.x, e.y))
+                   !isBlacklisted(e.key) && isReachable(e.x, e.y) && !(skipBoss && isBossEnemy(e, bossTiles)))
       .map(e => Object.assign({ _k: targetKey(e, cx, cy) }, e))
       .sort((a, b) => cmpKey(a._k, b._k));
   }
@@ -8767,6 +8792,7 @@
             <div class="opts">
               <label title="本图没怪时去采集点采集。与「切图刷怪」2 选 1。"><input type="checkbox" class="chk" id="nr-autogather">无怪采集</label>
               <label title="本图没怪时，去隔壁图打怪（等级/名单/黑名单/星级都按当前筛选判定，不合适的邻图自动跳过），清完再回挂机图刷新。需本图有普通门。与「无怪采集」2 选 1。"><input type="checkbox" class="chk" id="nr-automapswitch">切图刷怪</label>
+              <label title="不主动攻击 Boss（名字含 Boss，或站在 Boss 格上）。活动图的 Drake Boss 这类不一定打得过。塔内不生效。世界 Boss（Overlord）由「自动打 Overlord」单独控制。"><input type="checkbox" class="chk" id="nr-skipboss">不打 Boss</label>
             </div>
           </div>
 
@@ -9202,6 +9228,7 @@
         });
       }
     })();
+    bindCheck('nr-skipboss', 'skipBoss');
     bindCheck('nr-usewaygatecity', 'useWaygateCity');
     bindCheck('nr-usewaygatewild', 'useWaygateWild');
     (function () {
@@ -9685,6 +9712,7 @@
     set('nr-navseg', cfg.navSegOn); num('nr-navseg_dist', cfg.navSegDist);
     num('nr-navseg_pause', cfg.navSegPauseMs);
     set('nr-autoovl', cfg.autoOverlord); num('nr-ovl_lead', cfg.ovlLeadSec); num('nr-ovl_leave', cfg.ovlLeaveSec);
+    set('nr-skipboss', cfg.skipBoss);
     try { syncFarmMapUI(); } catch (e) { /* ignore */ }
     num('nr-sellfree', cfg.sellFreeMin); num('nr-sellmaxlv', cfg.sellEquipMaxLv);
     num('nr-repairdurpct', cfg.repairDurPct);
