@@ -1,6 +1,6 @@
 {
  "meta": {
-  "source": "游戏内 Inspect（/modal/inspect_enemy）· 小伴侣导出 · 6 位贡献者合并",
+  "source": "游戏内 Inspect（/modal/inspect_enemy）· 小伴侣导出 · 7 位贡献者合并",
   "fetched": "2026-10-28",
   "version": "1.0",
   "contributors": [
@@ -57,19 +57,28 @@
     "count": 193,
     "recorded": 193,
     "mergedAt": "2026-10-28"
+   },
+   {
+    "file": "char-1160.json",
+    "char": "#1160",
+    "level": 50,
+    "time": "2026-10-28T01:17:49.627Z",
+    "count": 194,
+    "recorded": 194,
+    "mergedAt": "2026-10-28"
    }
   ],
-  "count": 199,
-  "recordedCount": 193,
-  "withLore": 198,
-  "withStats": 76,
-  "withSkills": 97,
-  "withBg": 183,
+  "count": 200,
+  "recordedCount": 194,
+  "withLore": 199,
+  "withStats": 79,
+  "withSkills": 102,
+  "withBg": 184,
   "tabs": {
    "normal": 163,
    "boss": 22,
    "overlord": 8,
-   "other": 6
+   "other": 7
   }
  },
  "enemies": [
@@ -934,35 +943,40 @@
     }
    ],
    "stats": {
-    "Base Damage": 10,
-    "Physical Damage": 3,
-    "Blunt Damage": 0,
-    "Spell Damage": 0,
-    "Bleed Damage": 0,
-    "Arcane Damage": 0,
-    "Cold Damage": 0,
-    "Dark Damage": 0,
-    "Fire Damage": 0,
-    "Light Damage": 0,
-    "Lightning Damage": 0,
-    "Poison Damage": 0,
-    "Thorn Damage": 0,
-    "Defense": 10,
-    "Block Chance": 0,
-    "Block Rating": 0,
-    "Arcane Resist": 10,
-    "Cold Resist": 10,
-    "Dark Resist": 10,
-    "Fire Resist": 10,
-    "Light Resist": 10,
-    "Lightning Resist": 10,
-    "Poison Resist": 10,
-    "Evasion": 5,
-    "Critical Chance": 0,
-    "Critical Strike": 0,
-    "Hit Rating": 20,
-    "Attack Speed": 6,
-    "Armor Penetration": 1
+    "基础伤害": 10,
+    "物理伤害": 3,
+    "钝击伤害": 0,
+    "法术伤害": 0,
+    "流血伤害": 0,
+    "秘法伤害": 0,
+    "冰霜伤害": 0,
+    "黑暗伤害": 0,
+    "火焰伤害": 0,
+    "光辉伤害": 0,
+    "闪电伤害": 0,
+    "毒素伤害": 0,
+    "荆棘伤害": 0,
+    "防御": 10,
+    "格挡几率": 0,
+    "格挡值": 0,
+    "秘法抗性": 10,
+    "冰冷抗性": 10,
+    "黑暗抗性": 10,
+    "火抗": 10,
+    "光抗": 10,
+    "电抗": 10,
+    "毒素抗性": 10,
+    "闪避": 5,
+    "暴击率": 0,
+    "暴击": 0,
+    "命中率": 20,
+    "攻击速度": 6,
+    "物理穿透": 1,
+    "吸血": 0,
+    "法力窃取": 0,
+    "生命回复": 0,
+    "法力回复": 0,
+    "最大生命值": 60
    }
   },
   {
@@ -1187,6 +1201,23 @@
      "name": "Mucky Tendon",
      "res": "mucky_tendon",
      "pct": "38%"
+    }
+   ],
+   "skills": [
+    {
+     "name": "burrow",
+     "id": 10013,
+     "level": 1
+    },
+    {
+     "name": "subsurface_strike",
+     "id": 10065,
+     "level": 1
+    },
+    {
+     "name": "bite",
+     "id": 10009,
+     "level": 1
     }
    ]
   },
@@ -1912,6 +1943,18 @@
      "res": "mucky_eye",
      "pct": "13%"
     }
+   ],
+   "skills": [
+    {
+     "name": "arcana_ball",
+     "id": 10075,
+     "level": 1
+    },
+    {
+     "name": "sonic_scream",
+     "id": 10089,
+     "level": 1
+    }
    ]
   },
   {
@@ -2409,6 +2452,23 @@
      "name": "Round Sphene",
      "res": "round_sphene",
      "pct": "10%"
+    }
+   ],
+   "skills": [
+    {
+     "name": "light_beam",
+     "id": 10081,
+     "level": 2
+    },
+    {
+     "name": "light_bolt",
+     "id": 10095,
+     "level": 2
+    },
+    {
+     "name": "light_ball",
+     "id": 10074,
+     "level": 2
     }
    ]
   },
@@ -3520,7 +3580,39 @@
      "res": "elm_handle",
      "pct": "8%"
     }
-   ]
+   ],
+   "skills": [
+    {
+     "name": "scale_deflection",
+     "id": 10033,
+     "level": 2
+    },
+    {
+     "name": "tail_sweep",
+     "id": 10149,
+     "level": 2
+    },
+    {
+     "name": "slash",
+     "id": 10024,
+     "level": 2
+    }
+   ],
+   "stats": {
+    "基础伤害": 20,
+    "物理伤害": 3,
+    "钝击伤害": 0,
+    "法术伤害": 0,
+    "流血伤害": 0,
+    "秘法伤害": 0,
+    "冰霜伤害": 0,
+    "黑暗伤害": 0,
+    "火焰伤害": 0,
+    "光辉伤害": 0,
+    "闪电伤害": 0,
+    "毒素伤害": 0,
+    "荆棘伤害": 0
+   }
   },
   {
    "id": 88,
@@ -5622,7 +5714,22 @@
      "id": 10133,
      "level": 3
     }
-   ]
+   ],
+   "stats": {
+    "基础伤害": 20,
+    "物理伤害": 0,
+    "钝击伤害": 1,
+    "法术伤害": 3,
+    "流血伤害": 5,
+    "秘法伤害": 0,
+    "冰霜伤害": 0,
+    "黑暗伤害": 0,
+    "火焰伤害": 0,
+    "光辉伤害": 0,
+    "闪电伤害": 0,
+    "毒素伤害": 0,
+    "荆棘伤害": 5
+   }
   },
   {
    "id": 120,
@@ -7838,19 +7945,40 @@
     }
    ],
    "stats": {
-    "Base Damage": 20,
-    "Physical Damage": 3,
-    "Blunt Damage": 0,
-    "Spell Damage": 0,
-    "Bleed Damage": 0,
-    "Arcane Damage": 0,
-    "Cold Damage": 5,
-    "Dark Damage": 0,
-    "Fire Damage": 0,
-    "Light Damage": 0,
-    "Lightning Damage": 0,
-    "Poison Damage": 0,
-    "Thorn Damage": 0
+    "基础伤害": 20,
+    "物理伤害": 3,
+    "钝击伤害": 0,
+    "法术伤害": 0,
+    "流血伤害": 0,
+    "秘法伤害": 0,
+    "冰霜伤害": 5,
+    "黑暗伤害": 0,
+    "火焰伤害": 0,
+    "光辉伤害": 0,
+    "闪电伤害": 0,
+    "毒素伤害": 0,
+    "荆棘伤害": 0,
+    "防御": 40,
+    "格挡几率": 10,
+    "格挡值": 1,
+    "秘法抗性": 10,
+    "冰冷抗性": 15,
+    "黑暗抗性": 10,
+    "火抗": 10,
+    "光抗": 10,
+    "电抗": 10,
+    "毒素抗性": 10,
+    "闪避": 2,
+    "暴击率": 8,
+    "暴击": 5,
+    "命中率": 20,
+    "攻击速度": 2,
+    "物理穿透": 1,
+    "吸血": 0,
+    "法力窃取": 0,
+    "生命回复": 0,
+    "法力回复": 0,
+    "最大生命值": 110
    }
   },
   {
@@ -8933,6 +9061,23 @@
      "res": "scrap_tail",
      "pct": "3%"
     }
+   ],
+   "skills": [
+    {
+     "name": "light_strike",
+     "id": 10039,
+     "level": 4
+    },
+    {
+     "name": "light_beam",
+     "id": 10081,
+     "level": 4
+    },
+    {
+     "name": "light_ball",
+     "id": 10074,
+     "level": 4
+    }
    ]
   },
   {
@@ -9220,7 +9365,43 @@
      "id": 10024,
      "level": 5
     }
-   ]
+   ],
+   "stats": {
+    "基础伤害": 15,
+    "物理伤害": 3,
+    "钝击伤害": 0,
+    "法术伤害": 3,
+    "流血伤害": 0,
+    "秘法伤害": 0,
+    "冰霜伤害": 0,
+    "黑暗伤害": 0,
+    "火焰伤害": 0,
+    "光辉伤害": 0,
+    "闪电伤害": 5,
+    "毒素伤害": 0,
+    "荆棘伤害": 0,
+    "防御": 30,
+    "格挡几率": 20,
+    "格挡值": 3,
+    "秘法抗性": 5,
+    "冰冷抗性": 10,
+    "黑暗抗性": 5,
+    "火抗": 5,
+    "光抗": 5,
+    "电抗": 5,
+    "毒素抗性": 5,
+    "闪避": 8,
+    "暴击率": 4,
+    "暴击": 15,
+    "命中率": 40,
+    "攻击速度": 10,
+    "物理穿透": 1,
+    "吸血": 0,
+    "法力窃取": 0,
+    "生命回复": 2,
+    "法力回复": 0,
+    "最大生命值": 90
+   }
   },
   {
    "id": 188,
@@ -11343,6 +11524,17 @@
    "health": "Medium",
    "defense": "Low",
    "resistance": "High"
+  },
+  {
+   "id": 258,
+   "name": "Derro Gloomcaller",
+   "type": "Humanoid",
+   "biome": "Underground",
+   "lore": "Whispering to the darkness as if it were an old friend, the Derro Gloomcaller bends the shadows of the Moldrir Depths to its will. Some say the corruption beneath the earth speaks through these twisted mystics, filling their minds with secrets never meant for mortal ears. Wherever a Gloomcaller chants, the light weakens and something in the darkness begins to listen.",
+   "tab": "other",
+   "icon": "https://www.norroth.com/images/maps/items/enemy_258.gif",
+   "bg": "underground.jpg",
+   "recorded": true
   },
   {
    "id": 261,
