@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.172
+// @version      2.6.173
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -192,7 +192,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.172';   // 与 @version 保持一致
+  const SCRIPT_VER = '2.6.173';   // 与 @version 保持一致
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -5728,10 +5728,12 @@
     } catch (e) { return false; }
   }
 
+  /* ★ v2.6.173：Event 模块的「活跃」判据 —— 开了挂机，或单独勾了「自动进活动」（不需要开挂机）。 */
+  function eventAlive() { return running || !!cfg.autoEvent; }
   /* 主循环钩子：true = 本 tick 已被活动逻辑接管（进入 / 返回期间） */
   function eventTick() {
     if (!cfg.autoEvent) { if (st.event.phase !== 'idle') eventReset(); return false; }
-    if (!running || !inGame()) return false;
+    if (!eventAlive() || !inGame()) return false;
     /* ★ v2.6.157：优先级 Overlord > 活动 —— Overlord 期间活动让路，
        否则「已离开活动图」分支会把角色从 Overlord 房拽回活动。 */
     if (cfg.autoOverlord && ovlHolding()) return false;
@@ -5805,7 +5807,7 @@
               /* ★ v2.6.108：踩对 → 换图；踩错 → 弹 #frame_LevelGate。两种都立刻结束，别干等超时。 */
               cond: function () { return !!document.getElementById('frame_LevelGate') || +character.current_map !== +from; },
               timeoutMs: 60000,
-              alive: function () { return running && cfg.autoEvent; }
+              alive: function () { return eventAlive() && cfg.autoEvent; }
             });
           } catch (e) { /* ignore */ }
           finally { E.gateBusy = false; }
@@ -5847,17 +5849,17 @@
           E.phase = 'return';
           setTimeout(function () {
             try {
-              if (!running) { E.phase = 'idle'; return; }
+              if (!eventAlive()) { E.phase = 'idle'; return; }
               if (String(character.current_map) === String(home)) { E.phase = 'idle'; return; }
               logEvent('活动：返回传送门没生效（当前 ' + currentMapName() + '）→ 改用导航回「' + navMapName(home) + '」');
-              navToMap(home, { alive: function () { return running && cfg.autoEvent; }, allowCity: cfg.useWaygateCity, allowWild: cfg.useWaygateWild })
+              navToMap(home, { alive: function () { return eventAlive() && cfg.autoEvent; }, allowCity: cfg.useWaygateCity, allowWild: cfg.useWaygateWild })
                 .then(function () { E.phase = 'idle'; }, function () { E.phase = 'idle'; });
             } catch (e) { E.phase = 'idle'; }
           }, 4000);
           return true;
         }
         setStatus('活动结束：返回「' + navMapName(home) + '」…');
-        navToMap(home, { alive: function () { return running && cfg.autoEvent; }, allowCity: cfg.useWaygateCity, allowWild: cfg.useWaygateWild })
+        navToMap(home, { alive: function () { return eventAlive() && cfg.autoEvent; }, allowCity: cfg.useWaygateCity, allowWild: cfg.useWaygateWild })
           .then(function () { E.phase = 'idle'; }, function () { E.phase = 'idle'; });
       } else { E.phase = 'idle'; }
       return true;
@@ -5890,7 +5892,7 @@
     E.lastCheckAt = now();
     E.busy = true; E.busyAt = now();
     const seq = runSeq, checkAt = E.busyAt;
-    const alive = function () { return running && seq === runSeq && cfg.autoEvent && E.busyAt === checkAt; };
+    const alive = function () { return eventAlive() && seq === runSeq && cfg.autoEvent && E.busyAt === checkAt; };
     (async function () {
       try {
         const has = await eventActivitiesHasJoin();
@@ -8208,6 +8210,52 @@
     try { step(); } catch (e) { setStatus('出错：' + e.message); }
   }
 
+  /* ★ v2.6.173：战斗逻辑抽成独立函数 —— 挂机战斗 与「未开挂机时的活动战斗区」共用。 */
+  function stepCombat() {
+    if (hasFrame('frame_Combat')) {
+      noteCombat();
+      setStatus('战斗中…（游戏自动战斗）');
+      return;
+    }
+
+    if (handleFrames()) return;
+    const healing = supply();
+    if (retargetCombat.tick()) return;   /* ★ 途中持续索敌：更优目标立刻切换 */
+    if (checkMove()) return;
+
+    // 游戏自身正在移动（如战斗结束后自动续走原目标）→ 等它走完，避免抢发指令
+    try {
+      if (character.walk_to && walkQueue[character.id] && walkQueue[character.id].length) {
+        st.phase = 'move';
+        setStatus('移动中… → ' + character.walk_to);
+        return;
+      }
+    } catch (e) { /* ignore */ }
+    if (pollSmithTrip()) return;
+    /* ★ 补到阈值再开始下一个寻敌（否则战斗间隙只吃一瓶就走） */
+    if (healing) { setStatus('回血中…（补到阈值后再继续寻敌）'); return; }
+
+    const t = pickTarget();
+    if (!t) {
+      st.phase = 'idle';
+      st.target = null;
+      const nl = monsterList().length;
+      const stuck = unreachableEnemies();
+      const _dg = targetDiagText(targetDiag());
+      setStatus((nl
+        ? ('本图没有名单内的怪物（名单 ' + nl + ' 项），等待刷新…')
+        : (stuck ? ('本图可到达的怪物已清完（另有 ' + stuck + ' 只被门/障碍挡住），等待刷新…')
+                 : '本图已清完，等待怪物刷新…')) + _dg);
+      if (running) autoMapSwitchMaybe();
+      return;
+    }
+    st.mapSwitch.idleSince = 0;
+    if (t.skip) return;
+
+    st.target = t.enemy || null;
+    startMove(t.x, t.y, t.kind, t.label);
+  }
+
   function step() {
     if (!inGame()) { setStatus('等待进入游戏…'); return; }
 
@@ -8259,6 +8307,13 @@
                          st.nudging || st.settling || st.tripManual;
       if (ovlTick() && !_evOvlBusy) return;
       if (eventTick() && !_evOvlBusy) return;
+    }
+    /* ★ v2.6.173：未开挂机 → 只跑「活动」相关逻辑（勾了「自动进活动」即生效，不需要开挂机）。 */
+    if (!running) {
+      if (hasFrame('frame_Loot')) takeAllLoot();
+      if (eventCombatActive()) { ensureAutoBattle(); stepCombat(); return; }
+      if (cfg.autoEvent && st.event && st.event.on && String(character.current_map) === String(EVENT_MAP_ID)) { stepGather(); return; }
+      return;
     }
     // ★ 卡死强恢复进行中：主循环短暂让路，避免和「点格」抢发 walkTo
     if (st.nudging && now() - st.nudging < 2600) { setStatus('卡住自愈：正在试探走位…'); return; }
@@ -8348,48 +8403,7 @@
       if (st.mode === 'tower') { stepTower(); return; }
     }
 
-    if (hasFrame('frame_Combat')) {
-      noteCombat();
-      setStatus('战斗中…（游戏自动战斗）');
-      return;
-    }
-
-    if (handleFrames()) return;
-    const healing = supply();
-    if (retargetCombat.tick()) return;   /* ★ 途中持续索敌：更优目标立刻切换 */
-    if (checkMove()) return;
-
-    // 游戏自身正在移动（如战斗结束后自动续走原目标）→ 等它走完，避免抢发指令
-    try {
-      if (character.walk_to && walkQueue[character.id] && walkQueue[character.id].length) {
-        st.phase = 'move';
-        setStatus('移动中… → ' + character.walk_to);
-        return;
-      }
-    } catch (e) { /* ignore */ }
-    if (pollSmithTrip()) return;
-    /* ★ 补到阈值再开始下一个寻敌（否则战斗间隙只吃一瓶就走） */
-    if (healing) { setStatus('回血中…（补到阈值后再继续寻敌）'); return; }
-
-    const t = pickTarget();
-    if (!t) {
-      st.phase = 'idle';
-      st.target = null;
-      const nl = monsterList().length;
-      const stuck = unreachableEnemies();
-      const _dg = targetDiagText(targetDiag());
-      setStatus((nl
-        ? ('本图没有名单内的怪物（名单 ' + nl + ' 项），等待刷新…')
-        : (stuck ? ('本图可到达的怪物已清完（另有 ' + stuck + ' 只被门/障碍挡住），等待刷新…')
-                 : '本图已清完，等待怪物刷新…')) + _dg);
-      autoMapSwitchMaybe();
-      return;
-    }
-    st.mapSwitch.idleSince = 0;
-    if (t.skip) return;
-
-    st.target = t.enemy || null;
-    startMove(t.x, t.y, t.kind, t.label);
+    stepCombat();
   }
 
   /* 一次扫描同时喂饱「统计行」「星级计数」，避免每 1.2 秒把 DOM 扫三遍 */
@@ -10413,6 +10427,14 @@
   setInterval(function () { try { if (st.altTrip) altPageCombatPolicy(); } catch (e) { /* ignore */ } }, 700);
   /* ★ 离线模式结算弹窗：多角色模式下即使没开挂机也点掉（切号后常出现；单人模式不打扰） */
   rhythmTimer(function () { try { if (cfg.multiChar) closeIdleResultDialog(); } catch (e) { /* ignore */ } }, 5000);
+  /* ★ v2.6.173：未开挂机时的「活动单独监控」—— 勾了「自动进活动」即生效，不需要开挂机。
+     挂机在跑时由主循环负责，这里让路（避免重复）。 */
+  rhythmTimer(function () {
+    if (running) return;
+    if (!cfg.autoEvent) return;
+    if (!inGame()) return;
+    try { step(); } catch (e) { /* ignore */ }
+  }, TICK);
 
   const spdBoot = setInterval(() => {
     spdTries++;
