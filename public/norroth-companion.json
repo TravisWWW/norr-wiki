@@ -1,8 +1,8 @@
 {
-  "version": "2.6.173",
+  "version": "2.6.174",
   "date": "2026-10-29",
-  "notes": "小伴侣 v2.6.173：「自动进活动」勾上即生效，不需要开挂机——新增独立的「活动单独监控」循环（未挂机时只跑活动：进活动图采集 / 活动战斗区打怪），挂机在跑时由主循环负责不重复。",
+  "notes": "小伴侣 v2.6.174：多角色离线「暂停」就地暂停——不再切回主角色（人在哪个角色页就留在哪个角色页）；「停止」仍会切回主角色。",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 874120,
-  "sha256": "da93d312672f585d2f8a5faa09b9a4ec9d88fd9fd5b1fdd8aff30d1ea2dd1c34"
+  "size": 874037,
+  "sha256": "c5f6b281bbc806b7e2ab79c18edbe9036d3e9d12f782de7bda3a153cd6b9f1b2"
 }

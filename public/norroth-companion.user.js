@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.173
+// @version      2.6.174
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -192,7 +192,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.173';   // 与 @version 保持一致
+  const SCRIPT_VER = '2.6.174';   // 与 @version 保持一致
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -8139,18 +8139,16 @@
   }
   /* ★ v2.6.79：暂停 / 继续。
      和「停止」的区别：停止 = 关掉多角色（cfg.multiChar=false）并切回主角色；
-     暂停 = 保留多角色的一切状态（队列、idle 记录、主角色挂机标记），只是不再切号、不再跑副角色行程。
-     暂停时若人在副角色页，先切回主角色 —— 否则那个副角色页会按普通挂机逻辑自己乱跑。 */
+     暂停 = 保留多角色的一切状态（队列、idle 记录），只是不再切号、不再跑副角色行程。
+     ★ v2.6.174：暂停就地生效 —— 不再切回主角色（用户要求）；人在哪个角色页就留在哪个角色页。 */
   function mcTogglePause() {
     mcSeq++;
     if (!rot) mcLoadRot();
     rot.paused = !rot.paused;
     mcSaveRot();
     if (rot.paused) {
-      const main = mcMain();
-      logEvent('多角色：已暂停轮转（保留队列与记录，主角色照常挂机）');
-      setStatus('多角色：已暂停（主角色照常挂机；点「继续」恢复轮转）');
-      if (main && inGame() && String(character.id) !== String(main.id)) mcSwitch(main.id);
+      logEvent('多角色：已暂停轮转（保留队列与记录，不再切号 / 跑副角色行程）');
+      setStatus('多角色：已暂停（不再切号 / 跑副角色行程；点「继续」恢复轮转）');
     } else {
       logEvent('多角色：已继续轮转');
       setStatus('多角色：已继续轮转');
@@ -8174,13 +8172,13 @@
       ps.textContent = paused ? '▶ 继续' : '⏸ 暂停';
       ps.title = paused
         ? '按原队列继续轮转。'
-        : '保留队列并暂停切号；主角色照常挂机。';
+        : '保留队列并暂停切号（就地暂停，不切回主角色）。';
       ps.classList.toggle('on', paused);
       ps.disabled = !on;
     }
     const hint = document.getElementById('nr-mc-hint');
     if (hint) {
-      if (paused) { hint.textContent = '⏸ 轮转已暂停：不再切号 / 跑副角色行程，主角色照常挂机。点「▶ 继续」恢复。'; hint.style.color = '#ffd76e'; }
+      if (paused) { hint.textContent = '⏸ 轮转已暂停：不再切号 / 跑副角色行程（就地暂停，不切回主角色）。点「▶ 继续」恢复。'; hint.style.color = '#ffd76e'; }
       else if (on) { hint.textContent = '轮转进行中：副角色 idle 到期会自动切号 → 维修 / 存仓 → 重启 idle → 切回主角色。'; hint.style.color = '#7ee081'; }
       else { hint.textContent = ''; }
     }
