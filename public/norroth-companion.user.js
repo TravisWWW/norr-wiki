@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.169
+// @version      2.6.170
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -42,7 +42,7 @@
 
   /* ======================= 1. 常量 / 默认配置 ======================= */
 
-  const RANKS = ['Elite', 'Rare', 'Champion', 'Normal', 'Boss'];   // ★ v2.6.169：Boss（游戏 rarity 字段）也进筛选；默认优先级：3星 > 2星 > 1星 > 普通 > Boss
+  const RANKS = ['Boss', 'Elite', 'Rare', 'Champion', 'Normal'];   // ★ v2.6.170：Boss（游戏 rarity 字段）提到最顶；默认优先级：Boss > 3星 > 2星 > 1星 > 普通
   const RANK_CN = { Boss: '首领', Elite: '精英', Rare: '稀有', Champion: '冠军', Normal: '普通' };
   const RANK_STAR = { Boss: '☠', Elite: '★★★', Rare: '★★', Champion: '★', Normal: '—' };
   const RANK_STARS = { Boss: 4, Elite: 3, Rare: 2, Champion: 1, Normal: 0 };   // ★ 星级数值（用于「采集中断条件」过滤）
@@ -190,7 +190,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.169';   // 与 @version 保持一致
+  const SCRIPT_VER = '2.6.170';   // 与 @version 保持一致
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -393,6 +393,12 @@
     if (!c.bossRankInit) {
       c.bossRankInit = true;
       if (c.rankOff.indexOf('Boss') < 0) c.rankOff.push('Boss');
+    }
+    /* ★ v2.6.170：Boss 提到「战斗筛选」最顶（最高优先级）。首次升级执行一次，之后尊重用户手动排序。 */
+    if (!c.bossRankTop) {
+      c.bossRankTop = true;
+      const bi = c.rankOrder.indexOf('Boss');
+      if (bi > 0) { c.rankOrder.splice(bi, 1); c.rankOrder.unshift('Boss'); }
     }
     c.monsterLvMin = Math.max(0, Math.min(999, Math.round(+c.monsterLvMin || 0)));   // ★ 融合
     c.monsterLvMax = Math.max(0, Math.min(999, Math.round(+c.monsterLvMax || 0)));

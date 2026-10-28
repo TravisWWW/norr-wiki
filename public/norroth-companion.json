@@ -1,8 +1,8 @@
 {
-  "version": "2.6.169",
+  "version": "2.6.170",
   "date": "2026-10-29",
-  "notes": "小伴侣 v2.6.169 发布：Boss 并入「战斗筛选」——新增第 5 个星级 Boss（首领，4 星），默认不打勾（首次升级自动加入 rankOff），优先级可在面板 ↑↓ 调整；移除原「不打 Boss」独立勾选与 skipBoss 逻辑。活动战斗区索敌与普通战斗共用同一套逻辑，筛选改动对 event 内同样生效。",
+  "notes": "小伴侣 v2.6.170：Boss（首领）提到「战斗筛选」最顶（优先级最高）；RANKS 顺序改为 Boss > 精英 > 稀有 > 冠军 > 普通；对已有配置做一次性迁移把 Boss 移到最顶（仅一次，之后尊重手动排序）；Boss 仍默认不打勾。",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 867790,
-  "sha256": "72460f8077eda11b68bf337151f71da2dfe4539f6ea97e994e433655f7a116da"
+  "size": 868125,
+  "sha256": "8cfcf5b1eae024a70e64a11856a2c21f29f0961b556425d7c391754fd95542a3"
 }
