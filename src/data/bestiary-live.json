@@ -1,6 +1,6 @@
 {
  "meta": {
-  "source": "游戏内 Inspect（/modal/inspect_enemy）· 小伴侣导出 · 7 位贡献者合并",
+  "source": "游戏内 Inspect（/modal/inspect_enemy）· 小伴侣导出 · 8 位贡献者合并",
   "fetched": "2026-10-28",
   "version": "1.0",
   "contributors": [
@@ -66,13 +66,22 @@
     "count": 194,
     "recorded": 194,
     "mergedAt": "2026-10-28"
+   },
+   {
+    "file": "char-2010.json",
+    "char": "#2010",
+    "level": 26,
+    "time": "2026-10-28T23:30:13.287Z",
+    "count": 194,
+    "recorded": 144,
+    "mergedAt": "2026-10-28"
    }
   ],
   "count": 200,
   "recordedCount": 194,
   "withLore": 199,
   "withStats": 85,
-  "withSkills": 103,
+  "withSkills": 104,
   "withBg": 184,
   "tabs": {
    "normal": 163,
@@ -6768,6 +6777,11 @@
      "name": "Bronze Sestertii",
      "res": "coin_bronze",
      "pct": "100%"
+    },
+    {
+     "name": "Event Ticket",
+     "res": "event_ticket",
+     "pct": "100%"
     }
    ]
   },
@@ -6780,7 +6794,24 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_141.gif",
    "bg": "shipwreck.jpg",
-   "recorded": true
+   "recorded": true,
+   "levelRange": "1 - 60",
+   "alignment": "Light",
+   "health": "Medium",
+   "defense": "High",
+   "resistance": "Low",
+   "drops": [
+    {
+     "name": "Bronze Sestertii",
+     "res": "coin_bronze",
+     "pct": "100%"
+    },
+    {
+     "name": "Spirit Essence",
+     "res": "spirit_essence",
+     "pct": "100%"
+    }
+   ]
   },
   {
    "id": 142,
@@ -6791,7 +6822,12 @@
    "tab": "boss",
    "icon": "https://www.norroth.com/images/maps/items/enemy_142.gif",
    "bg": "marine.jpg",
-   "recorded": true
+   "recorded": true,
+   "levelRange": "19 - 19",
+   "alignment": "Neutral",
+   "health": "Medium",
+   "defense": "High",
+   "resistance": "Medium"
   },
   {
    "id": 143,
@@ -6928,7 +6964,47 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_147.gif",
    "bg": "hollow_forest.jpg",
-   "recorded": true
+   "recorded": true,
+   "levelRange": "1 - 60",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "Medium",
+   "defense": "Medium",
+   "resistance": "Low",
+   "drops": [
+    {
+     "name": "Bronze Sestertii",
+     "res": "coin_bronze",
+     "pct": "100%"
+    },
+    {
+     "name": "Mucky Tooth",
+     "res": "mucky_tooth",
+     "pct": "10%"
+    },
+    {
+     "name": "Mucky Bone",
+     "res": "mucky_bone",
+     "pct": "20%"
+    },
+    {
+     "name": "Mucky Skull",
+     "res": "mucky_skull",
+     "pct": "5%"
+    }
+   ],
+   "skills": [
+    {
+     "name": "slash",
+     "id": 10024,
+     "level": 1
+    },
+    {
+     "name": "impale",
+     "id": 10049,
+     "level": 1
+    }
+   ]
   },
   {
    "id": 148,
@@ -10389,7 +10465,19 @@
    "tab": "overlord",
    "icon": "https://www.norroth.com/images/maps/items/enemy_211.gif",
    "bg": "frost_cave.jpg",
-   "recorded": true
+   "recorded": true,
+   "levelRange": "30 - 30",
+   "alignment": "Neutral",
+   "health": "High",
+   "defense": "High",
+   "resistance": "High",
+   "drops": [
+    {
+     "name": "Bronze Sestertii",
+     "res": "coin_bronze",
+     "pct": "100%"
+    }
+   ]
   },
   {
    "id": 213,
