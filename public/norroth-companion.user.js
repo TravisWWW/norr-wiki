@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.175
+// @version      2.6.176
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -192,7 +192,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.175';   // 与 @version 保持一致
+  const SCRIPT_VER = '2.6.176';   // 与 @version 保持一致
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -263,7 +263,7 @@
     gatherIdleSince: 0, gatherResync: 0,   // ★ 采集看门狗：进度条不转的累计时间 / 重试次数
     gatherQuickAt: 0,                      // ★ v2.6.158：本次「到位」后已做过一次快速主动开采的时间戳
     /* ★ 活动自动进入（采集）：phase = idle | enter | in | return */
-    event: { on: false, phase: 'idle', busy: false, homeMap: 0, homePoint: '', homeRes: '', homeType: '', pointName: '', enteredAt: 0, lastCheckAt: 0, timeLeft: null, score: null,
+    event: { on: false, phase: 'idle', busy: false, homeMap: 0, homePoint: '', homeRes: '', homeType: '', pointName: '', enteredAt: 0, lastCheckAt: 0, timeLeft: null, score: null, lobbyMap: 0,   /* ★ v2.6.176：最后一次进入的活动大厅图 id */
              busyAt: 0, checkAt: 0, checkFails: 0, combatSkipAt: 0, lastLogAt: 0, lastHas: null,
              gateBusy: false, gateLogAt: 0, combatMap: 0 },   /* ★ v2.6.101：战斗型活动的「进战斗区」状态 */
     /* ★ v2.6.135：Overlord（世界 Boss）自动参战 */
@@ -5521,11 +5521,50 @@
        14-41→1184 = **出活动区域的门**（不是战斗区，见 EVENT_LOBBY_EXIT_GATES，绝不踩）。
      用法：① 优先用「本次活动实测学到」的门→图映射；② 否则用下面这张内置表；③ 都对不上就逐个试（踩错就关窗换下一道）。 */
   const EVENT_LOBBY_GATE_MAP = { '17-13': 1186, '38-13': 1187, '52-12': 1188, '54-26': 1189, '11-25': 1185 };
+  /* ★ v2.6.176：其它活动地图组 —— 万圣节「Sleepy Hollow」地图 id 与 Sacred Wilds 完全不同，
+     硬编码一套会导致「进了活动却不去战斗区」。大厅 1157；战斗区
+     1158=1-9 / 1159=10-19 / 1160=20-29 / 1161=30-39 / 1162=40-49 / 1163=50-59。
+     来源：wiki 地图数据（metadataVerifiedDate=2026-10-29）。门→目标图映射留空，靠踩门实测学习。 */
+  const EVENT_ALT_SETS = {
+    '1157': { name: 'Sleepy Hollow',
+      combat: { '1158': [1, 9], '1159': [10, 19], '1160': [20, 29], '1161': [30, 39], '1162': [40, 49], '1163': [50, 59] },
+      exits: {}, exitGates: {}, gates: {} },
+  };
+  /* 当前图是不是「某个活动的大厅」 */
+  function isEventLobby(id) {
+    const n = +id;
+    try { if (n === +EVENT_MAP_ID) return true; } catch (e) { /* ignore */ }
+    try { if (EVENT_ALT_SETS[String(n)]) return true; } catch (e) { /* ignore */ }
+    return false;
+  }
+  /* 当前图是不是「某个活动的战斗区」（与具体哪个活动无关） */
+  function isEventCombatMap(id) {
+    const s = String(id);
+    try { if (EVENT_COMBAT_MAPS[s]) return true; } catch (e) { /* ignore */ }
+    try { for (const k in EVENT_ALT_SETS) { if (EVENT_ALT_SETS[k].combat[s]) return true; } } catch (e) { /* ignore */ }
+    return false;
+  }
+  /* 当前活动的「地图组」：当前图是某个大厅 → 用它；否则用「最后一次进入的大厅」(st.event.lobbyMap)；再否则默认 Sacred Wilds */
+  function eventSetNow() {
+    try {
+      const m = String(character && character.current_map);
+      if (EVENT_ALT_SETS[m]) return EVENT_ALT_SETS[m];
+      const lm = String((st.event && st.event.lobbyMap) || '');
+      if (EVENT_ALT_SETS[lm]) return EVENT_ALT_SETS[lm];
+    } catch (e) { /* ignore */ }
+    let exits = {}, exitGates = {}, gates = {}, combat = {};
+    try { exits = EVENT_LOBBY_EXIT_MAPS; } catch (e) { /* ignore */ }
+    try { exitGates = EVENT_LOBBY_EXIT_GATES; } catch (e) { /* ignore */ }
+    try { gates = EVENT_LOBBY_GATE_MAP; } catch (e) { /* ignore */ }
+    try { combat = EVENT_COMBAT_MAPS; } catch (e) { /* ignore */ }
+    return { name: 'The Sacred Wilds', combat: combat, exits: exits, exitGates: exitGates, gates: gates };
+  }
   function eventCombatTargetId() {
     const lv = +((typeof character === 'object' && character && character.level) || 0);
     if (!(lv > 0)) return 0;
-    const ids = Object.keys(EVENT_COMBAT_MAPS);
-    for (let i = 0; i < ids.length; i++) { const r = EVENT_COMBAT_MAPS[ids[i]]; if (lv >= r[0] && lv <= r[1]) return +ids[i]; }
+    const cm = eventSetNow().combat;
+    const ids = Object.keys(cm);
+    for (let i = 0; i < ids.length; i++) { const r = cm[ids[i]]; if (r && lv >= r[0] && lv <= r[1]) return +ids[i]; }
     return 0;
   }
   /* 从门名里解析等级区间："The Sacred Wilds (Lv.10-19)" / "Lv. 10 - 19" / "10-19" / "Lv.10" */
@@ -5563,8 +5602,9 @@
   function eventCombatGate() {
     const want = eventCombatTargetId();
     if (!want) return null;
-    const rng = EVENT_COMBAT_MAPS[String(want)] || [0, 0];
-    const mk = function (g) { return { x: g.x, y: g.y, name: 'The Sacred Wilds (Lv.' + rng[0] + '-' + rng[1] + ')', id: want }; };
+    const rng = eventSetNow().combat[String(want)] || [0, 0];
+    const setName = eventSetNow().name || '活动';
+    const mk = function (g) { return { x: g.x, y: g.y, name: setName + ' (Lv.' + rng[0] + '-' + rng[1] + ')', id: want }; };
     /* ① 本图所有「等级门」格子 */
     const gates = $$q('.map_table .tile_poi[action="level_gate"]').map(function (el) {
       const c = (el.getAttribute('coords') || '').split('-');
@@ -5576,13 +5616,13 @@
     const tried = E.gateTried || {};
     /* ★ v2.6.109：通向 1184（出活动区域的门）的等级门一律不碰 —— 踩了就离开活动。 */
     const isExitGate = function (key) {
-      if (EVENT_LOBBY_EXIT_GATES[key]) return true;
-      return !!EVENT_LOBBY_EXIT_MAPS[String(learned[key] || 0)];
+      if (eventSetNow().exitGates[key]) return true;
+      return !!eventSetNow().exits[String(learned[key] || 0)];
     };
     /* ★ v2.6.108：旧逻辑「按格子名字里的等级区间匹配」是错的 —— 大厅里唯一带 "(Lv.10)" 的格子是
        **回城出口** 'Elundi (Lv.10)'，会被误当成战斗区入口（实测踩过）。现在只认 level_gate 格子 +
        实测/内置的「门→目标图」映射。 */
-    const idOf = function (key) { return (learned[key] !== undefined) ? learned[key] : EVENT_LOBBY_GATE_MAP[key]; };
+    const idOf = function (key) { return (learned[key] !== undefined) ? learned[key] : eventSetNow().gates[key]; };
     /* ② 已知通向目标图、且没被实测否掉的门 → 取最近的一道 */
     const good = gates.filter(function (g) { return !isExitGate(g.key) && idOf(g.key) === want; });
     if (good.length) {
@@ -5602,7 +5642,7 @@
     try {
       if (!cfg.autoEvent || cfg.eventRes !== 'combat') return false;
       const E = st.event; if (!E || !E.on) return false;
-      return !!EVENT_COMBAT_MAPS[String(character.current_map)];
+      return isEventCombatMap(character.current_map);
     } catch (e) { return false; }
   }
   function eventReset() {
@@ -5739,14 +5779,15 @@
        否则「已离开活动图」分支会把角色从 Overlord 房拽回活动。 */
     if (cfg.autoOverlord && ovlHolding()) return false;
     const E = st.event;
-    const onEventMap = String(character.current_map) === String(EVENT_MAP_ID);
+    const onEventMap = isEventLobby(character.current_map);
+    if (onEventMap) E.lobbyMap = +character.current_map;   /* ★ v2.6.176：记住当前活动大厅（多套活动用） */
 
     /* ★ v2.6.51：爬塔时不进活动 —— 塔层共用同一张地图（901）且没有层数变量，
        进出活动会从第 1 层重新开始。已在活动图里时仍按原逻辑处理（正常采集 / 结束返回）。 */
     if (st.mode === 'tower' && !E.on) { if (E.phase !== 'idle') eventReset(); return false; }
 
     /* ① 已在活动里（大厅 1183 或 战斗区 1184~1189） */
-    const onCombatArea = !!EVENT_COMBAT_MAPS[String(character.current_map)];
+    const onCombatArea = isEventCombatMap(character.current_map);
     if (onEventMap || onCombatArea) {
       /* ★ v2.6.150：已经在活动图里 → 任何「回挂机地图」的待办导航都是过期的，清掉。
          否则 eventTick 在采集 / 战斗分支让出 tick 后，navPendingTick() 会把角色从活动图拽走
@@ -5773,7 +5814,7 @@
           const key = character.x + '-' + character.y;
           E.gateTried = E.gateTried || {}; E.gateTried[key] = 1;
           if (m) { E.gateMap = E.gateMap || {}; E.gateMap[key] = +m[1]; }
-          const _isExit = !!(m && EVENT_LOBBY_EXIT_MAPS[String(+m[1])]);
+          const _isExit = !!(m && eventSetNow().exits[String(+m[1])]);
           logEvent('活动：等级门 ' + key + ' 通向「' + (m ? navMapName(+m[1]) + '（' + m[1] + '）' : '?') + '」'
             + (_isExit ? '—— 这是「出活动区域的门」，不再踩它' : '—— 等级不符 → 换下一道门'));
           try { closeFrameById('frame_LevelGate'); } catch (e) { /* ignore */ }
@@ -5917,8 +5958,8 @@
         setStatus('活动开启：进入活动地图…');
         await eventEnterGate(alive);
         if (!alive()) return;
-        for (let i = 0; i < 30; i++) { await sleep(1000); if (!alive()) return; if (String(character.current_map) === String(EVENT_MAP_ID)) break; }
-        if (String(character.current_map) === String(EVENT_MAP_ID)) {
+        for (let i = 0; i < 30; i++) { await sleep(1000); if (!alive()) return; if (isEventLobby(character.current_map)) break; }
+        if (isEventLobby(character.current_map)) {
           /* ★ v2.6.111：先试「只刷新画面」—— 调游戏 loadTravel() 重画地图 + 对准镜头；
              3 秒后还是没画出活动图（或 loadTravel 被客户端 retryCount>=5 卡成 no-op）→ 退回整页刷新。
              （v2.6.10 的老办法是直接 location.reload()，能修但太重。） */
@@ -5928,9 +5969,9 @@
           setTimeout(function () {
             try {
               if (!alive() || !inGame()) return;
-              if (+character.current_map !== +EVENT_MAP_ID) return;   /* 又离开活动图 → 不管 */
+              if (!isEventLobby(character.current_map)) return;   /* 又离开活动图 → 不管 */
               const drawn = renderedMapId() || renderMapId();
-              if (drawn === +EVENT_MAP_ID) { recenterCamera(); return; }
+              if (isEventLobby(drawn)) { recenterCamera(); return; }
               logEvent('活动：loadTravel() 后仍未画出活动图（画面还是 ' + (drawn || '?') + '）→ 刷新页面');
               saveCfgNow();
               location.reload();
@@ -6157,7 +6198,7 @@
     try {
       if (!st.event || !st.event.on) return 0;
       const m = String(character.current_map);
-      if (m === String(EVENT_MAP_ID) || EVENT_COMBAT_MAPS[m]) return +character.current_map;
+      if (isEventLobby(m) || isEventCombatMap(m)) return +character.current_map;
     } catch (e) { /* ignore */ }
     return 0;
   }
@@ -7684,7 +7725,7 @@
     try {
       if (eventHolding()) return true;
       const m = String(character.current_map);
-      if (m === String(EVENT_MAP_ID) || EVENT_COMBAT_MAPS[m]) return true;
+      if (isEventLobby(m) || isEventCombatMap(m)) return true;
     } catch (e) { /* ignore */ }
     try { if (ovlHolding() || ovlInBattle()) return true; } catch (e) { /* ignore */ }
     return false;
@@ -8320,7 +8361,7 @@
     if (!running) {
       if (hasFrame('frame_Loot')) takeAllLoot();
       if (eventCombatActive()) { ensureAutoBattle(); stepCombat(); return; }
-      if (cfg.autoEvent && st.event && st.event.on && String(character.current_map) === String(EVENT_MAP_ID)) { stepGather(); return; }
+      if (cfg.autoEvent && st.event && st.event.on && isEventLobby(character.current_map)) { stepGather(); return; }
       return;
     }
     // ★ 卡死强恢复进行中：主循环短暂让路，避免和「点格」抢发 walkTo
@@ -8404,7 +8445,7 @@
     if (eventCombatActive()) {
       ensureAutoBattle();
     } else {
-      if (cfg.autoEvent && st.event && st.event.on && String(character.current_map) === String(EVENT_MAP_ID)) { stepGather(); return; }
+      if (cfg.autoEvent && st.event && st.event.on && isEventLobby(character.current_map)) { stepGather(); return; }
       if (st.mode === 'gather') { stepGather(); return; }
       if (st.mode === 'auto') { stepAuto(); return; }
       if (st.mode === 'tower') { stepTower(); return; }
@@ -11093,7 +11134,7 @@
        否则「切副角色收东西再切回主角色」时，恢复挂机会登记「回挂机地图」待办，
        把角色从活动图拽走 → 之后再也进不去活动（表现为「开始步行导航，不知道往哪跑」）。 */
     const _m = String(character.current_map);
-    if (_m === String(EVENT_MAP_ID) || EVENT_COMBAT_MAPS[_m]) return false;
+    if (isEventLobby(_m) || isEventCombatMap(_m)) return false;
     navSetPending(cfg.farmMap, reason || '回挂机地图');
     setStatus('当前不在挂机地图，先导航回「' + navMapName(cfg.farmMap) + '」…');
     return true;
@@ -11126,7 +11167,7 @@
     if (st.repair.active || st.sell.active || st.bank.active || st.tripManual) return false;
     if (st.event && st.event.phase !== 'idle') return false;
     const m = String(character.current_map);
-    if (m === String(EVENT_MAP_ID) || EVENT_COMBAT_MAPS[m]) return false;
+    if (isEventLobby(m) || isEventCombatMap(m)) return false;
     if (typeof ovlHolding === 'function' && ovlHolding()) return false;
     if (typeof inDungeonOrTower === 'function' && inDungeonOrTower()) return false;
     if (document.getElementById('battle_defeat')) return false;
