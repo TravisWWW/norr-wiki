@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.174
+// @version      2.6.175
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -192,7 +192,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.174';   // 与 @version 保持一致
+  const SCRIPT_VER = '2.6.175';   // 与 @version 保持一致
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -249,6 +249,7 @@
     move: null, lastAction: 0, lastUse: 0,
     kills: 0, gathers: 0, roundKills: 0,
     map: null,
+    mapSeen: null,           // ★ v2.6.175：上一次看到的地图（独立于事件逻辑的快速换图检测）
     blacklist: {},
     reach: null,
     inCollect: false,
@@ -1099,7 +1100,7 @@
    * 上限：RENDER_MAX 次 → 刷新页面。
    * 高级参数：不受影响。
    * ───────────────────────────────────────────────────────────── */
-  const RENDER_STUCK_MS = 8000;
+  const RENDER_STUCK_MS = 4000;   /* ★ v2.6.175：8s → 4s，换图没重画时更快恢复 */
   const RENDER_MAX = 4;
   /* 只刷新画面（不刷新网页）：调游戏自己的 loadTravel() —— 等价于手动换一次图 */
   function softReloadMap() {
@@ -8294,6 +8295,15 @@
     if (checkMapRender()) return;
     // ★ 兜底[怪物列表过期]：定期强制拉一次实体列表（人多抢怪时，画面上的怪可能已经被别人杀了）
     checkEntityFresh();
+    /* ★ v2.6.175：换图 → 立刻安排一次「快速重画核对」（2.2s 后读屏幕底图，没画对就调 loadTravel）。
+       独立于事件 / Overlord 逻辑 —— 原来这一步只在下面的「换图块」里做，而活动 / Overlord
+       进出图时 step() 会被事件逻辑提前 return，换图块跑不到 → 只能等 8s 的 checkMapRender 看门狗，
+       表现为「切了活动图要等很久画面才同步」。 */
+    if (st.mapSeen !== character.current_map) {
+      const _seenFrom = st.mapSeen;
+      st.mapSeen = character.current_map;
+      if (_seenFrom != null) scheduleRenderCheck(_seenFrom, character.current_map);
+    }
     /* ★ v2.6.172：Event / Overlord 监控提到最上层 —— 独立于挂机 / 维修 / 清包 / 多角色行程。
        这两种都是「限时」的（活动 / 世界 Boss），一旦被别的模块的早退跳过，就可能错过整场
        （实测：修装备 / 卖装备 / 切角色期间，脚本像「忘了活动」，很久之后才回到活动图）。
@@ -8355,8 +8365,7 @@
       detectGatherPoints(true);
       renderRankList();
       if (from != null) { logEvent('换图 → ' + currentMapName()); st.watch.at = now(); }
-      /* ★ v2.6.111：换图后立刻核对「客户端到底画没画新图」，没画就调游戏 loadTravel() 重画 */
-      scheduleRenderCheck(from, character.current_map);
+      /* ★ v2.6.175：换图后的「快速重画核对」已提到 step() 最上层（见 st.mapSeen 那段），这里不再重复安排 */
       recordVisit();
       /* ★ 到图即刷新：换图瞬间 DOM 还没渲染完，快照守卫会拒绝；2.5 秒后再实测一次 */
       try { poiLearnNow(); } catch (e) { /* ignore */ }

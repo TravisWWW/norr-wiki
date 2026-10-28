@@ -1,8 +1,8 @@
 {
-  "version": "2.6.174",
+  "version": "2.6.175",
   "date": "2026-10-29",
-  "notes": "小伴侣 v2.6.174：多角色离线「暂停」就地暂停——不再切回主角色（人在哪个角色页就留在哪个角色页）；「停止」仍会切回主角色。",
+  "notes": "小伴侣 v2.6.175：加快换图后的画面同步——换图即安排一次 2.2s 快速重画核对（独立于活动/Overlord逻辑，进出活动图也生效），换图没重画的看门狗 8s→4s。",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 874037,
-  "sha256": "c5f6b281bbc806b7e2ab79c18edbe9036d3e9d12f782de7bda3a153cd6b9f1b2"
+  "size": 874870,
+  "sha256": "60ed20ee66934284d294b07eabc53de7903a8d828ca151eea26bceeee9e45494"
 }
