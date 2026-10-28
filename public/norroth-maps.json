@@ -1,7 +1,7 @@
 {
  "meta": {
-  "source": "小伴侣地图数据（MapDB）· 10 位贡献者合并",
-  "updated": "2026-10-28T21:47:17.819Z",
+  "source": "小伴侣地图数据（MapDB）· 11 位贡献者合并",
+  "updated": "2026-10-28T23:30:08.573Z",
   "version": "1.0",
   "contributors": [
    {
@@ -82,6 +82,14 @@
     "level": 50,
     "time": "2026-10-28T01:17:26.560Z",
     "count": 330,
+    "mergedAt": "2026-10-28"
+   },
+   {
+    "file": "maps-2010.json",
+    "char": "#2010",
+    "level": 26,
+    "time": "2026-10-28T23:29:54.411Z",
+    "count": 350,
     "mergedAt": "2026-10-28"
    }
   ],
@@ -207,7 +215,7 @@
    ]
   },
   "5": {
-   "at": 1793169680510,
+   "at": 1793221340058,
    "name": "El Caspar",
    "type": "City",
    "g": [
@@ -231,6 +239,11 @@
      26,
      "Combat Training"
     ]
+   ],
+   "m": [
+    "Hare",
+    "Snake",
+    "Wild Dog"
    ],
    "ex": [
     [
@@ -910,13 +923,13 @@
    ]
   },
   "16": {
-   "at": 1793169846217,
+   "at": 1793219433128,
    "name": "Elundi",
    "type": "City",
    "g": [
     "Shrimp Pier",
-    "Combat Training",
-    "Silk Field"
+    "Silk Field",
+    "Combat Training"
    ],
    "gt": [
     [
@@ -8593,7 +8606,7 @@
    ]
   },
   "281": {
-   "at": 1793095242674,
+   "at": 1793191801880,
    "name": "Trescan",
    "type": "City",
    "g": [
@@ -9826,8 +9839,28 @@
    ]
   },
   "320": {
-   "at": 0,
-   "name": "Glacierbane’s Hollow"
+   "at": 1793210431026,
+   "name": "Glacierbane’s Hollow",
+   "m": [
+    "Glacierbane, the Icelord"
+   ],
+   "ex": [
+    [
+     33,
+     46,
+     "gate",
+     "Taiga (Lv.41)"
+    ]
+   ],
+   "edges": [
+    [
+     320,
+     212,
+     33,
+     46,
+     "gate"
+    ]
+   ]
   },
   "321": {
    "at": 1793028464174,
@@ -10481,8 +10514,7 @@
    ]
   },
   "345": {
-   "at": 1792896794932,
-   "name": "Dark Boreal",
+   "at": 1793137330010,
    "m": [
     "Armored Ram",
     "Dwarven Guard",
@@ -10523,8 +10555,7 @@
    ]
   },
   "346": {
-   "at": 1793091828261,
-   "name": "Dark Boreal",
+   "at": 1793187624208,
    "g": [
     "Laterite Quarry",
     "Ramie Field",
@@ -10598,8 +10629,7 @@
    ]
   },
   "347": {
-   "at": 1793089667366,
-   "name": "Dark Boreal",
+   "at": 1793186163576,
    "g": [
     "Beech Grove"
    ],
@@ -10650,7 +10680,7 @@
    ]
   },
   "348": {
-   "at": 1793077063607,
+   "at": 1793228256585,
    "name": "Laen Dorei",
    "type": "City",
    "ex": [
@@ -10693,7 +10723,7 @@
    ]
   },
   "349": {
-   "at": 1792961315415,
+   "at": 1793228302776,
    "m": [
     "Dwarven Guard (?)",
     "Dwarven Guard",
@@ -10736,7 +10766,7 @@
    ]
   },
   "350": {
-   "at": 1792961357321,
+   "at": 1793228424534,
    "g": [
     "Ash Grove"
    ],
@@ -11415,7 +11445,7 @@
    "name": "Fountain of Rebirth"
   },
   "1000": {
-   "at": 1793148485998,
+   "at": 1793152654438,
    "name": "Fountain of Rebirth",
    "type": "Normal",
    "ex": [
@@ -11429,7 +11459,7 @@
      17,
      38,
      "waygate",
-     "Portal"
+     "Waygate"
     ]
    ],
    "visited": true,
@@ -11532,8 +11562,67 @@
    "name": "Das Festhalle"
   },
   "1157": {
-   "at": 0,
-   "name": "Sleepy Hollow Lobby"
+   "at": 1793230161623,
+   "name": "Sleepy Hollow Lobby",
+   "type": "Secret",
+   "g": [
+    "Quarry",
+    "Grove",
+    "Mine",
+    "Pier",
+    "Field",
+    "Patch"
+   ],
+   "gt": [
+    [
+     42,
+     12,
+     "Quarry"
+    ],
+    [
+     31,
+     14,
+     "Grove"
+    ],
+    [
+     38,
+     25,
+     "Mine"
+    ],
+    [
+     39,
+     44,
+     "Pier"
+    ],
+    [
+     22,
+     45,
+     "Field"
+    ],
+    [
+     24,
+     45,
+     "Patch"
+    ]
+   ],
+   "ex": [
+    [
+     24,
+     35,
+     "gate",
+     "Elundi (Lv.10)"
+    ]
+   ],
+   "visited": true,
+   "edges": [
+    [
+     1157,
+     16,
+     24,
+     35,
+     "gate"
+    ]
+   ]
   },
   "1158": {
    "at": 0,
@@ -11544,8 +11633,33 @@
    "name": "Sleepy Hollow"
   },
   "1160": {
-   "at": 0,
-   "name": "Sleepy Hollow"
+   "at": 1793230191587,
+   "name": "Sleepy Hollow",
+   "type": "Secret",
+   "m": [
+    "Ghost Pirate",
+    "Skeleton",
+    "Zombie Horse",
+    "Arcelia"
+   ],
+   "ex": [
+    [
+     53,
+     12,
+     "gate",
+     "Sleepy Hollow Lobby (Lv.100)"
+    ]
+   ],
+   "visited": true,
+   "edges": [
+    [
+     1160,
+     1157,
+     53,
+     12,
+     "gate"
+    ]
+   ]
   },
   "1161": {
    "at": 0,
@@ -11556,7 +11670,7 @@
    "name": "Sleepy Hollow"
   },
   "1183": {
-   "at": 1793169904904,
+   "at": 1793227167784,
    "name": "The Sacred Wilds Lobby",
    "g": [
     "Quarry",
@@ -11668,7 +11782,7 @@
    ]
   },
   "1186": {
-   "at": 1793096239467,
+   "at": 1793200544096,
    "name": "The Sacred Wilds",
    "m": [
     "Wyvern",
@@ -11743,11 +11857,10 @@
    ]
   },
   "1189": {
-   "at": 1793134976819,
-   "name": "The Sacred Wilds",
-   "type": "Secret",
+   "at": 1793228221265,
    "m": [
-    "Wyvern"
+    "Wyvern",
+    "Drake Boss"
    ],
    "ex": [
     [
