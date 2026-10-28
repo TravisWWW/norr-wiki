@@ -1,8 +1,8 @@
 {
-  "version": "2.6.168",
-  "date": "2026-10-28",
-  "notes": "v2.6.168 Boss 判据改为用游戏自己的 rarity 字段：detectRank 识别 Boss（.char_name_tag.text_small 文本或 /images/icons/boss.gif），isBossEnemy 以 rank==='Boss' 为主判据（名字/Boss 格为兜底）。",
+  "version": "2.6.169",
+  "date": "2026-10-29",
+  "notes": "小伴侣 v2.6.169 发布：Boss 并入「战斗筛选」——新增第 5 个星级 Boss（首领，4 星），默认不打勾（首次升级自动加入 rankOff），优先级可在面板 ↑↓ 调整；移除原「不打 Boss」独立勾选与 skipBoss 逻辑。活动战斗区索敌与普通战斗共用同一套逻辑，筛选改动对 event 内同样生效。",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 869321,
-  "sha256": "8be600e99644f3e3906db6ed64d25aabba84cadccc4acf8e96492e59776422b6"
+  "size": 867790,
+  "sha256": "72460f8077eda11b68bf337151f71da2dfe4539f6ea97e994e433655f7a116da"
 }
