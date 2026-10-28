@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.171
+// @version      2.6.172
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -74,6 +74,7 @@
     /* 补给 */
     autoPotion: true,
     hpPotion: '', mpPotion: '',
+    potionNoIngredients: true,   // ★ v2.6.172：补药列表剔除「基础食材」（鱼 / 蔬菜 / 水果等原始材料）
     hpPct: 70, mpPct: 30,
     potionDelayMs: 1500,     // ★ 两瓶药之间的最小间隔（避免连点浪费）
     bagList: [],
@@ -191,7 +192,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.171';   // 与 @version 保持一致
+  const SCRIPT_VER = '2.6.172';   // 与 @version 保持一致
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -404,6 +405,7 @@
     c.monsterLvMin = Math.max(0, Math.min(999, Math.round(+c.monsterLvMin || 0)));   // ★ 融合
     c.monsterLvMax = Math.max(0, Math.min(999, Math.round(+c.monsterLvMax || 0)));
     c.bagList = Array.isArray(o.bagList) ? o.bagList : [];
+    c.potionNoIngredients = c.potionNoIngredients !== false;
     c.uiTab = ['idle', 'mc', 'food', 'service', 'speed'].indexOf(o.uiTab) >= 0 ? o.uiTab
             : ((o.uiTab === 'repair' || o.uiTab === 'sell') ? 'service'
             : (o.uiTab === 'battle' ? 'idle' : (o.uiTab === 'gather' ? 'mc' : (o.uiTab === 'potion' ? 'food' : 'idle'))));   // ★ 老标签页迁移
@@ -2379,12 +2381,12 @@
        现在重试几次，成功后清掉之前的空缓存。 */
     for (let i = 0; i < 12; i++) {
       try {
-        if (ttDB()) { _healMemo.clear(); return _ttdb; }
+        if (ttDB()) { _healMemo.clear(); _rawMemo.clear(); return _ttdb; }
         const src = $$q('script[src]').map(x => x.getAttribute('src')).find(u => /tooltip_texts/.test(u || ''));
         if (src) {
           const txt = await (await fetch(src, { credentials: 'same-origin' })).text();
           _ttdb = (new Function(txt + '\nreturn tooltip_texts;'))();
-          if (_ttdb) { _healMemo.clear(); return _ttdb; }
+          if (_ttdb) { _healMemo.clear(); _rawMemo.clear(); return _ttdb; }
         }
       } catch (e) { /* ignore */ }
       await sleep(500);
@@ -2392,6 +2394,7 @@
     return null;
   }
   const _healMemo = new Map();
+  const _rawMemo = new Map();   // ★ v2.6.172：是否「基础食材」的缓存
   function healInfo(key) {
     if (_healMemo.has(key)) return _healMemo.get(key);
     const r = { life: 0, mana: 0 };
@@ -2407,9 +2410,20 @@
     _healMemo.set(key, r);
     return r;
   }
+  /* ★ v2.6.172：这件物品是不是「基础食材」（鱼 / 蔬菜 / 水果等原始材料）。
+     判据 = 游戏自带 tooltip 里写着 "Usable at: Cook"（作为烹饪原料使用）；
+     烹饪成品写的是 "Created at: Cook"，不会被误判。 */
+  function isRawIngredient(key) {
+    if (_rawMemo.has(key)) return _rawMemo.get(key);
+    const db = ttDB(); let r = false;
+    if (db && db[key] && db[key].description) r = /Usable at:/i.test(db[key].description);
+    if (db) _rawMemo.set(key, r);   /* 效果库未加载时不缓存，等加载后再算 */
+    return r;
+  }
   /* 这件物品能不能补 kind（hp / mp） */
   function heals(it, kind) {
     if (!it || !it.key) return false;
+    if (cfg.potionNoIngredients !== false && isRawIngredient(it.key)) return false;   /* ★ v2.6.172：基础食材不当补药 */
     const h = healInfo(it.key);
     return kind === 'hp' ? h.life > 0 : h.mana > 0;
   }
@@ -8234,6 +8248,18 @@
     if (checkMapRender()) return;
     // ★ 兜底[怪物列表过期]：定期强制拉一次实体列表（人多抢怪时，画面上的怪可能已经被别人杀了）
     checkEntityFresh();
+    /* ★ v2.6.172：Event / Overlord 监控提到最上层 —— 独立于挂机 / 维修 / 清包 / 多角色行程。
+       这两种都是「限时」的（活动 / 世界 Boss），一旦被别的模块的早退跳过，就可能错过整场
+       （实测：修装备 / 卖装备 / 切角色期间，脚本像「忘了活动」，很久之后才回到活动图）。
+       这里放在所有功能模块的早退之前：即使维修 / 清包 / 卡住自愈正在进行，也照样推进
+       Event / Overlord 的状态机（倒计时轮询 / 活动开关检查），只是不让它们抢占本 tick。
+       切图 / 导航进行中仍然让路（避免和正在进行的导航抢路）。 */
+    if (!(st.mapSwitch.active || navBusy)) {
+      const _evOvlBusy = st.returning || st.mcBusy || st.repair.active || st.sell.active || st.bank.active ||
+                         st.nudging || st.settling || st.tripManual;
+      if (ovlTick() && !_evOvlBusy) return;
+      if (eventTick() && !_evOvlBusy) return;
+    }
     // ★ 卡死强恢复进行中：主循环短暂让路，避免和「点格」抢发 walkTo
     if (st.nudging && now() - st.nudging < 2600) { setStatus('卡住自愈：正在试探走位…'); return; }
     // ★ 兜底[落位]进行中：主循环让路，避免和 settleAtSpot 抢发 walkTo
@@ -8307,9 +8333,7 @@
 
     /* ★ 活动自动进入：战斗 / 采集 / 爬塔 都生效。进入 / 返回期间接管本 tick；
        在活动图里 → 强制走采集逻辑（无论当前任务是什么），出来后再继续原任务。 */
-    /* ★ v2.6.135：Overlord（世界 Boss）自动参战 */
-    if (ovlTick()) return;
-    if (eventTick()) return;
+    /* ★ v2.6.172：Overlord / 活动监控已提到 step() 最上层（见上）。 */
     /* ★ v2.6.119：导航「待办目的地」—— 没到目的地就不开始任务，中途偏离会自动重规划 */
     if (navPendingTick()) return;
     /* ★ v2.6.160：兜底[回图] —— 采集 / 一键挂机 / 战斗 期间被「非阵亡」原因带离挂机地图 → 自动回图 */
@@ -8891,6 +8915,7 @@
             <label title="按血量、蓝量阈值补药；未挂机时也生效。"><input type="checkbox" class="chk" id="nr-potion">自动补药</label>
             <label><input type="checkbox" class="chk" id="nr-petfeed">自动喂宠</label>
             <label title="需要补血/补蓝但背包里已经没有对应物品时，暂停挂机（避免一直挨打）。"><input type="checkbox" class="chk" id="nr-pausesupply">没吃的就暂停</label>
+            <label title="补药列表里剔除「基础食材」（鱼 / 蔬菜 / 水果等原始材料，游戏 tooltip 写 Usable at: Cook）；烹饪成品、药水不受影响。"><input type="checkbox" class="chk" id="nr-potionnoing">剔除基础食材</label>
           </div>
           <div class="half" style="margin-top:6px">
             <div><span class="lbl">吃药间隔(毫秒)</span><input type="number" id="nr-potdelay" min="700" max="10000" step="100"></div>
@@ -9325,6 +9350,7 @@
       if (el) el.addEventListener('change', () => setPotionOn(el.checked));
     })();
     bindCheck('nr-pausesupply', 'pauseNoSupply');
+    bindCheck('nr-potionnoing', 'potionNoIngredients');
     bindCheck('nr-repairon', 'repairOn');
     (function () {
       const mb = document.getElementById('nr-skinmute');
@@ -9708,7 +9734,7 @@
     try { const tss = document.getElementById('nr-towerstopsupply'); if (tss) tss.checked = !!cfg.towerStopSupply; } catch (e) { /* ignore */ }
     try { const tsf = document.getElementById('nr-towerstopfloor'); if (tsf) tsf.value = cfg.towerStopFloor ? String(cfg.towerStopFloor) : ''; } catch (e) { /* ignore */ }
     try { renderTowerTownSelect(); } catch (e) { /* ignore */ }
-    set('nr-petfeed', cfg.petFeedOn); syncPotionButton(); set('nr-pausesupply', cfg.pauseNoSupply);
+    set('nr-petfeed', cfg.petFeedOn); syncPotionButton(); set('nr-pausesupply', cfg.pauseNoSupply); set('nr-potionnoing', cfg.potionNoIngredients);
     set('nr-repairon', cfg.repairOn); set('nr-sellon', cfg.sellOn); set('nr-depositon', cfg.autoDeposit);
     try { const _ca = document.getElementById('nr-clearaction'); if (_ca) _ca.value = cfg.clearAction || 'sell'; } catch (e) { /* ignore */ }
     try { const _sr = document.getElementById('nr-sellrarity'); if (_sr) _sr.value = cfg.sellRarity || ''; } catch (e) { /* ignore */ }
@@ -10034,7 +10060,8 @@
     st.gatherRetryAt = 0;
     st.gatherFighting = false;
     st.gatherIdleSince = 0; st.gatherResync = 0;
-    eventReset(); st.event.lastCheckAt = 0;
+    /* ★ v2.6.172：续挂（resume）不再重置 Event 状态 —— 保持「倒计时器」状态，避免切角色 / 暂停后忘了活动。 */
+    if (!(opts && opts.resume)) { eventReset(); st.event.lastCheckAt = 0; }
     st.dur = null; st.durBusy = false; st.gatherDur = null;
     st.watch = { x: 0, y: 0, exp: 0, kills: 0, at: 0, heals: 0 };
     st.frozen = { pos: '', at: 0, hits: 0 };
@@ -10135,7 +10162,7 @@
     navAutoSeq++;
     st.mapSwitch.active = false; st.mapSwitch.idleSince = 0; st.roam = { idx: 0, bad: {} };
     st.phase = 'idle'; st.move = null; st.gatherFighting = false;
-    eventReset(); st.event.lastCheckAt = 0;
+    /* ★ v2.6.172：暂停不再重置 Event 状态（继续时从原状态接着跑）。 */
     st.repair.active = false; st.sell.active = false; st.sell.force = false;
     st.bank.active = false; st.bank.force = false; st.tripManual = false;
     resetDefeat(); closeSellFrame(); abortWalk();

@@ -1,8 +1,8 @@
 {
-  "version": "2.6.171",
+  "version": "2.6.172",
   "date": "2026-10-29",
-  "notes": "小伴侣 v2.6.171：(1) 多角色离线右侧新增「低优先级」勾选——勾选后主角色在事件中/打 Overlord 中就不切号安排副角色任务；(2) 打 Overlord 时 Boss 一律可打（不受「战斗筛选」首领勾选影响）；(3)「自动打 Overlord」移到「随机间隔」上方。",
+  "notes": "小伴侣 v2.6.172：(1) Event/Overlord 监控提到主循环最上层、独立于维修/清包/切图/多角色行程，续挂/暂停不再重置活动状态；(2) 补血/补蓝新增「剔除基础食材」勾选（默认开）——鱼/蔬菜/水果等原始材料不再出现在补药列表。",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 870178,
-  "sha256": "9725ab8dc87f06fdf5c8a4ff3ec214975c360d2a073b9677ad46a9afae2d18e7"
+  "size": 872854,
+  "sha256": "4ddfbe477932487b81b1efbb547c8df326543c1bf15939f09d5b1efdf97c9536"
 }
