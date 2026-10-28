@@ -1,8 +1,8 @@
 {
-  "version": "2.6.176",
+  "version": "2.6.177",
   "date": "2026-10-29",
-  "notes": "万圣节活动 Sleepy Hollow 适配：活动地图 id 不再写死 Sacred Wilds，改为自动识别多套活动地图组（大厅 1157 / 战斗区 1158-1163）",
+  "notes": "多套活动兼容加固：站在默认活动(Sacred Wilds)大厅时不再被上一次进过的其它活动大厅带偏（eventSetNow 优先级修正）",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 877244,
-  "sha256": "4309ed6c36d6fe6e7ca9a34935b08ef4120e48f95def770ad127c5eb0fdb8d19"
+  "size": 877640,
+  "sha256": "e677805c8c7a946172cb44b8b1de71770b5c6583165bb576e51c79e5b1797ace"
 }

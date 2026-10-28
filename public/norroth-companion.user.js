@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.176
+// @version      2.6.177
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -192,7 +192,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.176';   // 与 @version 保持一致
+  const SCRIPT_VER = '2.6.177';   // 与 @version 保持一致
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -5549,8 +5549,14 @@
     try {
       const m = String(character && character.current_map);
       if (EVENT_ALT_SETS[m]) return EVENT_ALT_SETS[m];
-      const lm = String((st.event && st.event.lobbyMap) || '');
-      if (EVENT_ALT_SETS[lm]) return EVENT_ALT_SETS[lm];
+      /* ★ v2.6.177：当前图若是「默认活动(Sacred Wilds)的大厅」→ 直接用默认组，
+         别被上一次进过的其它活动大厅(st.event.lobbyMap)带偏（多套活动兼容）。 */
+      let onDefaultLobby = false;
+      try { onDefaultLobby = (+character.current_map === +EVENT_MAP_ID); } catch (e) { /* ignore */ }
+      if (!onDefaultLobby) {
+        const lm = String((st.event && st.event.lobbyMap) || '');
+        if (EVENT_ALT_SETS[lm]) return EVENT_ALT_SETS[lm];
+      }
     } catch (e) { /* ignore */ }
     let exits = {}, exitGates = {}, gates = {}, combat = {};
     try { exits = EVENT_LOBBY_EXIT_MAPS; } catch (e) { /* ignore */ }
