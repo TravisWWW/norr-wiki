@@ -1,7 +1,7 @@
 {
  "meta": {
   "source": "小伴侣地图数据（MapDB）· 10 位贡献者合并",
-  "updated": "2026-10-28T01:18:35.121Z",
+  "updated": "2026-10-28T01:27:46.332Z",
   "version": "1.0",
   "contributors": [
    {
@@ -39,8 +39,8 @@
    {
     "file": "maps-3114.json",
     "char": "#3114",
-    "level": 11,
-    "time": "2026-10-25T05:13:01.421Z",
+    "level": 36,
+    "time": "2026-10-28T01:27:29.330Z",
     "count": 329,
     "mergedAt": "2026-10-28"
    },
@@ -89,7 +89,7 @@
  },
  "maps": {
   "1": {
-   "at": 1792916887001,
+   "at": 1792975252975,
    "name": "Fountain of Rebirth",
    "ex": [
     [
@@ -110,7 +110,7 @@
    ]
   },
   "2": {
-   "at": 1792916907059,
+   "at": 1792975273060,
    "name": "Lower Fountain’s Descent",
    "ex": [
     [
@@ -131,7 +131,7 @@
    ]
   },
   "3": {
-   "at": 1792902317835,
+   "at": 1792975288166,
    "name": "Sasquatch Grotto",
    "type": "Normal",
    "m": [
@@ -157,7 +157,7 @@
    ]
   },
   "4": {
-   "at": 1792916939682,
+   "at": 1792975365938,
    "name": "Upper Fountain’s Descent",
    "type": "Normal",
    "g": [
@@ -171,8 +171,8 @@
     ]
    ],
    "m": [
-    "Hare",
-    "Wild Dog"
+    "Wild Dog",
+    "Hare"
    ],
    "ex": [
     [
@@ -329,7 +329,7 @@
    ]
   },
   "6": {
-   "at": 1792925984724,
+   "at": 1792935561102,
    "name": "Brisban Pond",
    "type": "Normal",
    "g": [
@@ -406,7 +406,7 @@
    ]
   },
   "7": {
-   "at": 0,
+   "at": 1792935543511,
    "name": "Akelay Foothills",
    "type": "Normal",
    "m": [
@@ -418,36 +418,66 @@
     "Deer",
     "Wild Dog"
    ],
+   "ex": [
+    [
+     11,
+     17,
+     "gate",
+     "Akelay Cave Level 1 (Lv.4)"
+    ],
+    [
+     49,
+     20,
+     "gate",
+     "Mount Akelay (Lv.4)"
+    ],
+    [
+     59,
+     25,
+     "gate",
+     "Elena’s Crossroad (Lv.1)"
+    ],
+    [
+     14,
+     57,
+     "gate",
+     "Brisban Pond (Lv.1)"
+    ]
+   ],
    "visited": true,
    "edges": [
     [
      7,
      6,
      14,
-     57
+     57,
+     "gate"
     ],
     [
      7,
      8,
      11,
-     17
+     17,
+     "gate"
     ],
     [
      7,
      10,
      49,
-     20
+     20,
+     "gate"
     ],
     [
      7,
      11,
      59,
-     25
+     25,
+     "gate"
     ]
    ]
   },
   "8": {
-   "at": 0,
+   "at": 1792935464146,
    "name": "Akelay Cave Level 1",
    "type": "Normal",
    "g": [
@@ -468,24 +498,40 @@
     "Monstrous Worm",
     "Hypnotic Bat"
    ],
+   "ex": [
+    [
+     45,
+     30,
+     "gate",
+     "Akelay Cave Level 2 (Lv.6)"
+    ],
+    [
+     17,
+     40,
+     "gate",
+     "Akelay Foothills (Lv.4)"
+    ]
+   ],
    "visited": true,
    "edges": [
     [
      8,
      7,
      17,
-     40
+     40,
+     "gate"
     ],
     [
      8,
      9,
      45,
-     30
+     30,
+     "gate"
     ]
    ]
   },
   "9": {
-   "at": 0,
+   "at": 1792935446541,
    "name": "Akelay Cave Level 2",
    "type": "Secret",
    "g": [
@@ -507,19 +553,35 @@
     "Miner",
     "Snake"
    ],
+   "ex": [
+    [
+     10,
+     23,
+     "gate",
+     "Akelay Cave Level 1 (Lv.4)"
+    ],
+    [
+     55,
+     23,
+     "gate",
+     "The Cult Tunnel (Lv.7)"
+    ]
+   ],
    "visited": true,
    "edges": [
     [
      9,
      8,
      10,
-     23
+     23,
+     "gate"
     ],
     [
      9,
      42,
      55,
-     23
+     23,
+     "gate"
     ]
    ]
   },
@@ -542,7 +604,7 @@
    ]
   },
   "11": {
-   "at": 1792926039026,
+   "at": 1792935508618,
    "name": "Elena’s Crossroad",
    "type": "Normal",
    "g": [
@@ -732,7 +794,7 @@
    ]
   },
   "14": {
-   "at": 1792925948859,
+   "at": 1792934133513,
    "name": "Arodas Lakeshore",
    "type": "Normal",
    "g": [
@@ -799,7 +861,7 @@
    ]
   },
   "15": {
-   "at": 1792912305096,
+   "at": 1792934114131,
    "name": "Arodas Beach",
    "type": "Normal",
    "g": [
@@ -853,13 +915,13 @@
    ]
   },
   "16": {
-   "at": 1793080165224,
+   "at": 1793150043872,
    "name": "Elundi",
    "type": "City",
    "g": [
     "Shrimp Pier",
-    "Silk Field",
-    "Combat Training"
+    "Combat Training",
+    "Silk Field"
    ],
    "gt": [
     [
@@ -889,13 +951,13 @@
      38,
      10,
      "event_gate",
-     "Event Gate"
+     "活动之门"
     ],
     [
      34,
      22,
      "waygate",
-     "Waygate"
+     "Portal"
     ],
     [
      29,
@@ -1152,7 +1214,7 @@
    ]
   },
   "20": {
-   "at": 1792926848453,
+   "at": 1793078455583,
    "name": "Windy Fields",
    "type": "Normal",
    "g": [
@@ -1240,7 +1302,7 @@
    ]
   },
   "21": {
-   "at": 1792926883411,
+   "at": 1793078508465,
    "name": "Forest Of Owranbu",
    "type": "Normal",
    "g": [
@@ -1297,7 +1359,7 @@
    ]
   },
   "22": {
-   "at": 1792994983857,
+   "at": 1793144799336,
    "name": "Owranbu River",
    "type": "Normal",
    "g": [
@@ -1309,19 +1371,14 @@
    ],
    "gt": [
     [
-     22,
-     9,
-     "Silk Field"
-    ],
-    [
      19,
      11,
      "Scrap Patch"
     ],
     [
-     55,
-     14,
-     "Iron Mine"
+     22,
+     9,
+     "Silk Field"
     ],
     [
      27,
@@ -1332,6 +1389,11 @@
      44,
      25,
      "Elm Grove"
+    ],
+    [
+     55,
+     14,
+     "Iron Mine"
     ]
    ],
    "m": [
@@ -1376,7 +1438,7 @@
    ]
   },
   "23": {
-   "at": 1792941805122,
+   "at": 1793150777551,
    "name": "Owranbu",
    "type": "City",
    "g": [
@@ -1400,7 +1462,7 @@
      33,
      30,
      "waygate",
-     "Waygate"
+     "Portal"
     ],
     [
      9,
@@ -1563,7 +1625,7 @@
    ]
   },
   "28": {
-   "at": 0,
+   "at": 1792939211195,
    "name": "Dying Forest",
    "type": "Normal",
    "m": [
@@ -1573,19 +1635,35 @@
     "Troll Boar",
     "Decaying Worm"
    ],
+   "ex": [
+    [
+     14,
+     7,
+     "gate",
+     "Owranbu (Lv.10)"
+    ],
+    [
+     41,
+     60,
+     "gate",
+     "Dead Leaves Tiara (Lv.12)"
+    ]
+   ],
    "visited": true,
    "edges": [
     [
      28,
      23,
      14,
-     7
+     7,
+     "gate"
     ],
     [
      28,
      29,
      41,
-     60
+     60,
+     "gate"
     ]
    ]
   },
@@ -1979,7 +2057,7 @@
    ]
   },
   "41": {
-   "at": 1792941832865,
+   "at": 1793150803473,
    "name": "Owranbu Drylands",
    "type": "Normal",
    "m": [
@@ -2146,7 +2224,7 @@
    "name": "Den Of Devourer"
   },
   "48": {
-   "at": 0,
+   "at": 1793142815535,
    "name": "Elundi Garden",
    "type": "Normal",
    "m": [
@@ -2158,24 +2236,40 @@
     "Wandering Ent",
     "Goblin Soldier"
    ],
+   "ex": [
+    [
+     56,
+     10,
+     "gate",
+     "Elundi Garden (Lv.11)"
+    ],
+    [
+     29,
+     60,
+     "gate",
+     "Elundi (Lv.10)"
+    ]
+   ],
    "visited": true,
    "edges": [
     [
      48,
      16,
      29,
-     60
+     60,
+     "gate"
     ],
     [
      48,
      49,
      56,
-     10
+     10,
+     "gate"
     ]
    ]
   },
   "49": {
-   "at": 1792530826892,
+   "at": 1793142841140,
    "name": "Elundi Garden",
    "type": "Normal",
    "g": [
@@ -2197,30 +2291,53 @@
     "Goblin Pyro",
     "Owlbear"
    ],
+   "ex": [
+    [
+     53,
+     18,
+     "gate",
+     "Deep Forest (Lv.12)"
+    ],
+    [
+     14,
+     39,
+     "gate",
+     "Elundi Garden (Lv.10)"
+    ],
+    [
+     29,
+     55,
+     "gate",
+     "Bear Den (Lv.10)"
+    ]
+   ],
    "visited": true,
    "edges": [
     [
      49,
      46,
      29,
-     55
+     55,
+     "gate"
     ],
     [
      49,
      48,
      14,
-     39
+     39,
+     "gate"
     ],
     [
      49,
      50,
      53,
-     18
+     18,
+     "gate"
     ]
    ]
   },
   "50": {
-   "at": 0,
+   "at": 1793142903027,
    "name": "Deep Forest",
    "type": "Normal",
    "m": [
@@ -2232,24 +2349,40 @@
     "Centaur",
     "Werewolf"
    ],
+   "ex": [
+    [
+     56,
+     27,
+     "gate",
+     "Deep Forest (Lv.13)"
+    ],
+    [
+     14,
+     34,
+     "gate",
+     "Elundi Garden (Lv.11)"
+    ]
+   ],
    "visited": true,
    "edges": [
     [
      50,
      49,
      14,
-     34
+     34,
+     "gate"
     ],
     [
      50,
      51,
      56,
-     27
+     27,
+     "gate"
     ]
    ]
   },
   "51": {
-   "at": 1792531332532,
+   "at": 1793142919762,
    "name": "Deep Forest",
    "type": "Normal",
    "m": [
@@ -2261,30 +2394,53 @@
     "Centaur",
     "Owlbear"
    ],
+   "ex": [
+    [
+     22,
+     8,
+     "gate",
+     "Elm’s Rest (Lv.15)"
+    ],
+    [
+     56,
+     27,
+     "gate",
+     "Deep Forest (Lv.14)"
+    ],
+    [
+     15,
+     28,
+     "gate",
+     "Deep Forest (Lv.12)"
+    ]
+   ],
    "visited": true,
    "edges": [
     [
      51,
      50,
      15,
-     28
+     28,
+     "gate"
     ],
     [
      51,
      52,
      56,
-     27
+     27,
+     "gate"
     ],
     [
      51,
      54,
      22,
-     8
+     8,
+     "gate"
     ]
    ]
   },
   "52": {
-   "at": 0,
+   "at": 1793142945299,
    "name": "Deep Forest",
    "type": "Normal",
    "g": [
@@ -2306,24 +2462,40 @@
     "Owlbear",
     "Wandering Ent"
    ],
+   "ex": [
+    [
+     59,
+     21,
+     "gate",
+     "Deep Forest (Lv.14)"
+    ],
+    [
+     14,
+     26,
+     "gate",
+     "Deep Forest (Lv.13)"
+    ]
+   ],
    "visited": true,
    "edges": [
     [
      52,
      51,
      14,
-     26
+     26,
+     "gate"
     ],
     [
      52,
      53,
      59,
-     21
+     21,
+     "gate"
     ]
    ]
   },
   "53": {
-   "at": 1792643701793,
+   "at": 1793143194776,
    "name": "Deep Forest",
    "type": "Normal",
    "g": [
@@ -2356,7 +2528,7 @@
      51,
      23,
      "waygate",
-     "Waygate"
+     "Portal"
     ],
     [
      53,
@@ -2377,19 +2549,22 @@
      53,
      52,
      14,
-     47
+     47,
+     "gate"
     ],
     [
      53,
      55,
      39,
-     7
+     7,
+     "gate"
     ],
     [
      53,
      179,
      53,
-     34
+     34,
+     "gate"
     ]
    ]
   },
@@ -2700,7 +2875,7 @@
    ]
   },
   "61": {
-   "at": 1792941877492,
+   "at": 1793150820300,
    "name": "Sandstorm Pass",
    "type": "Normal",
    "m": [
@@ -2757,7 +2932,7 @@
    ]
   },
   "62": {
-   "at": 1792941634252,
+   "at": 1793143315266,
    "name": "Sun-Scorched Plateau",
    "type": "Normal",
    "m": [
@@ -2814,7 +2989,7 @@
    ]
   },
   "63": {
-   "at": 1792915316176,
+   "at": 1793143366754,
    "name": "Sandspire Summit",
    "type": "Normal",
    "m": [
@@ -2858,7 +3033,7 @@
    ]
   },
   "64": {
-   "at": 1792935887663,
+   "at": 1793143346040,
    "name": "Droughtlands",
    "type": "Normal",
    "m": [
@@ -2871,12 +3046,6 @@
     "Ruin Guard"
    ],
    "ex": [
-    [
-     13,
-     16,
-     "gate",
-     "Ancient Ruins (Lv.13)"
-    ],
     [
      23,
      59,
@@ -2903,7 +3072,7 @@
    ]
   },
   "65": {
-   "at": 1792941901009,
+   "at": 1793150837561,
    "name": "Mesa Mine Area",
    "type": "Normal",
    "g": [
@@ -2963,7 +3132,7 @@
    ]
   },
   "66": {
-   "at": 1792941950279,
+   "at": 1793150845919,
    "name": "Rock Valley",
    "type": "Normal",
    "m": [
@@ -3007,7 +3176,7 @@
    ]
   },
   "67": {
-   "at": 1792942042423,
+   "at": 1793143203688,
    "name": "Mirage Mountains",
    "type": "Normal",
    "m": [
@@ -3041,7 +3210,7 @@
      31,
      33,
      "waygate",
-     "Waygate"
+     "Portal"
     ]
    ],
    "visited": true,
@@ -3260,7 +3429,7 @@
    ]
   },
   "75": {
-   "at": 1792942346922,
+   "at": 1793009774067,
    "name": "The Shifting Tides",
    "type": "Normal",
    "m": [
@@ -3288,7 +3457,7 @@
      36,
      32,
      "waygate",
-     "Waygate"
+     "Portal"
     ],
     [
      16,
@@ -3336,7 +3505,7 @@
    ]
   },
   "76": {
-   "at": 0,
+   "at": 1793009718920,
    "name": "Sirocco Springs",
    "type": "Normal",
    "m": [
@@ -3347,19 +3516,48 @@
     "Scorpion",
     "Nomadic Cleric"
    ],
+   "ex": [
+    [
+     23,
+     11,
+     "smugglers_route",
+     "Smugglers Route"
+    ],
+    [
+     41,
+     16,
+     "gate",
+     "Khamsin Cliffs (Lv.14)"
+    ],
+    [
+     35,
+     59,
+     "gate",
+     "The Shifting Tides (Lv.14)"
+    ]
+   ],
    "visited": true,
    "edges": [
     [
      76,
      75,
      35,
-     59
+     59,
+     "gate"
     ],
     [
      76,
      83,
      41,
-     16
+     16,
+     "gate"
+    ],
+    [
+     76,
+     90,
+     0,
+     0,
+     "smugglers"
     ]
    ]
   },
@@ -4081,7 +4279,7 @@
    ]
   },
   "106": {
-   "at": 0,
+   "at": 1792976011706,
    "name": "Savanna",
    "type": "Normal",
    "m": [
@@ -4092,24 +4290,46 @@
     "Terastodon",
     "Arynx"
    ],
+   "ex": [
+    [
+     53,
+     19,
+     "gate",
+     "Desert (Lv.16)"
+    ],
+    [
+     14,
+     39,
+     "gate",
+     "Savanna (Lv.15)"
+    ],
+    [
+     35,
+     60,
+     "smugglers_route",
+     "Smugglers Route"
+    ]
+   ],
    "visited": true,
    "edges": [
     [
      106,
      107,
      14,
-     39
+     39,
+     "gate"
     ],
     [
      106,
      197,
      53,
-     19
+     19,
+     "gate"
     ]
    ]
   },
   "107": {
-   "at": 0,
+   "at": 1792975986628,
    "name": "Savanna",
    "type": "Normal",
    "m": [
@@ -4120,19 +4340,35 @@
     "Gnoll Warrior",
     "Scorpion"
    ],
+   "ex": [
+    [
+     15,
+     27,
+     "gate",
+     "Drouver (Lv.15)"
+    ],
+    [
+     53,
+     28,
+     "gate",
+     "Savanna (Lv.16)"
+    ]
+   ],
    "visited": true,
    "edges": [
     [
      107,
      91,
      15,
-     27
+     27,
+     "gate"
     ],
     [
      107,
      106,
      53,
-     28
+     28,
+     "gate"
     ]
    ]
   },
@@ -5127,7 +5363,7 @@
    "name": "Dying Forest"
   },
   "179": {
-   "at": 1792643716623,
+   "at": 1793142996013,
    "name": "Deep Forest",
    "type": "Normal",
    "m": [
@@ -5159,18 +5395,20 @@
      179,
      53,
      14,
-     25
+     25,
+     "gate"
     ],
     [
      179,
      180,
      57,
-     28
+     28,
+     "gate"
     ]
    ]
   },
   "180": {
-   "at": 1792648946722,
+   "at": 1793143031572,
    "name": "Caeltys’ Causeway",
    "type": "Normal",
    "g": [
@@ -5242,25 +5480,27 @@
      180,
      179,
      16,
-     47
+     47,
+     "gate"
     ],
     [
      180,
      181,
      55,
-     30
+     30,
+     "gate"
     ]
    ]
   },
   "181": {
-   "at": 1792788629785,
+   "at": 1793143083688,
    "name": "Caeltys’ Causeway",
    "m": [
-    "Wendigo",
-    "Cockatrice",
-    "Ankheg",
     "Drow",
-    "Forest Guardian"
+    "Cockatrice",
+    "Forest Guardian",
+    "Wendigo",
+    "Ankheg"
    ],
    "ex": [
     [
@@ -5276,30 +5516,33 @@
      "Caeltys’ Causeway (Lv.31)"
     ]
    ],
+   "visited": true,
    "edges": [
     [
      181,
      180,
      11,
-     31
+     31,
+     "gate"
     ],
     [
      181,
      182,
      58,
-     26
+     26,
+     "gate"
     ]
    ]
   },
   "182": {
-   "at": 1792788592227,
+   "at": 1793143135148,
    "name": "Caeltys’ Causeway",
    "m": [
-    "Wendigo",
+    "Forest Guardian",
     "Cockatrice",
-    "Ankheg",
+    "Wendigo",
     "Drow",
-    "Forest Guardian"
+    "Ankheg"
    ],
    "ex": [
     [
@@ -5321,18 +5564,20 @@
      182,
      181,
      6,
-     34
+     34,
+     "gate"
     ],
     [
      182,
      183,
      61,
-     36
+     36,
+     "gate"
     ]
    ]
   },
   "183": {
-   "at": 1792850581954,
+   "at": 1793143186022,
    "name": "Caeltys",
    "type": "City",
    "ex": [
@@ -5361,6 +5606,8 @@
      "Caeltys’ Yarden (Lv.31)"
     ]
    ],
+   "visited": true,
+   "smith": true,
    "edges": [
     [
      183,
@@ -5579,13 +5826,13 @@
    ]
   },
   "189": {
-   "at": 1792772241804,
+   "at": 1793142602126,
    "name": "Caeltys’ Yarden",
    "m": [
-    "Drow",
+    "Ankheg",
     "Wendigo",
     "Cockatrice",
-    "Ankheg",
+    "Drow",
     "Forest Guardian"
    ],
    "ex": [
@@ -5608,13 +5855,15 @@
      189,
      183,
      14,
-     63
+     63,
+     "gate"
     ],
     [
      189,
      188,
      57,
-     10
+     10,
+     "gate"
     ]
    ]
   },
@@ -5792,7 +6041,7 @@
    ]
   },
   "194": {
-   "at": 1792742488721,
+   "at": 1792936272454,
    "name": "Savanna",
    "type": "Normal",
    "m": [
@@ -5823,13 +6072,15 @@
      194,
      193,
      44,
-     60
+     60,
+     "gate"
     ],
     [
      194,
      195,
      20,
-     7
+     7,
+     "gate"
     ]
    ]
   },
@@ -5951,7 +6202,7 @@
    ]
   },
   "197": {
-   "at": 0,
+   "at": 1792976036907,
    "name": "Desert",
    "type": "Normal",
    "m": [
@@ -5962,24 +6213,40 @@
     "Gnoll Warrior",
     "Terastodon"
    ],
+   "ex": [
+    [
+     53,
+     22,
+     "gate",
+     "Desert (Lv.17)"
+    ],
+    [
+     18,
+     33,
+     "gate",
+     "Savanna (Lv.16)"
+    ]
+   ],
    "visited": true,
    "edges": [
     [
      197,
      106,
      18,
-     33
+     33,
+     "gate"
     ],
     [
      197,
      198,
      53,
-     22
+     22,
+     "gate"
     ]
    ]
   },
   "198": {
-   "at": 0,
+   "at": 1792976057072,
    "name": "Desert",
    "m": [
     "Gnoll Warrior",
@@ -5989,24 +6256,40 @@
     "Terastodon",
     "Carrion Harpy"
    ],
+   "ex": [
+    [
+     53,
+     10,
+     "gate",
+     "Desert (Lv.19)"
+    ],
+    [
+     16,
+     57,
+     "gate",
+     "Desert (Lv.16)"
+    ]
+   ],
    "visited": true,
    "edges": [
     [
      198,
      197,
      16,
-     57
+     57,
+     "gate"
     ],
     [
      198,
      199,
      53,
-     10
+     10,
+     "gate"
     ]
    ]
   },
   "199": {
-   "at": 0,
+   "at": 1792976082163,
    "name": "Desert",
    "m": [
     "Carrion Harpy",
@@ -6016,24 +6299,40 @@
     "Scorpion",
     "Arynx"
    ],
+   "ex": [
+    [
+     50,
+     22,
+     "gate",
+     "Haunted Forest (Lv.21)"
+    ],
+    [
+     16,
+     57,
+     "gate",
+     "Desert (Lv.17)"
+    ]
+   ],
    "visited": true,
    "edges": [
     [
      199,
      198,
      16,
-     57
+     57,
+     "gate"
     ],
     [
      199,
      200,
      50,
-     22
+     22,
+     "gate"
     ]
    ]
   },
   "200": {
-   "at": 0,
+   "at": 1792991515235,
    "name": "Haunted Forest",
    "type": "Normal",
    "g": [
@@ -6044,6 +6343,11 @@
      39,
      25,
      "White Bass Pier"
+    ],
+    [
+     39,
+     26,
+     "White Bass Pier"
     ]
    ],
    "m": [
@@ -6052,34 +6356,83 @@
     "Skeleton Warrior",
     "Zombie Horse"
    ],
+   "ex": [
+    [
+     31,
+     7,
+     "gate",
+     "Saurville (Lv.20)"
+    ],
+    [
+     14,
+     54,
+     "gate",
+     "Desert (Lv.19)"
+    ],
+    [
+     47,
+     60,
+     "gate",
+     "Haunted Forest (Lv.21)"
+    ]
+   ],
    "visited": true,
    "edges": [
     [
      200,
      199,
      14,
-     54
+     54,
+     "gate"
     ],
     [
      200,
      201,
      31,
-     7
+     7,
+     "gate"
     ],
     [
      200,
      202,
      47,
-     60
+     60,
+     "gate"
     ]
    ]
   },
   "201": {
-   "at": 0,
+   "at": 1793005041494,
    "name": "Saurville",
    "type": "City",
    "m": [
     "Skeleton Warrior"
+   ],
+   "ex": [
+    [
+     41,
+     7,
+     "gate",
+     "Haunted Forest (Lv.21)"
+    ],
+    [
+     13,
+     34,
+     "gate",
+     "Crimson Dust (Lv.21)"
+    ],
+    [
+     24,
+     34,
+     "waygate",
+     "Portal"
+    ],
+    [
+     34,
+     61,
+     "gate",
+     "Haunted Forest (Lv.21)"
+    ]
    ],
    "visited": true,
    "smith": true,
@@ -6088,19 +6441,22 @@
      201,
      200,
      34,
-     61
+     61,
+     "gate"
     ],
     [
      201,
      210,
      13,
-     34
+     34,
+     "gate"
     ],
     [
      201,
      252,
      41,
-     7
+     7,
+     "gate"
     ]
    ]
   },
@@ -6347,7 +6703,7 @@
    "name": "Taiga"
   },
   "218": {
-   "at": 1792942435387,
+   "at": 1793009794104,
    "name": "Desert of Lost Hope",
    "type": "Normal",
    "g": [
@@ -6401,7 +6757,7 @@
    ]
   },
   "219": {
-   "at": 1792942548180,
+   "at": 1793009824157,
    "name": "Sandstorm Ridge",
    "type": "Normal",
    "m": [
@@ -6489,7 +6845,7 @@
    ]
   },
   "221": {
-   "at": 1792942611968,
+   "at": 1793062949580,
    "name": "Deserted Cavern",
    "m": [
     "Monstrous Bat",
@@ -6539,12 +6895,12 @@
      288,
      0,
      0,
-     "gate"
+     "smugglers"
     ]
    ]
   },
   "222": {
-   "at": 1792942699548,
+   "at": 1793062927011,
    "name": "The Living Desert",
    "g": [
     "Fieldstone Quarry"
@@ -6598,7 +6954,7 @@
    ]
   },
   "224": {
-   "at": 1792942709413,
+   "at": 1793062896738,
    "name": "Desert of Illusions",
    "m": [
     "Cassowary",
@@ -6626,7 +6982,7 @@
      35,
      46,
      "waygate",
-     "Waygate"
+     "Portal"
     ],
     [
      39,
@@ -6661,7 +7017,7 @@
    ]
   },
   "225": {
-   "at": 1792756746945,
+   "at": 1793011116218,
    "name": "Devil’s Gulch",
    "type": "Normal",
    "m": [
@@ -6693,13 +7049,15 @@
      225,
      224,
      16,
-     46
+     46,
+     "gate"
     ],
     [
      225,
      241,
      53,
-     22
+     22,
+     "gate"
     ]
    ]
   },
@@ -6727,7 +7085,7 @@
    ]
   },
   "227": {
-   "at": 1792756982247,
+   "at": 1793011251645,
    "name": "Shrubland",
    "type": "Normal",
    "g": [
@@ -6746,13 +7104,7 @@
     "Carrion Harpy",
     "Terastodon",
     "Orc Warrior",
-    "Orc Warlock",
-    "Carrion Harpy (?)",
-    "Orc Warrior (?)",
-    "Orc Warlock (?)",
-    "Terastodon (?)",
-    "Catoblepas (?)",
-    "Orc Hunter (?)"
+    "Orc Warlock"
    ],
    "ex": [
     [
@@ -6774,13 +7126,15 @@
      227,
      228,
      38,
-     8
+     8,
+     "gate"
     ],
     [
      227,
      240,
      22,
-     59
+     59,
+     "gate"
     ]
    ]
   },
@@ -6963,7 +7317,7 @@
    "name": "Medusa’s Chamber"
   },
   "239": {
-   "at": 1792756924671,
+   "at": 1793011209019,
    "name": "Orc Domain Entrance",
    "type": "Normal",
    "m": [
@@ -7001,24 +7355,27 @@
      239,
      240,
      46,
-     29
+     29,
+     "gate"
     ],
     [
      239,
      241,
      15,
-     31
+     31,
+     "gate"
     ],
     [
      239,
      110,
      0,
-     0
+     0,
+     "smugglers"
     ]
    ]
   },
   "240": {
-   "at": 1792756952209,
+   "at": 1793011231603,
    "name": "Shrubland",
    "type": "Normal",
    "m": [
@@ -7048,18 +7405,20 @@
      240,
      227,
      51,
-     19
+     19,
+     "gate"
     ],
     [
      240,
      239,
      18,
-     43
+     43,
+     "gate"
     ]
    ]
   },
   "241": {
-   "at": 1792756782001,
+   "at": 1793011181471,
    "name": "Desert of the Damned",
    "type": "Normal",
    "m": [
@@ -7091,13 +7450,15 @@
      241,
      225,
      14,
-     48
+     48,
+     "gate"
     ],
     [
      241,
      239,
      52,
-     21
+     21,
+     "gate"
     ]
    ]
   },
@@ -7225,7 +7586,7 @@
    "name": "Unison Obelisk"
   },
   "252": {
-   "at": 0,
+   "at": 1793005058127,
    "name": "Haunted Forest",
    "type": "Normal",
    "m": [
@@ -7234,24 +7595,47 @@
     "Skeleton Mage",
     "Skeleton Archer"
    ],
+   "ex": [
+    [
+     53,
+     24,
+     "gate",
+     "Haunted Forest (Lv.23)"
+    ],
+    [
+     19,
+     54,
+     "gate",
+     "Saurville (Lv.20)"
+    ]
+   ],
    "visited": true,
    "edges": [
     [
      252,
      201,
      19,
-     54
+     54,
+     "gate"
     ],
     [
      252,
      253,
      53,
-     24
+     24,
+     "gate"
+    ],
+    [
+     252,
+     308,
+     39,
+     5,
+     "other"
     ]
    ]
   },
   "253": {
-   "at": 0,
+   "at": 1793005083626,
    "name": "Haunted Forest",
    "m": [
     "Skeleton Mage",
@@ -7259,25 +7643,78 @@
     "Skeleton Warrior",
     "Zombie Horse"
    ],
+   "ex": [
+    [
+     14,
+     27,
+     "gate",
+     "Haunted Forest (Lv.21)"
+    ],
+    [
+     61,
+     29,
+     "gate",
+     "Haunted Forest (Lv.25)"
+    ]
+   ],
    "visited": true,
    "edges": [
     [
      253,
      252,
      14,
-     27
+     27,
+     "gate"
     ],
     [
      253,
      254,
      61,
-     29
+     29,
+     "gate"
     ]
    ]
   },
   "254": {
-   "at": 0,
-   "name": "Haunted Forest"
+   "at": 1793006315245,
+   "name": "Haunted Forest",
+   "m": [
+    "Zombie Horse",
+    "Skeleton Warrior",
+    "Skeleton Mage",
+    "Skeleton Archer"
+   ],
+   "ex": [
+    [
+     8,
+     29,
+     "gate",
+     "Haunted Forest (Lv.23)"
+    ],
+    [
+     38,
+     56,
+     "gate",
+     "Toxic River (Lv.27)"
+    ]
+   ],
+   "visited": true,
+   "edges": [
+    [
+     254,
+     253,
+     8,
+     29,
+     "gate"
+    ],
+    [
+     254,
+     255,
+     38,
+     56,
+     "gate"
+    ]
+   ]
   },
   "255": {
    "at": 0,
@@ -7625,7 +8062,7 @@
    ]
   },
   "275": {
-   "at": 1792850827762,
+   "at": 1793071168543,
    "name": "Shrubland",
    "type": "Normal",
    "m": [
@@ -7669,16 +8106,16 @@
    ]
   },
   "276": {
-   "at": 1792850952481,
+   "at": 1793071220313,
    "name": "Shrubland",
    "type": "Normal",
    "m": [
-    "Catoblepas",
+    "Orc Hunter",
     "Carrion Harpy",
-    "Orc Warrior",
+    "Catoblepas",
     "Orc Warlock",
-    "Terastodon",
-    "Orc Hunter"
+    "Orc Warrior",
+    "Terastodon"
    ],
    "ex": [
     [
@@ -7700,6 +8137,7 @@
      "Shrubland (Lv.21)"
     ]
    ],
+   "visited": true,
    "edges": [
     [
      276,
@@ -7725,7 +8163,7 @@
    ]
   },
   "277": {
-   "at": 1792951866028,
+   "at": 1793071604465,
    "name": "Shrubland",
    "g": [
     "Smallmouth Bass Pier",
@@ -7756,16 +8194,12 @@
     ]
    ],
    "m": [
-    "Terastodon",
     "Orc Warrior",
-    "Orc Warlock",
-    "Warg",
+    "Terastodon",
     "Orc Hunter",
-    "Orc Hunter (?)",
-    "Terastodon (?)",
-    "Warg (?)",
-    "Orc Warlock (?)",
-    "Orc Warrior (?)"
+    "Warg",
+    "Orc Warlock",
+    "Oculus"
    ],
    "ex": [
     [
@@ -7778,7 +8212,7 @@
      23,
      46,
      "waygate",
-     "Waygate"
+     "Portal"
     ],
     [
      5,
@@ -8214,24 +8648,45 @@
    "name": "Yeti’s Cave"
   },
   "288": {
-   "at": 1792606959449,
+   "at": 1793062984728,
    "name": "Itham’s Lakeshore",
    "m": [
     "Merfolk",
     "Faery"
    ],
-   "visited": true,
+   "ex": [
+    [
+     60,
+     5,
+     "smugglers_route",
+     "Smugglers Route"
+    ],
+    [
+     65,
+     31,
+     "gate",
+     "Itham’s Crator (Lv.34)"
+    ]
+   ],
    "edges": [
+    [
+     288,
+     221,
+     0,
+     0,
+     "smugglers"
+    ],
     [
      288,
      289,
      65,
-     31
+     31,
+     "gate"
     ]
    ]
   },
   "289": {
-   "at": 1792554325944,
+   "at": 1793063042420,
    "name": "Itham’s Crator",
    "g": [
     "Smallmouth Bass Pier"
@@ -8244,32 +8699,47 @@
     ]
    ],
    "m": [
-    "Merfolk",
-    "Faery"
+    "Faery",
+    "Merfolk"
    ],
-   "visited": true,
+   "ex": [
+    [
+     10,
+     3,
+     "gate",
+     "Itham’s Lakeshore (Lv.31)"
+    ],
+    [
+     64,
+     46,
+     "gate",
+     "Itham’s Old Bay (Lv.34)"
+    ]
+   ],
    "edges": [
     [
      289,
      288,
      10,
-     3
+     3,
+     "gate"
     ],
     [
      289,
      290,
      64,
-     46
+     46,
+     "gate"
     ]
    ]
   },
   "290": {
-   "at": 1792849889728,
+   "at": 1793150664652,
    "name": "Itham’s Old Bay",
    "type": "Normal",
    "m": [
-    "Faery",
-    "Merfolk"
+    "Merfolk",
+    "Faery"
    ],
    "ex": [
     [
@@ -8285,6 +8755,7 @@
      "Itham’s Anchorage (Lv.36)"
     ]
    ],
+   "visited": true,
    "edges": [
     [
      290,
@@ -8303,7 +8774,7 @@
    ]
   },
   "291": {
-   "at": 1792849936853,
+   "at": 1793150707399,
    "name": "Itham’s Anchorage",
    "type": "Normal",
    "g": [
@@ -8323,8 +8794,8 @@
     ]
    ],
    "m": [
-    "Merfolk",
-    "Faery"
+    "Faery",
+    "Merfolk"
    ],
    "ex": [
     [
@@ -10697,7 +11168,7 @@
    "name": "Fountain of Rebirth"
   },
   "1000": {
-   "at": 1792895446303,
+   "at": 1793148485998,
    "name": "Fountain of Rebirth",
    "type": "Normal",
    "ex": [
@@ -10711,7 +11182,7 @@
      17,
      38,
      "waygate",
-     "Waygate"
+     "Portal"
     ]
    ],
    "visited": true,
@@ -10838,8 +11309,9 @@
    "name": "Sleepy Hollow"
   },
   "1183": {
-   "at": 1793095252431,
+   "at": 1793148845142,
    "name": "The Sacred Wilds Lobby",
+   "type": "Secret",
    "g": [
     "Quarry",
     "Grove",
@@ -10890,13 +11362,6 @@
    ],
    "visited": true,
    "edges": [
-    [
-     1183,
-     5,
-     24,
-     35,
-     "gate"
-    ],
     [
      1183,
      16,
@@ -10976,10 +11441,19 @@
    ]
   },
   "1187": {
-   "at": 1792567492659,
+   "at": 1793150040121,
    "name": "The Sacred Wilds",
+   "type": "Secret",
    "m": [
     "Wyvern"
+   ],
+   "ex": [
+    [
+     56,
+     11,
+     "gate",
+     "The Sacred Wilds Lobby (Lv.100)"
+    ]
    ],
    "visited": true,
    "edges": [
@@ -10987,7 +11461,8 @@
      1187,
      1183,
      56,
-     11
+     11,
+     "gate"
     ]
    ]
   },
