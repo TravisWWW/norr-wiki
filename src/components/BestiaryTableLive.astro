@@ -1,4 +1,6 @@
 ---
+import fs from 'node:fs';
+import path from 'node:path';
 import live from '../data/bestiary-live.json';
 import off10 from '../data/bestiary-1.0.json';
 import ea from '../data/bestiary.json';
@@ -35,7 +37,7 @@ const cards = monsters.map((m) => {
     stats: m.stats || null,
     icon: `${base}img/enemies/enemy_${m.id}.gif`,
     bg: m.bg ? `${base}img/battlemaps/${m.bg}` : '',
-    hasIcon: ![155, 253].includes(m.id),
+    hasIcon: fs.existsSync(path.join(process.cwd(), 'public', 'img', 'enemies', `enemy_${m.id}.gif`)),
   };
 });
 const recordedCount = cards.filter((c) => c.recorded).length;
