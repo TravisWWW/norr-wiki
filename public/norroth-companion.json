@@ -1,8 +1,8 @@
 {
-  "version": "2.6.170",
+  "version": "2.6.171",
   "date": "2026-10-29",
-  "notes": "小伴侣 v2.6.170：Boss（首领）提到「战斗筛选」最顶（优先级最高）；RANKS 顺序改为 Boss > 精英 > 稀有 > 冠军 > 普通；对已有配置做一次性迁移把 Boss 移到最顶（仅一次，之后尊重手动排序）；Boss 仍默认不打勾。",
+  "notes": "小伴侣 v2.6.171：(1) 多角色离线右侧新增「低优先级」勾选——勾选后主角色在事件中/打 Overlord 中就不切号安排副角色任务；(2) 打 Overlord 时 Boss 一律可打（不受「战斗筛选」首领勾选影响）；(3)「自动打 Overlord」移到「随机间隔」上方。",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 868125,
-  "sha256": "8cfcf5b1eae024a70e64a11856a2c21f29f0961b556425d7c391754fd95542a3"
+  "size": 870178,
+  "sha256": "9725ab8dc87f06fdf5c8a4ff3ec214975c360d2a073b9677ad46a9afae2d18e7"
 }

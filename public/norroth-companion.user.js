@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.170
+// @version      2.6.171
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -144,6 +144,7 @@
 
     /* ★ 多角色轮转（1 主 + 最多 3 副，各自 idle 采集） */
     multiChar: false,        // 多角色轮转总开关
+    mcLowPriority: false,    // ★ v2.6.171：多角色「低优先级」—— 主角色在事件中 / 打 Overlord 中时不切号安排副角色任务
     mcChars: [],             // [{id,name,role,enabled,gatherMap,nodeX,nodeY,profession,serviceTown,repairOn,depositOn}]
 
     /* 挂机模式 */
@@ -190,7 +191,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.170';   // 与 @version 保持一致
+  const SCRIPT_VER = '2.6.171';   // 与 @version 保持一致
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -510,6 +511,7 @@
     c.sellRarity = (RARITY_ORDER.indexOf(String(o.sellRarity || '').toLowerCase()) >= 0) ? String(o.sellRarity).toLowerCase() : '';
     /* ★ 多角色轮转：角色名单归一化 */
     c.multiChar = !!c.multiChar;
+    c.mcLowPriority = !!c.mcLowPriority;
     c.mcChars = (Array.isArray(o.mcChars) ? o.mcChars : []).filter(function (x) {
       return x && typeof x === 'object' && !Array.isArray(x);
     }).map(function (x) {
@@ -1708,11 +1710,21 @@
     return true;
   }
 
+  /* ★ v2.6.171：打 Overlord 会话中，Boss 一律可打 —— 不受「战斗筛选」里「首领」勾没勾的影响。
+     （正常战斗仍按筛选；Overlord 是限时世界 Boss，必须打。） */
+  function ovlBossAllowed(rank) {
+    if (rank !== 'Boss') return false;
+    try {
+      if (!cfg.autoOverlord) return false;
+      if (ovlInBattle()) return true;
+      return !!(st.ovl && st.ovl.phase && st.ovl.phase !== 'idle');
+    } catch (e) { return false; }
+  }
   function attackableFrom(list) {
     if (!inGame() || !list) return [];
     const cx = character.x, cy = character.y;
     return list
-      .filter(e => e.rank !== 'Player' && nameAllowed(e.name) && !mobBlacklisted(e.name) && rankAllowed(e.rank) && lvAllowed(e.lv) &&
+      .filter(e => e.rank !== 'Player' && nameAllowed(e.name) && !mobBlacklisted(e.name) && (rankAllowed(e.rank) || ovlBossAllowed(e.rank)) && lvAllowed(e.lv) &&
                    !isBlacklisted(e.key) && isReachable(e.x, e.y))
       .map(e => Object.assign({ _k: targetKey(e, cx, cy) }, e))
       .sort((a, b) => cmpKey(a._k, b._k));
@@ -7649,12 +7661,25 @@
       return [];
     }
   }
+  /* ★ v2.6.171：多角色「低优先级」判据 —— 主角色此刻是否正在「事件中」或「打 Overlord 中」。
+     用于：勾选「低优先级」后，这两种情况都不切号安排副角色任务（即使没开「自动进活动 / 自动打 Overlord」）。 */
+  function mcMainBusyEventOrOvl() {
+    try {
+      if (eventHolding()) return true;
+      const m = String(character.current_map);
+      if (m === String(EVENT_MAP_ID) || EVENT_COMBAT_MAPS[m]) return true;
+    } catch (e) { /* ignore */ }
+    try { if (ovlHolding() || ovlInBattle()) return true; } catch (e) { /* ignore */ }
+    return false;
+  }
   /* 主角色：定期读队列 → 更新各副角色 epoch → 到期 / 未启动 就切过去 */
   function mcWatchQueue() {
     if (!cfg.multiChar || !rot || !rot.on || rot.paused) return;
     /* ★ v2.6.157：优先级 Overlord > 活动 > 多角色离线 —— 两者进行中都不切号。 */
     if (cfg.autoOverlord && ovlHolding()) return;
     if (cfg.autoEvent && eventHolding()) return;
+    /* ★ v2.6.171：多角色「低优先级」—— 主角色在事件中 / 打 Overlord 中 → 不切号安排任务。 */
+    if (cfg.mcLowPriority && mcMainBusyEventOrOvl()) return;
     if (rot.tripAlt) return;
     /* ★ v2.6.16：主角色正在维修 / 清包 / 存仓行程中 → 别切号。
        切号是整页跳转，会把正在跑的行程当场打断（表现为「触发维修→传送到城镇→什么都没发生」）。 */
@@ -7665,6 +7690,7 @@
     mcQueue().then(function (list) {
       if (seq !== mcSeq || rot !== rotation || !cfg.multiChar || !rot.on || rot.paused || !inGame() || character.id !== charId) return;
       if (cfg.autoOverlord && ovlHolding()) return;
+      if (cfg.mcLowPriority && mcMainBusyEventOrOvl()) return;
       if (rot.tripAlt || st.repair.active || st.sell.active || st.bank.active || st.tripManual) return;
       const alts = mcAlts();
       mcApplyQueue(list);
@@ -8836,7 +8862,10 @@
 
         <div class="pane" data-pane="mc">
           <div class="divblock_dark" style="margin-top:4px">
-            <label title="副角色各自离线采集；完成后自动切过去维修 / 存仓并重启，再切回主角色。"><input type="checkbox" class="chk" id="nr-mc">多角色离线（1 主 + 3 副）</label>
+            <div class="row" style="align-items:center;gap:6px">
+              <label title="副角色各自离线采集；完成后自动切过去维修 / 存仓并重启，再切回主角色。"><input type="checkbox" class="chk" id="nr-mc">多角色离线（1 主 + 3 副）</label>
+              <label style="margin-left:auto;flex:none" title="低优先级：主角色正在事件中或打 Overlord 时，暂停切号，不安排副角色任务。"><input type="checkbox" class="chk" id="nr-mc-lowprio">低优先级</label>
+            </div>
             <div id="nr-mc-list" style="margin-top:3px"></div>
             <div class="row" style="margin-top:3px">
               <button class="mini" id="nr-mc-read" title="选角页 = 读取角色名单；游戏中 = 刷新采集队列与状态。">刷新</button>
@@ -8931,6 +8960,15 @@
 
           <div class="divblock_dark" style="margin-top:4px">
             <div class="nr-srow">
+              <label title="需 Lv30+；服务器时间 01/10/19 点刷新。按设定提前秒数进房打 Boss，打完直接离场（奖励走邮件，不再开宝箱）。"><input type="checkbox" class="chk" id="nr-autoovl">自动打 Overlord</label>
+              <span class="nr-sl">提前</span><input type="number" id="nr-ovl_lead" min="0" max="600" step="5" class="nr-snum" title="刷新前多少秒开始蹲点">
+              <span class="nr-sl">秒</span>
+              <span class="nr-sl" title="进房后多久还没开打就兜底离场（秒）；不影响已开打的长战斗。">空等</span><input type="number" id="nr-ovl_leave" min="30" max="3600" step="30" class="nr-snum" title="进房后多久还没开打就兜底离场(秒)">
+              <span class="nr-sl">秒</span>
+            </div>
+          </div>
+          <div class="divblock_dark" style="margin-top:4px">
+            <div class="nr-srow">
               <label title="移动、点击等动作前随机等待指定毫秒；不含补药。范围全为 0 时关闭。"><input type="checkbox" class="chk" id="nr-humandelay">随机间隔</label>
               <span class="nr-sl">最小</span><input type="number" id="nr-hdmin" min="0" max="60000" step="50" class="nr-snum">
               <span class="nr-sl">最大</span><input type="number" id="nr-hdmax" min="0" max="60000" step="50" class="nr-snum">
@@ -8983,16 +9021,6 @@
               <span class="nr-sl" title="两段式导航在目标「前一格」停下后，等多久再走最后一段（固定毫秒数，默认 300ms）。">停顿</span>
               <input type="number" id="nr-navseg_pause" min="0" max="60000" step="50" class="nr-snum" title="段间停顿(ms)">
               <span class="nr-sl">ms</span>
-            </div>
-          </div>
-
-          <div class="divblock_dark" style="margin-top:4px">
-            <div class="nr-srow">
-              <label title="需 Lv30+；服务器时间 01/10/19 点刷新。按设定提前秒数进房打 Boss，打完直接离场（奖励走邮件，不再开宝箱）。"><input type="checkbox" class="chk" id="nr-autoovl">自动打 Overlord</label>
-              <span class="nr-sl">提前</span><input type="number" id="nr-ovl_lead" min="0" max="600" step="5" class="nr-snum" title="刷新前多少秒开始蹲点">
-              <span class="nr-sl">秒</span>
-              <span class="nr-sl" title="进房后多久还没开打就兜底离场（秒）；不影响已开打的长战斗。">空等</span><input type="number" id="nr-ovl_leave" min="30" max="3600" step="30" class="nr-snum" title="进房后多久还没开打就兜底离场(秒)">
-              <span class="nr-sl">秒</span>
             </div>
           </div>
 
@@ -9174,6 +9202,7 @@
     (function () {
       const mcChk = panel.querySelector('#nr-mc');
       if (mcChk) mcChk.addEventListener('change', function () { mcSetOn(mcChk.checked); });
+      bindCheck('nr-mc-lowprio', 'mcLowPriority');
       const mcRead = panel.querySelector('#nr-mc-read');
       if (mcRead) mcRead.addEventListener('click', function () {
         /* ★ 选角页 = 读取角色；游戏中 = 刷新采集队列与状态 */
@@ -9669,7 +9698,7 @@
     set('nr-gscrap', cfg.gatherScrap); set('nr-autoevent', cfg.autoEvent);
     try { const _er = document.getElementById('nr-eventres'); if (_er) _er.value = cfg.eventRes || ''; } catch (e) { /* ignore */ }
     set('nr-gatherflee', cfg.gatherFlee);
-    set('nr-mc', cfg.multiChar); try { mcRender(); } catch (e) { /* ignore */ } try { syncMcBtns(); } catch (e) { /* ignore */ }
+    set('nr-mc', cfg.multiChar); set('nr-mc-lowprio', cfg.mcLowPriority); try { mcRender(); } catch (e) { /* ignore */ } try { syncMcBtns(); } catch (e) { /* ignore */ }
     set('nr-highlight', cfg.highlightSelf);
     set('nr-usewaygatecity', cfg.useWaygateCity);
     set('nr-usewaygatewild', cfg.useWaygateWild);
