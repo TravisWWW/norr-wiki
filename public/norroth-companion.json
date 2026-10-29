@@ -1,8 +1,8 @@
 {
-  "version": "2.6.181",
+  "version": "2.6.182",
   "date": "2026-10-29",
-  "notes": "活动进门补画面同步兜底：走进战斗区的门换图后，2.2s 核对屏幕底图，没画对就调游戏 loadTravel() 重画",
+  "notes": "Event优先于挂机(检查不再被导航/战斗挡住, 间隔30s->10s) + 休整维修稳定性(强制重读耐久/等行渲染/按耐久回升验证)",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 882360,
-  "sha256": "451feb2aca2a0c93ba29ec7eb00d2a25340905d71b5346c8d8e0e18804604d07"
+  "size": 884597,
+  "sha256": "d87d1bd429d9366467a3225c1bff8750e92515ea8eb523b198e7d19edd62d71d"
 }

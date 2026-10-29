@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.181
+// @version      2.6.182
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -192,7 +192,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.181';   // 与 @version 保持一致
+  const SCRIPT_VER = '2.6.182';   // 与 @version 保持一致
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -4128,11 +4128,15 @@
     return false;
   }
 
-  async function verifyRepaired(ms) {
+  async function verifyRepaired(ms, beforePct) {
     const deadline = now() + ms;
     while (now() < deadline) {
-      if (!isDamaged()) { try { await readEquipDur(true); } catch (e) { /* ignore */ } return true; }
       if (!tripAlive()) return false;
+      try { await readEquipDur(true); } catch (e) { /* ignore */ }
+      const w = durWorst(st.dur && st.dur.list);
+      const nowPct = w ? w.pct : 1;
+      /* ★ v2.6.182：不再只看破损图标（低耐久不亮）—— 改成「破损图标灭了 且 最低耐久回升/已满」。 */
+      if (!isDamaged() && (beforePct == null || nowPct > beforePct + 0.02 || nowPct >= 0.99)) return true;
       await sleep(400);
     }
     return false;
@@ -4267,6 +4271,8 @@
    *  menuOnly = 只认菜单里的维修项：菜单没有就直接 'none'，不发那个有副作用的 /modal/x?repair，避免「没坏也被扣钱」 */
   async function repairAtSmith(smith, menuOnly) {
     const scope = smithScope(smith);
+    const _bw = durWorst(st.dur && st.dur.list);   /* ★ v2.6.182：记下修前最低耐久，修后对比验证 */
+    const beforePct = _bw ? _bw.pct : null;
     // ★ 2026-10 新前端：维修页是勾选式列表（#repair_items_list），
     //    全选 = #btn-toggle-repair（toggleAllSmithingRows('repair')），
     //    维修 = #btn-repair-all（repairAllItems()）。旧的 ?repair 链接已不存在。
@@ -4279,6 +4285,14 @@
       await sleep(200);
     }
     if (!list) return 'fail';
+    /* ★ v2.6.182：列表元素可能先到、行还没渲染 → 等一小段再判「没有可修项」，避免过早判成无需维修。 */
+    if (!list.querySelector('.smithing_bulk_row')) {
+      const rl = now() + 1500;
+      while (now() < rl && !list.querySelector('.smithing_bulk_row')) {
+        if (!tripAlive()) return 'cancel';
+        await sleep(150);
+      }
+    }
     if (!list.querySelector('.smithing_bulk_row')) return 'none';   // 没有可修项 → 服务端判定无需维修
     /* ★ 2026-10-17 优先走接口：直接 POST /includes/ajax_repair.php（不点按钮、不等内联脚本） */
     for (let i = 0; i < 2; i++) {
@@ -4286,7 +4300,7 @@
       try {
         const api = await apiRepairRows(list);
         if (api.empty) return 'none';
-        if (api.ok) { await sleep(600); if (await verifyRepaired(REPAIR_VERIFY)) return 'ok'; }
+        if (api.ok) { await sleep(600); if (await verifyRepaired(REPAIR_VERIFY, beforePct)) return 'ok'; }
       } catch (e) { /* 接口不可用 → 走下面的 DOM 回退 */ }
       if (i === 1) break;
     }
@@ -4306,7 +4320,7 @@
       const all = document.getElementById('btn-repair-all');
       if (typeof window.repairAllItems === 'function') humanDefer(function () { try { window.repairAllItems(); } catch (e) { /* ignore */ } });
       else if (all) humanClick(all);
-      if (await verifyRepaired(REPAIR_VERIFY)) return 'ok';
+      if (await verifyRepaired(REPAIR_VERIFY, beforePct)) return 'ok';
       await sleep(800);
     }
     return 'fail';
@@ -4620,9 +4634,8 @@
        pollSmithTrip() 里跑，而多角色行程期间 mcTick() 会让 step() 提前 return，永远不刷新；
        切号是整页跳转，st.dur 又回到 null → repairNeeded() 读空列表 → 误判「装备无损坏」不修。
        这里在判断前强制读一次真实耐久（缓存为空才读，正常主循环不受影响）。 */
-    if (!st.dur || !(st.dur.list && st.dur.list.length)) {
-      try { await readEquipDur(true); } catch (e) { /* ignore */ }
-    }
+    /* ★ v2.6.182：到铁匠处一律强制重读一次真实耐久（原来只在缓存为空时读 —— 缓存陈旧 / 读失败会误判「无需维修」）。 */
+    try { await readEquipDur(true); } catch (e) { /* ignore */ }
     const reason = repairNeeded();             // ★ v1.8.0：破损 或 工具已采不动（+可选提前量）
     out.repairReason = reason;
     out.needRepair = (opts.repair === false) ? false : (!!reason || !!manual);   // 手动模式：不看本地判断，无条件问一次游戏菜单
@@ -5488,7 +5501,7 @@
      - 间隔 30s：别太频繁地打 /modal/activities
      - 单次请求 8s 超时：fetch 挂死时靠 AbortController 主动中断（原来会永久挂住 → E.busy 卡死 → 再也不检查）
      - busy 兜底 20s：即使超时逻辑没兜住（页面切走 / 异常），超过 20s 也强制释放 busy 重新检查 */
-  const EVENT_CHECK_INTERVAL_MS = 30000;
+  const EVENT_CHECK_INTERVAL_MS = 10000;   /* ★ v2.6.182：30s→10s —— 活动开了更快发现 */
   const EVENT_CHECK_TIMEOUT_MS = 8000;
   const EVENT_CHECK_STUCK_MS = 20000;
   /* ★ v2.6.19：活动「同类型采集点」判定 —— 优先用游戏自己的 data-poi（poi_2=mine 等）。
@@ -5862,6 +5875,8 @@
         }
         /* 在大厅（刚进来 / 从战斗区退回来）→ 选门 + 走过去（异步，走的过程中接管本 tick） */
         if (E.gateBusy) return true;
+        /* ★ v2.6.182：导航 / 切图进行中 → 先别开始走向门（避免和正在进行的导航抢路）。 */
+        if (navBusy || st.mapSwitch.active) return true;
         const gate = eventCombatGate();
         if (!gate) {
           /* ★ v2.6.109：先分清「本等级根本没有战斗区」（Lv1-9）和「有区域但没找到门」 */
@@ -5924,6 +5939,8 @@
 
     /* ② 刚被弹出活动图 → 回原图继续「之前的任务」 */
     if (E.on) {
+      /* ★ v2.6.182：导航 / 切图进行中 → 先别抢着回原图。 */
+      if (navBusy || st.mapSwitch.active) return false;
       E.on = false; E.phase = 'return'; E.pointName = '';
       const prev = st.mode;
       const home = +E.homeMap || +cfg.farmMap || 0;
@@ -5960,7 +5977,9 @@
        ★ v2.6.73：战斗任务里也要检查，但「只在战斗状态外」检查 —— 正在打（#frame_Combat 在）就本 tick 不查，
        打完这一场（战斗窗口消失）后的第一个 tick 再查，避免战斗中切图 / 打断战斗。
        检查带超时（EVENT_CHECK_TIMEOUT_MS）+ 兜底（E.busy 超过 EVENT_CHECK_STUCK_MS 强制释放）+ 诊断日志。 */
-    if (inCombatNow()) { E.combatSkipAt = now(); return false; }   /* 战斗中：本 tick 不查，等打完这一场 */
+    /* ★ v2.6.182：战斗中「照常检查」（只是不进入 —— 见下面 E.lastHas 之后的让路）。
+       原来战斗中整段不查 → 长战斗里活动开启很久都不知道。 */
+    if (inCombatNow()) E.combatSkipAt = now();
     /* ★ v2.6.108：在副本 / 塔里不能进活动（服务端返回 Failed: Inside Event）→ 先不查，
        也不推进 lastCheckAt，出副本后第一个 tick 立刻能查。 */
     const _dz = inDungeonOrTower();
@@ -5993,6 +6012,11 @@
           return;
         }
         E.lastHas = true; E.checkFails = 0;
+        /* ★ v2.6.182：检测到活动开启，但正在战斗 / 导航 / 切图 → 先不打断，~3s 后立刻重查（不占满整个检查间隔）。 */
+        if (inCombatNow() || navBusy || st.mapSwitch.active) {
+          E.lastCheckAt = now() - (EVENT_CHECK_INTERVAL_MS - 3000);
+          return;
+        }
         E.homeMap = +cfg.farmMap || +character.current_map;
         /* ★ 用 effectiveGatherPoint()：用户没手动选时 cfg.gatherPoint 可能是空的，
            真正在采的是下拉里自动识别的那个 —— 否则进活动后类型匹配失败，会去挖第一个（Quarry）。 */
@@ -8428,7 +8452,10 @@
        这里放在所有功能模块的早退之前：即使维修 / 清包 / 卡住自愈正在进行，也照样推进
        Event / Overlord 的状态机（倒计时轮询 / 活动开关检查），只是不让它们抢占本 tick。
        切图 / 导航进行中仍然让路（避免和正在进行的导航抢路）。 */
-    if (!(st.mapSwitch.active || navBusy)) {
+    /* ★ v2.6.182：Event / Overlord 监控即使在导航 / 切图进行中也照常「检查」（只是不让它们抢占本 tick）。
+       原来整段被 navBusy / st.mapSwitch.active 挡住 → 挂机（频繁走位 + 切图刷怪）时活动开启很久都进不去。
+       现在：检查照跑，只有「真正进入 / 参战」那一步等导航让出（见 eventTick / ovlTick 里的 navBusy 判据）。 */
+    {
       const _evOvlBusy = st.returning || st.mcBusy || st.repair.active || st.sell.active || st.bank.active ||
                          st.nudging || st.settling || st.tripManual;
       if (ovlTick() && !_evOvlBusy) return;
