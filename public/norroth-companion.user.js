@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.180
+// @version      2.6.181
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -192,7 +192,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.180';   // 与 @version 保持一致
+  const SCRIPT_VER = '2.6.181';   // 与 @version 保持一致
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -5892,6 +5892,13 @@
             });
           } catch (e) { /* ignore */ }
           finally { E.gateBusy = false; }
+          /* ★ v2.6.181：踩对门进了战斗区 → 兜底「换图后画面同步」：2.2s 后核对屏幕底图，
+             没画对就调游戏 loadTravel() 重画（与「进入活动大厅」那步同样的兜底）。 */
+          try {
+            if (+character.current_map !== +from && isEventCombatMap(character.current_map)) {
+              scheduleRenderCheck(from, character.current_map);
+            }
+          } catch (e) { /* ignore */ }
         })();
         return true;
       }
