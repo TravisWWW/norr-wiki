@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.178
+// @version      2.6.179
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -192,7 +192,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.178';   // 与 @version 保持一致
+  const SCRIPT_VER = '2.6.179';   // 与 @version 保持一致
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -5660,6 +5660,11 @@
     if (!fresh.length) return null;
     const cx = character.x, cy = character.y;
     fresh.sort(function (a, b) { return manhattan(cx, cy, a.x, a.y) - manhattan(cx, cy, b.x, b.y); });
+    /* ★ v2.6.179：兜底试门时写一条日志（限流）—— 说明为什么没走「已知门」；踩错会弹 #frame_LevelGate，下次换下一道。 */
+    if (now() - (E.gateLogAt || 0) > 15000) {
+      E.gateLogAt = now();
+      logEvent('活动：没有已知通向 Lv' + (character.level || '?') + ' 战斗区的门 → 试门 ' + fresh[0].key + '（踩错会自动换下一道；已试 ' + (Object.keys(tried).join(',') || '无') + '）');
+    }
     return mk(fresh[0]);
   }
   /* 当前是否在「活动战斗区」里（主循环据此强制走战斗逻辑） */
@@ -5805,7 +5810,16 @@
     if (cfg.autoOverlord && ovlHolding()) return false;
     const E = st.event;
     const onEventMap = isEventLobby(character.current_map);
-    if (onEventMap) E.lobbyMap = +character.current_map;   /* ★ v2.6.176：记住当前活动大厅（多套活动用） */
+    if (onEventMap) {
+      const _lm = +character.current_map;
+      /* ★ v2.6.179：换了活动大厅（不同活动共用同一套门位置）→ 清掉上一场学到的「门→目标图」，
+         否则旧活动的门映射会误导新活动（位置相同、目标图不同）。 */
+      if (E.lobbyMap && +E.lobbyMap !== _lm) {
+        E.gateMap = {}; E.gateTried = {};
+        logEvent('活动：换了活动大厅（' + E.lobbyMap + ' → ' + _lm + '）→ 清空门映射缓存');
+      }
+      E.lobbyMap = _lm;
+    }
 
     /* ★ v2.6.51：爬塔时不进活动 —— 塔层共用同一张地图（901）且没有层数变量，
        进出活动会从第 1 层重新开始。已在活动图里时仍按原逻辑处理（正常采集 / 结束返回）。 */

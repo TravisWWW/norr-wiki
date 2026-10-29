@@ -1,8 +1,8 @@
 {
-  "version": "2.6.178",
+  "version": "2.6.179",
   "date": "2026-10-29",
-  "notes": "活动大厅按「门位置→等级区间」选门：新活动(如万圣节)门位置与旧活动一致时，按等级走对应的门，不再一律往最近的门(10-19)跑",
+  "notes": "活动选门兜底加固：门踩错(等级不符)自动换下一道；换活动大厅时清空上一场学到的门映射(跨活动不串)",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 879060,
-  "sha256": "43b00da5e4fa16e80591d38439263e8bb9fcdb1928f15735410e5c971411a5fe"
+  "size": 879953,
+  "sha256": "614a97a8d9f673710a5af687600b35f153a1cf6c15dcf9f6f132cab70ffed586"
 }
