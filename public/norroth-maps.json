@@ -1,7 +1,7 @@
 {
  "meta": {
-  "source": "小伴侣地图数据（MapDB）· 11 位贡献者合并",
-  "updated": "2026-10-29T07:15:42.103Z",
+  "source": "小伴侣地图数据（MapDB）· 12 位贡献者合并",
+  "updated": "2026-10-29T10:03:44.844Z",
   "version": "1.0",
   "contributors": [
    {
@@ -91,13 +91,21 @@
     "time": "2026-10-28T23:29:54.411Z",
     "count": 350,
     "mergedAt": "2026-10-29"
+   },
+   {
+    "file": "maps-3315.json",
+    "char": "#3315",
+    "level": 14,
+    "time": "2026-10-29T09:59:44.215Z",
+    "count": 329,
+    "mergedAt": "2026-10-29"
    }
   ],
   "count": 351
  },
  "maps": {
   "1": {
-   "at": 1793033466222,
+   "at": 1793257181067,
    "name": "Fountain of Rebirth",
    "ex": [
     [
@@ -118,7 +126,7 @@
    ]
   },
   "2": {
-   "at": 1793034088073,
+   "at": 1793257229070,
    "name": "Lower Fountain’s Descent",
    "ex": [
     [
@@ -139,7 +147,7 @@
    ]
   },
   "3": {
-   "at": 1792975288166,
+   "at": 1793257241397,
    "name": "Sasquatch Grotto",
    "type": "Normal",
    "m": [
@@ -165,7 +173,7 @@
    ]
   },
   "4": {
-   "at": 1792975365938,
+   "at": 1793257337140,
    "name": "Upper Fountain’s Descent",
    "type": "Normal",
    "g": [
@@ -179,8 +187,8 @@
     ]
    ],
    "m": [
-    "Wild Dog",
-    "Hare"
+    "Hare",
+    "Wild Dog"
    ],
    "ex": [
     [
@@ -215,7 +223,7 @@
    ]
   },
   "5": {
-   "at": 1793221340058,
+   "at": 1793261134986,
    "name": "El Caspar",
    "type": "City",
    "g": [
@@ -239,11 +247,6 @@
      26,
      "Combat Training"
     ]
-   ],
-   "m": [
-    "Hare",
-    "Snake",
-    "Wild Dog"
    ],
    "ex": [
     [
@@ -274,7 +277,7 @@
      28,
      32,
      "waygate",
-     "Waygate"
+     "Portal"
     ],
     [
      18,
@@ -337,7 +340,7 @@
    ]
   },
   "6": {
-   "at": 1792935561102,
+   "at": 1793261163172,
    "name": "Brisban Pond",
    "type": "Normal",
    "g": [
@@ -414,7 +417,7 @@
    ]
   },
   "7": {
-   "at": 1793032951686,
+   "at": 1793134629065,
    "name": "Akelay Foothills",
    "type": "Normal",
    "m": [
@@ -485,7 +488,7 @@
    ]
   },
   "8": {
-   "at": 1792935464146,
+   "at": 1793134647766,
    "name": "Akelay Cave Level 1",
    "type": "Normal",
    "g": [
@@ -539,7 +542,7 @@
    ]
   },
   "9": {
-   "at": 1792935446541,
+   "at": 1793134655787,
    "name": "Akelay Cave Level 2",
    "type": "Secret",
    "g": [
@@ -594,25 +597,51 @@
    ]
   },
   "10": {
-   "at": 0,
+   "at": 1793133826221,
    "name": "Mount Akelay",
+   "g": [
+    "Slate Quarry",
+    "Cotton Field"
+   ],
+   "gt": [
+    [
+     30,
+     33,
+     "Slate Quarry"
+    ],
+    [
+     35,
+     35,
+     "Cotton Field"
+    ]
+   ],
    "m": [
     "Wolf",
     "Bison",
     "Goblin Pyro",
     "Goblin Soldier"
    ],
+   "ex": [
+    [
+     37,
+     52,
+     "gate",
+     "Akelay Foothills (Lv.4)"
+    ]
+   ],
+   "visited": true,
    "edges": [
     [
      10,
      7,
      37,
-     52
+     52,
+     "gate"
     ]
    ]
   },
   "11": {
-   "at": 1792935508618,
+   "at": 1793134601771,
    "name": "Elena’s Crossroad",
    "type": "Normal",
    "g": [
@@ -802,7 +831,7 @@
    ]
   },
   "14": {
-   "at": 1793032355522,
+   "at": 1793261776451,
    "name": "Arodas Lakeshore",
    "type": "Normal",
    "g": [
@@ -869,7 +898,7 @@
    ]
   },
   "15": {
-   "at": 1793032772622,
+   "at": 1793258514750,
    "name": "Arodas Beach",
    "type": "Normal",
    "g": [
@@ -923,13 +952,13 @@
    ]
   },
   "16": {
-   "at": 1793219433128,
+   "at": 1793267942965,
    "name": "Elundi",
    "type": "City",
    "g": [
     "Shrimp Pier",
-    "Silk Field",
-    "Combat Training"
+    "Combat Training",
+    "Silk Field"
    ],
    "gt": [
     [
@@ -959,13 +988,13 @@
      38,
      10,
      "event_gate",
-     "Event Gate"
+     "活动之门"
     ],
     [
      34,
      22,
      "waygate",
-     "Waygate"
+     "Portal"
     ],
     [
      29,
@@ -1222,7 +1251,7 @@
    ]
   },
   "20": {
-   "at": 1793078455583,
+   "at": 1793127603345,
    "name": "Windy Fields",
    "type": "Normal",
    "g": [
@@ -1310,7 +1339,7 @@
    ]
   },
   "21": {
-   "at": 1793078508465,
+   "at": 1793127701138,
    "name": "Forest Of Owranbu",
    "type": "Normal",
    "g": [
@@ -1446,7 +1475,7 @@
    ]
   },
   "23": {
-   "at": 1793164289028,
+   "at": 1793267978966,
    "name": "Owranbu",
    "type": "City",
    "g": [
@@ -1458,21 +1487,6 @@
      28,
      "Combat Training"
     ]
-   ],
-   "m": [
-    "Badger",
-    "Wild Hog",
-    "Peasant",
-    "Woodland Spider",
-    "Bear",
-    "Woodland Snake",
-    "Wolf",
-    "Bone Scarab",
-    "Nomadic Cleric",
-    "Dune Glider",
-    "Cassowary",
-    "Scorpion",
-    "Raider"
    ],
    "ex": [
     [
@@ -1909,14 +1923,14 @@
    ]
   },
   "34": {
-   "at": 1792912775775,
+   "at": 1793125932519,
    "name": "Sewers",
    "type": "Normal",
    "m": [
-    "Eel",
     "Cockroach",
     "Rat",
-    "Leech"
+    "Leech",
+    "Eel"
    ],
    "ex": [
     [
@@ -1932,7 +1946,6 @@
      "Entrance"
     ]
    ],
-   "visited": true,
    "edges": [
     [
      34,
@@ -1951,14 +1964,14 @@
    ]
   },
   "35": {
-   "at": 1792926179116,
+   "at": 1793126782744,
    "name": "Deep Sewers",
    "m": [
     "Rat",
     "Eel",
-    "Cockroach",
     "Crocodile",
-    "Leech"
+    "Leech",
+    "Cockroach"
    ],
    "ex": [
     [
@@ -1992,7 +2005,7 @@
    ]
   },
   "36": {
-   "at": 1792926225863,
+   "at": 1793126827887,
    "name": "Ratdom",
    "m": [
     "Wererat Soldier",
@@ -2080,7 +2093,7 @@
    ]
   },
   "41": {
-   "at": 1793150803473,
+   "at": 1793266769279,
    "name": "Owranbu Drylands",
    "type": "Normal",
    "m": [
@@ -3789,7 +3802,7 @@
    ]
   },
   "90": {
-   "at": 1793042270569,
+   "at": 1793133483866,
    "name": "Whispering Sands",
    "type": "Normal",
    "m": [
@@ -3846,7 +3859,7 @@
    ]
   },
   "91": {
-   "at": 1793040604476,
+   "at": 1793134574426,
    "name": "Drouver",
    "type": "City",
    "ex": [
@@ -3866,7 +3879,7 @@
      33,
      34,
      "waygate",
-     "Waygate"
+     "Portal"
     ],
     [
      13,
@@ -4087,7 +4100,7 @@
    ]
   },
   "97": {
-   "at": 1792915771365,
+   "at": 1793132334642,
    "name": "Ancient Ruins",
    "type": "Normal",
    "m": [
@@ -4150,7 +4163,7 @@
    ]
   },
   "98": {
-   "at": 1792915796574,
+   "at": 1793132362043,
    "name": "Burning Sands",
    "type": "Normal",
    "m": [
@@ -4194,7 +4207,7 @@
    ]
   },
   "99": {
-   "at": 1793038998998,
+   "at": 1793132472234,
    "name": "Burnt Sienna Wastes",
    "type": "Normal",
    "m": [
@@ -4251,7 +4264,7 @@
    ]
   },
   "100": {
-   "at": 1792935996015,
+   "at": 1793132519947,
    "name": "Dust Outskirts",
    "type": "Normal",
    "g": [
@@ -11562,7 +11575,7 @@
    "name": "Das Festhalle"
   },
   "1157": {
-   "at": 1793230161623,
+   "at": 1793267924550,
    "name": "Sleepy Hollow Lobby",
    "type": "Secret",
    "g": [
@@ -11629,8 +11642,33 @@
    "name": "Sleepy Hollow"
   },
   "1159": {
-   "at": 0,
-   "name": "Sleepy Hollow"
+   "at": 1793267916291,
+   "name": "Sleepy Hollow",
+   "type": "Secret",
+   "m": [
+    "Hypnotic Bat",
+    "Ghost Pirate",
+    "Skeleton",
+    "Arcelia"
+   ],
+   "ex": [
+    [
+     53,
+     12,
+     "gate",
+     "Sleepy Hollow Lobby (Lv.100)"
+    ]
+   ],
+   "visited": true,
+   "edges": [
+    [
+     1159,
+     1157,
+     53,
+     12,
+     "gate"
+    ]
+   ]
   },
   "1160": {
    "at": 1793230191587,
@@ -11764,12 +11802,20 @@
    ]
   },
   "1185": {
-   "at": 0,
+   "at": 1793133623491,
    "name": "The Sacred Wilds",
    "type": "Secret",
    "m": [
     "Wyvern",
     "Drake Boss"
+   ],
+   "ex": [
+    [
+     56,
+     11,
+     "gate",
+     "The Sacred Wilds Lobby (Lv.100)"
+    ]
    ],
    "visited": true,
    "edges": [
@@ -11777,7 +11823,8 @@
      1185,
      1183,
      56,
-     11
+     11,
+     "gate"
     ]
    ]
   },
