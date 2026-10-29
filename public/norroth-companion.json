@@ -1,8 +1,8 @@
 {
-  "version": "2.6.179",
+  "version": "2.6.180",
   "date": "2026-10-29",
-  "notes": "活动选门兜底加固：门踩错(等级不符)自动换下一道；换活动大厅时清空上一场学到的门映射(跨活动不串)",
+  "notes": "Overlord 优先于活动：到参战点但还在活动里时，先退出活动(返回传送门)再参战；退出超时/无传送门则直接参战",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 879953,
-  "sha256": "614a97a8d9f673710a5af687600b35f153a1cf6c15dcf9f6f132cab70ffed586"
+  "size": 881887,
+  "sha256": "e82460da98b560af8791c82e16eb13d0169dcaba579120a694e8bee7a0b50f0c"
 }

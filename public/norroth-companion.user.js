@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.179
+// @version      2.6.180
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -192,7 +192,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.179';   // 与 @version 保持一致
+  const SCRIPT_VER = '2.6.180';   // 与 @version 保持一致
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -267,7 +267,7 @@
              busyAt: 0, checkAt: 0, checkFails: 0, combatSkipAt: 0, lastLogAt: 0, lastHas: null,
              gateBusy: false, gateLogAt: 0, combatMap: 0 },   /* ★ v2.6.101：战斗型活动的「进战斗区」状态 */
     /* ★ v2.6.135：Overlord（世界 Boss）自动参战 */
-    ovl: { on: false, phase: 'idle', nextEpoch: 0, boss: '', lastPoll: 0, logAt: 0, joinedAt: 0, fought: false, idleLogAt: 0, leaveBusy: false, leaveAt: 0, leaveTries: 0, roomMap: 0, joinMap: 0, enteredAt: 0, goneAt: 0 },
+    ovl: { on: false, phase: 'idle', nextEpoch: 0, boss: '', lastPoll: 0, logAt: 0, joinedAt: 0, fought: false, idleLogAt: 0, leaveBusy: false, leaveAt: 0, leaveTries: 0, roomMap: 0, joinMap: 0, enteredAt: 0, goneAt: 0, leaveEvSince: 0, leaveEvAt: 0 },
     tripManual: false, tripOrigin: null,
     gatherFighting: false,   // 采集模式里"正在打怪"的标记
     repair: { active: false, cooldownUntil: 0, failCount: 0, smith: null, route: null },
@@ -6224,7 +6224,8 @@
   }
   function ovlHolding() {
     return !!(running && cfg.autoOverlord && (ovlInBattle() ||
-      (st.ovl.phase === 'joining' && now() - (st.ovl.joinedAt || 0) < 30000)));
+      ((st.ovl.phase === 'joining' && now() - (st.ovl.joinedAt || 0) < 30000) ||
+       st.ovl.phase === 'leaveEvent')));   /* ★ v2.6.180：正在「先退出活动再参战」时也算占用 */
   }
   /* ★ v2.6.157：临时活动优先级 = Overlord > 活动 > 多角色离线。
      eventHolding() = 活动正在进行 / 正在进出（用于让多角色离线让路）。 */
@@ -6249,6 +6250,27 @@
     /* ★ v2.6.159：点了参战但 60s 内没被传进房（还在参战前那张图）→ 视为参战失败，复位 */
     if (O.phase === 'joining' && O.joinMap && +character.current_map === +O.joinMap && now() - (O.joinedAt || 0) > 60000) { O.phase = 'idle'; O.joinMap = 0; }
     if (ovlInBattle()) return ovlRoomTick();
+    /* ★ v2.6.180：Overlord 优先于活动 —— 到参战点但还在活动里 → 先退出活动再参战。
+       流程：leaveEvent（点返回传送门）→ 已离开活动图 → ovlJoin。超时 60s 兜底直接参战。 */
+    if (O.phase === 'leaveEvent') {
+      const stillInEv = isEventLobby(character.current_map) || isEventCombatMap(character.current_map);
+      const stuck = now() - (O.leaveEvSince || 0) > 60000;
+      if (stillInEv && !stuck) {
+        if (now() - (O.leaveEvAt || 0) > 2500) {
+          O.leaveEvAt = now();
+          if (!tryBackPortal('Overlord 参战：先退出活动')) {
+            logEvent('Overlord：活动里没有返回传送门 → 直接尝试参战');
+            O.phase = 'idle'; O.leaveEvSince = 0; ovlJoin(); return true;
+          }
+        }
+        setStatus('Overlord：先退出活动再参战…');
+        return true;
+      }
+      O.phase = 'idle'; O.leaveEvSince = 0;
+      logEvent(stillInEv ? 'Overlord：退出活动超时 → 直接尝试参战' : 'Overlord：已退出活动 → 参战');
+      ovlJoin();
+      return true;
+    }
     if (O.on) {
       /* ★ v2.6.157：休整（维修/清包/存仓）行程中离开房间不算「Overlord 结束」——
          修完要回房继续打（返程目标见 runRestock 的 fromActivity）。 */
@@ -6273,6 +6295,15 @@
     const due = O.nextEpoch ? (O.nextEpoch * 1000 - now()) : Infinity;
     const near = !!O.nextEpoch && due <= (+cfg.ovlLeadSec || 0) * 1000;
     const interval = near && O.finishedEpoch !== O.nextEpoch ? 3000 : 60000;
+    /* ★ v2.6.180：Overlord 优先于活动 —— 到参战点但还在活动里 → 先退出活动。
+       （用 near：提前 ovlLeadSec 秒开始退，避免等 HUD 按钮出现才退来不及）。 */
+    if (O.nextEpoch && near && O.finishedEpoch !== O.nextEpoch &&
+        (isEventLobby(character.current_map) || isEventCombatMap(character.current_map))) {
+      O.phase = 'leaveEvent'; O.leaveEvSince = now(); O.leaveEvAt = 0;
+      logEvent('Overlord：到参战点了，但正在活动里 → 先退出活动再参战');
+      if (tryBackPortal('Overlord 参战：先退出活动')) O.leaveEvAt = now();
+      return true;
+    }
     // 图标可能提前开放；必须先确认刷新时间，不能使用陈旧倒计时或重进已完成场次。
     if (O.nextEpoch && near && now() - (O.countdownAt || 0) < 65000 && O.finishedEpoch !== O.nextEpoch && ovlHudJoinBtn()) { ovlJoin(); return true; }
     if (!O.pollBusy && now() - (O.lastPoll || 0) >= interval) {
