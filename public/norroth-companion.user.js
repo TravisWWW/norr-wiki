@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.184
+// @version      2.6.185
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -193,7 +193,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.184';   // 与 @version 保持一致
+  const SCRIPT_VER = '2.6.185';   // 与 @version 保持一致
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -2651,8 +2651,21 @@
    */
   const PET_CHECK_MS = 30000;
 
-  async function readPetInfo() {
-    const h = await (await fetch('/modal/character', { credentials: 'same-origin' })).text();
+  /* ★ v2.6.185：同一个 /modal/* 页面在短时间内的重复请求合并成一次（按 URL 缓存 HTML）。
+     readBag / readPetFood 都拉 /modal/inventory；readEquipDur / readPetInfo 都拉 /modal/character。
+     原来各自独立 fetch → 同一 URL 每分钟被拉 4~7 次；现在共享缓存，最多约 2 次/分。
+     force=true 时跳过缓存（休整前后 / 铁匠处等需要即时数据的场景）。 */
+  const MODAL_HTML_TTL_MS = 30000;
+  const _modalHtmlCache = new Map();
+  async function fetchModalHtml(url, force) {
+    const c = _modalHtmlCache.get(url);
+    if (!force && c && now() - c.at < MODAL_HTML_TTL_MS) return c.text;
+    const text = await (await fetch(url, { credentials: 'same-origin' })).text();
+    _modalHtmlCache.set(url, { at: now(), text: text });
+    return text;
+  }
+  async function readPetInfo(force) {
+    const h = await fetchModalHtml('/modal/character', force);
     const i = h.indexOf('class="pet"');
     if (i < 0) return null;
     const blk = h.slice(i, i + 2500);
@@ -2673,8 +2686,8 @@
     return { energy: energy, max: max, level: level };
   }
 
-  async function readPetFood() {
-    const h = await (await fetch('/modal/inventory', { credentials: 'same-origin' })).text();
+  async function readPetFood(force) {
+    const h = await fetchModalHtml('/modal/inventory', force);
     const out = {};
     h.split('class="inv_slot').slice(1).forEach(blk => {
       const r = blk.match(/res="(pet_food_t\d+)"/);
@@ -3628,7 +3641,7 @@
     if (!inGame()) return [];
     if (!force && st.dur && now() - st.dur.at < rhythm(DUR_CACHE_MS)) return st.dur.list;
     try {
-      const h = await (await fetch('/modal/character', { credentials: 'same-origin' })).text();
+      const h = await fetchModalHtml('/modal/character', force);
       const list = parseEquipDur(h);
       st.dur = { at: now(), list: list };
       return list;
@@ -3638,7 +3651,7 @@
     if (st.durBusy) return;
     if (st.dur && now() - st.dur.at < rhythm(DUR_CACHE_MS)) return;
     st.durBusy = true;
-    readEquipDur(true).then(function () { st.durBusy = false; }, function () { st.durBusy = false; });
+    readEquipDur(false).then(function () { st.durBusy = false; }, function () { st.durBusy = false; });
   }
   function durWorst(list) {
     let worst = null;
@@ -4412,8 +4425,8 @@
     } catch (e) { /* ignore */ }
   }
 
-  async function readBag() {
-    const h = await (await fetch('/modal/inventory', { credentials: 'same-origin' })).text();
+  async function readBag(force) {
+    const h = await fetchModalHtml('/modal/inventory', force);
     const m = h.match(/Inventory\s*\((\d+)\s*\/\s*(\d+)\)/);
     if (!m) return null;
     const used = parseInt(m[1], 10), cap = parseInt(m[2], 10);
@@ -4649,7 +4662,7 @@
     let bag = null;
     const wantClear = (opts.sell === false) ? false : true;
     if (wantClear && clearFilterActive() && (manual || cfg.sellOn || st.sell.force)) {
-      bag = await readBag();
+      bag = await readBag(true);
       /* ★ v2.6.127：只要这次休整到了铁匠、清包开关开着、且设了过滤条件，就无条件按过滤条件清一次。
          旧实现 needSell = bag.free <= 阈值（st.sell.freeAt 或 cfg.sellFreeMin），而 freeAt 只在
          「背包快满」触发时赋值 → 「耐久不足」触发的休整（freeAt=0 → 回落 sellFreeMin）常常
@@ -4916,7 +4929,7 @@
 
   async function doBankDeposit() {
     const out = { deposited: 0, before: null, after: null, equip: 0 };
-    const b0 = await readBag();
+    const b0 = await readBag(true);
     out.before = b0 ? b0.used : null;
     let done = false;
     try {
@@ -4945,7 +4958,7 @@
       const dl = now() + 6000;
       while (now() < dl) {
         await sleep(500);
-        const b = await readBag();
+        const b = await readBag(true);
         if (!b) continue;
         out.after = b.used;
         if (out.before != null && b.used < out.before) { out.deposited = out.before - b.used; break; }
@@ -10159,7 +10172,7 @@
 
   /* ★ 定期读一次背包：算「本次挂机获得」的增量（readBag 内部会 applyBagDiff） */
   function pollBagGain() {
-    if (now() - st.bagReadAt < 20000) return;
+    if (now() - st.bagReadAt < 30000) return;   /* ★ v2.6.185：20s → 30s（与背包检查/宠物食物共享缓存） */
     st.bagReadAt = now();
     readBag().then(bag => {
       if (!bag) return;

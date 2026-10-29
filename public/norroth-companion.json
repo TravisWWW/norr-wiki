@@ -1,8 +1,8 @@
 {
-  "version": "2.6.184",
-  "date": "2026-10-29",
-  "notes": "活动进行中(未开挂机)也能触发休整并回活动图继续; 食物页剔除战斗中可用的药水(只用于战斗外回复)",
+  "version": "2.6.185",
+  "date": "2026-10-30",
+  "notes": "合并重复的 /modal 请求：/modal/inventory(readBag+readPetFood) 与 /modal/character(readEquipDur+readPetInfo) 共享按 URL 缓存(30s)；pollBagGain 20s->30s",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 886053,
-  "sha256": "b95cf107e036caba75adeb069fad78b375f8507266ba5ca591c80a55879438af"
+  "size": 886880,
+  "sha256": "e906cc4c9a4b725cb4859b4405065d8dd05157f88a951eeeec4c2821e0b89472"
 }
