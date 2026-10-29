@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.183
+// @version      2.6.184
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -75,6 +75,7 @@
     autoPotion: true,
     hpPotion: '', mpPotion: '',
     potionNoIngredients: true,   // ★ v2.6.172：补药列表剔除「基础食材」（鱼 / 蔬菜 / 水果等原始材料）
+    potionNoCombat: true,        // ★ v2.6.184：补药列表剔除「战斗中可用的药水」（食物页只用于战斗外回复）
     hpPct: 70, mpPct: 30,
     potionDelayMs: 1500,     // ★ 两瓶药之间的最小间隔（避免连点浪费）
     bagList: [],
@@ -192,7 +193,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.183';   // 与 @version 保持一致
+  const SCRIPT_VER = '2.6.184';   // 与 @version 保持一致
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -268,7 +269,7 @@
              gateBusy: false, gateLogAt: 0, combatMap: 0 },   /* ★ v2.6.101：战斗型活动的「进战斗区」状态 */
     /* ★ v2.6.135：Overlord（世界 Boss）自动参战 */
     ovl: { on: false, phase: 'idle', nextEpoch: 0, boss: '', lastPoll: 0, logAt: 0, joinedAt: 0, fought: false, idleLogAt: 0, leaveBusy: false, leaveAt: 0, leaveTries: 0, roomMap: 0, joinMap: 0, enteredAt: 0, goneAt: 0, leaveEvSince: 0, leaveEvAt: 0 },
-    tripManual: false, tripOrigin: null,
+    tripManual: false, tripEvent: false, tripOrigin: null,
     gatherFighting: false,   // 采集模式里"正在打怪"的标记
     repair: { active: false, cooldownUntil: 0, failCount: 0, smith: null, route: null },
     sell: { active: false, cooldownUntil: 0, lastCheck: 0, free: 0, cap: 0, force: false, freeAt: 0 },   // ★ v2.6.78：freeAt = 触发本次行程时用的阈值
@@ -407,6 +408,7 @@
     c.monsterLvMax = Math.max(0, Math.min(999, Math.round(+c.monsterLvMax || 0)));
     c.bagList = Array.isArray(o.bagList) ? o.bagList : [];
     c.potionNoIngredients = c.potionNoIngredients !== false;
+    c.potionNoCombat = c.potionNoCombat !== false;
     c.uiTab = ['idle', 'mc', 'food', 'service', 'speed'].indexOf(o.uiTab) >= 0 ? o.uiTab
             : ((o.uiTab === 'repair' || o.uiTab === 'sell') ? 'service'
             : (o.uiTab === 'battle' ? 'idle' : (o.uiTab === 'gather' ? 'mc' : (o.uiTab === 'potion' ? 'food' : 'idle'))));   // ★ 老标签页迁移
@@ -2428,6 +2430,7 @@
   function heals(it, kind) {
     if (!it || !it.key) return false;
     if (cfg.potionNoIngredients !== false && isRawIngredient(it.key)) return false;   /* ★ v2.6.172：基础食材不当补药 */
+    if (cfg.potionNoCombat !== false && combatUsable(it.key)) return false;   /* ★ v2.6.184：战斗中可用的药水不算「战斗外回复」物品（食物页只列战斗外能用的） */
     const h = healInfo(it.key);
     return kind === 'hp' ? h.life > 0 : h.mana > 0;
   }
@@ -3784,6 +3787,7 @@
     if (st.sell.force) return true;
     if (st.bank.force) return true;                 /* ★ 手动存仓 */
     if (!(st.repair.active || st.sell.active || st.bank.active)) return false;
+    if (st.tripEvent) return true;   /* ★ v2.6.184：活动期间、未开挂机触发的休整 → 行程继续 */
     if (!running) return false;
     /* ★ v2.6.49：统一「回城休整」行程会同时置三个 active，但配置里可能只开了其中一两项 ——
        只要「还开着的任一项」在跑就继续；三项全关才中止。 */
@@ -4781,6 +4785,7 @@
     } finally {
       if (fromActivity) st.tripHome = home0;
       st.repair.active = false; st.bank.active = false; st.sell.active = false;
+      st.tripEvent = false;   /* ★ v2.6.184：行程结束清掉「活动休整」标记 */
       st.sell.freeAt = 0;                      /* ★ v2.6.78：本次行程用的阈值用完即清 */
     }
   }
@@ -5007,8 +5012,11 @@
   /** 触发一次「回城休整」行程（清包 → 存仓 → 修理，按配置）
       reason = 'repair' | 'bag' | 'manual'；detail = 补充说明（耐久明细 / 背包剩余格数） */
   function startRestock(reason, detail) {
-    if (st.repair.active || st.sell.active || st.bank.active || !running) return;
+    if (st.repair.active || st.sell.active || st.bank.active) return;
+    /* ★ v2.6.184：未开挂机时，只有在「进行中的活动」里才允许休整（否则原样不动）。 */
+    if (!running && !eventReturnMap()) return;
     if (!inGame()) return;
+    st.tripEvent = !running;   /* ★ v2.6.184：记录「活动期间、未开挂机」触发的休整 → tripAlive 放行 */
     const why = (RESTOCK_WHY_CN[reason] || reason || '未知原因') + (detail ? '（' + detail + '）' : '');
     const _dest = +activeServiceTown();
     logEvent('回城休整：' + why + (_dest ? ' → 前往「' + townName(_dest) + '」' : ''));

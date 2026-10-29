@@ -1,8 +1,8 @@
 {
-  "version": "2.6.183",
+  "version": "2.6.184",
   "date": "2026-10-29",
-  "notes": "切图卡住恢复提速：MAPLOAD_STUCK_MS 12s->7s；加载页卡住第2次起叠加 loadTravel（打通换图没重画兜底）",
+  "notes": "活动进行中(未开挂机)也能触发休整并回活动图继续; 食物页剔除战斗中可用的药水(只用于战斗外回复)",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 885144,
-  "sha256": "89ac8c6765413c63f7557d64fff59113416fee3274f3c46d142ff8c3d852132b"
+  "size": 886053,
+  "sha256": "b95cf107e036caba75adeb069fad78b375f8507266ba5ca591c80a55879438af"
 }
