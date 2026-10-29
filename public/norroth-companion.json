@@ -1,8 +1,8 @@
 {
-  "version": "2.6.177",
+  "version": "2.6.178",
   "date": "2026-10-29",
-  "notes": "多套活动兼容加固：站在默认活动(Sacred Wilds)大厅时不再被上一次进过的其它活动大厅带偏（eventSetNow 优先级修正）",
+  "notes": "活动大厅按「门位置→等级区间」选门：新活动(如万圣节)门位置与旧活动一致时，按等级走对应的门，不再一律往最近的门(10-19)跑",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 877640,
-  "sha256": "e677805c8c7a946172cb44b8b1de71770b5c6583165bb576e51c79e5b1797ace"
+  "size": 879060,
+  "sha256": "43b00da5e4fa16e80591d38439263e8bb9fcdb1928f15735410e5c971411a5fe"
 }

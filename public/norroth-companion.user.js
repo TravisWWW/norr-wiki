@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.177
+// @version      2.6.178
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -192,7 +192,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.177';   // 与 @version 保持一致
+  const SCRIPT_VER = '2.6.178';   // 与 @version 保持一致
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -5530,6 +5530,11 @@
       combat: { '1158': [1, 9], '1159': [10, 19], '1160': [20, 29], '1161': [30, 39], '1162': [40, 49], '1163': [50, 59] },
       exits: {}, exitGates: {}, gates: {} },
   };
+  /* ★ v2.6.178：活动大厅「等级门位置 → 等级区间下界」实测表（位置与具体活动无关，各活动大厅通用）。
+     来源：Sacred Wilds 大厅实测 2026-10-18（资料汇编 36 章）；用户确认万圣节 Sleepy Hollow 的门位置一致。
+     11-25→10-19 / 17-13→20-29 / 38-13→30-39 / 52-12→40-49 / 54-26→50-59；14-41 = 出活动区域的门（绝不踩）。 */
+  const EVENT_GATE_POS_MIN = { '11-25': 10, '17-13': 20, '38-13': 30, '52-12': 40, '54-26': 50 };
+  const EVENT_GATE_POS_EXIT = { '14-41': 1 };
   /* 当前图是不是「某个活动的大厅」 */
   function isEventLobby(id) {
     const n = +id;
@@ -5564,6 +5569,19 @@
     try { gates = EVENT_LOBBY_GATE_MAP; } catch (e) { /* ignore */ }
     try { combat = EVENT_COMBAT_MAPS; } catch (e) { /* ignore */ }
     return { name: 'The Sacred Wilds', combat: combat, exits: exits, exitGates: exitGates, gates: gates };
+  }
+  /* ★ v2.6.178：某道门通向哪张图：① 本次实测学到  ② 该活动组内置映射  ③ 按「门位置→等级区间」推导该组的战斗图。
+     ③ 是关键：万圣节等新活动的内置门映射为空，但门位置与旧活动一致 → 按位置对应的等级区间找到该组的战斗图，
+     避免「不知道哪道门就挑最近的」导致高等级角色一直往 10-19 的门跑。 */
+  function eventGateTargetOf(set, key) {
+    const learned = (st.event && st.event.gateMap) || {};
+    if (learned[key] !== undefined) return learned[key];
+    if (set.gates && set.gates[key] !== undefined) return set.gates[key];
+    const min = EVENT_GATE_POS_MIN[key];
+    if (min !== undefined) {
+      for (const id in set.combat) { const r = set.combat[id]; if (r && r[0] === min) return +id; }
+    }
+    return undefined;
   }
   function eventCombatTargetId() {
     const lv = +((typeof character === 'object' && character && character.level) || 0);
@@ -5608,8 +5626,9 @@
   function eventCombatGate() {
     const want = eventCombatTargetId();
     if (!want) return null;
-    const rng = eventSetNow().combat[String(want)] || [0, 0];
-    const setName = eventSetNow().name || '活动';
+    const set = eventSetNow();
+    const rng = set.combat[String(want)] || [0, 0];
+    const setName = set.name || '活动';
     const mk = function (g) { return { x: g.x, y: g.y, name: setName + ' (Lv.' + rng[0] + '-' + rng[1] + ')', id: want }; };
     /* ① 本图所有「等级门」格子 */
     const gates = $$q('.map_table .tile_poi[action="level_gate"]').map(function (el) {
@@ -5622,13 +5641,13 @@
     const tried = E.gateTried || {};
     /* ★ v2.6.109：通向 1184（出活动区域的门）的等级门一律不碰 —— 踩了就离开活动。 */
     const isExitGate = function (key) {
-      if (eventSetNow().exitGates[key]) return true;
-      return !!eventSetNow().exits[String(learned[key] || 0)];
+      if (set.exitGates[key] || EVENT_GATE_POS_EXIT[key]) return true;
+      return !!set.exits[String(learned[key] || 0)];
     };
     /* ★ v2.6.108：旧逻辑「按格子名字里的等级区间匹配」是错的 —— 大厅里唯一带 "(Lv.10)" 的格子是
        **回城出口** 'Elundi (Lv.10)'，会被误当成战斗区入口（实测踩过）。现在只认 level_gate 格子 +
        实测/内置的「门→目标图」映射。 */
-    const idOf = function (key) { return (learned[key] !== undefined) ? learned[key] : eventSetNow().gates[key]; };
+    const idOf = function (key) { return eventGateTargetOf(set, key); };
     /* ② 已知通向目标图、且没被实测否掉的门 → 取最近的一道 */
     const good = gates.filter(function (g) { return !isExitGate(g.key) && idOf(g.key) === want; });
     if (good.length) {
