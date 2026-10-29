@@ -1,8 +1,8 @@
 {
-  "version": "2.6.182",
+  "version": "2.6.183",
   "date": "2026-10-29",
-  "notes": "Event优先于挂机(检查不再被导航/战斗挡住, 间隔30s->10s) + 休整维修稳定性(强制重读耐久/等行渲染/按耐久回升验证)",
+  "notes": "切图卡住恢复提速：MAPLOAD_STUCK_MS 12s->7s；加载页卡住第2次起叠加 loadTravel（打通换图没重画兜底）",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 884597,
-  "sha256": "d87d1bd429d9366467a3225c1bff8750e92515ea8eb523b198e7d19edd62d71d"
+  "size": 885144,
+  "sha256": "89ac8c6765413c63f7557d64fff59113416fee3274f3c46d142ff8c3d852132b"
 }

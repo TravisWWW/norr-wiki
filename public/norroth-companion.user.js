@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.182
+// @version      2.6.183
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -192,7 +192,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.182';   // 与 @version 保持一致
+  const SCRIPT_VER = '2.6.183';   // 与 @version 保持一致
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -281,7 +281,7 @@
     nudging: 0,                                    // ★ 卡死强恢复进行中（此期间主循环让路）
     settling: 0,                                   // ★ 兜底[落位] 正在「走开一格再走回」强制同步服务端位置（此期间主循环让路）
     pos: { at: 0, x: 0, y: 0, hits: 0 },           // ★ 兜底[落位] 上一次「走路被打断」的时间/位置（= 可能失同步）
-    mapload: { at: 0, hits: 0 },                   // ★ 兜底[切图卡住] 加载页开始停留的时间 / 连续重试次数
+    mapload: { at: 0, hits: 0, travelTried: 0 },   // ★ 兜底[切图卡住] 加载页开始停留的时间 / 连续重试次数 / 是否已试过 loadTravel
     render: { map: 0, at: 0, hits: 0 },            // ★ 兜底[换图没重画] 上次检查的图 / 开始停留时间 / 连续重画次数
     entity: { at: 0 },                             // ★ 兜底[怪物列表过期] 上次强制拉取实体列表的时间
     userActAt: 0, userFrames: {},                  // ★ 真人操作时间 / 真人手动打开的窗口（自动关弹窗 + 游戏 closeFrames 都要跳过）
@@ -336,7 +336,7 @@
    *  [怪物列表过期] checkEntityFresh()· 状态 st.entity.at            · 判据「距上次强制拉取 >20s」          · 动作「调游戏 fetchTravelData() 重拉实体」 · 不停止（节流 20s）
    *  [抢怪·出发前确认] startMove 入口  · 状态 st.entity.at            · 判据「去打 >3 格外的怪 且 距上次刷新 >6s」· 动作「先 fetchTravelData() 重拉实体，本 tick 不动」 · 不停止（节流 6s）
    *  [到位没触发动作] scheduleArriveAction()· 状态 无（一次性）        · 判据「到位 1.3s 后格子还有 action 且没出对应窗口」· 动作「补一次 execTileAction(action)」；敌人格无 action 则改用 walkTo(同格) 重触发战斗 · 每次到位 1 次
-   *  [切图卡住] checkMapLoad()         · 状态 st.mapload              · 判据「#transition_container 停留 >12s」 · 动作「点游戏 [RETRY] / 预热底图」  · 3 次 → 整页刷新
+   *  [切图卡住] checkMapLoad()         · 状态 st.mapload              · 判据「#transition_container 停留 >7s」 · 动作「点游戏 [RETRY] / 预热底图 / 第2次起叠加 loadTravel」  · 3 次 → 整页刷新
    *  [活动]     eventTick 步骤④        · 状态 st.event.busy/busyAt    · 判据「检查卡住 >20s 或 fetch 超时 8s」 · 动作「AbortController 中断 + 强制释放 busy 重查」 · 不停止（节流 30s）
    *  [走位重试] checkMove !started    · 状态 st.move.retryAt/retries · 判据「900ms 还没发起」               · 动作「abortWalk + 重发 walkTo」     · 上限 8 次 → 拉黑该格 30s
    *  [走位无进展] checkMove 已发起     · 状态 st.move.lastPos/lastPosAt· 判据「4s 位置没变且 walk_to 已空」   · 动作「abortWalk + 重发 walkTo」     · 上限 8 次 → 拉黑该格 30s
@@ -994,7 +994,7 @@
    * 上限：连续 MAPLOAD_MAX 次无效 → 整页刷新（刷新后 autoResume 自动续挂）。
    * 高级参数：不受影响。
    * ───────────────────────────────────────────────────────────── */
-  const MAPLOAD_STUCK_MS = 12000;
+  const MAPLOAD_STUCK_MS = 7000;   /* ★ v2.6.183：12s → 7s —— 切图卡住时更快重试 / 恢复 */
   const MAPLOAD_MAX = 3;
   function mapLoadStuck() {
     try {
@@ -1014,7 +1014,7 @@
   }
   function checkMapLoad() {
     const M = st.mapload;
-    if (!mapLoadStuck()) { M.at = 0; M.hits = 0; return false; }
+    if (!mapLoadStuck()) { M.at = 0; M.hits = 0; M.travelTried = 0; return false; }
     if (!M.at) { M.at = now(); return true; }                 /* 刚开始 → 先给底图时间 */
     if (now() - M.at < MAPLOAD_STUCK_MS) return true;         /* 还在等底图 */
     M.at = now(); M.hits++;
@@ -1028,6 +1028,9 @@
     const rt = document.getElementById('transition_retry');
     const rtShown = rt && getComputedStyle(rt).display !== 'none';
     if (rtShown) humanClick(rt); else prewarmMapImage();
+    /* ★ v2.6.183：加载页卡住也「打通」换图没重画那条兜底 —— 第 2 次起额外调一次 loadTravel()，
+       走游戏自己的整条换图链路（重拉 travel + 重画底图），与 RETRY（只重拉底图）互补；只出手一次。 */
+    if (M.hits >= 2 && !M.travelTried) { M.travelTried = 1; softReloadMap(); }
     logEvent('切图卡住：加载页停留 >' + Math.round(MAPLOAD_STUCK_MS / 1000) + 's → ' + (rtShown ? '点游戏 [RETRY]' : '预热底图') + '（第 ' + M.hits + ' 次）');
     setStatus('切图卡住：正在重试加载地图底图…（第 ' + M.hits + ' 次）');
     return true;
@@ -1195,7 +1198,7 @@
     if (!(cm > 0) || !(rid > 0)) { R.map = 0; R.at = 0; R.hits = 0; return false; }
     if (cm === rid) { R.map = 0; R.at = 0; R.hits = 0; return false; }            /* 渲染已跟上 → 正常 */
     if (R.map !== cm) { R.map = cm; R.at = now(); R.hits = 0; return false; }     /* 刚换图 → 先给客户端时间 */
-    if (mapLoadStuck()) { R.at = now(); return false; }                           /* 加载页还在转 → 交给 checkMapLoad */
+    if (mapLoadStuck()) { R.at = now(); return false; }                           /* 加载页还在转 → 交给 checkMapLoad（它第2次起会叠加 loadTravel） */
     if (now() - R.at < RENDER_STUCK_MS) return false;
     R.at = now(); R.hits++;
     if (R.hits > RENDER_MAX) {
