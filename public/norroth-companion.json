@@ -1,8 +1,8 @@
 {
-  "version": "2.6.185",
+  "version": "2.6.186",
   "date": "2026-10-30",
-  "notes": "合并重复的 /modal 请求：/modal/inventory(readBag+readPetFood) 与 /modal/character(readEquipDur+readPetInfo) 共享按 URL 缓存(30s)；pollBagGain 20s->30s",
+  "notes": "小伴侣 v2.6.186：修复「未开挂机、只勾自动进活动」时进活动后卡死 —— step() 的 !running 分支补上自愈兜底（关挡路弹窗 / 离线结算弹窗 / checkFrozen / checkStuck），并让到位兜底与采集点下拉自愈在活动里放行",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 886880,
-  "sha256": "e906cc4c9a4b725cb4859b4405065d8dd05157f88a951eeeec4c2821e0b89472"
+  "size": 888285,
+  "sha256": "451ec9a2c948d4dac6e858189eed82f677d6cafd540bb150f84137c8268587ec"
 }

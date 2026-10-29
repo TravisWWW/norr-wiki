@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.185
+// @version      2.6.186
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -193,7 +193,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.185';   // 与 @version 保持一致
+  const SCRIPT_VER = '2.6.186';   // 与 @version 保持一致
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -1156,7 +1156,8 @@
     const seq = runSeq, mapId = character.current_map;
     setTimeout(function () {
       try {
-        if (!running || seq !== runSeq || character.current_map !== mapId) return;
+        /* ★ v2.6.186：未开挂机时，只要在活动里，也要走「到位没触发战斗/动作」的兜底（否则活动里到位不开战就干等）。 */
+        if ((!running && !(st.event && st.event.on)) || seq !== runSeq || character.current_map !== mapId) return;
         if (!inGame()) return;
         if (+character.x !== +x || +character.y !== +y) return;   /* 已经走开了 → 不管 */
         if (mapLoadStuck()) return;                               /* 正在换图 → 别插一脚 */
@@ -5291,7 +5292,8 @@
    *   这里每 3 秒对一次账：本图有采集点、但下拉没跟上 → 重新识别。 */
   let _gpAt = 0;
   function gatherPointsTick() {
-    if (!running || !inGame()) return;
+    /* ★ v2.6.186：未开挂机时，活动里也要自愈采集点下拉。 */
+    if ((!running && !(st.event && st.event.on)) || !inGame()) return;
     if (gatherPointFrozen()) return;                        /* ★ 采集点已锁定：不再自愈重填 */
     if (now() - _gpAt < 3000) return;
     _gpAt = now();
@@ -6051,8 +6053,8 @@
         logEvent('活动：检测到活动开启 → 进入（原图 ' + navMapName(E.homeMap) + ' · ' + (E.homePoint || '未设采集点') + '）');
         setStatus('活动开启：进入活动地图…');
         await eventEnterGate(alive);
-        if (!alive()) return;
-        for (let i = 0; i < 30; i++) { await sleep(1000); if (!alive()) return; if (isEventLobby(character.current_map)) break; }
+        if (!alive()) { if (E.phase === 'enter') E.phase = 'idle'; return; }
+        for (let i = 0; i < 30; i++) { await sleep(1000); if (!alive()) { if (E.phase === 'enter') E.phase = 'idle'; return; } if (isEventLobby(character.current_map)) break; }
         if (isEventLobby(character.current_map)) {
           /* ★ v2.6.111：先试「只刷新画面」—— 调游戏 loadTravel() 重画地图 + 对准镜头；
              3 秒后还是没画出活动图（或 loadTravel 被客户端 retryCount>=5 卡成 no-op）→ 退回整页刷新。
@@ -6075,7 +6077,7 @@
         }
         E.phase = 'idle'; logEvent('活动：进入失败（没切到活动图）');
       } catch (e) {
-        if (!alive()) return;
+        if (!alive()) { if (E.phase === 'enter') E.phase = 'idle'; return; }
         E.checkFails = (E.checkFails || 0) + 1;
         E.phase = 'idle';
         logEvent('活动：检查/进入异常 → ' + (e && e.message ? e.message : String(e)) + '（连续 ' + E.checkFails + ' 次）');
@@ -8487,7 +8489,19 @@
     }
     /* ★ v2.6.173：未开挂机 → 只跑「活动」相关逻辑（勾了「自动进活动」即生效，不需要开挂机）。 */
     if (!running) {
+      /* ★ v2.6.186：活动单独运行（未开挂机）时，也要跑「自愈」兜底 —— 否则活动里一旦
+         走位卡死（character.walk_to 挂着但人不动）/ 冒出挡路弹窗 / 离线结算弹窗，就永远卡住。
+         原来整段被 !running 提前 return 跳过；而 checkMove 只处理「walk_to 已空」的停滞，
+         处理不了「walk_to 还挂着」的卡死（那正是活动里最常见的卡法）。 */
       if (hasFrame('frame_Loot')) takeAllLoot();
+      if (eventCombatActive() || (cfg.autoEvent && st.event && st.event.on && isEventLobby(character.current_map))) {
+        sweepStrayFrames();
+        closeIdleResultDialog();
+        checkFrozen();
+        checkStuck();
+        if (st.nudging && now() - st.nudging < 2600) { setStatus('卡住自愈：正在试探走位…'); return; }
+        if (st.settling && now() - st.settling < 40000) { setStatus('落位：正在同步服务端位置…'); return; }
+      }
       if (eventCombatActive()) { ensureAutoBattle(); stepCombat(); return; }
       if (cfg.autoEvent && st.event && st.event.on && isEventLobby(character.current_map)) { stepGather(); return; }
       return;
