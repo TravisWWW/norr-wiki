@@ -1,8 +1,8 @@
 {
-  "version": "2.6.190",
-  "date": "2026-10-30",
-  "notes": "v2.6.190 活动结束被弹出后：取消找返回传送门 + 手动导航回原图，直接交给当前设置的任务（没任务则原地待命）",
+  "version": "2.6.191",
+  "date": "2026-10-31",
+  "notes": "v2.6.191: 新增[画面没刷新]独立看门狗（事件进入/返回期间 step() 被占满、checkMapRender 跑不到时兜底）；活动 Inside Event 退避 + 进入超时主动 loadTravel 重同步",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 919207,
-  "sha256": "09fc663c62bec001272d801ffa66c3527a3f0d7778f106c2e090fd5ad07efbb1"
+  "size": 926419,
+  "sha256": "042f73d94b71c2e94944b69bccb431e1c3e04d0d82bc039f456345bf396f24b1"
 }

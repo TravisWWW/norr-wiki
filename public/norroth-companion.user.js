@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.190
+// @version      2.6.191
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -193,7 +193,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.190';   // 与 @version 保持一致
+  const SCRIPT_VER = '2.6.191';   // 与 @version 保持一致
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -266,7 +266,7 @@
     /* ★ 活动自动进入（采集）：phase = idle | enter | in | return */
     event: { on: false, phase: 'idle', busy: false, homeMap: 0, homePoint: '', homeRes: '', homeType: '', pointName: '', enteredAt: 0, lastCheckAt: 0, timeLeft: null, score: null, lobbyMap: 0,   /* ★ v2.6.176：最后一次进入的活动大厅图 id */
              busyAt: 0, checkAt: 0, checkFails: 0, combatSkipAt: 0, lastLogAt: 0, lastHas: null,
-             gateBusy: false, gateLogAt: 0, combatMap: 0 },   /* ★ v2.6.101：战斗型活动的「进战斗区」状态 */
+             gateBusy: false, gateLogAt: 0, combatMap: 0, insideHits: 0, insideAt: 0 },   /* ★ v2.6.101：战斗型活动的「进战斗区」状态 · ★ v2.6.191 insideHits/insideAt：Inside Event 退避 */
     /* ★ v2.6.135：Overlord（世界 Boss）自动参战 */
     ovl: { on: false, phase: 'idle', nextEpoch: 0, boss: '', lastPoll: 0, logAt: 0, joinedAt: 0, fought: false, idleLogAt: 0, leaveBusy: false, leaveAt: 0, leaveTries: 0, roomMap: 0, joinMap: 0, enteredAt: 0, goneAt: 0, leaveEvSince: 0, leaveEvAt: 0 },
     tripManual: false, tripEvent: false, tripOrigin: null,
@@ -284,6 +284,7 @@
     pos: { at: 0, x: 0, y: 0, hits: 0 },           // ★ 兜底[落位] 上一次「走路被打断」的时间/位置（= 可能失同步）
     mapload: { at: 0, hits: 0, travelTried: 0 },   // ★ 兜底[切图卡住] 加载页开始停留的时间 / 连续重试次数 / 是否已试过 loadTravel
     render: { map: 0, at: 0, hits: 0 },            // ★ 兜底[换图没重画] 上次检查的图 / 开始停留时间 / 连续重画次数
+    render2: { key: '', at: 0, hits: 0 },          // ★ v2.6.191 兜底[画面没刷新] 独立看门狗：上次判定原因 / 开始停留时间 / 连续重画次数
     entity: { at: 0 },                             // ★ 兜底[怪物列表过期] 上次强制拉取实体列表的时间
     userActAt: 0, userFrames: {},                  // ★ 真人操作时间 / 真人手动打开的窗口（自动关弹窗 + 游戏 closeFrames 都要跳过）
     log: [], logOpen: false,                       // 操作日志（环形缓冲）
@@ -335,6 +336,7 @@
    *  [位置同步] syncServerPos()        · 状态 _posSyncAt              · 判据「没有正在走的队列」            · 动作「重发空 walk queue（零移动）」 · 节流 800ms（便宜但通常不够）
    *  [落位]     settleServerPos()      · 状态 st.pos / st.settling    · 判据「走位被打断过 或 调用方 force」· 动作「走开一格再走回（重发寻路）」 · 单次上限 walkTileCore 超时
    *  [换图没重画] scheduleRenderCheck()· 状态 st.render             · 判据「换图后 2.2s .map_table 底图 id != current_map」· 动作「调游戏 loadTravel() 只重画画面 + 对准镜头」 · 看门狗 8s/4 次 → 整页刷新
+   *  [画面没刷新] checkRenderStale()  · 状态 st.render2            · 判据「window.map.id 与 .map_table 底图不一致 / 角色图与渲染图不一致 持续 7s」· 动作「调游戏 loadTravel() 重画」· 独立节拍（不受 running/活动/step 早退影响）· 3 次 → 整页刷新
    *  [怪物列表过期] checkEntityFresh()· 状态 st.entity.at            · 判据「距上次强制拉取 >20s」          · 动作「调游戏 fetchTravelData() 重拉实体」 · 不停止（节流 20s）
    *  [抢怪·出发前确认] startMove 入口  · 状态 st.entity.at            · 判据「去打 >3 格外的怪 且 距上次刷新 >6s」· 动作「先 fetchTravelData() 重拉实体，本 tick 不动」 · 不停止（节流 6s）
    *  [到位没触发动作] scheduleArriveAction()· 状态 无（一次性）        · 判据「到位 1.3s 后格子还有 action 且没出对应窗口」· 动作「补一次 execTileAction(action)」；敌人格无 action 则改用 walkTo(同格) 重触发战斗 · 每次到位 1 次
@@ -1227,6 +1229,54 @@
     logEvent('换图没重画（服务端在 ' + cm + '，客户端还画着 ' + rid + '）→ 调游戏 loadTravel() 重画（第 ' + R.hits + ' 次）');
     setStatus('换图没重画：正在重画地图…（第 ' + R.hits + ' 次）');
     if (!softReloadMap()) R.hits = RENDER_MAX + 1;   /* 游戏没有 loadTravel → 下次直接走刷新分支 */
+    return true;
+  }
+  /* ── 兜底[画面没刷新 / 独立看门狗] ──────────────────────────────
+   * 症状：服务端已换图（甚至已把角色移进活动图），但客户端**没有重画** → .map_table 底图还停在旧图；
+   *       而这段时间事件状态机（eventTick 进入 / 返回期间）会占满 step()，checkMapRender 根本跑不到
+   *       → 画面永远不刷新，也没有任何看门狗触发（实测 2026-10-31：搓料理时进活动必现）。
+   * 判据（独立节拍，不受 running / 活动 / step() 早退影响）：
+   *   · window.map.id（渲染状态）与 .map_table 底图（真正画面）都读得到且**不一致**，持续 RENDER2_STUCK_MS；
+   *   · 或 character.current_map 与渲染状态不一致持续 RENDER2_STUCK_MS（换图没跟上）。
+   * 动作：先 softReloadMap()（调游戏 loadTravel() 只重画画面 / 重拉 travel，不刷新网页）；
+   *       连续 RENDER2_MAX 次仍没对上 → 整页刷新（复用 norroth_render_reload_at 3 分钟防循环）。
+   * 上限：RENDER2_MAX 次 → 刷新页面。
+   * 高级参数：不受影响。
+   * ─────────────────────────────────────────────────────────── */
+  const RENDER2_STUCK_MS = 7000;
+  const RENDER2_MAX = 3;
+  function checkRenderStale() {
+    const R = st.render2 || (st.render2 = { key: '', at: 0, hits: 0 });
+    if (!inGame()) { R.key = ''; R.at = 0; R.hits = 0; return false; }
+    if (mapLoadStuck()) { R.key = ''; R.at = 0; R.hits = 0; return false; }   /* 加载页在转 → 交给 checkMapLoad */
+    const cm = +character.current_map || 0;
+    const rid = renderMapId();       /* window.map.id —— 渲染状态 */
+    const drawn = renderedMapId();   /* .map_table 底图 —— 真正画面 */
+    let why = '';
+    if (rid > 0 && drawn > 0 && rid !== drawn) why = '画面(' + drawn + ')与渲染状态(' + rid + ')不一致';
+    else if (rid > 0 && cm > 0 && cm !== rid) why = '角色在 ' + cm + '，渲染状态还是 ' + rid;
+    if (!why) { R.key = ''; R.at = 0; R.hits = 0; return false; }
+    if (R.key !== why) { R.key = why; R.at = now(); R.hits = 0; return false; }   /* 刚出现 → 先给客户端时间 */
+    if (now() - R.at < RENDER2_STUCK_MS) return false;
+    R.at = now(); R.hits++;
+    if (R.hits > RENDER2_MAX) {
+      let _last = 0;
+      try { _last = +(sessionStorage.getItem('norroth_render_reload_at') || 0); } catch (e) { /* ignore */ }
+      if (_last && now() - _last < 180000) {
+        R.hits = 0; R.at = now();
+        logEvent('画面没刷新：3 分钟内已刷新过一次 → 本次不再刷新（避免刷新循环）');
+        return true;
+      }
+      try { sessionStorage.setItem('norroth_render_reload_at', String(now())); } catch (e) { /* ignore */ }
+      logEvent('画面没刷新：loadTravel 连续 ' + RENDER2_MAX + ' 次无效（' + why + '）→ 刷新页面');
+      setStatus('画面没刷新，正在刷新页面…');
+      saveCfgNow();
+      setTimeout(function () { try { location.reload(); } catch (e) { /* ignore */ } }, 300);
+      return true;
+    }
+    logEvent('画面没刷新（' + why + '）→ 调游戏 loadTravel() 重画（第 ' + R.hits + ' 次）');
+    setStatus('画面没刷新：正在重画地图…（第 ' + R.hits + ' 次）');
+    if (!softReloadMap()) R.hits = RENDER2_MAX + 1;
     return true;
   }
   /* ── 兜底[怪物列表过期] ─────────────────────────────────────────
@@ -5725,6 +5775,7 @@
     E.gateBusy = false; E.gateLogAt = 0; E.combatMap = 0;   /* ★ v2.6.101 */
     E.dungeonLogAt = 0;                                     /* ★ v2.6.108 */
     E.gateMap = {}; E.gateTried = {};                       /* ★ v2.6.108：大厅等级门「门→目标图」实测表 / 已试过的门 */
+    E.insideHits = 0; E.insideAt = 0;                       /* ★ v2.6.191：Inside Event 退避计数 */
   }
   /* 活动是否开启：/modal/activities 里有没有 Event Gate 的 Join 按钮（实测：活动结束按钮消失） */
   async function eventActivitiesHasJoin() {
@@ -5766,7 +5817,7 @@
       try {
         const r = await fetch('/modal/event_gate', { credentials: 'same-origin', headers: { 'X-Requested-With': 'XMLHttpRequest' } });
         const t = await r.text();
-        if (/Failed\s*:\s*Inside Event/i.test(t)) { logEvent('活动：进入被拒（Failed: Inside Event）→ 当前在副本 / 塔里，先出副本再进'); return false; }
+        if (/Failed\s*:\s*Inside Event/i.test(t)) { logEvent('活动：进入被拒（Failed: Inside Event）→ 当前在副本 / 塔里，先出副本再进'); return 'inside'; }
       } catch (e) { /* 探测失败不阻塞，继续走 createDialog */ }
       if (!alive()) return false;
       humanDialog('Event Gate', '', 'ajax', '/modal/event_gate', undefined, alive);
@@ -6014,7 +6065,7 @@
         if (!has) {
           /* 诊断日志：状态变化（开启→关闭）必记；状态不变则 5 分钟一条心跳，避免每 30s 刷屏 */
           if (E.lastHas !== false) { E.lastLogAt = now(); logEvent('活动：未开启'); }
-          E.lastHas = false; E.checkFails = 0;
+          E.lastHas = false; E.checkFails = 0; E.insideHits = 0;
           return;
         }
         E.lastHas = true; E.checkFails = 0;
@@ -6032,8 +6083,21 @@
         E.phase = 'enter';
         logEvent('活动：检测到活动开启 → 进入（原图 ' + navMapName(E.homeMap) + ' · ' + (E.homePoint || '未设采集点') + '）');
         setStatus('活动开启：进入活动地图…');
-        await eventEnterGate(alive);
+        const _gateRes = await eventEnterGate(alive);
         if (!alive()) { if (E.phase === 'enter') E.phase = 'idle'; return; }
+        /* ★ v2.6.191：服务端明确回「Failed: Inside Event」= 角色已在活动 / 副本 / 塔里。
+           别再干等 30s、也别下一拍立刻重试（会一直撞 Inside Event 刷屏）——
+           先让客户端画面 / 状态与服务器同步（loadTravel 重拉 travel），并按 30s→60s→120s→240s→300s 退避。 */
+        if (_gateRes === 'inside') {
+          E.phase = 'idle';
+          E.insideHits = (E.insideHits || 0) + 1;
+          const _bo = Math.min(300000, 30000 * Math.pow(2, Math.min(E.insideHits - 1, 4)));
+          E.lastCheckAt = now() + _bo;
+          logEvent('活动：进入被拒（已在活动 / 副本内）→ 第 ' + E.insideHits + ' 次，' + Math.round(_bo / 1000) + 's 后再试；先调 loadTravel() 重同步画面 / 状态');
+          setStatus('活动：已在活动 / 副本内，' + Math.round(_bo / 1000) + 's 后再试…');
+          softReloadMap();   /* 若其实已进活动图只是没画出来 → 这一步会把它画出来 + 重同步 current_map */
+          return;
+        }
         for (let i = 0; i < 30; i++) { await sleep(1000); if (!alive()) { if (E.phase === 'enter') E.phase = 'idle'; return; } if (isEventLobby(character.current_map)) break; }
         if (isEventLobby(character.current_map)) {
           /* ★ v2.6.111：先试「只刷新画面」—— 调游戏 loadTravel() 重画地图 + 对准镜头；
@@ -6041,6 +6105,7 @@
              （v2.6.10 的老办法是直接 location.reload()，能修但太重。） */
           logEvent('活动：已进入活动图 → 先调游戏 loadTravel() 重画（不刷新网页）');
           E.phase = 'idle';
+          E.insideHits = 0;
           softReloadMap();
           setTimeout(function () {
             try {
@@ -6055,7 +6120,25 @@
           }, 3000);
           return;
         }
-        E.phase = 'idle'; logEvent('活动：进入失败（没切到活动图）');
+        /* ★ v2.6.191：等满 30s 仍没切到活动图 —— 很可能是「服务端已换图，但客户端画面 / 状态没同步」
+           （实测 2026-10-31：搓料理时进活动，服务端已把角色移进活动，客户端 current_map 却还是原图、
+             画面也没重画 → 报「进入失败」，下一拍再进就撞 Inside Event）。
+           这里主动调游戏 loadTravel() 重拉 travel（重同步 current_map + 重画画面），2.5s 后再判一次。 */
+        E.phase = 'idle';
+        logEvent('活动：进入后 30s 仍未切到活动图 → 调 loadTravel() 重同步画面 / 状态');
+        setStatus('活动：进入后画面没同步，正在重同步…');
+        softReloadMap();
+        setTimeout(function () {
+          try {
+            if (!alive() || !inGame()) return;
+            if (isEventLobby(character.current_map)) {
+              logEvent('活动：重同步后确认已进入活动图「' + currentMapName() + '」→ 交给活动逻辑继续');
+              recenterCamera();
+              return;
+            }
+            logEvent('活动：重同步后仍未进入活动图（画面 / 状态没跟上）→ 交给画面看门狗，稍后重试');
+          } catch (e) { /* ignore */ }
+        }, 2500);
       } catch (e) {
         if (!alive()) { if (E.phase === 'enter') E.phase = 'idle'; return; }
         E.checkFails = (E.checkFails || 0) + 1;
@@ -10680,6 +10763,10 @@
     if (!inGame()) return;
     try { step(); } catch (e) { /* ignore */ }
   }, TICK);
+  /* ★ v2.6.191：独立[画面没刷新]看门狗 —— 不受 running / 活动 / step() 早退影响。
+     事件进入 / 返回期间 eventTick 会占满 step()（提前 return），checkMapRender 根本跑不到 →
+     画面卡在旧图时没有任何看门狗能触发。这里用独立节拍兜底：检测「渲染状态 vs 真正画面」不一致 → 重画 / 刷新。 */
+  rhythmTimer(function () { try { checkRenderStale(); } catch (e) { /* ignore */ } }, 2000);
 
   const spdBoot = setInterval(() => {
     spdTries++;
@@ -12844,6 +12931,7 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
         watch: { exp: st.watch.exp, kills: st.watch.kills, heals: st.watch.heals },
         frozen: { pos: st.frozen.pos, hits: st.frozen.hits },
         ghost: { act: st.ghost.act, hits: st.ghost.hits, heldMs: st.ghost.at ? (now() - st.ghost.at) : 0 },
+        render2: { key: st.render2 ? st.render2.key : '', hits: st.render2 ? st.render2.hits : 0 },
         event: { on: !!st.event.on, phase: st.event.phase, busy: !!st.event.busy,
                  busyHeldMs: st.event.busyAt ? (now() - st.event.busyAt) : null,
                  lastCheckAgoMs: st.event.lastCheckAt ? (now() - st.event.lastCheckAt) : null,
