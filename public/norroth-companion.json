@@ -1,8 +1,8 @@
 {
-  "version": "2.6.197",
+  "version": "2.6.198",
   "date": "2026-10-31",
-  "notes": "修：目的地城镇就在隔壁时，走到传送站图后误开传送站把自己传走、来回横跳（休整/回城导航失败）",
+  "notes": "进活动图不再干等 30s 兜底：2s 未同步就主动 loadTravel() 重画",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 934077,
-  "sha256": "f241e3fbdda60f414aa903c81720b3ea2d36848b23922ec6fcf3b9eb95b1cf8b"
+  "size": 934926,
+  "sha256": "e3f15170c8dfc0fc98ac08513a3afa0afeb38233e24f33ba5641403910cfa212"
 }

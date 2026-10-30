@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.197
+// @version      2.6.198
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -193,7 +193,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.197';   // 与 @version 保持一致
+  const SCRIPT_VER = '2.6.198';   // 与 @version 保持一致
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -6230,7 +6230,22 @@
           softReloadMap();   /* 若其实已进活动图只是没画出来 → 这一步会把它画出来 + 重同步 current_map */
           return;
         }
-        for (let i = 0; i < 30; i++) { await sleep(1000); if (!alive()) { if (E.phase === 'enter') E.phase = 'idle'; return; } if (isEventLobby(character.current_map)) break; }
+        /* ★ v2.6.198：实测进活动图基本必然「服务端已换图、客户端 current_map / 画面没跟上」，
+           原来要干等满 30s 才兜底 → 每次进活动都先卡 30s。改成：先给客户端 2s 自己同步，
+           还没同步就主动调 loadTravel() 重同步（重拉 travel → 更新 current_map + 重画画面），
+           之后每秒再看一次，最多 15s（正常情况下重同步后 1~2s 内就切进活动图）。 */
+        for (let i = 0; i < 15; i++) {
+          await sleep(1000);
+          if (!alive()) { if (E.phase === 'enter') E.phase = 'idle'; return; }
+          if (isEventLobby(character.current_map)) break;
+          if (i === 1 && !E.enterResync) {
+            E.enterResync = 1;
+            logEvent('活动：进入后未同步 → 主动重画画面');
+            setStatus('活动：进入后画面没同步，正在重同步…');
+            softReloadMap();
+          }
+        }
+        E.enterResync = 0;
         if (isEventLobby(character.current_map)) {
           /* ★ v2.6.111：先试「只刷新画面」—— 调游戏 loadTravel() 重画地图 + 对准镜头；
              3 秒后还是没画出活动图（或 loadTravel 被客户端 retryCount>=5 卡成 no-op）→ 退回整页刷新。
@@ -6252,12 +6267,12 @@
           }, 3000);
           return;
         }
-        /* ★ v2.6.191：等满 30s 仍没切到活动图 —— 很可能是「服务端已换图，但客户端画面 / 状态没同步」
+        /* ★ v2.6.191 / v2.6.198：等满 15s 仍没切到活动图 —— 很可能是「服务端已换图，但客户端画面 / 状态没同步」
            （实测 2026-10-31：搓料理时进活动，服务端已把角色移进活动，客户端 current_map 却还是原图、
              画面也没重画 → 报「进入失败」，下一拍再进就撞 Inside Event）。
            这里主动调游戏 loadTravel() 重拉 travel（重同步 current_map + 重画画面），2.5s 后再判一次。 */
         E.phase = 'idle';
-        logEvent('活动：进入后 30s 仍未切到活动图 → 调 loadTravel() 重同步画面 / 状态');
+        logEvent('活动：进入后 15s 仍未切到活动图 → 再调 loadTravel() 重同步画面 / 状态');
         setStatus('活动：进入后画面没同步，正在重同步…');
         softReloadMap();
         setTimeout(function () {
