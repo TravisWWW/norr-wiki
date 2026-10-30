@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.194
+// @version      2.6.195
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -193,7 +193,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.194';   // 与 @version 保持一致
+  const SCRIPT_VER = '2.6.195';   // 与 @version 保持一致
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -6245,11 +6245,16 @@
     try { if (O && O.phase !== 'idle' && ovlBossTile()) return true; } catch (e) { /* ignore */ }
     return false;
   }
+  /* ★ v2.6.195：Overlord 倒计时接口 /modal/overlord_chamber 冷启动实测要 ~18s（HTTP 缓存热起来后 <0.5s），
+     而原来复用了 EVENT_CHECK_TIMEOUT_MS=8s → 每次都在 8s 被 AbortController 中断 → 响应收不全 → 缓存永远热不起来
+     → ovlReadCountdown 永远返回 epoch 0 → O.nextEpoch 一直是 0 → 「到参战点(near)」永远不成立 → Overlord 完全不触发
+     （日志里连一条 Overlord 都没有）。这里给 Overlord 单独一个宽松超时（30s），让第一次冷请求能跑完、把缓存热起来。 */
+  const OVL_FETCH_TIMEOUT_MS = 30000;
   async function ovlReadCountdown() {
     let ac = null, timer = 0;
     try {
       ac = (typeof AbortController === 'function') ? new AbortController() : null;
-      if (ac) timer = setTimeout(function () { try { ac.abort(); } catch (e) { /* ignore */ } }, EVENT_CHECK_TIMEOUT_MS);
+      if (ac) timer = setTimeout(function () { try { ac.abort(); } catch (e) { /* ignore */ } }, OVL_FETCH_TIMEOUT_MS);
       const r = await fetch('/modal/overlord_chamber', { credentials: 'same-origin', headers: { 'X-Requested-With': 'XMLHttpRequest' }, signal: ac ? ac.signal : undefined });
       const t = await r.text();
       const m = /data-countdown-epoch=["'](\d+)["']/.exec(t);
@@ -6459,7 +6464,8 @@
     /* 没到点：定期读倒计时（日志 + 到点前 N 秒开始加密轮询） */
     const due = O.nextEpoch ? (O.nextEpoch * 1000 - now()) : Infinity;
     const near = !!O.nextEpoch && due <= (+cfg.ovlLeadSec || 0) * 1000;
-    const interval = near && O.finishedEpoch !== O.nextEpoch ? 3000 : 60000;
+    /* ★ v2.6.195：还没读到刷新时间（nextEpoch=0）→ 15s 就重试一次，别等满 60s（冷请求超时后要尽快补上）。 */
+    const interval = (near && O.finishedEpoch !== O.nextEpoch) ? 3000 : (O.nextEpoch ? 60000 : 15000);
     /* ★ v2.6.180：Overlord 优先于活动 —— 到参战点但还在活动里 → 先退出活动。
        （用 near：提前 ovlLeadSec 秒开始退，避免等 HUD 按钮出现才退来不及）。 */
     if (O.nextEpoch && near && O.finishedEpoch !== O.nextEpoch &&

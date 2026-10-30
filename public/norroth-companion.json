@@ -1,8 +1,8 @@
 {
-  "version": "2.6.194",
+  "version": "2.6.195",
   "date": "2026-10-31",
-  "notes": "v2.6.194: 维修检查诊断日志写全判定依据（阈值 + 最低装备 + 最低工具 + 采集读数），避免只看工具耐久误判",
+  "notes": "v2.6.195: 修 Overlord 完全不触发 —— /modal/overlord_chamber 冷请求 ~18s 被 8s 超时中断导致倒计时永远读不到(nextEpoch=0)；给 Overlord 单独 30s 超时 + 未读到刷新时间时 15s 重试",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 930908,
-  "sha256": "23d3e56e0d907a38b2508011c775099acaf6c0bb1d8df383f4f1505459fb8b15"
+  "size": 931713,
+  "sha256": "92c5de07a4353410fb223d9eb7aba8dba82fe84cd009fd8d087093780ce14fa0"
 }
