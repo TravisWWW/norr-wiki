@@ -1,8 +1,8 @@
 {
-  "version": "2.6.195",
+  "version": "2.6.196",
   "date": "2026-10-31",
-  "notes": "v2.6.195: 修 Overlord 完全不触发 —— /modal/overlord_chamber 冷请求 ~18s 被 8s 超时中断导致倒计时永远读不到(nextEpoch=0)；给 Overlord 单独 30s 超时 + 未读到刷新时间时 15s 重试",
+  "notes": "操作日志一行化：每行≤15字，面板加宽到 546px",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 931713,
-  "sha256": "92c5de07a4353410fb223d9eb7aba8dba82fe84cd009fd8d087093780ce14fa0"
+  "size": 933288,
+  "sha256": "155bb4cb14b8c5355ac617a0664ea7416f0abce30f9ed135804ab876c55914f7"
 }

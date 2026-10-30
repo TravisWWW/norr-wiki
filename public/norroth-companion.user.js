@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.195
+// @version      2.6.196
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -193,7 +193,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.195';   // 与 @version 保持一致
+  const SCRIPT_VER = '2.6.196';   // 与 @version 保持一致
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -1038,7 +1038,7 @@
     if (now() - M.at < MAPLOAD_STUCK_MS) return true;         /* 还在等底图 */
     M.at = now(); M.hits++;
     if (M.hits > MAPLOAD_MAX) {
-      logEvent('切图卡住：底图连续 ' + MAPLOAD_MAX + ' 次重试无效 → 刷新页面');
+      logEvent('切图卡→刷新页面');
       setStatus('切图卡住，正在刷新页面…');
       saveCfgNow();
       setTimeout(function () { try { location.reload(); } catch (e) { /* ignore */ } }, 300);
@@ -1050,7 +1050,7 @@
     /* ★ v2.6.183：加载页卡住也「打通」换图没重画那条兜底 —— 第 2 次起额外调一次 loadTravel()，
        走游戏自己的整条换图链路（重拉 travel + 重画底图），与 RETRY（只重拉底图）互补；只出手一次。 */
     if (M.hits >= 2 && !M.travelTried) { M.travelTried = 1; softReloadMap(); }
-    logEvent('切图卡住：加载页停留 >' + Math.round(MAPLOAD_STUCK_MS / 1000) + 's → ' + (rtShown ? '点游戏 [RETRY]' : '预热底图') + '（第 ' + M.hits + ' 次）');
+    logEvent('切图卡 ' + Math.round(MAPLOAD_STUCK_MS / 1000) + 's→重试(第' + M.hits + '次)');
     setStatus('切图卡住：正在重试加载地图底图…（第 ' + M.hits + ' 次）');
     return true;
   }
@@ -1233,13 +1233,13 @@
         return true;
       }
       try { sessionStorage.setItem('norroth_render_reload_at', String(now())); } catch (e) { /* ignore */ }
-      logEvent('换图没重画：loadTravel 连续 ' + RENDER_MAX + ' 次无效 → 刷新页面');
+      logEvent('换图没画→刷新页面');
       setStatus('换图没重画，正在刷新页面…');
       saveCfgNow();
       setTimeout(function () { try { location.reload(); } catch (e) { /* ignore */ } }, 300);
       return true;
     }
-    logEvent('换图没重画（服务端在 ' + cm + '，客户端还画着 ' + rid + '）→ 调游戏 loadTravel() 重画（第 ' + R.hits + ' 次）');
+    logEvent('换图没画→重画(第' + R.hits + '次)');
     setStatus('换图没重画：正在重画地图…（第 ' + R.hits + ' 次）');
     if (!softReloadMap()) R.hits = RENDER_MAX + 1;   /* 游戏没有 loadTravel → 下次直接走刷新分支 */
     return true;
@@ -1281,13 +1281,13 @@
         return true;
       }
       try { sessionStorage.setItem('norroth_render_reload_at', String(now())); } catch (e) { /* ignore */ }
-      logEvent('画面没刷新：loadTravel 连续 ' + RENDER2_MAX + ' 次无效（' + why + '）→ 刷新页面');
+      logEvent('画面没刷→刷新页面');
       setStatus('画面没刷新，正在刷新页面…');
       saveCfgNow();
       setTimeout(function () { try { location.reload(); } catch (e) { /* ignore */ } }, 300);
       return true;
     }
-    logEvent('画面没刷新（' + why + '）→ 调游戏 loadTravel() 重画（第 ' + R.hits + ' 次）');
+    logEvent('画面没刷→重画(第' + R.hits + '次)');
     setStatus('画面没刷新：正在重画地图…（第 ' + R.hits + ' 次）');
     if (!softReloadMap()) R.hits = RENDER2_MAX + 1;
     return true;
@@ -1369,13 +1369,97 @@
     try {
       const rec = JSON.parse(localStorage.getItem(STOP_KEY) || 'null');
       if (rec && rec.reason) {
-        st.log.push({ t: rec.t || '--:--:--', msg: '（上次运行结束）' + rec.reason });
+        st.log.push({ t: rec.t || '--:--:--', msg: '（上次运行结束）' + rec.reason, short: shortLogMsg('（上次运行结束）' + rec.reason) });
         if (st.log.length > LOG_MAX) st.log.splice(0, st.log.length - LOG_MAX);
       }
     } catch (e) { /* ignore */ }
   }
   /* 相同消息合并；指定 key 的高频过程按固定时间段汇总，错误和启停仍单列。
      firstAt 固定窗口起点，避免持续运行时一条摘要无限累加。 */
+  /* ★ v2.6.196：操作日志「一行化」精简。
+     面板窄，长句会折行、读起来乱。这里把常见长句压短，并保证显示宽度
+     ≤ 15 个汉字（全角按 2、半角按 1 计）。仅影响面板显示；导出的诊断日志
+     仍保留完整原文，方便排查。 */
+  function logWidth(s) {
+    let w = 0;
+    for (let i = 0; i < s.length; i++) w += s.charCodeAt(i) >= 0x1100 ? 2 : 1;
+    return w;
+  }
+  const LOG_ABBR = [
+    ['活动：检测到活动开启', '活动开启'],
+    ['Overlord', 'OL'],
+    ['世界地图传送', '世界传送'],
+    ['世界地图数据', '世界数据'],
+    ['挂机地图已锁定', '锁定图'],
+    ['挂机地图已释放', '解锁挂机图'],
+    ['挂机地图替换', '换锁定图'],
+    ['已回到挂机地图', '已回图'],
+    ['回挂机地图', '回图'],
+    ['挂机地图', '挂机图'],
+    ['多角色诊断', 'MC诊断'],
+    ['多角色校验', 'MC校验'],
+    ['多角色离线', 'MC离线'],
+    ['多角色', 'MC'],
+    ['传送站', '传送'],
+    ['走私路线', '走私'],
+    ['爬塔任务', '塔任务'],
+    ['导航待办', '待办'],
+    ['维修检查', '维修'],
+    ['检测到活动开启', '活动开启'],
+    ['Failed: Inside Event', '副本内'],
+    ['Failed: Inside', '副本内'],
+    ['已到刷新时间', '已刷新'],
+    ['已进入活动图', '已进活动图'],
+    ['已离开活动地图', '已离活动图'],
+    ['前往战斗区', '去战斗区'],
+    ['战斗区', '战区'],
+    ['走位无进展', '走位卡'],
+    ['换图后没重画', '换图没画'],
+    ['换图没重画', '换图没画'],
+    ['画面没刷新', '画面没刷'],
+    ['切图卡住', '切图卡'],
+    ['幽灵战斗', '幽灵战'],
+    ['回到前台', '回前台'],
+    ['角色阵亡', '阵亡'],
+    ['已装备工具', '工具'],
+    ['已装备', '装备'],
+    ['自动战斗', '自动战'],
+    ['，', ' '],
+    ['。', ' '],
+    ['（', '('],
+    ['）', ')'],
+    ['「', '['],
+    ['」', ']'],
+    ['：', ' '],
+    ['、', '/'],
+    [' → ', '→'],
+    ['→ ', '→'],
+    [' · ', '·']
+  ];
+  function shortLogMsg(msg) {
+    let s = String(msg);
+    for (let i = 0; i < LOG_ABBR.length; i++) {
+      if (s.indexOf(LOG_ABBR[i][0]) >= 0) s = s.split(LOG_ABBR[i][0]).join(LOG_ABBR[i][1]);
+    }
+    if (logWidth(s) > 28) {
+      /* 先丢掉第一个括号起的补充说明（通常是次要信息），能省则省 */
+      const m = s.match(/[（(\[]/);
+      if (m && m.index > 0) {
+        const t = s.slice(0, m.index).trim();
+        if (logWidth(t) >= 6 && logWidth(t) <= 28) s = t;
+      }
+    }
+    if (logWidth(s) > 28) {
+      let w = 0, out = "";
+      for (let i = 0; i < s.length; i++) {
+        const cw = s.charCodeAt(i) >= 0x1100 ? 2 : 1;
+        if (w + cw > 26) break;
+        w += cw; out += s[i];
+      }
+      s = out + "…";
+    }
+    return s;
+  }
   function logEvent(msg, opts) {
     opts = opts || {};
     const d = new Date();
@@ -1392,7 +1476,7 @@
       if (key ? e.key === key : (i === st.log.length - 1 && !e.key && e.msg === msg)) { index = i; break; }
     }
     const previous = index >= 0 ? st.log.splice(index, 1)[0] : null;
-    st.log.push({ t: t, msg: msg, key: key, n: (previous ? previous.n || 1 : 0) + count,
+    st.log.push({ t: t, msg: msg, short: shortLogMsg(msg), key: key, n: (previous ? previous.n || 1 : 0) + count,
       firstAt: previous ? previous.firstAt : at, firstT: previous ? previous.firstT : t, unit: opts.unit || '次', scope: runSeq });
     if (st.log.length > LOG_MAX) st.log.splice(0, st.log.length - LOG_MAX);
     // 批量渲染与保存，短时连发只刷新一次面板。
@@ -1400,7 +1484,9 @@
   }
 
   function logEntryText(e, clean) {
-    return (clean ? clean(e.msg) : String(e.msg)) + (e.n > 1 ? '（本段 ' + e.n + (e.unit || '次') + '）' : '');
+    const base = clean ? clean(e.msg) : String(e.short || shortLogMsg(e.msg));
+    if (e.n <= 1) return base;
+    return base + (clean ? ('（本段 ' + e.n + (e.unit || '次') + '）') : ('×' + e.n));
   }
 
   function renderLog() {
@@ -2200,7 +2286,7 @@
        但 can_travel 卡死（幽灵寻路）也是「发呆」的一种，所以只宽限 10s。 */
     if (window.can_travel === false && now() - m.at < 10000) m.lastPosAt = now();
     if (now() - (m.lastPosAt || m.at) > MOVE_STALL_MS && !character.walk_to && !gameBusyAction()) {
-      logEvent('走位无进展（' + Math.round(MOVE_STALL_MS / 1000) + 's 位置没变且 walk_to 已空）→ 重发 ' + m.label);
+      logEvent('走位卡 重发 ' + m.label);
       if (!resendMove(m, MOVE_STALL_MAX)) {
         blacklistTile(goal.tx + '-' + goal.ty, 30000);
         logEvent('走位无进展，已跳过 ' + m.label);
@@ -4755,8 +4841,9 @@
       const _th = Math.max(1, jitterVal(+cfg.repairDurPct || 15));
       const _g = lastGatherDur();
       const _fmt = function (x) { return x ? ('「' + (x.name || '?') + '」' + x.cur + '/' + x.max + '（' + Math.round(x.pct * 100) + '%）') : '—'; };
-      logEvent('维修检查：阈值 ' + _th + '%｜最低装备 ' + _fmt(_w) + '｜最低工具 ' + _fmt(_tw)
-        + (_g ? ('｜采集读数 ' + _g.cur) : '') + ' → 判定 = ' + (reason ? (REPAIR_REASON_CN[reason] || reason) : '无需维修'));
+      const _pct = function (x) { return x ? (Math.round(x.pct * 100) + '%') : '—'; };
+      logEvent('维修 工具' + _pct(_tw) + ' 装备' + _pct(_w)
+        + ' → ' + (reason ? (reason === 'broken' ? '破损' : '耐久低') : '无需'));
     } catch (e) { /* ignore */ }
     out.needRepair = (opts.repair === false) ? false : (!!reason || !!manual);   // 手动模式：不看本地判断，无条件问一次游戏菜单
     let bag = null;
@@ -5589,7 +5676,7 @@
           st.gatherResync = 0;
           const n2 = mcAdjWalkTile(spot.x, spot.y);
           if (n2) {
-            logEvent('采集看门狗：进度条一直不转 → 走开一格再走回，强制同步服务端位置');
+            logEvent('采集卡→走开再走回');
             closeGatheringWindows();
             startMove(n2[0], n2[1], 'gather', '同步采集点');
             return;
@@ -6096,7 +6183,7 @@
       const held = now() - (E.busyAt || 0);
       if (held < EVENT_CHECK_STUCK_MS) return false;
       E.busy = false; E.checkFails = (E.checkFails || 0) + 1;
-      logEvent('活动：上次检查卡住 ' + Math.round(held / 1000) + 's → 强制放弃并重查（连续 ' + E.checkFails + ' 次）');
+      logEvent('活动 检查卡住 ' + Math.round(held / 1000) + 's→重查');
     }
     E.lastCheckAt = now();
     E.busy = true; E.busyAt = now();
@@ -6924,7 +7011,7 @@
       setTimeout(() => { try { location.reload(); } catch (e) { /* ignore */ } }, 300);
       return;
     }
-    logEvent('走位卡死，已强恢复（第 ' + F.hits + ' 次' + (nudged ? '，试走 ' + nudged + ' 个方向' : '') + '）');
+    logEvent('走位卡死→强恢复(第' + F.hits + '次)');
     setStatus('检测到走位卡死，已复位（第 ' + F.hits + ' 次）…');
   }
 
@@ -6959,7 +7046,7 @@
     st.move = null; st.reach = null; st.blacklist = {};
     if (t) blacklistTile(t.key, 60000);
     st.target = null;
-    logEvent('卡住自愈（' + cfg.stuckSec + 's 无任何进展，第 ' + W.heals + ' 次）' + (t ? '，跳过 ' + (t.name || t.key) : ''));
+    logEvent('卡住自愈(第' + W.heals + '次)' + (t ? ' 跳过' + (t.name || t.key) : ''));
     setStatus('检测到卡住，已自动复位（第 ' + W.heals + ' 次）…');
   }
 
@@ -7010,13 +7097,13 @@
       }
     } catch (e) { /* ignore */ }
     if (G.hits >= GHOST_MAX) {
-      logEvent('幽灵战斗：current_action 卡在「' + stuckAct + '」' + GHOST_MAX + ' 次强恢复无效 → 自动刷新页面');
+      logEvent('幽灵战→刷新页面');
       setStatus('战斗卡死（画面没弹出），正在刷新页面…');
       saveCfgNow();
       setTimeout(function () { try { location.reload(); } catch (e) { /* ignore */ } }, 300);
       return true;
     }
-    logEvent('幽灵战斗：current_action 卡在「' + stuckAct + '」' + Math.round(GHOST_ACTION_MS / 1000) + 's 无进展 → 已复位' + (refought ? '并补开战' : '') + '（第 ' + G.hits + ' 次）');
+    logEvent('幽灵战→已复位(第' + G.hits + '次)' + (refought ? ' 补开战' : ''));
     setStatus('检测到战斗卡死（画面没弹出），已复位（第 ' + G.hits + ' 次）…');
     return true;
   }
@@ -7059,7 +7146,7 @@
       _bgAwayAt = 0;
       if (away > 3000) {
         resetWatchdogsAfterBackground();
-        logEvent('回到前台（后台 ' + Math.round(away / 1000) + 's）：已重置看门狗时间戳，避免误判卡死');
+        logEvent('回前台 后台' + Math.round(away / 1000) + 's→重置看门狗');
         if (running) setStatus('已回到前台，继续挂机');
       }
     } catch (e) { /* ignore */ }
@@ -8856,7 +8943,7 @@
   const CSS = `
   #nr-panel{--nr-line:#2f3444;--nr-line2:#3c4356;--nr-muted:#8e93a6;--nr-text:#e7e9f0;
     --nr-accent:#4a9eff;--nr-ok:#35c46a;--nr-warn:#ffc061;--nr-danger:#e05555;
-    position:fixed;z-index:2147483100;width:512px;font:12px/1.5 "Segoe UI",system-ui,"Microsoft YaHei",sans-serif;
+    position:fixed;z-index:2147483100;width:546px;font:12px/1.5 "Segoe UI",system-ui,"Microsoft YaHei",sans-serif;
     color:var(--nr-text);background:linear-gradient(180deg,#1e212a,#13151b);
     border:1px solid #343846;border-radius:12px;
     box-shadow:0 16px 44px rgba(0,0,0,.62),inset 0 1px 0 rgba(255,255,255,.045);
@@ -8917,7 +9004,7 @@
   /* 左右两栏：左边设置，右边信息面板（状态 / 统计 / 日志）。折叠时整块 #nr-body 隐藏，右侧栏一并收起 */
   #nr-body{display:flex;gap:11px;padding:10px;max-height:calc(100vh - 48px);overflow-y:auto;overflow-x:hidden}
   #nr-main{flex:1 1 auto;min-width:0}
-  #nr-side{flex:0 0 202px;min-width:0;border-left:1px solid #2b3040;padding-left:11px;
+  #nr-side{flex:0 0 236px;min-width:0;border-left:1px solid #2b3040;padding-left:11px;
     display:flex;flex-direction:column;gap:0}
   #nr-panel.min #nr-body{display:none}
   #nr-tabs{display:flex;flex-wrap:nowrap;gap:3px;margin-bottom:10px}
@@ -9794,7 +9881,7 @@
       cfg.farmMapLocked = true; saveCfg(); syncFarmMapUI(); updateStats();
       if (cfg.farmMap) {
         const nm = townName(cfg.farmMap) + '（#' + cfg.farmMap + '）';
-        logEvent('挂机地图已锁定：' + nm + ((prev && String(prev) !== String(cfg.farmMap)) ? '（原记录 ' + townName(prev) + ' #' + prev + ' 已替换）' : ''));
+        logEvent('锁定图 ' + nm);
         setStatus('已锁定挂机地图「' + nm + '」（重新开始 / 切图都不会再改；再点一下 = 释放）');
       } else setStatus('已锁定挂机地图（还没记录到地图：进游戏后再点一次，或直接开始挂机）');
     });
@@ -10492,7 +10579,7 @@
     if (cfg.farmMapLocked) {
       if (!cfg.farmMap && curMap) cfg.farmMap = curMap;   // 锁了但还没记录过 → 用当前地图补上
       else if (cfg.farmMap && curMap && String(curMap) !== String(cfg.farmMap)) {
-        logEvent('挂机地图已锁定 → 保持「' + townName(cfg.farmMap) + '」（当前在「' + currentMapName() + '」）');
+        logEvent('保持锁定图 ' + townName(cfg.farmMap));
       }
     } else if (curMap && !(opts && opts.resume) && curMap !== String(RESPAWN_MAP)) cfg.farmMap = curMap;
     else if (curMap && !cfg.farmMap) cfg.farmMap = curMap;   // 兜底：还没有挂机地图时至少记一个
@@ -10615,7 +10702,7 @@
     if (!curMap || curMap === String(RESPAWN_MAP)) return;
     if (!cfg.farmMapLocked) {
       cfg.farmMap = curMap; cfg.farmMapLocked = true; saveCfg(); syncFarmMapUI(); updateStats();
-      logEvent('未锁定挂机地图 → 自动锁定当前地图「' + currentMapName() + '」（#' + curMap + '）');
+      logEvent('自动锁定 ' + currentMapName());
       return;
     }
     if (cfg.farmMap && String(cfg.farmMap) !== curMap) {
@@ -10625,10 +10712,10 @@
         '是否把挂机地图替换为当前地图？',
         '替换', '保持原图');
       if (ok) {
-        logEvent('挂机地图替换：' + townName(cfg.farmMap) + ' #' + cfg.farmMap + ' → ' + currentMapName() + ' #' + curMap);
+        logEvent('换锁定图 ' + currentMapName());
         cfg.farmMap = curMap; saveCfg(); syncFarmMapUI(); updateStats();
       } else {
-        logEvent('保持锁定挂机地图「' + townName(cfg.farmMap) + '」，当前在「' + currentMapName() + '」');
+        logEvent('保持锁定图 ' + townName(cfg.farmMap));
       }
     }
   }
@@ -11520,7 +11607,7 @@
     if (now() - st.homeOffSince < HOME_GUARD_DELAY_MS) return false;
     if (now() - (st.homeGuardAt || 0) < HOME_GUARD_COOLDOWN_MS) return false;
     st.homeGuardAt = now();
-    logEvent('兜底[回图]：被带离挂机地图「' + navMapName(cfg.farmMap) + '」（当前在 ' + currentMapName() + '）→ 自动导航回去');
+    logEvent('被带离→回图 ' + navMapName(cfg.farmMap));
     navSetPending(cfg.farmMap, '回到挂机地图');
     return true;
   }
@@ -12136,14 +12223,14 @@
     st.returning = true;
     try {
       setStatus('阵亡复活：导航回挂机地图「' + townName(dest) + '」…');
-      logEvent('阵亡复活，导航回挂机地图 ' + townName(dest));
+      logEvent('阵亡→回图 ' + townName(dest));
       const ok = await navToMap(dest, { alive: () => running, allowCity: true, allowWild: true });   // ★ 阵亡回图：必须允许传送出来
       st.returnFails = ok ? 0 : ((st.returnFails || 0) + 1);
       if (ok) navClearPending('已到达「' + navMapName(dest) + '」');
-      logEvent(ok ? '已回到挂机地图 ' + townName(dest) : '回挂机地图失败（第 ' + st.returnFails + ' 次），当前在 ' + currentMapName());
+      logEvent(ok ? ('已回图 ' + townName(dest)) : ('回图失败(第' + st.returnFails + '次)'));
       setStatus(ok ? '已回到挂机地图，继续挂机' : '回挂机地图失败：当前在 ' + currentMapName());
     } catch (e) {
-      logEvent('回挂机地图出错：' + (e && e.message ? e.message : String(e)));
+      logEvent('回图出错 ' + (e && e.message ? e.message : String(e)));
     } finally { st.returning = false; }
   }
 
