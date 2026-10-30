@@ -1,8 +1,8 @@
 {
-  "version": "2.6.191",
+  "version": "2.6.192",
   "date": "2026-10-31",
-  "notes": "v2.6.191: 新增[画面没刷新]独立看门狗（事件进入/返回期间 step() 被占满、checkMapRender 跑不到时兜底）；活动 Inside Event 退避 + 进入超时主动 loadTravel 重同步",
+  "notes": "v2.6.192: 副角色行程期间也跑安全看门狗(切图卡住/换图没重画/幽灵战斗)；目的地为城镇+勾城市传送点一律走传送站；维修检测显式纳入已装备工具耐久(不读背包)+采不动信号",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 926419,
-  "sha256": "042f73d94b71c2e94944b69bccb431e1c3e04d0d82bc039f456345bf396f24b1"
+  "size": 929129,
+  "sha256": "4dd3da3fa0cb75e4c7c76b9a8c3bd35ef3f69bd2e053e1c410cae274c01e3fd0"
 }

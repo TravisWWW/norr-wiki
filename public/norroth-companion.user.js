@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.191
+// @version      2.6.192
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -193,7 +193,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.191';   // 与 @version 保持一致
+  const SCRIPT_VER = '2.6.192';   // 与 @version 保持一致
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -3773,11 +3773,29 @@
   /* 需要维修吗？返回原因（'' = 不需要）
    * ★ v1.8.1：只留一个判据 —— 真实耐久 ≤ 维修阈值(%) 就去修。
    *   另外保留游戏自己的「破损（属性失效）」信号：它比阈值更硬，不会误报。 */
+  /* ★ v2.6.192：已装备采集工具（镐/耕耘/斧/钓竿）里耐久最低的那件。
+     只读「已装备」的（/modal/character）—— 用户明确要求：**不读背包**。 */
+  function toolWorst(list) {
+    let worst = null;
+    (list || []).forEach(function (x) {
+      if (!isToolSlot(x.slot)) return;
+      const pct = x.max ? x.cur / x.max : 1;
+      if (!worst || pct < worst.pct) worst = { name: x.name, slot: x.slot, cur: x.cur, max: x.max, pct: pct };
+    });
+    return worst;
+  }
   function repairNeeded() {
     if (isDamaged()) return 'broken';
     const list = (st.dur && st.dur.list) || [];
     const w = durWorst(list);
     if (w && w.pct <= Math.max(1, jitterVal(+cfg.repairDurPct || 15)) / 100) return 'low';
+    /* ★ v2.6.192：工具耐久单独判一次（用户要求「工具耐久也纳入」）—— 即使它不是全局最低，
+       只要 ≤ 阈值也算需维修。（durWorst 其实已涵盖工具，这里显式化 + 便于诊断日志。） */
+    const t = toolWorst(list);
+    if (t && t.pct <= Math.max(1, jitterVal(+cfg.repairDurPct || 15)) / 100) return 'low';
+    /* ★ v2.6.192：采集页显示「采不动」（0 回合 / 0 耐久）也算需维修 —— 工具已耗尽但读数还没刷新时兜底。 */
+    const g = lastGatherDur();
+    if (g && g.cur != null && g.cur <= 0) return 'low';
     return '';
   }
   const REPAIR_REASON_CN = { broken: '装备破损（属性失效）', low: '耐久低于维修阈值' };
@@ -4713,6 +4731,12 @@
     try { await readEquipDur(true); } catch (e) { /* ignore */ }
     const reason = repairNeeded();             // ★ v1.8.0：破损 或 工具已采不动（+可选提前量）
     out.repairReason = reason;
+    /* ★ v2.6.192：诊断 —— 把「已装备工具」的耐久一起写进日志，便于排查「工具耐久没检测到」。 */
+    try {
+      const _tw = toolWorst(st.dur && st.dur.list);
+      if (_tw) logEvent('维修检查：已装备工具「' + (_tw.name || '?') + '」耐久 ' + _tw.cur + '/' + _tw.max + '（' + Math.round(_tw.pct * 100) + '%），判定 = ' + (reason || '无需维修'));
+      else logEvent('维修检查：没读到「已装备工具」的耐久（st.dur 空 / 工具没装备）');
+    } catch (e) { /* ignore */ }
     out.needRepair = (opts.repair === false) ? false : (!!reason || !!manual);   // 手动模式：不看本地判断，无条件问一次游戏菜单
     let bag = null;
     const wantClear = (opts.sell === false) ? false : true;
@@ -8579,7 +8603,18 @@
     if (st.returning) { setStatus('正在导航回挂机地图…'); return; }
 
     // ★ 多角色轮转：副角色行程进行中 → 主循环让路；否则主角色盯队列 + 正常挂机
-    if (st.mcBusy) { setStatus(st.statusText); return; }
+    if (st.mcBusy) {
+      /* ★ v2.6.192：副角色行程由 mcTick() 驱动、自己 await walkTileCore，主循环整段让路。
+         但这样「切图卡住 / 换图没重画 / 幽灵战斗」三个看门狗也一起被跳过了 —— 行程里只有
+         walkTileCore 的 onStuck（救不了 current_action 卡死的幽灵战斗）。
+         这里让这三个「与走位引擎不冲突」的看门狗照常跑；checkFrozen/checkStuck 会和
+         walkTileCore 抢 abortWalk/walkTo，故意不跑（位置卡死交给 walkTileCore 自己）。 */
+      if (checkMapLoad()) return;
+      if (checkMapRender()) return;
+      checkGhostCombat();
+      setStatus(st.statusText);
+      return;
+    }
     if (cfg.multiChar && rot && rot.on && mcTick()) return;
 
     /* ── 兜底[回图] ───────────────────────────────────────────────
@@ -11493,17 +11528,19 @@
   }
 
   /* 传送站逻辑：dist(cur,最近传送站) + 5 < dist(cur,dest) 才绕去传送站 */
-  async function navWaygateLogic(dest, page, alive) {
+  async function navWaygateLogic(dest, page, alive, force) {
     const cur = +character.current_map;
     const d = navDist(cur, dest);
-    if (d < WAYGATE_SLACK) return false;                 /* 太近，直接走 */
     const w = nearestWaygateMap(cur);
     if (!(w > 0)) return false;
-    const dw = navDist(cur, w);
-    if (!(dw + WAYGATE_SLACK < d)) return false;         /* 绕去传送站不划算 */
+    /* ★ v2.6.192：force=true（目的地是城镇 + 勾了「城市传送点」）→ 一律走传送站，不再按「划不划算」跳过。 */
+    if (!force) {
+      if (d < WAYGATE_SLACK) return false;               /* 太近，直接走 */
+      if (!(navDist(cur, w) + WAYGATE_SLACK < d)) return false;   /* 绕去传送站不划算 */
+    }
     if (alive && !alive()) return false;
     if (+character.current_map !== w) {
-      logEvent('传送站：先走到最近的有传送站的图「' + navMapName(w) + '」（' + dw + ' 跳）');
+      logEvent('传送站：先走到最近的有传送站的图「' + navMapName(w) + '」（' + navDist(cur, w) + ' 跳）');
       if (!await navWalkPlanTo(w, alive)) return false;
     }
     if (alive && !alive()) return false;
@@ -11599,7 +11636,8 @@
             if (+out === dest) return true;
             _nobleCache = null;                           /* 传不动 → 可能不是 Noble 了，下次重判 */
           }
-          if (await navWaygateLogic(dest, 'cities', alive)) return true;
+          /* ★ v2.6.192：目的地是城镇且勾了「城市传送点」→ 一律走传送站（不再按「划不划算」跳过）。 */
+          if (await navWaygateLogic(dest, 'cities', alive, true)) return true;
           if (alive && !alive()) return false;
         }
         /* ③ 目的地是野外锚点 + 野外传送点开 */
