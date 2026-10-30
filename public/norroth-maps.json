@@ -1,7 +1,7 @@
 {
  "meta": {
   "source": "小伴侣地图数据（MapDB）· 13 位贡献者合并",
-  "updated": "2026-10-30T06:43:03.065Z",
+  "updated": "2026-10-30T07:40:28.199Z",
   "version": "1.0",
   "contributors": [
    {
@@ -103,8 +103,8 @@
    {
     "file": "maps-3197.json",
     "char": "#3197",
-    "level": 20,
-    "time": "2026-10-30T06:42:48.425Z",
+    "level": 21,
+    "time": "2026-10-30T07:40:15.701Z",
     "count": 351,
     "mergedAt": "2026-10-30"
    }
@@ -231,13 +231,13 @@
    ]
   },
   "5": {
-   "at": 1793271709442,
+   "at": 1793342585559,
    "name": "El Caspar",
    "type": "City",
    "g": [
     "Minnow Pier",
-    "Combat Training",
-    "Mucky Patch"
+    "Mucky Patch",
+    "Combat Training"
    ],
    "gt": [
     [
@@ -285,7 +285,7 @@
      28,
      32,
      "waygate",
-     "Portal"
+     "Waygate"
     ],
     [
      18,
@@ -960,7 +960,7 @@
    ]
   },
   "16": {
-   "at": 1793284764545,
+   "at": 1793344207173,
    "name": "Elundi",
    "type": "City",
    "g": [
@@ -996,13 +996,13 @@
      38,
      10,
      "event_gate",
-     "活动之门"
+     "Event Gate"
     ],
     [
      34,
      22,
      "waygate",
-     "Portal"
+     "Waygate"
     ],
     [
      29,
@@ -4539,7 +4539,7 @@
    ]
   },
   "113": {
-   "at": 1793144658754,
+   "at": 1793346010194,
    "name": "Vileton",
    "type": "City",
    "m": [
@@ -4559,7 +4559,7 @@
      24,
      23,
      "waygate",
-     "Waygate"
+     "Portal"
     ],
     [
      49,
@@ -4828,7 +4828,7 @@
    ]
   },
   "120": {
-   "at": 1793144685698,
+   "at": 1793345903649,
    "name": "Swamp",
    "type": "Normal",
    "m": [
@@ -11601,7 +11601,7 @@
    "name": "Das Festhalle"
   },
   "1157": {
-   "at": 1793340638915,
+   "at": 1793343340808,
    "name": "Sleepy Hollow Lobby",
    "g": [
     "Quarry",
@@ -11695,7 +11695,7 @@
    ]
   },
   "1160": {
-   "at": 1793341753557,
+   "at": 1793344200398,
    "name": "Sleepy Hollow",
    "m": [
     "Ghost Pirate",
