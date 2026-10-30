@@ -1,7 +1,7 @@
 {
  "meta": {
   "source": "小伴侣地图数据（MapDB）· 13 位贡献者合并",
-  "updated": "2026-10-30T19:14:54.974Z",
+  "updated": "2026-10-30T19:17:06.189Z",
   "version": "1.0",
   "contributors": [
    {
@@ -87,9 +87,9 @@
    {
     "file": "maps-2010.json",
     "char": "#2010",
-    "level": 26,
-    "time": "2026-10-28T23:29:54.411Z",
-    "count": 350,
+    "level": 41,
+    "time": "2026-10-30T19:16:50.982Z",
+    "count": 392,
     "mergedAt": "2026-10-30"
    },
    {
@@ -109,7 +109,7 @@
     "mergedAt": "2026-10-30"
    }
   ],
-  "count": 391
+  "count": 392
  },
  "maps": {
   "1": {
@@ -8535,7 +8535,7 @@
    ]
   },
   "277": {
-   "at": 1793256236350,
+   "at": 1793379178795,
    "name": "Shrubland",
    "g": [
     "Smallmouth Bass Pier",
@@ -8571,11 +8571,11 @@
     "Orc Warlock",
     "Warg",
     "Orc Hunter",
+    "Orc Warrior (?)",
     "Orc Hunter (?)",
-    "Terastodon (?)",
     "Warg (?)",
     "Orc Warlock (?)",
-    "Orc Warrior (?)"
+    "Terastodon (?)"
    ],
    "ex": [
     [
@@ -8616,14 +8616,19 @@
    ]
   },
   "278": {
-   "at": 1792851171273,
+   "at": 1792932244188,
    "name": "Shrubland",
    "m": [
     "Orc Hunter",
-    "Orc Warlock",
     "Orc Warrior",
+    "Warg",
+    "Orc Warlock",
     "Terastodon",
-    "Warg"
+    "Orc Hunter (?)",
+    "Orc Warlock (?)",
+    "Orc Warrior (?)",
+    "Warg (?)",
+    "Terastodon (?)"
    ],
    "ex": [
     [
@@ -8639,6 +8644,7 @@
      "Shrubland (Lv.31)"
     ]
    ],
+   "visited": true,
    "edges": [
     [
      278,
@@ -8657,7 +8663,7 @@
    ]
   },
   "279": {
-   "at": 1792851356415,
+   "at": 1792932356668,
    "name": "Ancient Worm Tunnel",
    "g": [
     "Coal Mine"
@@ -8670,8 +8676,10 @@
     ]
    ],
    "m": [
+    "Stone Hulk",
     "Drow",
-    "Stone Hulk"
+    "Drow (?)",
+    "Stone Hulk (?)"
    ],
    "ex": [
     [
@@ -8687,6 +8695,7 @@
      "Shrubland (Lv.34)"
     ]
    ],
+   "visited": true,
    "edges": [
     [
      279,
@@ -8705,15 +8714,19 @@
    ]
   },
   "280": {
-   "at": 1792868579022,
+   "at": 1792932371771,
    "name": "Shrubland",
-   "type": "Normal",
    "m": [
     "Orc Warrior",
     "Orc Hunter",
     "Warg",
     "Orc Warlock",
-    "Terastodon"
+    "Terastodon",
+    "Warg (?)",
+    "Terastodon (?)",
+    "Orc Hunter (?)",
+    "Orc Warrior (?)",
+    "Orc Warlock (?)"
    ],
    "ex": [
     [
@@ -9997,10 +10010,18 @@
    ]
   },
   "319": {
-   "at": 0,
+   "at": 1792918789490,
    "name": "Valdor’s Throneroom",
    "m": [
     "Valdor, Lord of Dawn"
+   ],
+   "ex": [
+    [
+     35,
+     50,
+     "gate",
+     "Temple Hall (Lv.18)"
+    ]
    ],
    "visited": true,
    "edges": [
@@ -10008,7 +10029,8 @@
      319,
      318,
      35,
-     50
+     50,
+     "gate"
     ]
    ]
   },
@@ -10234,9 +10256,8 @@
    ]
   },
   "326": {
-   "at": 1792865458516,
+   "at": 1792877011295,
    "name": "Dark Boreal",
-   "type": "Normal",
    "g": [
     "Largemouth Bass Pier"
    ],
@@ -10579,7 +10600,8 @@
    "name": "The Ember Forge"
   },
   "342": {
-   "at": 1792989239792,
+   "at": 1793373620641,
+   "name": "Dark Boreal",
    "m": [
     "Armored Ram",
     "Dwarven Guard",
@@ -10745,7 +10767,8 @@
    ]
   },
   "346": {
-   "at": 1793187624208,
+   "at": 1793381069245,
+   "name": "Dark Boreal",
    "g": [
     "Laterite Quarry",
     "Ramie Field",
@@ -10773,11 +10796,7 @@
     "Dwarven Guard",
     "Dwarven Hunter",
     "Dwarven Caster",
-    "Komodo Basilisk",
-    "Dwarven Hunter (?)",
-    "Dwarven Caster (?)",
-    "Komodo Basilisk (?)",
-    "Armored Ram (?)"
+    "Komodo Basilisk"
    ],
    "ex": [
     [
@@ -10791,6 +10810,12 @@
      36,
      "gate",
      "Dark Boreal (Lv.48)"
+    ],
+    [
+     11,
+     63,
+     "smugglers_route",
+     "Smugglers Route"
     ]
    ],
    "visited": true,
@@ -10819,7 +10844,8 @@
    ]
   },
   "347": {
-   "at": 1793186163576,
+   "at": 1793380973119,
+   "name": "Dark Boreal",
    "g": [
     "Beech Grove"
    ],
@@ -10835,7 +10861,8 @@
     "Dwarven Guard",
     "Dwarven Hunter",
     "Komodo Basilisk",
-    "Dwarven Caster"
+    "Dwarven Caster",
+    "Dwarven Caster (?)"
    ],
    "ex": [
     [
@@ -11828,9 +11855,8 @@
    "name": "Das Festhalle"
   },
   "1157": {
-   "at": 1793385790307,
+   "at": 1793387159991,
    "name": "Sleepy Hollow Lobby",
-   "type": "Secret",
    "g": [
     "Quarry",
     "Grove",
@@ -11879,7 +11905,6 @@
      "Elundi (Lv.10)"
     ]
    ],
-   "visited": true,
    "edges": [
     [
      1157,
@@ -11953,14 +11978,14 @@
    ]
   },
   "1161": {
-   "at": 1793270898088,
+   "at": 1793375389335,
    "name": "Sleepy Hollow",
    "m": [
     "Ghost Pirate",
     "Skeleton",
+    "Skeleton Warrior",
     "Zombie Horse",
-    "Arcelia",
-    "Skeleton Warrior"
+    "Arcelia"
    ],
    "ex": [
     [
@@ -11970,7 +11995,6 @@
      "Sleepy Hollow Lobby (Lv.100)"
     ]
    ],
-   "visited": true,
    "edges": [
     [
      1161,
@@ -11982,8 +12006,9 @@
    ]
   },
   "1162": {
-   "at": 1793331087290,
+   "at": 1793387803568,
    "name": "Sleepy Hollow",
+   "type": "Secret",
    "m": [
     "Ghost Pirate",
     "Skeleton",
@@ -11997,7 +12022,6 @@
      "Sleepy Hollow Lobby (Lv.100)"
     ]
    ],
-   "visited": true,
    "edges": [
     [
      1162,
@@ -12275,6 +12299,56 @@
   "2100": {
    "at": 0,
    "name": "Ashspire Battlegrounds"
+  },
+  "3004": {
+   "at": 1792915265256,
+   "m": [
+    "Wizard",
+    "Arcane Imp",
+    "Ogre Mage",
+    "Mutant Plant"
+   ],
+   "ex": [
+    [
+     14,
+     18,
+     "gate",
+     "Arcane Remote (Lv.1)"
+    ],
+    [
+     39,
+     18,
+     "gate",
+     "Arcane Remote (Lv.1)"
+    ],
+    [
+     38,
+     31,
+     "gate",
+     "Arcane Remote (Lv.1)"
+    ],
+    [
+     49,
+     44,
+     "gate",
+     "Arcane Remote (Lv.1)"
+    ],
+    [
+     18,
+     53,
+     "gate",
+     "Arcane Remote (Lv.1)"
+    ]
+   ],
+   "edges": [
+    [
+     3004,
+     3004,
+     18,
+     53,
+     "gate"
+    ]
+   ]
   }
  }
 }
