@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.196
+// @version      2.6.197
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -193,7 +193,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.196';   // 与 @version 保持一致
+  const SCRIPT_VER = '2.6.197';   // 与 @version 保持一致
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -11644,6 +11644,12 @@
   /* 传送站逻辑：dist(cur,最近传送站) + 5 < dist(cur,dest) 才绕去传送站 */
   async function navWaygateLogic(dest, page, alive, force) {
     const cur = +character.current_map;
+    /* ★ v2.6.197：已经在目的地 → 直接算到达。
+       实测（2026-10-31，真机）：休整城镇 Elundi(16) 就在隔壁，nearestWaygateMap(15)=16，
+       于是「先走到传送站图 Elundi」→ 到了 Elundi 又开传送站想传到 Elundi 自己 →
+       Cities 页里没有 Elundi → 退而求其次传到 El Caspar(5) → 再想逃回 Elundi → 来回横跳，
+       最后「维修失败：无法导航到 Elundi」。走到目的地=传送站图时就不该再传。 */
+    if (cur === +dest) return true;
     const d = navDist(cur, dest);
     const w = nearestWaygateMap(cur);
     if (!(w > 0)) return false;
@@ -11658,6 +11664,7 @@
       if (!await navWalkPlanTo(w, alive)) return false;
     }
     if (alive && !alive()) return false;
+    if (+character.current_map === +dest) return true;   /* ★ v2.6.197：传送站图就是目的地 → 走到即到达 */
     const out = await navWaygateOut(dest, alive, page, true);
     return +out === +dest;
   }
@@ -11951,6 +11958,7 @@
     }) || null;
   }
   async function navWaygateOut(destId, alive, tab, strict, anyOk) {
+    if (+character.current_map === +destId) return +destId;   /* ★ v2.6.197：已在目的地 → 不传 */
     const wg = findWaygateTile();
     if (!wg) return 0;
     if (alive && !alive()) return 0;
