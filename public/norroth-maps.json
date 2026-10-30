@@ -1,7 +1,7 @@
 {
  "meta": {
-  "source": "小伴侣地图数据（MapDB）· 12 位贡献者合并",
-  "updated": "2026-10-30T02:58:33.406Z",
+  "source": "小伴侣地图数据（MapDB）· 13 位贡献者合并",
+  "updated": "2026-10-30T06:43:03.065Z",
   "version": "1.0",
   "contributors": [
    {
@@ -98,6 +98,14 @@
     "level": 19,
     "time": "2026-10-29T14:57:08.492Z",
     "count": 329,
+    "mergedAt": "2026-10-30"
+   },
+   {
+    "file": "maps-3197.json",
+    "char": "#3197",
+    "level": 20,
+    "time": "2026-10-30T06:42:48.425Z",
+    "count": 351,
     "mergedAt": "2026-10-30"
    }
   ],
@@ -3598,7 +3606,7 @@
    ]
   },
   "77": {
-   "at": 1792772462085,
+   "at": 1793327076208,
    "name": "Guardian Queen Hive",
    "m": [
     "Forest Guardian",
@@ -3665,24 +3673,27 @@
      77,
      77,
      55,
-     36
+     36,
+     "gate"
     ],
     [
      77,
      78,
      15,
-     26
+     26,
+     "gate"
     ],
     [
      77,
      187,
      49,
-     57
+     57,
+     "gate"
     ]
    ]
   },
   "78": {
-   "at": 1792772492133,
+   "at": 1793327112182,
    "name": "Guardian Queen Hive",
    "m": [
     "Queen Acasia"
@@ -3692,19 +3703,22 @@
      78,
      77,
      55,
-     36
+     36,
+     "other"
     ],
     [
      78,
      78,
      15,
-     26
+     26,
+     "other"
     ],
     [
      78,
      187,
      49,
-     57
+     57,
+     "other"
     ]
    ]
   },
@@ -3802,7 +3816,7 @@
    ]
   },
   "90": {
-   "at": 1793284150154,
+   "at": 1793341719072,
    "name": "Whispering Sands",
    "type": "Normal",
    "m": [
@@ -3859,7 +3873,7 @@
    ]
   },
   "91": {
-   "at": 1793284132373,
+   "at": 1793341692113,
    "name": "Drouver",
    "type": "City",
    "ex": [
@@ -3879,7 +3893,7 @@
      33,
      34,
      "waygate",
-     "Portal"
+     "Waygate"
     ],
     [
      13,
@@ -5730,14 +5744,14 @@
    ]
   },
   "182": {
-   "at": 1793143135148,
+   "at": 1793194962926,
    "name": "Caeltys’ Causeway",
    "m": [
-    "Forest Guardian",
-    "Cockatrice",
     "Wendigo",
+    "Cockatrice",
+    "Ankheg",
     "Drow",
-    "Ankheg"
+    "Forest Guardian"
    ],
    "ex": [
     [
@@ -5772,7 +5786,7 @@
    ]
   },
   "183": {
-   "at": 1793143186022,
+   "at": 1793186378738,
    "name": "Caeltys",
    "type": "City",
    "ex": [
@@ -5780,7 +5794,7 @@
      21,
      12,
      "waygate",
-     "Portal"
+     "Waygate"
     ],
     [
      46,
@@ -5929,7 +5943,7 @@
    ]
   },
   "187": {
-   "at": 1792772359459,
+   "at": 1793327023920,
    "name": "Caeltys’ Yarden",
    "m": [
     "Drow",
@@ -5964,24 +5978,27 @@
      187,
      77,
      36,
-     27
+     27,
+     "other"
     ],
     [
      187,
      186,
      25,
-     62
+     62,
+     "gate"
     ],
     [
      187,
      188,
      9,
-     21
+     21,
+     "gate"
     ]
    ]
   },
   "188": {
-   "at": 1792772279350,
+   "at": 1793326960791,
    "name": "Caeltys’ Yarden",
    "m": [
     "Forest Guardian",
@@ -6010,24 +6027,26 @@
      188,
      187,
      62,
-     22
+     22,
+     "gate"
     ],
     [
      188,
      189,
      7,
-     48
+     48,
+     "gate"
     ]
    ]
   },
   "189": {
-   "at": 1793142602126,
+   "at": 1793326859491,
    "name": "Caeltys’ Yarden",
    "m": [
-    "Ankheg",
+    "Drow",
     "Wendigo",
     "Cockatrice",
-    "Drow",
+    "Ankheg",
     "Forest Guardian"
    ],
    "ex": [
@@ -6701,8 +6720,11 @@
    ]
   },
   "204": {
-   "at": 0,
-   "name": "Pumpkin King`s Lodge"
+   "at": 1793232118129,
+   "name": "Pumpkin King`s Lodge",
+   "m": [
+    "Jacked-o-Lantern"
+   ]
   },
   "205": {
    "at": 0,
@@ -7386,7 +7408,7 @@
    ]
   },
   "228": {
-   "at": 1793169898962,
+   "at": 1793331004455,
    "name": "Shrubland",
    "type": "Normal",
    "g": [
@@ -7456,7 +7478,7 @@
    ]
   },
   "229": {
-   "at": 1793169873053,
+   "at": 1793331056458,
    "name": "Ururg",
    "type": "City",
    "ex": [
@@ -8309,7 +8331,7 @@
    ]
   },
   "275": {
-   "at": 1793071168543,
+   "at": 1793256183759,
    "name": "Shrubland",
    "type": "Normal",
    "m": [
@@ -8353,16 +8375,16 @@
    ]
   },
   "276": {
-   "at": 1793071220313,
+   "at": 1793256229058,
    "name": "Shrubland",
    "type": "Normal",
    "m": [
-    "Orc Hunter",
-    "Carrion Harpy",
     "Catoblepas",
-    "Orc Warlock",
+    "Carrion Harpy",
     "Orc Warrior",
-    "Terastodon"
+    "Orc Warlock",
+    "Terastodon",
+    "Orc Hunter"
    ],
    "ex": [
     [
@@ -8410,7 +8432,7 @@
    ]
   },
   "277": {
-   "at": 1793071604465,
+   "at": 1793256236350,
    "name": "Shrubland",
    "g": [
     "Smallmouth Bass Pier",
@@ -8441,12 +8463,16 @@
     ]
    ],
    "m": [
-    "Orc Warrior",
     "Terastodon",
-    "Orc Hunter",
-    "Warg",
+    "Orc Warrior",
     "Orc Warlock",
-    "Oculus"
+    "Warg",
+    "Orc Hunter",
+    "Orc Hunter (?)",
+    "Terastodon (?)",
+    "Warg (?)",
+    "Orc Warlock (?)",
+    "Orc Warrior (?)"
    ],
    "ex": [
     [
@@ -8459,7 +8485,7 @@
      23,
      46,
      "waygate",
-     "Portal"
+     "Waygate"
     ],
     [
      5,
@@ -8619,7 +8645,7 @@
    ]
   },
   "281": {
-   "at": 1793191801880,
+   "at": 1793228760999,
    "name": "Trescan",
    "type": "City",
    "g": [
@@ -9941,7 +9967,7 @@
    ]
   },
   "323": {
-   "at": 1793049456614,
+   "at": 1793232655358,
    "name": "Trescan’s Dock",
    "g": [
     "Smallmouth Bass Pier"
@@ -11575,9 +11601,8 @@
    "name": "Das Festhalle"
   },
   "1157": {
-   "at": 1793284888756,
+   "at": 1793340638915,
    "name": "Sleepy Hollow Lobby",
-   "type": "Secret",
    "g": [
     "Quarry",
     "Grove",
@@ -11642,7 +11667,7 @@
    "name": "Sleepy Hollow"
   },
   "1159": {
-   "at": 1793283956949,
+   "at": 1793341438089,
    "name": "Sleepy Hollow",
    "m": [
     "Hypnotic Bat",
@@ -11670,12 +11695,12 @@
    ]
   },
   "1160": {
-   "at": 1793230191587,
+   "at": 1793341753557,
    "name": "Sleepy Hollow",
-   "type": "Secret",
    "m": [
     "Ghost Pirate",
     "Skeleton",
+    "Skeleton Warrior",
     "Zombie Horse",
     "Arcelia"
    ],
@@ -11699,12 +11724,60 @@
    ]
   },
   "1161": {
-   "at": 0,
-   "name": "Sleepy Hollow"
+   "at": 1793270898088,
+   "name": "Sleepy Hollow",
+   "m": [
+    "Ghost Pirate",
+    "Skeleton",
+    "Zombie Horse",
+    "Arcelia",
+    "Skeleton Warrior"
+   ],
+   "ex": [
+    [
+     53,
+     12,
+     "gate",
+     "Sleepy Hollow Lobby (Lv.100)"
+    ]
+   ],
+   "visited": true,
+   "edges": [
+    [
+     1161,
+     1157,
+     53,
+     12,
+     "gate"
+    ]
+   ]
   },
   "1162": {
-   "at": 0,
-   "name": "Sleepy Hollow"
+   "at": 1793331087290,
+   "name": "Sleepy Hollow",
+   "m": [
+    "Ghost Pirate",
+    "Skeleton",
+    "Arcelia"
+   ],
+   "ex": [
+    [
+     53,
+     12,
+     "gate",
+     "Sleepy Hollow Lobby (Lv.100)"
+    ]
+   ],
+   "visited": true,
+   "edges": [
+    [
+     1162,
+     1157,
+     53,
+     12,
+     "gate"
+    ]
+   ]
   },
   "1183": {
    "at": 1793227167784,
@@ -11854,10 +11927,11 @@
    ]
   },
   "1187": {
-   "at": 1793173816949,
+   "at": 1793226955088,
    "name": "The Sacred Wilds",
    "m": [
-    "Wyvern"
+    "Wyvern",
+    "Drake Boss"
    ],
    "ex": [
     [
