@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.186
+// @version      2.6.187
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -193,7 +193,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.186';   // 与 @version 保持一致
+  const SCRIPT_VER = '2.6.187';   // 与 @version 保持一致
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -294,6 +294,7 @@
        约定：at = 上次判定/动作时间 · hits = 连续触发次数 · nextAt = 下次允许触发 · fails = 连续失败次数 */
     watch: { x: 0, y: 0, exp: 0, kills: 0, at: 0, heals: 0 }, // 兜底[卡住自愈] 位置/经验/击杀快照 + 连续触发次数
     frozen: { pos: '', at: 0, hits: 0 },                      // 兜底[走位卡死] 位置快照 + 连续触发次数
+    ghost: { act: '', at: 0, hits: 0, pos: '' },              // 兜底[幽灵战斗] 卡住的 current_action / 开始时间 / 连续强恢复次数 / 上次位置
     returnRetryAt: 0, returnFails: 0,                         // 兜底[回图] 下次重试时间 / 连续失败次数
     homeOffSince: 0, homeGuardAt: 0,                          // ★ v2.6.160 兜底[回图] 离开挂机图的起始时间 / 上次登记回图待办的时间
     /* ── 爬塔 / 随机浏览面板（v2.6.66：原来只靠动态赋值，这里显式声明便于阅读；初始值都取「未设置」）── */
@@ -342,6 +343,7 @@
    *  [走位重试] checkMove !started    · 状态 st.move.retryAt/retries · 判据「900ms 还没发起」               · 动作「abortWalk + 重发 walkTo」     · 上限 8 次 → 拉黑该格 30s
    *  [走位无进展] checkMove 已发起     · 状态 st.move.lastPos/lastPosAt· 判据「4s 位置没变且 walk_to 已空」   · 动作「abortWalk + 重发 walkTo」     · 上限 8 次 → 拉黑该格 30s
    *  [走位卡死] checkFrozen()          · 状态 st.frozen               · 判据「8s 位置不动且 walk_to 还挂着」 · 动作 nudgeRecover()                 · 上限 8 次 → 整页刷新
+   *  [幽灵战斗] checkGhostCombat()     · 状态 st.ghost                · 判据「current_action 卡在非 Traveling 且没有战斗/采集/拾取窗口」· 动作「abortCombatStart() 复位 + 若脚下有怪补 loadCombat」· 上限 6 次 → 整页刷新
    *  [卡住自愈] checkStuck()           · 状态 st.watch                · 判据「stuckSec 内 位置/经验/击杀 全没变」· 动作 nudgeRecover + 拉黑目标格      · 上限 40 次 → stop()
    *  [导航卡住] walkTileCore() 内部     · 状态 局部 stuck/lastMove      · 判据「位置不变 / 2.5s 无进展」        · 动作 onStuck()（默认 nudgeRecover） · 上限 超时 或 paused>5min
    *  [采集]     stepGather 分支        · 状态 st.gatherIdleSince/Resync· 判据「8s 进度条不转」                · 动作 关掉重开 → 走开一格再走回     · 上限 不停止（循环）
@@ -6849,6 +6851,64 @@
     setStatus('检测到卡住，已自动复位（第 ' + W.heals + ' 次）…');
   }
 
+  /* ── 兜底[幽灵战斗 / current_action 卡死] ────────────────────────
+   * 症状：移动途中触发了战斗，但 #frame_Combat 没弹出来（战斗加载回调丢失 / 画面没渲染），
+   *       character.current_action 卡在非 'Traveling' 的战斗态 → 游戏 walkTo() 直接 return false，
+   *       角色原地不动；而 checkFrozen / checkStuck 都把「游戏正忙」当正常 → 全部跳过 → 永久卡死
+   *       （连自动刷新都触发不了）。2026-10-30 实测：移动中开战、窗口没弹出时必现。
+   * 判据：没有 frame_Combat / frame_Loot / 采集 / 搜刮 / 拾取窗口、不在切图，
+   *       且 character.current_action 是非 'Traveling' 的值持续 > GHOST_ACTION_MS。
+   * 动作：调游戏 abortCombatStart() 复位 + current_action='Traveling' + can_travel=true + pendingCombatLoad=false；
+   *       若脚下确实还有怪 → 用游戏 loadCombat(1) 补开战（别白白走开）。
+   * 上限：GHOST_MAX 次强恢复仍无位移进展 → 整页刷新。
+   * 高级参数：不受影响。
+   * ─────────────────────────────────────────────────────────── */
+  const GHOST_ACTION_MS = 12000;   /* 非 Traveling 的动作最多容忍多久（自动搜刮 ~4.5s，留足余量） */
+  const GHOST_MAX = 6;             /* 连续强恢复次数上限 → 整页刷新 */
+  function checkGhostCombat() {
+    const G = st.ghost;
+    if (!inGame()) { G.act = ''; G.at = 0; G.hits = 0; G.pos = ''; return false; }
+    /* 有位移 = 有进展 → 连续强恢复计数清零 */
+    const pos = character.x + ',' + character.y;
+    if (pos !== G.pos) { G.pos = pos; G.hits = 0; }
+    const act = String((character && character.current_action) || '');
+    /* 正常行走 / 没有卡住的动作 → 清零 */
+    if (!act || act === 'Traveling') { G.act = ''; G.at = 0; return false; }
+    /* 有对应窗口（战斗 / 拾取 / 采集 / 搜刮）或正在切图 → 是「游戏正忙」，不是幽灵 */
+    if (hasFrame('frame_Combat') || hasFrame('frame_Loot') || hasFrame('frame_Gathering') ||
+        hasFrame('frame_CollectScrap') || hasFrame('frame_Scavenge') || hasFrame('frame_FeedPet') ||
+        gatheringActive() || mapLoadStuck()) { G.act = ''; G.at = 0; return false; }
+    /* 动作变了 → 重新计时 */
+    if (G.act !== act) { G.act = act; G.at = now(); return false; }
+    if (now() - G.at < GHOST_ACTION_MS) return false;
+    /* 触发恢复 */
+    G.at = now(); G.hits++;
+    const stuckAct = act;
+    try { if (typeof window.abortCombatStart === 'function') window.abortCombatStart(); } catch (e) { /* ignore */ }
+    try { if (character) character.current_action = 'Traveling'; } catch (e) { /* ignore */ }
+    try { window.pendingCombatLoad = false; } catch (e) { /* ignore */ }
+    try { window.can_travel = true; } catch (e) { /* ignore */ }
+    st.move = null; st.reach = null;
+    /* 脚下确实有怪 → 补开战（否则复位后直接走开，白丢一场） */
+    let refought = false;
+    try {
+      if (typeof window.findEnemyAtCoords === 'function' && typeof window.loadCombat === 'function' &&
+          window.findEnemyAtCoords(character.x, character.y).length) {
+        window.loadCombat(1); refought = true;
+      }
+    } catch (e) { /* ignore */ }
+    if (G.hits >= GHOST_MAX) {
+      logEvent('幽灵战斗：current_action 卡在「' + stuckAct + '」' + GHOST_MAX + ' 次强恢复无效 → 自动刷新页面');
+      setStatus('战斗卡死（画面没弹出），正在刷新页面…');
+      saveCfgNow();
+      setTimeout(function () { try { location.reload(); } catch (e) { /* ignore */ } }, 300);
+      return true;
+    }
+    logEvent('幽灵战斗：current_action 卡在「' + stuckAct + '」' + Math.round(GHOST_ACTION_MS / 1000) + 's 无进展 → 已复位' + (refought ? '并补开战' : '') + '（第 ' + G.hits + ' 次）');
+    setStatus('检测到战斗卡死（画面没弹出），已复位（第 ' + G.hits + ' 次）…');
+    return true;
+  }
+
   /* ── 兜底[锁屏 / 切后台] ────────────────────────────────────────
    * 症状：锁屏或切到后台后挂机「卡住」。
    * 根因：页面变 hidden → Chrome 暂停 requestAnimationFrame 并把定时器降频
@@ -6865,6 +6925,7 @@
     const t = now();
     st.watch = { x: character.x, y: character.y, exp: character.current_exp || 0, kills: st.kills || 0, at: t, heals: 0 };
     st.frozen = { pos: character.x + ',' + character.y, at: t, hits: 0 };
+    st.ghost = { act: '', at: 0, hits: 0, pos: '' };
     st.lastStats = 0;
     st.noSupplyAt = 0;
     st.visitedAt = 0;
@@ -8499,6 +8560,7 @@
         closeIdleResultDialog();
         checkFrozen();
         checkStuck();
+        checkGhostCombat();
         if (st.nudging && now() - st.nudging < 2600) { setStatus('卡住自愈：正在试探走位…'); return; }
         if (st.settling && now() - st.settling < 40000) { setStatus('落位：正在同步服务端位置…'); return; }
       }
@@ -8563,6 +8625,7 @@
 
     checkFrozen();
     checkStuck();
+    checkGhostCombat();
     // ★ 刚触发强恢复：本 tick 到此为止，别和「点格」抢发 walkTo
     if (st.nudging && now() - st.nudging < 2600) { setStatus('卡住自愈：正在试探走位…'); return; }
     if (st.settling && now() - st.settling < 40000) { setStatus('落位：正在同步服务端位置…'); return; }
@@ -10269,6 +10332,7 @@
     st.dur = null; st.durBusy = false; st.gatherDur = null;
     st.watch = { x: 0, y: 0, exp: 0, kills: 0, at: 0, heals: 0 };
     st.frozen = { pos: '', at: 0, hits: 0 };
+    st.ghost = { act: '', at: 0, hits: 0, pos: '' };
     st.perf = { samples: [], lastAt: 0, lastExp: 0, total: 0 };
     st.runStart = now();
     st.runElapsed = 0;
@@ -12788,6 +12852,7 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
         nudging: !!st.nudging, returning: !!st.returning, healing: !!st.healing,
         watch: { exp: st.watch.exp, kills: st.watch.kills, heals: st.watch.heals },
         frozen: { pos: st.frozen.pos, hits: st.frozen.hits },
+        ghost: { act: st.ghost.act, hits: st.ghost.hits, heldMs: st.ghost.at ? (now() - st.ghost.at) : 0 },
         event: { on: !!st.event.on, phase: st.event.phase, busy: !!st.event.busy,
                  busyHeldMs: st.event.busyAt ? (now() - st.event.busyAt) : null,
                  lastCheckAgoMs: st.event.lastCheckAt ? (now() - st.event.lastCheckAt) : null,

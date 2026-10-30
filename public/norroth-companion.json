@@ -1,8 +1,8 @@
 {
-  "version": "2.6.186",
+  "version": "2.6.187",
   "date": "2026-10-30",
-  "notes": "小伴侣 v2.6.186：修复「未开挂机、只勾自动进活动」时进活动后卡死 —— step() 的 !running 分支补上自愈兜底（关挡路弹窗 / 离线结算弹窗 / checkFrozen / checkStuck），并让到位兜底与采集点下拉自愈在活动里放行",
+  "notes": "v2.6.187 新增[幽灵战斗]看门狗：移动中开战但战斗窗口没弹出时，复位 current_action 并补开战，避免永久卡死",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 888285,
-  "sha256": "451ec9a2c948d4dac6e858189eed82f677d6cafd540bb150f84137c8268587ec"
+  "size": 893230,
+  "sha256": "97a349731665cabc1ec4be25a8668e6850ce3b1d1f773ce3c1a600c81ce49ac3"
 }
