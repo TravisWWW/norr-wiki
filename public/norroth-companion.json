@@ -1,8 +1,8 @@
 {
-  "version": "2.6.187",
+  "version": "2.6.190",
   "date": "2026-10-30",
-  "notes": "v2.6.187 新增[幽灵战斗]看门狗：移动中开战但战斗窗口没弹出时，复位 current_action 并补开战，避免永久卡死",
+  "notes": "v2.6.190 活动结束被弹出后：取消找返回传送门 + 手动导航回原图，直接交给当前设置的任务（没任务则原地待命）",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 893230,
-  "sha256": "97a349731665cabc1ec4be25a8668e6850ce3b1d1f773ce3c1a600c81ce49ac3"
+  "size": 919207,
+  "sha256": "09fc663c62bec001272d801ffa66c3527a3f0d7778f106c2e090fd5ad07efbb1"
 }
