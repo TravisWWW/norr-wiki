@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.193
+// @version      2.6.194
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -193,7 +193,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.193';   // 与 @version 保持一致
+  const SCRIPT_VER = '2.6.194';   // 与 @version 保持一致
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -4745,10 +4745,18 @@
     const reason = repairNeeded();             // ★ v1.8.0：破损 或 工具已采不动（+可选提前量）
     out.repairReason = reason;
     /* ★ v2.6.192：诊断 —— 把「已装备工具」的耐久一起写进日志，便于排查「工具耐久没检测到」。 */
+    /* ★ v2.6.194：诊断写全「判定依据」—— 阈值 + 最低装备 + 最低工具 + 采集读数。
+       原来只打「已装备工具」的耐久，会让人误以为「工具 68% 也判 low」；
+       其实 low 可能来自**任意一件**已装备物品 ≤ 阈值（durWorst），或采集读数 ≤ 0。 */
     try {
-      const _tw = toolWorst(st.dur && st.dur.list);
-      if (_tw) logEvent('维修检查：已装备工具「' + (_tw.name || '?') + '」耐久 ' + _tw.cur + '/' + _tw.max + '（' + Math.round(_tw.pct * 100) + '%），判定 = ' + (reason || '无需维修'));
-      else logEvent('维修检查：没读到「已装备工具」的耐久（st.dur 空 / 工具没装备）');
+      const _list = (st.dur && st.dur.list) || [];
+      const _w = durWorst(_list);
+      const _tw = toolWorst(_list);
+      const _th = Math.max(1, jitterVal(+cfg.repairDurPct || 15));
+      const _g = lastGatherDur();
+      const _fmt = function (x) { return x ? ('「' + (x.name || '?') + '」' + x.cur + '/' + x.max + '（' + Math.round(x.pct * 100) + '%）') : '—'; };
+      logEvent('维修检查：阈值 ' + _th + '%｜最低装备 ' + _fmt(_w) + '｜最低工具 ' + _fmt(_tw)
+        + (_g ? ('｜采集读数 ' + _g.cur) : '') + ' → 判定 = ' + (reason ? (REPAIR_REASON_CN[reason] || reason) : '无需维修'));
     } catch (e) { /* ignore */ }
     out.needRepair = (opts.repair === false) ? false : (!!reason || !!manual);   // 手动模式：不看本地判断，无条件问一次游戏菜单
     let bag = null;

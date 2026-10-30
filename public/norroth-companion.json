@@ -1,8 +1,8 @@
 {
-  "version": "2.6.193",
+  "version": "2.6.194",
   "date": "2026-10-31",
-  "notes": "v2.6.193: 修 mapLoadStuck() 误判 —— 加载遮罩还在但地图已画对时不再算「切图卡住」(避免 checkMapLoad 误重试/整页刷新打断行程 + 不再挡住 checkGhostCombat/checkMapRender 防卡)",
+  "notes": "v2.6.194: 维修检查诊断日志写全判定依据（阈值 + 最低装备 + 最低工具 + 采集读数），避免只看工具耐久误判",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 930312,
-  "sha256": "aa0d1d978205f7bea014af1dc94dd9bdbcb6e9103f52a985d01ed75b6c6b03d5"
+  "size": 930908,
+  "sha256": "23d3e56e0d907a38b2508011c775099acaf6c0bb1d8df383f4f1505459fb8b15"
 }
