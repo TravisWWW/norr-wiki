@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.192
+// @version      2.6.193
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -193,7 +193,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.192';   // 与 @version 保持一致
+  const SCRIPT_VER = '2.6.193';   // 与 @version 保持一致
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -1007,7 +1007,20 @@
       const el = document.getElementById('transition_container');
       if (!el) return false;
       if (getComputedStyle(el).display === 'none') return false;
-      return el.getBoundingClientRect().top < (window.innerHeight - 5);   /* dismiss 后 top:100% → 在屏幕外 */
+      if (el.getBoundingClientRect().top >= (window.innerHeight - 5)) return false;   /* dismiss 后 top:100% → 在屏幕外 */
+      /* ★ v2.6.193：加载遮罩还盖在屏幕上，但**地图其实已经画对了**（.map_table 底图 id == character.current_map）
+         → 不算「切图卡住」。实测（2026-10-31，真·有头浏览器）：进图后游戏自己的 #transition_container
+         要 ~9-12s 才收起（慢网络更久），而 MAPLOAD_STUCK_MS=7s → 每次进图/换图都会误判「切图卡住」，
+         于是 checkMapLoad 反复重试、第 2 次还会 softReloadMap() 把遮罩又顶起来（自己制造循环）、
+         第 4 次直接整页刷新 → 行程被中途打断（表现：「维修菜单打不开」）。
+         同时 checkGhostCombat / checkMapRender / scheduleRenderCheck 都被 mapLoadStuck() 挡住 → 没有防卡。
+         判据用「屏幕上真正画出来的底图」(renderedMapId)，不是 window.map.id（换图时后者会先变）。 */
+      try {
+        const cm = +character.current_map || 0;
+        const drawn = (typeof renderedMapId === 'function') ? renderedMapId() : 0;
+        if (cm > 0 && drawn > 0 && drawn === cm) return false;
+      } catch (e) { /* ignore */ }
+      return true;
     } catch (e) { return false; }
   }
   function prewarmMapImage() {

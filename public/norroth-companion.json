@@ -1,8 +1,8 @@
 {
-  "version": "2.6.192",
+  "version": "2.6.193",
   "date": "2026-10-31",
-  "notes": "v2.6.192: 副角色行程期间也跑安全看门狗(切图卡住/换图没重画/幽灵战斗)；目的地为城镇+勾城市传送点一律走传送站；维修检测显式纳入已装备工具耐久(不读背包)+采不动信号",
+  "notes": "v2.6.193: 修 mapLoadStuck() 误判 —— 加载遮罩还在但地图已画对时不再算「切图卡住」(避免 checkMapLoad 误重试/整页刷新打断行程 + 不再挡住 checkGhostCombat/checkMapRender 防卡)",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 929129,
-  "sha256": "4dd3da3fa0cb75e4c7c76b9a8c3bd35ef3f69bd2e053e1c410cae274c01e3fd0"
+  "size": 930312,
+  "sha256": "aa0d1d978205f7bea014af1dc94dd9bdbcb6e9103f52a985d01ed75b6c6b03d5"
 }
