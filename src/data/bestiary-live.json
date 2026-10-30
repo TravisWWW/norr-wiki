@@ -79,10 +79,10 @@
    {
     "file": "char-3197.json",
     "char": "#3197",
-    "level": 21,
-    "time": "2026-10-30T07:40:43.337Z",
+    "level": 29,
+    "time": "2026-10-30T19:14:48.482Z",
     "count": 194,
-    "recorded": 194,
+    "recorded": 73,
     "mergedAt": "2026-10-30"
    }
   ],
@@ -10630,7 +10630,18 @@
    "icon": "https://www.norroth.com/images/maps/items/enemy_210.gif",
    "bg": "vulcanic_underground.jpg",
    "recorded": true,
-   "levelRange": "30 - 30"
+   "levelRange": "30 - 30",
+   "alignment": "Neutral",
+   "health": "High",
+   "defense": "High",
+   "resistance": "High",
+   "drops": [
+    {
+     "name": "Bronze Sestertii",
+     "res": "coin_bronze",
+     "pct": "100%"
+    }
+   ]
   },
   {
    "id": 211,
@@ -11540,7 +11551,19 @@
    "lore": "A blazing specter of autumn wrath, Jacked-o-Lantern stalks the night with flames in its skull and vengeance in its steps. Its lanterns burn more than flesh, they ignite fear itself. It is Halloween made manifest.",
    "tab": "overlord",
    "icon": "https://www.norroth.com/images/maps/items/enemy_235.gif",
-   "recorded": true
+   "recorded": true,
+   "levelRange": "30 - 30",
+   "alignment": "Neutral",
+   "health": "High",
+   "defense": "High",
+   "resistance": "High",
+   "drops": [
+    {
+     "name": "Bronze Sestertii",
+     "res": "coin_bronze",
+     "pct": "100%"
+    }
+   ]
   },
   {
    "id": 237,
