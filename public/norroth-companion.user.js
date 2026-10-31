@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.223
+// @version      2.6.224
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -187,7 +187,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.223';   // 与 @version 保持一致
+  const SCRIPT_VER = '2.6.224';   // 与 @version 保持一致
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -2519,23 +2519,24 @@
     return !!(e && e.description && /can be used during battle/i.test(e.description));
   }
 
-  function autoPotionKey(kind) {
+  /* ★ v2.6.224：从当前背包列表里挑「数量最多的补品」（战斗药水排最后 —— v2.6.125 的既有要求）。
+     只在「扫描完背包之后」调用；不再作为「没选就自动挑」的兜底（用户要求去掉兜底自动选择）。 */
+  function pickMostAbundant(kind) {
     const list = bagPotions(kind);
     if (!list.length) return '';
     const amt = k => { const h = healInfo(k); return kind === 'hp' ? h.life : h.mana; };
-    /* ★ v2.6.125：选中的食物吃完了 → 回到这里自动挑。
-       战斗药水（能在战斗中用的）排到最后 —— 那是应急物资，平时回血优先吃食物 / 料理；
-       同组内再按「数量多 → 补得少（省药）」挑。全部都是战斗药水时照旧按数量挑。 */
     list.sort((a, b) =>
       (combatUsable(a.key) ? 1 : 0) - (combatUsable(b.key) ? 1 : 0) ||
       (b.count - a.count) || (amt(a.key) - amt(b.key)));
     return list[0].key;
   }
 
+  /* ★ v2.6.224：只认「显式选择」；没选 / 选中的已失效 → 返回空，交给 autoScanAndPick()（先扫背包再挑）。
+     不再用旧快照兜底自动挑（用户要求：去掉兜底自动选择）。 */
   function potionKey(kind) {
     const chosen = kind === 'hp' ? cfg.hpPotion : cfg.mpPotion;
     if (chosen) { const it = (cfg.bagList || []).find(i => i.key === chosen); if (it && heals(it, kind)) return chosen; }
-    return autoPotionKey(kind);
+    return '';
   }
 
   const itemName = key => { const it = (cfg.bagList || []).find(i => i.key === key); return it ? it.name : key; };
@@ -2549,10 +2550,7 @@
     it.count = (it.count || 0) - 1;
     if (it.count <= 0) {
       const i = list.indexOf(it); if (i >= 0) list.splice(i, 1);
-      /* ★ 选中的药吃完了 → 立刻清掉选择，回到「自动选择（数量最多的）」并同步下拉框。
-         原来只有 scanBag() 会清 cfg.hpPotion / cfg.mpPotion，而 scanBag 只在
-         「手动点扫描」或「同一瓶连续失败 5 次」时才跑 → 吃完最后一瓶后会继续对空瓶子
-         发指令，要等 5 次失败 + 20 秒暂停 + 60 秒节流才回退。 */
+      /* ★ v2.6.224：选中的补品吃完了 → 清掉选择；下一次 supply() 会自动扫描背包并重选数量最多的。 */
       let changed = false;
       if (cfg.hpPotion === key) { cfg.hpPotion = ''; changed = true; }
       if (cfg.mpPotion === key) { cfg.mpPotion = ''; changed = true; }
@@ -2561,9 +2559,37 @@
     saveCfg();   // ★ 数量变化也要落盘，否则刷新页面后数量会回退到旧快照
   }
 
+  /* ★ v2.6.224：挂游戏的 handleResults，捕捉「Insufficient <物品>」——
+     选中的补品已吃完时游戏会回这个 → 清掉选择（下一次 supply() 会自动扫背包重选数量最多的）。 */
+  function installUseResultHook() {
+    if (typeof window.handleResults !== 'function') return false;
+    if (window.handleResults.__nrHooked) return true;      /* 已挂（且没被游戏重定义）→ 不重复挂 */
+    const orig = window.handleResults;
+    const wrapped = function (res) {
+      try {
+        if (Array.isArray(res) && res[0] === 'Use' && res[1] === false && /insufficient/i.test(String(res[2] || ''))) {
+          const key = st.lastUseKey || '';
+          try { logEvent('自动补药：游戏提示「' + String(res[2]) + '」→ 选中的补品已用完，重新扫描背包'); } catch (e) { /* ignore */ }
+          if (key) {
+            if (cfg.hpPotion === key) cfg.hpPotion = '';
+            if (cfg.mpPotion === key) cfg.mpPotion = '';
+            saveCfg();
+            try { renderPotionSelects(); } catch (e) { /* ignore */ }
+          }
+          _autoScanBagAt = 0;                 /* 允许立刻重扫（跳过 15s 节流） */
+        }
+      } catch (e) { /* ignore */ }
+      return orig.apply(this, arguments);
+    };
+    wrapped.__nrHooked = true;
+    window.handleResults = wrapped;
+    return true;
+  }
   function useItem(key) {
     if (!key || typeof window.updateInventory !== 'function') return false;
     try {
+      installUseResultHook();
+      st.lastUseKey = key;
       window.updateInventory('Use', key);
       st.lastUse = now();
       consumeLocal(key);
@@ -2607,8 +2633,8 @@
     for (const kind of need) {
       const key = potionKey(kind);
       if (!key) {
-        /* ★ v2.6.214：没有可选的补药 → 自动（静默）扫一次背包，可能只是还没扫过。 */
-        if (autoScanBagIfNoFood()) setStatus('缺少' + (kind === 'hp' ? '补血' : '补蓝') + '药，正在自动扫描背包…');
+        /* ★ v2.6.224：没选 / 选中的已用完 → 自动（静默）扫一次背包，然后选「数量最多的补品」。 */
+        if (autoScanAndPick(kind)) setStatus('缺少' + (kind === 'hp' ? '补血' : '补蓝') + '药，正在自动扫描背包并重选…');
         else setStatus('缺少' + (kind === 'hp' ? '补血' : '补蓝') + '药，请到「食物」页扫描背包');
         continue;
       }
@@ -2646,8 +2672,10 @@
       const maxHp = character.max_health || 0, maxMp = character.max_mana || 0;
       const hpPct = maxHp > 0 ? character.current_health / maxHp * 100 : 100;
       const mpPct = maxMp > 0 ? character.current_mana / maxMp * 100 : 100;
-      if (hpPct < cfg.hpPct && !potionKey('hp')) return true;
-      if (mpPct < cfg.mpPct && !potionKey('mp')) return true;
+      /* ★ v2.6.224：判「背包里到底还有没有可用补品」——用 pickMostAbundant（按背包内容），
+         不能用 potionKey（它只认显式选择：没选时会误判成「没药」而暂停挂机）。 */
+      if (hpPct < cfg.hpPct && !pickMostAbundant('hp')) return true;
+      if (mpPct < cfg.mpPct && !pickMostAbundant('mp')) return true;
     } catch (e) { /* ignore */ }
     return false;
   }
@@ -5224,13 +5252,30 @@
       if (btn) { btn.disabled = false; btn.textContent = '重新扫描背包'; }
     }
   }
-  /* ★ v2.6.214：还没选补血/补蓝药时，自动静默扫一次背包（节流）。
-     触发点：① 切到「食物」页；② 自动补药需要补药但当前没有可选项。返回 true = 本次真的发起了扫描。 */
+  /* ★ v2.6.224：没选补品 / 选中的已用完 → 自动（静默）扫一次背包，然后选「当前数量最多的补品」。
+     kind = 'hp' | 'mp'。返回 true = 本次真的发起了扫描。 */
   let _autoScanBagAt = 0;
+  function autoScanAndPick(kind) {
+    if (!inGame()) return false;
+    if (now() - _autoScanBagAt < 15000) return false;       /* 节流：15s 内只自动扫一次 */
+    _autoScanBagAt = now();
+    scanBag().then(ok => {
+      if (!ok) return;
+      const pick = pickMostAbundant(kind);
+      if (!pick) { setStatus('缺少' + (kind === 'hp' ? '补血' : '补蓝') + '药：背包里没有可用物品'); return; }
+      if (kind === 'hp') cfg.hpPotion = pick; else cfg.mpPotion = pick;
+      saveCfg();
+      try { renderPotionSelects(); } catch (e) { /* ignore */ }
+      try { logEvent('自动补药：扫描背包后选「' + itemName(pick) + '」（数量最多）'); } catch (e) { /* ignore */ }
+      setStatus('自动补药：已选「' + itemName(pick) + '」');
+    });
+    return true;
+  }
+  /* ★ 切到「食物」页时：没选补品 → 静默扫一次背包（只填下拉框，让用户自己选）。 */
   function autoScanBagIfNoFood() {
     if (!inGame()) return false;
     if (cfg.hpPotion || cfg.mpPotion) return false;         /* 已经选过 → 不打扰 */
-    if (now() - _autoScanBagAt < 15000) return false;       /* 节流：15s 内只自动扫一次 */
+    if (now() - _autoScanBagAt < 15000) return false;
     _autoScanBagAt = now();
     scanBag().then(ok => { if (ok) setStatus('未选择补药 → 已自动扫描背包，可在「食物」页选择'); });
     return true;
@@ -9122,10 +9167,10 @@
         </div>
 
         <div class="pane" data-pane="food">
-          <span class="lbl" title="留空 = 自动选背包里数量最多的补血物品（含食物）。">补血药</span>
+          <span class="lbl" title="留空 = 未选择时自动扫描背包，并选数量最多的补血物品（含食物）。">补血药</span>
           <select id="nr-hppotion"></select>
           <div class="nr-prev" id="nr-hpprev"></div>
-          <span class="lbl" title="留空 = 自动选背包里数量最多的补蓝物品。">补蓝药</span>
+          <span class="lbl" title="留空 = 未选择时自动扫描背包，并选数量最多的补蓝物品。">补蓝药</span>
           <select id="nr-mppotion"></select>
           <div class="nr-prev" id="nr-mpprev"></div>
           <div class="half" style="margin-top:6px">
@@ -10101,7 +10146,7 @@
       const sel = document.getElementById(id);
       if (!sel) return;
       sel.innerHTML = '';
-      sel.appendChild(h('option', { value: '', text: '自动选择（数量最多的）' }));
+      sel.appendChild(h('option', { value: '', text: '未选择（自动扫描背包）' }));
       (cfg.bagList || []).filter(it => heals(it, kind)).forEach(it => {
         const hi = healInfo(it.key);
         const tag = kind === 'hp' ? ('+' + hi.life + 'HP') : ('+' + hi.mana + 'MP');
@@ -10564,6 +10609,7 @@
     loadLog();                                           // ★ 先读回上次的日志/停止原因
     loadDetStats();                                      // ★ 读回详细统计
     if (!buildUI()) { setTimeout(boot, 300); return; }   // 面板没建起来就继续等
+    try { installUseResultHook(); } catch (e) { /* ignore */ }   // ★ v2.6.224：捕捉游戏「Insufficient <物品>」回包
     if (cfg.autoPotion) startPotionLoop();               // ★ 药品独立循环：开着就自己跑，不等挂机
     if (cfg.petFeedOn) startPetLoop();                   // ★ 喂宠独立循环：开着就自己跑，不等挂机
     installSpeedPatch();                                 // 动画加速：jQuery 可能还没加载，交给下面的轮询
@@ -10628,6 +10674,8 @@
     if (installSpeedPatch() || spdTries > 600) clearInterval(spdBoot);
   }, 100);
   window.addEventListener('load', () => installSpeedPatch());
+  /* ★ v2.6.224：游戏 JS 异步加载 → handleResults 可能晚于 boot() 就绪。轮询挂上（挂上就停）。 */
+  const useHookBoot = setInterval(() => { try { if (installUseResultHook()) clearInterval(useHookBoot); } catch (e) { /* ignore */ } }, 500);
 
   boot();
 
