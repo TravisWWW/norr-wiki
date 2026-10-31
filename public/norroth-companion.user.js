@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.220
+// @version      2.6.221
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -187,7 +187,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.220';   // 与 @version 保持一致
+  const SCRIPT_VER = '2.6.221';   // 与 @version 保持一致
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -4227,6 +4227,19 @@
   /** 可靠打开 smith 的某个子页：page='' 主菜单 / 'sell' / 'salvage' / 'repair'。
    *  ★ 游戏 walkTo 的 closeFrames 会留下「空壳 frame」，此时 createDialog 不会重载 —— 先关掉再重开。
    *  返回 frame 元素（成功）或 null。 */
+  /* ★ v2.6.221：一次 smith 访问只允许一次「走开一格再走回」——
+     doSmithServices 会两次 ensureSmithDialog（清包前 / 维修前），维修失败还会再重试一次；
+     若每次都走开，最坏会连发 3 次（6~18 次 walkTo）。这里用 st.repair.smithNudged 去重，
+     doSmithServices 入口复位。返回 true = 本次真的走开并走回了。 */
+  async function smithNudgeOnce(smith, why) {
+    if (!smith || !Number.isFinite(smith.x) || !Number.isFinite(smith.y)) return false;
+    if (st.repair && st.repair.smithNudged) return false;   /* 本次访问已走过 → 不再走（也不打日志，避免重复刷屏） */
+    if (st.repair) st.repair.smithNudged = true;
+    try { logEvent((why ? why + ' → ' : '') + '走开一格再走回重触发（' + smith.x + '-' + smith.y + '）'); } catch (e) { /* ignore */ }
+    try { setStatus('走开再走回重触发…'); } catch (e) { /* ignore */ }
+    return await stepAsideAndBack(smith.x, smith.y, { alive: tripAlive });
+  }
+
   async function ensureSmithFrame(smith, page, readyCheck, timeoutMs, retried) {
     const title = smith.action.charAt(0).toUpperCase() + smith.action.slice(1);
     const fid = 'frame_' + title;
@@ -4264,9 +4277,7 @@
     /* ★ v2.6.218：界面一直打不开 → 走开一格再走回，重新触发格子动作，再给一次机会。 */
     if (!retried && smith && Number.isFinite(smith.x) && Number.isFinite(smith.y) && tripAlive()) {
       try {
-        logEvent('界面打不开（' + url + '）→ 走开一格再走回重触发（' + smith.x + '-' + smith.y + '）');
-        setStatus('界面打不开，走开再走回重触发…');
-        if (await stepAsideAndBack(smith.x, smith.y, { alive: tripAlive })) return await ensureSmithFrame(smith, page, readyCheck, timeoutMs, true);
+        if (await smithNudgeOnce(smith, '界面打不开（' + url + '）')) return await ensureSmithFrame(smith, page, readyCheck, timeoutMs, true);
       } catch (e) { /* ignore */ }
     }
     /* ★ v2.6.199：写清「为什么没打开」，别再只报「没打开 XXX 界面」 */
@@ -4676,6 +4687,7 @@
   /** 到 smith 后的统一处理：需要修就修、需要清就清，两件事各自独立 */
   async function doSmithServices(smith, manual, opts) {
     opts = opts || {};
+    if (st.repair) st.repair.smithNudged = false;   /* ★ v2.6.221：本次 smith 访问重新允许一次「走开一格再走回」 */
     const out = { needRepair: false, repaired: false, needSell: false, sold: 0, sellErr: '', repairErr: '', repairNote: '', note: '' };
     if (!smith || !smith.action) return out;
 
@@ -4739,9 +4751,7 @@
       /* ★ v2.6.218：维修没生效（菜单没出来 / 接口失败）→ 走开一格再走回重触发 NPC，再试一次。 */
       if (rr === 'fail' && tripAlive()) {
         try {
-          logEvent('维修未生效 → 走开一格再走回重触发（' + smith.x + '-' + smith.y + '）');
-          setStatus('维修未生效，走开再走回重触发…');
-          if (await stepAsideAndBack(smith.x, smith.y, { alive: tripAlive })) {
+          if (await smithNudgeOnce(smith, '维修未生效')) {
             await ensureSmithDialog(smith);
             rr = await repairAtSmith(smith, !!manual && !reason);
           }

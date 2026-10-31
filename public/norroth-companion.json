@@ -1,8 +1,8 @@
 {
-  "version": "2.6.220",
+  "version": "2.6.221",
   "date": "2026-11-01",
-  "notes": "修三个问题：① 走位卡死判定放宽——只要正在走位（st.move/st.reach）且长时间不动，即使 walk_to 被清空（服务端 in combat / 幽灵战斗态）也会走强恢复，8 次后刷新页面（原来要求 walk_to 非空，这种状态永远不触发刷新）；恢复时先 abortWalk 复位 can_travel/pendingCombatLoad/current_action。② 出活动返回：进入活动前记下所在图（enterFromMap），活动结束点返回传送门后以「回到那张图」为完成判据；已经在那张图就不点 portal，避免重复点 / 被送回别处。③ 刷新逻辑：所有整页刷新统一走 reloadPage()（跨刷新 60s 节流，避免多看门狗连续刷新）；softReloadMap() 加 3s 节流，避免切图时反复播换图动画。",
+  "notes": "维修对话框打不开时的 walkTo 收敛：① 实测确认——「走开一格再走回」正常走位时发 2 次 walkTo（走开+走回），角色走不动（in combat）时发 6 次（走开那步每 ~2s 重试、12s 超时；走回因没动、已在目标格 → 0 次）。② 之前一次维修行程里 ensureSmithDialog 会被调用两次（清包前+维修前），维修失败还会再重试，最坏连发 3 次「走开一格」。现在加闸门：一次 smith 访问最多走开一次（st.repair.smithNudged 去重，doSmithServices 入口复位），日志也只打一次。",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 880420,
-  "sha256": "ff03c8b1fdba5d2f0c7760c8136f43e3836ece2df76fb9164dcdf5f155388707"
+  "size": 881219,
+  "sha256": "c481bfb75e1ac9289d24030a122895ba33151298991b6f0461f29e9aac214749"
 }
