@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.213
+// @version      2.6.214
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -187,7 +187,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.213';   // 与 @version 保持一致
+  const SCRIPT_VER = '2.6.214';   // 与 @version 保持一致
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -2567,7 +2567,12 @@
 
     for (const kind of need) {
       const key = potionKey(kind);
-      if (!key) { setStatus('缺少' + (kind === 'hp' ? '补血' : '补蓝') + '药，请到「食物」页扫描背包'); continue; }
+      if (!key) {
+        /* ★ v2.6.214：没有可选的补药 → 自动（静默）扫一次背包，可能只是还没扫过。 */
+        if (autoScanBagIfNoFood()) setStatus('缺少' + (kind === 'hp' ? '补血' : '补蓝') + '药，正在自动扫描背包…');
+        else setStatus('缺少' + (kind === 'hp' ? '补血' : '补蓝') + '药，请到「食物」页扫描背包');
+        continue;
+      }
 
       const fail = st.potionFail[key];
       if (fail && fail.until > now()) continue;
@@ -5197,6 +5202,49 @@
       if (!wasOpen) closeFrameById('frame_Inventory');
       if (btn) { btn.disabled = false; btn.textContent = '重新扫描背包'; }
     }
+  }
+  /* ★ v2.6.214：静默扫一次背包（不打开背包窗口）—— 只拉 /modal/inventory 重建 cfg.bagList。
+     用于「还没选补药」时自动补一次，省得用户先去点「扫描背包」。 */
+  async function scanBagSilent() {
+    try {
+      await ensureTTDB();
+      const h = await fetchModalHtml('/modal/inventory', true);
+      const items = parseInvItems(h);
+      const map = {};
+      Object.keys(items).forEach(k => {
+        const it = items[k];
+        const hi = healInfo(k);
+        let kind = 'other';
+        if (hi.life > 0 && hi.mana > 0) kind = 'hpmp';
+        else if (hi.life > 0) kind = 'hp';
+        else if (hi.mana > 0) kind = 'mp';
+        map[k] = { key: k, name: it.name, kind: kind, healLife: hi.life, healMana: hi.mana, count: it.count };
+      });
+      const list = Object.keys(map).map(k => map[k]);
+      list.sort((a, b) => {
+        const r = x => x.kind === 'hp' ? 0 : (x.kind === 'hpmp' ? 1 : (x.kind === 'mp' ? 2 : 3));
+        return (r(a) - r(b)) || a.name.localeCompare(b.name);
+      });
+      applyBagDiff(items);
+      cfg.bagList = list;
+      cfg.bagScanned = true;
+      if (cfg.hpPotion && !list.some(i => i.key === cfg.hpPotion)) cfg.hpPotion = '';
+      if (cfg.mpPotion && !list.some(i => i.key === cfg.mpPotion)) cfg.mpPotion = '';
+      saveCfg();
+      renderPotionSelects();
+      return true;
+    } catch (e) { return false; }
+  }
+  /* ★ v2.6.214：还没选补血/补蓝药时，自动静默扫一次背包（节流）。
+     触发点：① 切到「食物」页；② 自动补药需要补药但当前没有可选项。返回 true = 本次真的发起了扫描。 */
+  let _autoScanBagAt = 0;
+  function autoScanBagIfNoFood() {
+    if (!inGame()) return false;
+    if (cfg.hpPotion || cfg.mpPotion) return false;         /* 已经选过 → 不打扰 */
+    if (now() - _autoScanBagAt < 15000) return false;       /* 节流：15s 内只自动扫一次 */
+    _autoScanBagAt = now();
+    scanBagSilent().then(ok => { if (ok) setStatus('未选择补药 → 已自动扫描背包，可在「食物」页选择'); });
+    return true;
   }
 
   /* ======================= 14. 采集 ======================= */
@@ -9355,6 +9403,7 @@
       t.addEventListener('click', () => {
         cfg.uiTab = t.dataset.tab; saveCfg(); syncUI();
         if (t.dataset.tab === 'service') renderTownSelect();   // ★ 切到该页时刷新城镇列表
+        if (t.dataset.tab === 'food') autoScanBagIfNoFood();    // ★ v2.6.214：没选补药 → 自动静默扫一次背包
         if (t.dataset.tab === 'idle' && cfg.questMonsters) {
           refreshQuestTargets(true).then(() => { renderRankList(); updateStats(); }).catch(() => {});
         }

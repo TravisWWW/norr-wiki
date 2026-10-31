@@ -1,8 +1,8 @@
 {
-  "version": "2.6.213",
+  "version": "2.6.214",
   "date": "2026-11-01",
-  "notes": "进活动战斗区复用「进活动图」那套进图后画面同步兜底（等图 ≤15s + loadTravel 重画 + 3s 复核 + 失败才刷新），不再只靠会被加载页跳过的 2.2s 检查",
+  "notes": "未选择补血/补蓝药时自动静默扫描一次背包（切到「食物」页 / 自动补药缺药时触发），不再必须先手动点「扫描背包」",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 877758,
-  "sha256": "2b78820a466f991a1c8063613794b53f71ed9ab764f056c24270c811193f4f30"
+  "size": 880339,
+  "sha256": "13487c36a0d8ac82e08c9eac15e838bc6f875769aa50dccd03f6e4df720da962"
 }
