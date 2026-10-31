@@ -1,8 +1,8 @@
 {
-  "version": "2.6.217",
+  "version": "2.6.218",
   "date": "2026-11-01",
-  "notes": "删除全脚本未引用的死代码（$q、loadVisited、findSellLink、_th/_g/_fmt、smithResultText、nudged、stuckAct、NAV_WALK_PREFER、nobleActive+_nobleCache/_nobleAt、ghUserToken、setGhToken）",
+  "notes": "修复交互失败不再走开一格：smith 界面（售卖/维修）打不开、或维修未生效时，新增「走开一格再走回」重触发 NPC 菜单的兜底（实测走开再走回能重开 frame_<Smith>），再重试一次。另：实测确认 walkVisualArrived 工作正常（动画中 false、落定 true），不是元凶。",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 875066,
-  "sha256": "10dcd05b703592fa47cf5efd2239e303affab0fd2e4153427eddbbfc352f5256"
+  "size": 877296,
+  "sha256": "b6e16b846c6d5fef6f0f5da2d7cf2da65a60a159282d1118b9695b9321629516"
 }

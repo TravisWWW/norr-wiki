@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.217
+// @version      2.6.218
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -187,7 +187,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.217';   // 与 @version 保持一致
+  const SCRIPT_VER = '2.6.218';   // 与 @version 保持一致
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -4187,7 +4187,23 @@
   /** 可靠打开 smith 的某个子页：page='' 主菜单 / 'sell' / 'salvage' / 'repair'。
    *  ★ 游戏 walkTo 的 closeFrames 会留下「空壳 frame」，此时 createDialog 不会重载 —— 先关掉再重开。
    *  返回 frame 元素（成功）或 null。 */
-  async function ensureSmithFrame(smith, page, readyCheck, timeoutMs) {
+  /** ★ v2.6.218：smith 界面打不开时的兜底 —— 走开一格再走回，重新触发目标格的格子动作。
+      实测：站上 smith 格会开 frame_<Title>，走开就关、走回又开；所以「走开一格再走回」能重触发 NPC 菜单。
+      返回 true = 已走回原格（可以再试一次打开）。 */
+  async function smithStepAsideRetry(smith) {
+    if (!smith || !Number.isFinite(smith.x) || !Number.isFinite(smith.y)) return false;
+    const n2 = mcAdjWalkTile(smith.x, smith.y);
+    if (!n2) return false;
+    try {
+      await navWalkTile(n2[0], n2[1], { timeoutMs: 12000, alive: tripAlive, cond: function () { return character.x === n2[0] && character.y === n2[1]; } });
+      if (!tripAlive()) return false;
+      await sleep(500);
+      await navWalkTile(smith.x, smith.y, { timeoutMs: 15000, alive: tripAlive, cond: function () { return character.x === smith.x && character.y === smith.y; } });
+      return tripAlive();
+    } catch (e) { return false; }
+  }
+
+  async function ensureSmithFrame(smith, page, readyCheck, timeoutMs, retried) {
     const title = smith.action.charAt(0).toUpperCase() + smith.action.slice(1);
     const fid = 'frame_' + title;
     const url = '/modal/' + smith.action + (page ? '/' + page : '');
@@ -4221,6 +4237,14 @@
       await sleep(300);
     }
     if (readyCheck()) return document.getElementById(fid);
+    /* ★ v2.6.218：界面一直打不开 → 走开一格再走回，重新触发格子动作，再给一次机会。 */
+    if (!retried && smith && Number.isFinite(smith.x) && Number.isFinite(smith.y) && tripAlive()) {
+      try {
+        logEvent('界面打不开（' + url + '）→ 走开一格再走回重触发（' + smith.x + '-' + smith.y + '）');
+        setStatus('界面打不开，走开再走回重触发…');
+        if (await smithStepAsideRetry(smith)) return await ensureSmithFrame(smith, page, readyCheck, timeoutMs, true);
+      } catch (e) { /* ignore */ }
+    }
     /* ★ v2.6.199：写清「为什么没打开」，别再只报「没打开 XXX 界面」 */
     try { logEvent('界面没打开：' + url + '（' + (tripAlive() ? ('超时 ' + Math.round((timeoutMs || 10000) / 1000) + 's') : '行程已取消') + '）'); } catch (e) { /* ignore */ }
     return null;
@@ -4687,7 +4711,18 @@
     if (out.needRepair) {
       await ensureSmithDialog(smith);
       setStatus('检查并维修装备…');
-      const rr = await repairAtSmith(smith, !!manual && !reason);
+      let rr = await repairAtSmith(smith, !!manual && !reason);
+      /* ★ v2.6.218：维修没生效（菜单没出来 / 接口失败）→ 走开一格再走回重触发 NPC，再试一次。 */
+      if (rr === 'fail' && tripAlive()) {
+        try {
+          logEvent('维修未生效 → 走开一格再走回重触发（' + smith.x + '-' + smith.y + '）');
+          setStatus('维修未生效，走开再走回重触发…');
+          if (await smithStepAsideRetry(smith)) {
+            await ensureSmithDialog(smith);
+            rr = await repairAtSmith(smith, !!manual && !reason);
+          }
+        } catch (e) { /* ignore */ }
+      }
       if (rr === 'ok') { out.repaired = true; st.repair.hudStaleUntil = now() + 600000; }
       else if (rr === 'none') {
         out.needRepair = false;
