@@ -1,8 +1,8 @@
 {
-  "version": "2.6.219",
+  "version": "2.6.220",
   "date": "2026-11-01",
-  "notes": "重构：把「走开一格再走回」抽成公共函数 stepAsideAndBack(tx,ty,opts)，settleAtSpot / mcSettleAtSpot / walkTileCore 内部 / smith 交互（售卖/维修）四处统一复用；删除上一版新增的 smithStepAsideRetry。行为不变，只是去重。",
+  "notes": "修三个问题：① 走位卡死判定放宽——只要正在走位（st.move/st.reach）且长时间不动，即使 walk_to 被清空（服务端 in combat / 幽灵战斗态）也会走强恢复，8 次后刷新页面（原来要求 walk_to 非空，这种状态永远不触发刷新）；恢复时先 abortWalk 复位 can_travel/pendingCombatLoad/current_action。② 出活动返回：进入活动前记下所在图（enterFromMap），活动结束点返回传送门后以「回到那张图」为完成判据；已经在那张图就不点 portal，避免重复点 / 被送回别处。③ 刷新逻辑：所有整页刷新统一走 reloadPage()（跨刷新 60s 节流，避免多看门狗连续刷新）；softReloadMap() 加 3s 节流，避免切图时反复播换图动画。",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 878108,
-  "sha256": "f3c10747a69f15be23294495df342e1db6c499eb484dfdf6cd07fac3d1acc823"
+  "size": 880420,
+  "sha256": "ff03c8b1fdba5d2f0c7760c8136f43e3836ece2df76fb9164dcdf5f155388707"
 }

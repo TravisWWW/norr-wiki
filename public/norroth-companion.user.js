@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.219
+// @version      2.6.220
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -187,7 +187,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.219';   // 与 @version 保持一致
+  const SCRIPT_VER = '2.6.220';   // 与 @version 保持一致
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -254,7 +254,7 @@
     /* ★ 活动自动进入（采集）：phase = idle | enter | in | return */
     event: { on: false, phase: 'idle', busy: false, homeMap: 0, homePoint: '', homeRes: '', homeType: '', pointName: '', enteredAt: 0, lastCheckAt: 0, timeLeft: null, score: null, lobbyMap: 0,   /* ★ v2.6.176：最后一次进入的活动大厅图 id */
              busyAt: 0, checkAt: 0, checkFails: 0, combatSkipAt: 0, lastLogAt: 0, lastHas: null,
-             gateBusy: false, gateLogAt: 0, combatMap: 0, insideHits: 0, insideAt: 0 },   /* ★ v2.6.101：战斗型活动的「进战斗区」状态 · ★ v2.6.191 insideHits/insideAt：Inside Event 退避 */
+             gateBusy: false, gateLogAt: 0, combatMap: 0, insideHits: 0, insideAt: 0, enterFromMap: 0, returnTarget: 0 },   /* ★ v2.6.220 enterFromMap/returnTarget：进活动前所在图 / 返回目标图 */   /* ★ v2.6.101：战斗型活动的「进战斗区」状态 · ★ v2.6.191 insideHits/insideAt：Inside Event 退避 */
     /* ★ v2.6.135：Overlord（世界 Boss）自动参战 */
     ovl: { on: false, phase: 'idle', nextEpoch: 0, boss: '', lastPoll: 0, logAt: 0, joinedAt: 0, fought: false, idleLogAt: 0, leaveBusy: false, leaveAt: 0, leaveTries: 0, roomMap: 0, joinMap: 0, enteredAt: 0, goneAt: 0, leaveEvSince: 0, leaveEvAt: 0 },
     tripManual: false, tripEvent: false, tripOrigin: null,
@@ -1019,10 +1019,7 @@
     if (now() - M.at < MAPLOAD_STUCK_MS) return true;         /* 还在等底图 */
     M.at = now(); M.hits++;
     if (M.hits > MAPLOAD_MAX) {
-      logEvent('切图卡→刷新页面');
-      setStatus('切图卡住，正在刷新页面…');
-      saveCfgNow();
-      setTimeout(function () { try { location.reload(); } catch (e) { /* ignore */ } }, 300);
+      reloadPage('切图卡');
       return true;
     }
     const rt = document.getElementById('transition_retry');
@@ -1084,7 +1081,30 @@
   const RENDER_STUCK_MS = 6000;   /* ★ v2.6.208：4s → 6s，等久一点再重画，避免把瞬时不一致当成卡住 */
   const RENDER_MAX = 4;
   /* 只刷新画面（不刷新网页）：调游戏自己的 loadTravel() —— 等价于手动换一次图。 */
+  /* ★ v2.6.220：统一的「整页刷新」入口 —— 带跨刷新节流，避免多个看门狗同时 / 连续触发刷新
+     （用户反馈：切图时经常频繁刷新，明明看着没问题）。60s 内只允许整页刷新一次。 */
+  function reloadPage(why) {
+    const t = now();
+    let last = 0;
+    try { last = +(sessionStorage.getItem('norroth_reload_at') || 0); } catch (e) { /* ignore */ }
+    if (last && t - last < 60000) {
+      try { logEvent('刷新节流：' + why + '（60s 内已刷新过一次，本次跳过）'); } catch (e) { /* ignore */ }
+      return false;
+    }
+    try { sessionStorage.setItem('norroth_reload_at', String(t)); } catch (e) { /* ignore */ }
+    try { logEvent(why + ' → 刷新页面'); } catch (e) { /* ignore */ }
+    try { setStatus('正在刷新页面…'); } catch (e) { /* ignore */ }
+    try { saveCfgNow(); } catch (e) { /* ignore */ }
+    setTimeout(function () { try { location.reload(); } catch (e) { /* ignore */ } }, 300);
+    return true;
+  }
+  let _softReloadAt = 0;
   function softReloadMap() {
+    /* ★ v2.6.220：3s 节流 —— 多个看门狗可能在同一段时间各调一次 loadTravel()，每次都播一遍换图动画，
+       看着像「频繁刷新」。节流期间返回 true（= 已处理），避免调用方误判「游戏没有 loadTravel」而升级成整页刷新。 */
+    const t = now();
+    if (t - _softReloadAt < 3000) return true;
+    _softReloadAt = t;
     try {
       if (typeof window.loadTravel === 'function') { window.loadTravel(); return true; }
     } catch (e) { /* ignore */ }
@@ -1184,10 +1204,7 @@
         return true;
       }
       try { sessionStorage.setItem('norroth_render_reload_at', String(now())); } catch (e) { /* ignore */ }
-      logEvent('换图没画→刷新页面');
-      setStatus('换图没重画，正在刷新页面…');
-      saveCfgNow();
-      setTimeout(function () { try { location.reload(); } catch (e) { /* ignore */ } }, 300);
+      reloadPage('换图没画');
       return true;
     }
     logEvent('换图没画→重画(第' + R.hits + '次)');
@@ -1221,10 +1238,7 @@
         return true;
       }
       try { sessionStorage.setItem('norroth_render_reload_at', String(now())); } catch (e) { /* ignore */ }
-      logEvent('画面没刷→刷新页面');
-      setStatus('画面没刷新，正在刷新页面…');
-      saveCfgNow();
-      setTimeout(function () { try { location.reload(); } catch (e) { /* ignore */ } }, 300);
+      reloadPage('画面没刷');
       return true;
     }
     logEvent('画面没刷→重画(第' + R.hits + '次)');
@@ -5704,7 +5718,7 @@
     E.dungeonLogAt = 0;                                     /* ★ v2.6.108 */
     E.gateMap = {}; E.gateTried = {};                       /* ★ v2.6.108：大厅等级门「门→目标图」实测表 / 已试过的门 */
     E.insideHits = 0; E.insideAt = 0;                       /* ★ v2.6.191：Inside Event 退避计数 */
-    E.exitSince = 0; E.exitMap = 0; E.exitAt = 0; E.exitResyncAt = 0; E.returnAt = 0; E.returnFromMap = 0;
+    E.exitSince = 0; E.exitMap = 0; E.exitAt = 0; E.exitResyncAt = 0; E.returnAt = 0; E.returnFromMap = 0; E.returnTarget = 0; E.enterFromMap = 0;
   }
   /* 活动是否开启：/modal/activities 里有没有 Event Gate 的 Join 按钮（实测：活动结束按钮消失） */
   async function eventActivitiesHasJoin() {
@@ -5840,9 +5854,7 @@
           if (!isTarget(character.current_map)) return;   /* 又离开目标图 → 不管 */
           const drawn = renderedMapId() || renderMapId();
           if (isTarget(drawn)) { recenterCamera(); return; }
-          logEvent('活动：loadTravel() 后仍未画出' + label + '（画面还是 ' + (drawn || '?') + '）→ 刷新页面');
-          saveCfgNow();
-          location.reload();
+          reloadPage('活动：loadTravel() 后仍未画出' + label + '（画面还是 ' + (drawn || '?') + '）');
         } catch (e) { /* ignore */ }
       }, 3000);
       return true;
@@ -5892,17 +5904,20 @@
        用户要求（2026-10-31）：活动完结后先检查 portal 是否存在，在的话点它回原位置，然后再衔接主任务。 */
     if (E.phase === 'returning') {
       const _waited = now() - (E.returnAt || 0);
-      /* 传送门回图成功的判据：① 地图已切换且画面同步；② 传送门已消失（用过后会关闭）且已过 3s。
-         任一满足即算回图完成；最多等 15s，超时也放行交给主任务（避免卡死）。 */
-      const _moved = (+character.current_map !== +E.returnFromMap) && renderSynced() && !mapLoadStuck();
+      const _target = +E.returnTarget || 0;
+      /* ★ v2.6.220：回图成功的判据改成「回到进入活动前那张图（E.enterFromMap）」——
+         只要回到目标图且画面同步就算完成；没有目标图时退回「传送门已消失且已过 3s」。
+         最多等 15s，超时也放行交给主任务（避免卡死）。 */
+      const _atTarget = !!(_target && +character.current_map === _target) && renderSynced() && !mapLoadStuck();
       const _portalGone = !hudShown(document.getElementById('hud_portal'));
-      const _done = _moved || (_portalGone && _waited >= 3000);
+      const _done = _atTarget || (_portalGone && _waited >= 3000);
       if (!_done && _waited < 15000) {
         setStatus('活动结束：使用返回传送门回原位置…');
         return true;
       }
       E.phase = 'idle';
-      logEvent('活动：返回传送门已把角色送回「' + currentMapName() + '」→ 交给当前任务');
+      if (_atTarget) logEvent('活动：返回传送门已把角色送回进入前的图「' + currentMapName() + '」→ 交给当前任务');
+      else logEvent('活动：返回传送门处理完毕（当前「' + currentMapName() + '」）→ 交给当前任务');
       return false;
     }
 
@@ -6018,10 +6033,19 @@
     if (E.on) {
       if (eventExitPending(E)) return true;
       E.on = false; E.pointName = '';
+      /* ★ v2.6.220：返回判据 = 「回到进入活动前那张图（E.enterFromMap）」。
+         已经在那张图 → 不点 portal（避免重复点 / 被送回别处）。 */
+      const _target = +E.enterFromMap || 0;
+      if (_target && +character.current_map === _target) {
+        E.phase = 'idle';
+        logEvent('活动：已离开活动图，且已在进入前的图「' + currentMapName() + '」→ 不点返回传送门');
+        return false;
+      }
       if (tryBackPortal('活动结束')) {
         E.phase = 'returning';
         E.returnAt = now();
         E.returnFromMap = +character.current_map;
+        E.returnTarget = _target;
         return true;   /* 接管本 tick，等返回传送门把角色送回原图 */
       }
       E.phase = 'idle';
@@ -6074,6 +6098,9 @@
           return;
         }
         E.homeMap = +cfg.farmMap || +character.current_map;
+        /* ★ v2.6.220：记住「进入活动前所在的图」—— 活动结束用返回传送门回的就是它。
+           用户要求：回图后确认已回到这张图，已回就不再点 portal（避免重复点 / 点错图）。 */
+        E.enterFromMap = +character.current_map || 0;
         /* ★ 用 effectiveGatherPoint()：用户没手动选时 cfg.gatherPoint 可能是空的，
            真正在采的是下拉里自动识别的那个 —— 否则进活动后类型匹配失败，会去挖第一个（Quarry）。 */
         E.homePoint = String(effectiveGatherPoint() || cfg.gatherPoint || '');
@@ -6781,17 +6808,19 @@
     F.pos = pos;
     /* ★ 已经站在 walk_to 格上 = 正常静止（游戏到达后不清 walk_to），不是卡死 */
     const arrived = character.walk_to === (character.x + '-' + character.y);
-    if (busy || !character.walk_to || moved || arrived) { F.at = now(); if (moved || arrived) F.hits = 0; return; }
+    /* ★ v2.6.220：判定放宽 —— 只要「正在走位（st.move / st.reach）」且位置长时间不变，
+       即使 walk_to 已被清空（游戏拒绝移动 / 服务端 in combat / 幽灵战斗态）也算卡死。
+       原来要求 walk_to 非空 → 这种「点了目标但走不动、walk_to 又被清空」的状态永远不触发刷新。 */
+    const trying = !!(st.move || st.reach);
+    if (busy || (!character.walk_to && !trying) || moved || arrived) { F.at = now(); if (moved || arrived) F.hits = 0; return; }
     if (now() - F.at < FREEZE_MS) return;
     F.at = now(); F.hits++;
     /* ★ 先用「点几个不同的格子」强恢复；连续 8 次都无效 → 整页刷新兜底（默认行为，不再提供开关）。 */
+    try { abortWalk(); } catch (e) { /* ignore */ }   /* ★ v2.6.220：复位 can_travel / pendingCombatLoad / current_action（幽灵战斗态） */
     nudgeRecover();
     st.move = null; st.reach = null;
     if (F.hits >= 8) {   /* ★ 卡死刷新改为默认行为 */
-      logEvent('游戏卡死（走位 ' + (FREEZE_MS / 1000) + 's 无位移），强恢复无效，自动刷新页面');
-      setStatus('游戏卡死，正在刷新页面…');
-      saveCfgNow();
-      setTimeout(() => { try { location.reload(); } catch (e) { /* ignore */ } }, 300);
+      reloadPage('游戏卡死（走位 ' + (FREEZE_MS / 1000) + 's 无位移），强恢复无效');
       return;
     }
     logEvent('走位卡死→强恢复(第' + F.hits + '次)');
@@ -6868,10 +6897,7 @@
       }
     } catch (e) { /* ignore */ }
     if (G.hits >= GHOST_MAX) {
-      logEvent('幽灵战→刷新页面');
-      setStatus('战斗卡死（画面没弹出），正在刷新页面…');
-      saveCfgNow();
-      setTimeout(function () { try { location.reload(); } catch (e) { /* ignore */ } }, 300);
+      reloadPage('幽灵战（战斗卡死，画面没弹出）');
       return true;
     }
     logEvent('幽灵战→已复位(第' + G.hits + '次)' + (refought ? ' 补开战' : ''));
