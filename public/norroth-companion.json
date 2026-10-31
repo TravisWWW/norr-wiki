@@ -1,8 +1,8 @@
 {
-  "version": "2.6.201",
+  "version": "2.6.202",
   "date": "2026-10-31",
-  "notes": "修两个死循环：① HUD破损图标卡住导致每20s回城修一次 ② 背包快满但无可清装备导致每30s回城一次",
+  "notes": "导航待办改为「暂时放弃」（长退避后重试）；总表删掉「损坏图标残留」措辞",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 938203,
-  "sha256": "796b7307d6df386ee2886035d6bcf28db122c639b4afef01a8aca93b241be9a3"
+  "size": 938717,
+  "sha256": "9fd1f26443e987b9ebbc7d93b941cbd1d23f502bba2da1a6d2ea6fbb5686a9ec"
 }

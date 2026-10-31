@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.201
+// @version      2.6.202
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -193,7 +193,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.201';   // 与 @version 保持一致
+  const SCRIPT_VER = '2.6.202';   // 与 @version 保持一致
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -349,7 +349,7 @@
    *  [卡住自愈] checkStuck()           · 状态 st.watch                · 判据「stuckSec 内 位置/经验/击杀 全没变」· 动作 nudgeRecover + 拉黑目标格      · 上限 40 次 → stop()
    *  [导航卡住] walkTileCore() 内部     · 状态 局部 stuck/lastMove      · 判据「位置不变 / 2.5s 无进展」        · 动作 onStuck()（默认 nudgeRecover） · 上限 超时 或 paused>5min
    *  [采集]     stepGather 分支        · 状态 st.gatherIdleSince/Resync· 判据「8s 进度条不转」                · 动作 关掉重开 → 走开一格再走回     · 上限 不停止（循环）
-   *  [休整]     runRestock / pollSmith · 状态 st.repair/sell/bank.cooldownUntil · 判据「失败 / 损坏图标残留」 · 动作 冷却期内不再出发            · 上限 60s / 20s / 120s
+   *  [休整]     runRestock / pollSmith · 状态 st.repair/sell/bank.cooldownUntil · 判据「失败 / HUD 破损指示器与铁匠菜单不一致（以铁匠为准）」 · 动作 冷却期内不再出发            · 上限 60s / 20s / 120s
    *  [回图]     step() 看门狗          · 状态 st.returnRetryAt/Fails   · 判据「复活后还在重生泉水」            · 动作 returnToFarm()                · 上限 不停止，退避 30s→300s
    *  [多角色]   mcDue()                · 状态 rot.idle[id].failAt      · 判据「副角色任务失败」                · 动作 180s 内不重试                 · 上限 180s
    *  [传送站]   navWaygateOut()        · 状态 局部 order/TP_BUDGET     · 判据「点了按钮没换图」                · 动作 换下一个候选                   · 上限 4 个候选 / 总预算 35s
@@ -11591,6 +11591,7 @@
    * 说明：这是通用的导航意图，不再写死在「阵亡回图」里 —— 任何模块都能 navSetPending()。
    * ─────────────────────────────────────────────────────────── */
   const NAV_PENDING_MAX_TRIES = 5;
+  const NAV_PENDING_GIVEUP_MS = 600000;   /* ★ v2.6.202：反复失败后「暂时放弃」多久再试（不再永久放弃） */
   let navPending = null;   /* { dest, reason, tries, nextAt } */
   function navPendingDest() { return navPending ? navPending.dest : 0; }
   function navSetPending(dest, reason) {
@@ -11674,10 +11675,13 @@
     p.tries = (p.tries || 0) + 1;
     if (p.tries > NAV_PENDING_MAX_TRIES) {
       const nm = navMapName(p.dest);
-      navClearPending();
-      logEvent('导航待办：连续 ' + NAV_PENDING_MAX_TRIES + ' 次没到「' + nm + '」→ 放弃（先就地挂机）');
-      try { notify('导航放弃', '一直没到「' + nm + '」，先就地挂机'); } catch (e) { /* ignore */ }
-      return false;
+      /* ★ v2.6.202：不再「永久放弃」—— 改为「暂时放弃」：长退避后继续重试（用户要求）。
+         副角色行程中的导航失败走 mcTripFail（判该副角色失败 180s，轮转先跑别的角色），不在这里处理。 */
+      p.tries = 0;
+      p.nextAt = now() + NAV_PENDING_GIVEUP_MS;
+      logEvent('导航待办：连续 ' + NAV_PENDING_MAX_TRIES + ' 次没到「' + nm + '」→ 暂时放弃，' + Math.round(NAV_PENDING_GIVEUP_MS / 60000) + ' 分钟后再试');
+      setStatus('导航中 → ' + nm + '（暂时放弃，稍后再试）…');
+      return true;
     }
     p.nextAt = now() + Math.min(300000, 30000 * Math.pow(2, Math.min(4, p.tries - 1)));
     logEvent('导航待办：还没到「' + navMapName(p.dest) + '」（当前 ' + currentMapName() + '）→ 重新规划（第 ' + p.tries + ' 次）');
