@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.221
+// @version      2.6.223
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -187,7 +187,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.221';   // 与 @version 保持一致
+  const SCRIPT_VER = '2.6.223';   // 与 @version 保持一致
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -4245,33 +4245,37 @@
     const fid = 'frame_' + title;
     const url = '/modal/' + smith.action + (page ? '/' + page : '');
     const deadline = now() + (timeoutMs || 10000);
-    let lastOpen = 0;
-    while (now() < deadline) {
+    /* ★ v2.6.223：最多开 2 次、每次开完等 3s —— 开十几次没意义；没反应就交给调用方的兜底（走开一格 / walkTo）。 */
+    const MAX_TRIES = 2, WAIT_MS = 3000;
+    let tries = 0;
+    while (now() < deadline && tries < MAX_TRIES) {
       if (!tripAlive()) return null;
       if (readyCheck()) return document.getElementById(fid);
+      tries++;
       const f = document.getElementById(fid);
       const content = f && f.querySelector('.frame-content');
-      const empty = !f || !content || content.classList.contains('loading');
-      if (empty) {
-        if (now() - lastOpen > 1200) {
-          if (f) { try { closeFrameById(fid); } catch (e) { /* ignore */ } await sleep(250); }
-          try { if (typeof window.createDialog === 'function') window.createDialog(title, '', 'ajax', url, true); } catch (e) { /* ignore */ }
-          lastOpen = now();
-        }
-      } else if (page) {
+      const loading = !!(content && content.classList.contains('loading'));
+      const shell = !f || !content;                 /* 没有 frame / 没有 frame-content = 空壳 */
+      if (page && !shell && !loading) {
+        /* 主菜单已开 → 点子页链接；没有链接就直接开子页 URL（三个子页之间没有互相跳转的链接） */
         const link = f.querySelector('a[onclick*="/' + page + '"]');
-        if (now() - lastOpen > 1200) {
-          if (link) { try { link.click(); } catch (e) { /* ignore */ } }
-          else {
-            /* sell / salvage / repair 三个子页之间**没有互相跳转的链接** */
-            try { closeFrameById(fid); } catch (e) { /* ignore */ }
-            await sleep(250);
-            try { if (typeof window.createDialog === 'function') window.createDialog(title, '', 'ajax', url, true); } catch (e) { /* ignore */ }
-          }
-          lastOpen = now();
+        if (link) { try { link.click(); } catch (e) { /* ignore */ } }
+        else {
+          try { closeFrameById(fid); } catch (e) { /* ignore */ } await sleep(250);
+          try { if (typeof window.createDialog === 'function') window.createDialog(title, '', 'ajax', url, true); } catch (e) { /* ignore */ }
         }
+      } else {
+        /* 空壳先关掉（游戏 walkTo 的 closeFrames 会留下空壳，此时 createDialog 不会重载）；正在 loading 的不关（关了会打断加载）。 */
+        if (shell && f) { try { closeFrameById(fid); } catch (e) { /* ignore */ } await sleep(250); }
+        try { if (typeof window.createDialog === 'function') window.createDialog(title, '', 'ajax', url, true); } catch (e) { /* ignore */ }
       }
-      await sleep(300);
+      /* 开完等 3s 看有没有反应；没反应就交给兜底 */
+      const until = now() + WAIT_MS;
+      while (now() < until && now() < deadline) {
+        await sleep(300);
+        if (!tripAlive()) return null;
+        if (readyCheck()) return document.getElementById(fid);
+      }
     }
     if (readyCheck()) return document.getElementById(fid);
     /* ★ v2.6.218：界面一直打不开 → 走开一格再走回，重新触发格子动作，再给一次机会。 */
@@ -4727,7 +4731,7 @@
       return out;
     }
 
-    await ensureSmithDialog(smith);
+    const _openedA = await ensureSmithDialog(smith);
 
     /* ① 先出售 / 拆解（用户 2026-10-20 要求：清包 → 存仓 → 修理） */
     if (out.needSell) {
@@ -4745,7 +4749,8 @@
     }
     /* ② 再修理 */
     if (out.needRepair) {
-      await ensureSmithDialog(smith);
+      /* ★ v2.6.222：(A) 已经失败过、又没清过包（没关窗）→ 不再白等一次 12s 重开对话框。 */
+      if (out.needSell || _openedA) await ensureSmithDialog(smith);
       setStatus('检查并维修装备…');
       let rr = await repairAtSmith(smith, !!manual && !reason);
       /* ★ v2.6.218：维修没生效（菜单没出来 / 接口失败）→ 走开一格再走回重触发 NPC，再试一次。 */

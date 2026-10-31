@@ -1,8 +1,8 @@
 {
-  "version": "2.6.221",
+  "version": "2.6.223",
   "date": "2026-11-01",
-  "notes": "维修对话框打不开时的 walkTo 收敛：① 实测确认——「走开一格再走回」正常走位时发 2 次 walkTo（走开+走回），角色走不动（in combat）时发 6 次（走开那步每 ~2s 重试、12s 超时；走回因没动、已在目标格 → 0 次）。② 之前一次维修行程里 ensureSmithDialog 会被调用两次（清包前+维修前），维修失败还会再重试，最坏连发 3 次「走开一格」。现在加闸门：一次 smith 访问最多走开一次（st.repair.smithNudged 去重，doSmithServices 入口复位），日志也只打一次。",
+  "notes": "维修/售卖对话框打开次数收敛：① 之前 ensureSmithFrame 每 1.2s 就关掉重开一次对话框、最长 12s（实测一次 doSmithServices 开窗 32 次、45s）；而且它会把「正在 loading 的对话框」也关掉重开，慢网下会打断加载、永远打不开。② 现在：最多开 2 次、每次开完等 3s，没反应就交给兜底（走开一格再走回 / walkTo）；正在 loading 的 frame 不再关；清包前已失败且没清过包时不再白等一次重开。实测：打不开场景 32 次/45s → 6 次/21s；正常场景 2 次/3s。",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 881219,
-  "sha256": "c481bfb75e1ac9289d24030a122895ba33151298991b6f0461f29e9aac214749"
+  "size": 882061,
+  "sha256": "48d193f6765797801890b06d2c81d8a06d7b52cedd864dc9ce839c2bff031616"
 }
