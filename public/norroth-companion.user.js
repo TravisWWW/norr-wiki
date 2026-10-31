@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.198
+// @version      2.6.199
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -193,7 +193,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.198';   // 与 @version 保持一致
+  const SCRIPT_VER = '2.6.199';   // 与 @version 保持一致
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -1200,6 +1200,9 @@
           return;                                                 /* 格子上没有动作 */
         }
         if (arriveActionFired(act)) return;                       /* 已经触发了 */
+        /* ★ v2.6.199：门（gate）不在这里补触发 —— 踩门会换图，若其实已经换图只是客户端没跟上，
+           再 execTileAction('gate') 会再开一次门（或弹门面板）→「刚切完图又被弹回原地」。门交给 walkTileCore 处理。 */
+        if (act === 'gate') return;
         if (character.current_action && character.current_action !== 'Traveling') return;   /* 游戏正忙 */
         logEvent('到位没触发动作（' + act + ' @' + x + '-' + y + '）→ 补一次 execTileAction');
         setStatus('到位没触发动作，正在补触发…');
@@ -4193,6 +4196,14 @@
     }
     /* 重触发场景：站到目标格但条件仍未成立 → 走开一格再走回，试几次（门要重踩才触发） */
     if (retrigger && onTile() && !cond()) {
+      /* ★ v2.6.199：走开再走回之前，先向服务端重同步一次客户端状态 ——
+         换图其实已经成功、只是客户端 current_map / 画面没跟上时（实测很常见），
+         直接走回门格会再触发一次该门 → 表现就是「刚切完图又被弹回原地」。
+         softRefreshEntities() = 游戏 fetchTravelData()：只重拉 travel 数据、不关弹窗（传送站面板不受影响）。 */
+      if (opts.mapChange) {
+        try { softRefreshEntities(); } catch (e) { /* ignore */ }
+        for (let w = 0; w < 10; w++) { await sleep(500); if (!alive()) return cancel(); if (cond()) return okOut(); }
+      }
       for (let k = 0; k < 3; k++) {
         for (let w = 0; w < 9; w++) { await sleep(700); if (!alive()) return cancel(); if (cond()) return okOut(); clearBlockers(); }
         await stepAside();
@@ -4320,7 +4331,7 @@
     return false;
   }
 
-  async function verifyRepaired(ms, beforePct) {
+  async function verifyRepaired(ms, beforePct, apiOk) {
     const deadline = now() + ms;
     while (now() < deadline) {
       if (!tripAlive()) return false;
@@ -4328,7 +4339,11 @@
       const w = durWorst(st.dur && st.dur.list);
       const nowPct = w ? w.pct : 1;
       /* ★ v2.6.182：不再只看破损图标（低耐久不亮）—— 改成「破损图标灭了 且 最低耐久回升/已满」。 */
-      if (!isDamaged() && (beforePct == null || nowPct > beforePct + 0.02 || nowPct >= 0.99)) return true;
+      /* ★ v2.6.199：游戏 HUD 的「破损」图标实测会卡住不灭（修完耐久满了图标还在）→ 不能只认它。
+         ① 耐久确实回升 = 真修好了；② 图标灭了 = 成功；③ 维修接口返回 ok = 成功。 */
+      if (beforePct != null && nowPct > beforePct + 0.02) return true;
+      if (!isDamaged() && (beforePct == null || nowPct >= 0.99)) return true;
+      if (apiOk) return true;
       await sleep(400);
     }
     return false;
@@ -4373,7 +4388,10 @@
       }
       await sleep(300);
     }
-    return readyCheck() ? document.getElementById(fid) : null;
+    if (readyCheck()) return document.getElementById(fid);
+    /* ★ v2.6.199：写清「为什么没打开」，别再只报「没打开 XXX 界面」 */
+    try { logEvent('界面没打开：' + url + '（' + (tripAlive() ? ('超时 ' + Math.round((timeoutMs || 10000) / 1000) + 's') : '行程已取消') + '）'); } catch (e) { /* ignore */ }
+    return null;
   }
 
   async function ensureSmithDialog(smith) {
@@ -4492,7 +4510,7 @@
       try {
         const api = await apiRepairRows(list);
         if (api.empty) return 'none';
-        if (api.ok) { await sleep(600); if (await verifyRepaired(REPAIR_VERIFY, beforePct)) return 'ok'; }
+        if (api.ok) { await sleep(600); if (await verifyRepaired(REPAIR_VERIFY, beforePct, true)) return 'ok'; }
       } catch (e) { /* 接口不可用 → 走下面的 DOM 回退 */ }
       if (i === 1) break;
     }
@@ -11345,6 +11363,7 @@
       alive: opts.alive || function () { return true; },
       cond: cond,
       retrigger: (opts.retrigger !== undefined) ? !!opts.retrigger : (until === 'mapChange'),
+      mapChange: (until === 'mapChange'),   /* ★ v2.6.199：换图门 —— 重触发前先重同步，避免「刚切完图又被弹回原地」 */
       combatText: opts.combatText,
       onStuck: opts.onStuck,
       heal: supply                      /* ★ v2.6.156：导航途中也要等自动回血 */
