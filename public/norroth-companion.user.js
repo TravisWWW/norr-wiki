@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.214
+// @version      2.6.215
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -187,7 +187,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.214';   // 与 @version 保持一致
+  const SCRIPT_VER = '2.6.215';   // 与 @version 保持一致
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -5116,116 +5116,58 @@
 
   /* ======================= 13. 背包扫描 ======================= */
 
+  /* ★ v2.6.215：手动「扫描背包」也改成静默扫描（不打开背包窗口）—— 直接拉 /modal/inventory。
+     旧版会点开游戏的背包窗口再读 DOM，现在与自动扫描走同一条路。 */
   async function scanBag() {
     const btn = document.getElementById('nr-scan');
     if (btn) { btn.disabled = true; btn.textContent = '扫描中…'; }
-    const wasOpen = hasFrame('frame_Inventory');
     try {
-      if (!wasOpen) { const hd = document.getElementById('hud_Inventory'); if (hd) humanClick(hd); }
-
-      // ★ 修 bug：原版固定 sleep(1300)，网络慢时会读到空背包。
-      //   改成轮询等槽位出现（最多 5 秒）。
+      const ok = await scanBagSilent();
+      setStatus(ok ? ('背包扫描完成，发现 ' + ((cfg.bagList || []).length) + ' 种可用物品') : '背包扫描失败：读不到背包数据');
+      return ok;
+    } finally {
+      if (btn) { btn.disabled = false; btn.textContent = '重新扫描背包'; }
+    }
+  }
+  /* ★ v2.6.214：静默扫一次背包（不打开背包窗口）—— 直接拉 /modal/inventory 重建 cfg.bagList。
+     解析口径与旧版「开窗口读 DOM」一致：use_name 过滤 + 图标缓存 + 数量 span（invCount 天然跳过 🔒）。
+     手动「扫描背包」按钮与「没选补药」的自动扫描都走这里。 */
+  async function scanBagSilent() {
+    try {
       await ensureTTDB();   // ★ 先拿到物品效果库，才能精确分类补血/补蓝
-
-      const inv = await waitUntil(() => {
-        const f = document.getElementById('frame_Inventory');
-        return (f && f.querySelector('.inv_slot')) ? f : null;
-      }, 5000);
-      if (!inv) {
-        setStatus('背包扫描失败：窗口未就绪，已保留上次库存');
-        return false;
-      }
-      // ★ 背包是分批渲染的：等槽位数量稳定下来再读，否则会漏物品
-      if (inv) {
-        let lastN = -1, stable = 0;
-        for (let i = 0; i < 24; i++) {
-          const n = $$q('.inv_slot', inv).length;
-          if (n === lastN && n > 0) { stable++; if (stable >= 3) break; } else stable = 0;
-          lastN = n;
-          await sleep(220);
-        }
-      }
-
+      const h = await fetchModalHtml('/modal/inventory', true);
       const map = {};
       const items = {};
-      if (inv) {
-        $$q('.inv_slot.full_inv', inv).forEach(slot => {
-          const d = slot.querySelector('div');
-          if (!d) return;
-          const key = d.getAttribute('res') || d.getAttribute('name') || '';
-          try { const bg = (d.style && d.style.backgroundImage) || ''; const im = /url\(["']?([^"')]+)["']?\)/.exec(bg); if (key && im) _iconCache.set(key, im[1]); } catch (e) { /* ignore */ }
-          const name = d.getAttribute('hover_title') || key;
-          const use = slot.getAttribute('use_name') || '';
-          if (!key || !use) return;
-          const rq = d.getAttribute('rarity');           // ★ 装备才有 rarity 属性
-          /* ★ 锁定物品的槽位里会多一个 <span class=locked>🔒</span>，它排在数量 span 前面，
-             原来的 querySelector('span') 会读到 🔒 → parseInt('🔒') = NaN → 数量被当成 0。
-             改成只认「纯数字」的 span（老版 parseInvItems 的正则天然跳过 🔒，这里是回归修复）。 */
-          let count = 0;
-          for (const s of slot.querySelectorAll('span')) {
-            const t = (s.textContent || '').replace(/,/g, '').trim();
-            if (/^\d+$/.test(t)) { count = parseInt(t, 10) || 0; break; }
-          }
-          if (!items[key]) items[key] = { key: key, name: name, rarity: rq || '', count: 0 };
-          items[key].count += count;
-          if (!map[key]) {
-            const hi = healInfo(key);
-            let kind = 'other';
-            if (hi.life > 0 && hi.mana > 0) kind = 'hpmp';
-            else if (hi.life > 0) kind = 'hp';
-            else if (hi.mana > 0) kind = 'mp';
-            map[key] = { key: key, name: name, kind: kind, healLife: hi.life, healMana: hi.mana, count: 0 };
-          }
-          map[key].count += count;
-        });
-      }
-
+      String(h).split('class="inv_slot').slice(1).forEach(blk => {
+        const rk = /res="([^"]+)"/.exec(blk);
+        if (!rk) return;
+        const key = rk[1];
+        const use = (/use_name="([^"]*)"/.exec(blk) || [])[1] || '';
+        if (!use) return;                                  /* 与旧版一致：跳过没有 use_name 的槽位 */
+        const name = (/hover_title="([^"]*)"/.exec(blk) || [])[1] || key;
+        const rq = (/rarity="([^"]+)"/.exec(blk) || [])[1] || '';
+        const im = /url\(["']?([^"')]+)["']?\)/.exec(blk);
+        if (im) _iconCache.set(key, im[1]);
+        const cn = invCount(blk, key);
+        const count = (cn == null) ? 1 : cn;
+        if (!items[key]) items[key] = { key: key, name: name, rarity: rq, count: 0 };
+        items[key].count += count;
+        if (!map[key]) {
+          const hi = healInfo(key);
+          let kind = 'other';
+          if (hi.life > 0 && hi.mana > 0) kind = 'hpmp';
+          else if (hi.life > 0) kind = 'hp';
+          else if (hi.mana > 0) kind = 'mp';
+          map[key] = { key: key, name: name, kind: kind, healLife: hi.life, healMana: hi.mana, count: 0 };
+        }
+        map[key].count += count;
+      });
       const list = Object.keys(map).map(k => map[k]);
       list.sort((a, b) => {
         const r = x => x.kind === 'hp' ? 0 : (x.kind === 'hpmp' ? 1 : (x.kind === 'mp' ? 2 : 3));
         return (r(a) - r(b)) || a.name.localeCompare(b.name);
       });
       applyBagDiff(items);                              // ★ 详细统计：算「获得」增量 + 背包装备稀有度
-      cfg.bagList = list;
-      cfg.bagScanned = true;
-      if (cfg.hpPotion && !list.some(i => i.key === cfg.hpPotion)) cfg.hpPotion = '';
-      if (cfg.mpPotion && !list.some(i => i.key === cfg.mpPotion)) cfg.mpPotion = '';
-      saveCfg();
-
-      renderPotionSelects();
-      setStatus('背包扫描完成，发现 ' + list.length + ' 种可用物品');
-      return true;
-    } catch (e) {
-      setStatus('背包扫描失败：' + (e && e.message ? e.message : String(e)));
-      return false;
-    } finally {
-      if (!wasOpen) closeFrameById('frame_Inventory');
-      if (btn) { btn.disabled = false; btn.textContent = '重新扫描背包'; }
-    }
-  }
-  /* ★ v2.6.214：静默扫一次背包（不打开背包窗口）—— 只拉 /modal/inventory 重建 cfg.bagList。
-     用于「还没选补药」时自动补一次，省得用户先去点「扫描背包」。 */
-  async function scanBagSilent() {
-    try {
-      await ensureTTDB();
-      const h = await fetchModalHtml('/modal/inventory', true);
-      const items = parseInvItems(h);
-      const map = {};
-      Object.keys(items).forEach(k => {
-        const it = items[k];
-        const hi = healInfo(k);
-        let kind = 'other';
-        if (hi.life > 0 && hi.mana > 0) kind = 'hpmp';
-        else if (hi.life > 0) kind = 'hp';
-        else if (hi.mana > 0) kind = 'mp';
-        map[k] = { key: k, name: it.name, kind: kind, healLife: hi.life, healMana: hi.mana, count: it.count };
-      });
-      const list = Object.keys(map).map(k => map[k]);
-      list.sort((a, b) => {
-        const r = x => x.kind === 'hp' ? 0 : (x.kind === 'hpmp' ? 1 : (x.kind === 'mp' ? 2 : 3));
-        return (r(a) - r(b)) || a.name.localeCompare(b.name);
-      });
-      applyBagDiff(items);
       cfg.bagList = list;
       cfg.bagScanned = true;
       if (cfg.hpPotion && !list.some(i => i.key === cfg.hpPotion)) cfg.hpPotion = '';
