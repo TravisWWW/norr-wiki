@@ -1,7 +1,7 @@
 {
  "meta": {
   "source": "小伴侣地图数据（MapDB）· 13 位贡献者合并",
-  "updated": "2026-10-31T17:25:43.513Z",
+  "updated": "2026-10-31T18:44:16.505Z",
   "version": "1.0",
   "contributors": [
    {
@@ -103,8 +103,8 @@
    {
     "file": "maps-3197.json",
     "char": "#3197",
-    "level": 29,
-    "time": "2026-10-30T19:14:39.335Z",
+    "level": 48,
+    "time": "2026-10-31T18:44:02.162Z",
     "count": 391,
     "mergedAt": "2026-10-31"
    }
@@ -231,13 +231,13 @@
    ]
   },
   "5": {
-   "at": 1793395844868,
+   "at": 1793407899696,
    "name": "El Caspar",
    "type": "City",
    "g": [
     "Minnow Pier",
-    "Combat Training",
-    "Mucky Patch"
+    "Mucky Patch",
+    "Combat Training"
    ],
    "gt": [
     [
@@ -285,7 +285,7 @@
      28,
      32,
      "waygate",
-     "Portal"
+     "Waygate"
     ],
     [
      18,
@@ -960,7 +960,7 @@
    ]
   },
   "16": {
-   "at": 1793391487545,
+   "at": 1793440525608,
    "name": "Elundi",
    "type": "City",
    "g": [
@@ -996,13 +996,13 @@
      38,
      10,
      "event_gate",
-     "活动之门"
+     "Event Gate"
     ],
     [
      34,
      22,
      "waygate",
-     "Portal"
+     "Waygate"
     ],
     [
      29,
@@ -1131,7 +1131,7 @@
    ]
   },
   "18": {
-   "at": 1793392746987,
+   "at": 1793408555978,
    "name": "Bay’s Alley",
    "type": "Normal",
    "g": [
@@ -4609,7 +4609,7 @@
    ]
   },
   "113": {
-   "at": 1793395836593,
+   "at": 1793407893689,
    "name": "Vileton",
    "type": "City",
    "m": [
@@ -4629,7 +4629,7 @@
      24,
      23,
      "waygate",
-     "Portal"
+     "Waygate"
     ],
     [
      49,
@@ -4790,13 +4790,14 @@
    ]
   },
   "118": {
-   "at": 1793395152850,
+   "at": 1793408881489,
    "name": "Swamp",
    "m": [
     "Wisp Phantom",
     "Swamp Dragon",
     "Hydra",
     "Mutated Lizardman",
+    "Powerful Hydraling",
     "Hydraling"
    ],
    "ex": [
@@ -4858,7 +4859,7 @@
    ]
   },
   "119": {
-   "at": 1793394978045,
+   "at": 1793408841658,
    "name": "Swamp",
    "m": [
     "Wisp Phantom",
@@ -4900,14 +4901,15 @@
    ]
   },
   "120": {
-   "at": 1793394914593,
+   "at": 1793404518603,
    "name": "Swamp",
    "type": "Normal",
    "m": [
     "Swamp Dragon",
     "Mutated Lizardman",
     "Hydra",
-    "Wisp Phantom"
+    "Wisp Phantom",
+    "Hydraling"
    ],
    "ex": [
     [
@@ -4942,7 +4944,7 @@
    ]
   },
   "121": {
-   "at": 1793395848256,
+   "at": 1793409377295,
    "name": "Marsh",
    "m": [
     "Blood Queen",
@@ -4968,7 +4970,7 @@
      37,
      28,
      "waygate",
-     "Portal"
+     "Waygate"
     ],
     [
      34,
@@ -5051,7 +5053,7 @@
    ]
   },
   "123": {
-   "at": 1793146111343,
+   "at": 1793405732216,
    "name": "Swamp",
    "type": "Normal",
    "g": [
@@ -5080,7 +5082,8 @@
     "Swamp Dragon",
     "Wisp Phantom",
     "Mutated Lizardman",
-    "Hydra"
+    "Hydra",
+    "Hydraling"
    ],
    "ex": [
     [
@@ -6821,10 +6824,28 @@
    ]
   },
   "204": {
-   "at": 1793232118129,
+   "at": 1793469551133,
    "name": "Pumpkin King`s Lodge",
    "m": [
     "Jacked-o-Lantern"
+   ],
+   "ex": [
+    [
+     38,
+     35,
+     "gate",
+     "Marsh (Lv.19)"
+    ]
+   ],
+   "visited": true,
+   "edges": [
+    [
+     204,
+     116,
+     38,
+     35,
+     "gate"
+    ]
    ]
   },
   "205": {
@@ -8762,7 +8783,7 @@
    ]
   },
   "281": {
-   "at": 1793228760999,
+   "at": 1793467153349,
    "name": "Trescan",
    "type": "City",
    "g": [
@@ -10128,7 +10149,7 @@
    ]
   },
   "323": {
-   "at": 1793232655358,
+   "at": 1793426906707,
    "name": "Trescan’s Dock",
    "g": [
     "Smallmouth Bass Pier"
@@ -10166,7 +10187,7 @@
    ]
   },
   "324": {
-   "at": 1792886271390,
+   "at": 1793467225410,
    "name": "Dark Boreal",
    "m": [
     "Dwarven Guard",
@@ -10208,7 +10229,7 @@
    ]
   },
   "325": {
-   "at": 1792886288371,
+   "at": 1793467311493,
    "name": "Dark Boreal",
    "g": [
     "Mithril Mine"
@@ -10260,7 +10281,7 @@
    ]
   },
   "326": {
-   "at": 1792877011295,
+   "at": 1793467368346,
    "name": "Dark Boreal",
    "g": [
     "Largemouth Bass Pier"
@@ -10325,8 +10346,9 @@
    ]
   },
   "327": {
-   "at": 1792893701772,
+   "at": 1793472160607,
    "name": "Dark Boreal",
+   "type": "Normal",
    "g": [
     "Beech Grove"
    ],
@@ -10408,8 +10430,9 @@
    ]
   },
   "329": {
-   "at": 1792894653887,
+   "at": 1793472239997,
    "name": "Dark Boreal",
+   "type": "Normal",
    "m": [
     "Dwarven Guard",
     "Dwarven Hunter",
@@ -11690,7 +11713,7 @@
    "name": "Fountain of Rebirth"
   },
   "1000": {
-   "at": 1793380630936,
+   "at": 1793448062103,
    "name": "Fountain of Rebirth",
    "type": "Normal",
    "ex": [
@@ -11859,7 +11882,7 @@
    "name": "Das Festhalle"
   },
   "1157": {
-   "at": 1793415662449,
+   "at": 1793459770290,
    "name": "Sleepy Hollow Lobby",
    "g": [
     "Quarry",
@@ -11900,13 +11923,6 @@
      45,
      "Patch"
     ]
-   ],
-   "m": [
-    "Ghost Pirate",
-    "Skeleton",
-    "Skeleton Warrior",
-    "Zombie Horse",
-    "Arcelia"
    ],
    "ex": [
     [
@@ -12018,9 +12034,8 @@
    ]
   },
   "1162": {
-   "at": 1793387803568,
+   "at": 1793459775719,
    "name": "Sleepy Hollow",
-   "type": "Secret",
    "m": [
     "Ghost Pirate",
     "Skeleton",
@@ -12034,6 +12049,7 @@
      "Sleepy Hollow Lobby (Lv.100)"
     ]
    ],
+   "visited": true,
    "edges": [
     [
      1162,
