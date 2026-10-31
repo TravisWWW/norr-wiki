@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.216
+// @version      2.6.217
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -187,7 +187,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.216';   // 与 @version 保持一致
+  const SCRIPT_VER = '2.6.217';   // 与 @version 保持一致
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -361,7 +361,6 @@
 
   /* ======================= 3. 工具 ======================= */
 
-  const $q = s => document.querySelector(s);
   const $$q = (s, root) => Array.prototype.slice.call((root || document).querySelectorAll(s));
   const sleep = ms => new Promise(r => setTimeout(r, ms));
   const now = () => Date.now();
@@ -3488,7 +3487,6 @@
    * 只能记录「亲自到过」的图 —— 正好对应需求「拜访过的 city」。 */
   const DET_KEY = 'norroth_detstats_v1';   // 详细统计落盘
   /* ★ 到访记录统一由 MapDB 管理（localStorage: norroth_mapdb_v1），这里不再单独存一份 */
-  function loadVisited() { /* MapDB 启动时已自行加载 */ }
   function saveDetStats() {
     try { localStorage.setItem(DET_KEY, JSON.stringify({ killsByName: st.killsByName, gathersByKind: st.gathersByKind, gainedByKey: st.gainedByKey, gainedByRarity: st.gainedByRarity, soldByRarity: st.soldByRarity, deaths: st.deaths })); } catch (e) { /* ignore */ }
   }
@@ -4475,14 +4473,6 @@
     if (f && f.id) closeFrameById(f.id);
   }
 
-  function findSellLink(smith) {
-    const scopes = [];
-    const own = smithScope(smith);
-    if (own) scopes.push(own);
-    $$q('.frame-container').forEach(f => { if (scopes.indexOf(f) < 0) scopes.push(f); });
-    for (const s of scopes) { const a = s.querySelector('a[onclick*="/sell"]'); if (a) return a; }
-    return null;
-  }
 
   async function openSmithSell(smith) {
     const f = await ensureSmithFrame(smith, 'sell', function () {
@@ -4654,9 +4644,6 @@
       const _list = (st.dur && st.dur.list) || [];
       const _w = durWorst(_list);
       const _tw = toolWorst(_list);
-      const _th = Math.max(1, jitterVal(+cfg.repairDurPct || 15));
-      const _g = lastGatherDur();
-      const _fmt = function (x) { return x ? ('「' + (x.name || '?') + '」' + x.cur + '/' + x.max + '（' + Math.round(x.pct * 100) + '%）') : '—'; };
       const _pct = function (x) { return x ? (Math.round(x.pct * 100) + '%') : '—'; };
       logEvent('维修 工具' + _pct(_tw) + ' 装备' + _pct(_w)
         + ' → ' + (reason ? (reason === 'broken' ? '破损' : '耐久低') : '无需'));
@@ -4713,15 +4700,6 @@
     return out;
   }
 
-  function smithResultText(svc) {
-    const parts = [];
-    if (svc.needSell) parts.push((cfg.clearAction === 'salvage' ? '拆解 ' : '卖出 ') + (svc.sold || 0) + ' 件装备');
-    if (svc.needRepair) parts.push(svc.repaired ? '已维修' : '维修失败');
-    const notes = [svc.repairNote, svc.note, svc.sellErr, svc.repairErr].filter(Boolean);
-    const tail = notes.length ? '（' + notes.join('；') + '）' : '';
-    if (!parts.length) return '无需维修与清包' + tail;
-    return parts.join('、') + tail;
-  }
 
   /* ---- 行程编排 ---- */
 
@@ -6762,7 +6740,7 @@
     if (now() - F.at < FREEZE_MS) return;
     F.at = now(); F.hits++;
     /* ★ 先用「点几个不同的格子」强恢复；连续 8 次都无效 → 整页刷新兜底（默认行为，不再提供开关）。 */
-    const nudged = nudgeRecover();
+    nudgeRecover();
     st.move = null; st.reach = null;
     if (F.hits >= 8) {   /* ★ 卡死刷新改为默认行为 */
       logEvent('游戏卡死（走位 ' + (FREEZE_MS / 1000) + 's 无位移），强恢复无效，自动刷新页面');
@@ -6831,7 +6809,6 @@
     if (now() - G.at < GHOST_ACTION_MS) return false;
     /* 触发恢复 */
     G.at = now(); G.hits++;
-    const stuckAct = act;
     try { if (typeof window.abortCombatStart === 'function') window.abortCombatStart(); } catch (e) { /* ignore */ }
     try { if (character) character.current_action = 'Traveling'; } catch (e) { /* ignore */ }
     try { window.pendingCombatLoad = false; } catch (e) { /* ignore */ }
@@ -10839,9 +10816,6 @@
 
   function navMapName(id) { return MapDB.name(id); }
 
-  /* ★ v2.6.97：步行 ≤ 这么多跳就直走，不用传送点。
-     实测踩坑：副角色在 Owranbu 修完，采集图就在隔壁（1 跳），却还跑去传送站、甚至往 Owranbu 传。 */
-  const NAV_WALK_PREFER = 3;
   function navRoute(from, to) {
     /* ★ 地图 id 统一成数字：nearestTowerTown() / 城镇下拉框给的是字符串（"5"），
        而这里用严格相等（t === to）做 BFS 匹配，字符串永远匹配不上数字 → 返回 null（表现为「无步行路线」）。 */
@@ -11089,18 +11063,6 @@
       if (d < bl) { bl = d; best = id; }
     });
     return best;
-  }
-  /* Noble = buff subscription（"Noble Potion"）→ 城市世界地图传送免费。5 分钟内存缓存，传不动即清。 */
-  let _nobleCache = null, _nobleAt = 0;
-  function nobleActive() {
-    if (_nobleCache !== null && now() - _nobleAt < 300000) return _nobleCache;
-    let v = false;
-    try {
-      if (document.querySelector('.buff_bar img[res="subscription"]')) v = true;
-      else if (character && Array.isArray(character.buffs) && character.buffs.indexOf('subscription') >= 0) v = true;
-    } catch (e) { /* ignore */ }
-    _nobleCache = v; _nobleAt = now();
-    return v;
   }
 
   /* 按边类型执行一跳：smugglers → Ride；其余 → 走普通门 */
@@ -11351,7 +11313,6 @@
           const out = await navWorldTeleport(dest, alive);
           if (alive && !alive()) return false;
           if (+out === dest) return true;
-          _nobleCache = null;                             /* 传不动 → 可能不是 Noble 了，下次重判 */
           /* 世界地图传不动 → 传送站兜底（★ v2.6.192：目的地是城镇且勾了「城市传送点」→ 不再按「划不划算」跳过）。 */
           if (await navWaygateLogic(dest, 'cities', alive, true)) return true;
           if (alive && !alive()) return false;
@@ -12793,7 +12754,6 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
      · 没令牌：下载 JSON + 打开 GitHub 上传页，手动拖进去（无需令牌）。
      令牌只存本机 localStorage，不进配置、不随导出泄漏。 */
 
-  function ghUserToken() { try { return localStorage.getItem(GH_TOKEN_KEY) || ''; } catch (e) { return ''; } }
   function ghCommunityToken() { return GH_COMMUNITY_TOKEN; }
   async function loadCommunityToken() {
     if (_ghTokLoaded) return GH_COMMUNITY_TOKEN;
@@ -12810,7 +12770,6 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
      于是报 403 Resource not accessible by personal access token。这里直接废掉这条优先级。 */
   function clearLegacyToken() { try { localStorage.removeItem(GH_TOKEN_KEY); } catch (e) { /* ignore */ } }
   async function ghToken() { return await loadCommunityToken(); }
-  function setGhToken(v) { try { if (v) localStorage.setItem(GH_TOKEN_KEY, v); else localStorage.removeItem(GH_TOKEN_KEY); } catch (e) { /* ignore */ } }
   clearLegacyToken();   // ★ v2.6.94：清掉旧版遗留的自填令牌，避免它盖过社区令牌
 
   function b64utf8(str) {

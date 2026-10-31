@@ -1,8 +1,8 @@
 {
-  "version": "2.6.216",
+  "version": "2.6.217",
   "date": "2026-11-01",
-  "notes": "背包扫描合并为单一函数 scanBag（静默：直接读 /modal/inventory，不打开背包窗口）；删除冗余的 scanBagSilent 包装",
+  "notes": "删除全脚本未引用的死代码（、loadVisited、findSellLink、_th/_g/_fmt、smithResultText、nudged、stuckAct、NAV_WALK_PREFER、nobleActive+_nobleCache/_nobleAt、ghUserToken、setGhToken）",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 877590,
-  "sha256": "4d33a5ef0e60583c0c31ac8ada00d07a2c140053784a1bed4f0844857be5ee76"
+  "size": 875066,
+  "sha256": "10dcd05b703592fa47cf5efd2239e303affab0fd2e4153427eddbbfc352f5256"
 }
