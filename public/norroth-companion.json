@@ -1,8 +1,8 @@
 {
-  "version": "2.6.212",
+  "version": "2.6.213",
   "date": "2026-11-01",
-  "notes": "走位到位判据新增「客户端动画真正走完」(walkVisualArrived)，避免贴图还在滑动就交互/开打；注释精简（长篇历史注释移至 archive/userscripts/历史实现说明.md，主文件只留每段首行）",
+  "notes": "进活动战斗区复用「进活动图」那套进图后画面同步兜底（等图 ≤15s + loadTravel 重画 + 3s 复核 + 失败才刷新），不再只靠会被加载页跳过的 2.2s 检查",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 876979,
-  "sha256": "d76e752eca792544c325448f44eeee4ac035c5716c653073596ce2f781e36930"
+  "size": 877758,
+  "sha256": "2b78820a466f991a1c8063613794b53f71ed9ab764f056c24270c811193f4f30"
 }

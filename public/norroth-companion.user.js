@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.212
+// @version      2.6.213
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -187,7 +187,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.212';   // 与 @version 保持一致
+  const SCRIPT_VER = '2.6.213';   // 与 @version 保持一致
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -331,6 +331,7 @@
    *  [到位没触发动作] scheduleArriveAction()· 状态 无（一次性）        · 判据「到位 1.3s 后格子还有 action 且没出对应窗口」· 动作「补一次 execTileAction(action)」；敌人格无 action 则改用 walkTo(同格) 重触发战斗 · 每次到位 1 次
    *  [切图卡住] checkMapLoad()         · 状态 st.mapload              · 判据「#transition_container 停留 >7s」 · 动作「点游戏 [RETRY] / 预热底图 / 第2次起叠加 loadTravel」  · 3 次 → 整页刷新
    *  [活动]     eventTick 步骤④        · 状态 st.event.busy/busyAt    · 判据「检查卡住 >20s 或 fetch 超时 8s」 · 动作「AbortController 中断 + 强制释放 busy 重查」 · 不停止（节流 30s）
+   *  [活动进图] eventWaitEnteredMap()  · 状态 st.event.enterResync     · 判据「进活动图 / 战斗区后 current_map / 画面没跟上」 · 动作「等 ≤15s + 调 loadTravel() 重画 + 3s 复核」 · 失败 → 整页刷新（★ v2.6.213：进战斗区复用同一套）
    *  [走位重试] checkMove !started    · 状态 st.move.retryAt/retries · 判据「900ms 还没发起」               · 动作「abortWalk + 重发 walkTo」     · 上限 8 次 → 拉黑该格 30s
    *  [走位无进展] checkMove 已发起     · 状态 st.move.lastPos/lastPosAt· 判据「4s 位置没变且 walk_to 已空」   · 动作「abortWalk + 重发 walkTo」     · 上限 8 次 → 拉黑该格 30s
    *  [走位卡死] checkFrozen()          · 状态 st.frozen               · 判据「8s 位置不动且 walk_to 还挂着」 · 动作 nudgeRecover()                 · 上限 8 次 → 整页刷新
@@ -5799,6 +5800,62 @@
 
   /* ★ v2.6.173：Event 模块的「活跃」判据 —— 开了挂机，或单独勾了「自动进活动」（不需要开挂机）。 */
   function eventAlive() { return running || !!cfg.autoEvent; }
+  /* ★ v2.6.213：进活动图 / 战斗区共用的「进图后画面同步」兜底（原来只有进大厅有，战斗区没有）。
+     实测进活动图 / 战斗区基本必然「服务端已换图、客户端 current_map / 画面没跟上」。
+     先等最多 15s 让 current_map 落到目标图（中途主动重画一次）；到位后调游戏 loadTravel() 重画，
+     3s 后仍没画出 → 整页刷新。isTarget(id) 判定「这张图是不是目标图」。返回 true = 已到位。 */
+  async function eventWaitEnteredMap(isTarget, alive, label) {
+    label = label || '活动图';
+    const E = st.event;
+    let arrived = false;
+    for (let i = 0; i < 15; i++) {
+      await sleep(1000);
+      if (!alive()) return false;
+      if (isTarget(character.current_map)) { arrived = true; break; }
+      if (i === 1 && !E.enterResync) {
+        E.enterResync = 1;
+        logEvent('活动：进入后未同步 → 主动重画画面');
+        setStatus('活动：进入后画面没同步，正在重同步…');
+        softReloadMap();
+      }
+    }
+    E.enterResync = 0;
+    if (arrived) {
+      /* ★ v2.6.111：先试「只刷新画面」—— 调游戏 loadTravel() 重画地图 + 对准镜头；
+         3 秒后还是没画出目标图（或 loadTravel 被客户端 retryCount>=5 卡成 no-op）→ 退回整页刷新。 */
+      logEvent('活动：已进入' + label + ' → 先调游戏 loadTravel() 重画（不刷新网页）');
+      E.insideHits = 0;
+      softReloadMap();
+      setTimeout(function () {
+        try {
+          if (!alive() || !inGame()) return;
+          if (!isTarget(character.current_map)) return;   /* 又离开目标图 → 不管 */
+          const drawn = renderedMapId() || renderMapId();
+          if (isTarget(drawn)) { recenterCamera(); return; }
+          logEvent('活动：loadTravel() 后仍未画出' + label + '（画面还是 ' + (drawn || '?') + '）→ 刷新页面');
+          saveCfgNow();
+          location.reload();
+        } catch (e) { /* ignore */ }
+      }, 3000);
+      return true;
+    }
+    /* 等满 15s 仍没切到目标图 —— 很可能是「服务端已换图，但客户端画面 / 状态没同步」 */
+    logEvent('活动：进入后 15s 仍未切到' + label + ' → 再调 loadTravel() 重同步画面 / 状态');
+    setStatus('活动：进入后画面没同步，正在重同步…');
+    softReloadMap();
+    setTimeout(function () {
+      try {
+        if (!alive() || !inGame()) return;
+        if (isTarget(character.current_map)) {
+          logEvent('活动：重同步后确认已进入' + label + '「' + currentMapName() + '」→ 交给活动逻辑继续');
+          recenterCamera();
+          return;
+        }
+        logEvent('活动：重同步后仍未进入' + label + '（画面 / 状态没跟上）→ 交给画面看门狗，稍后重试');
+      } catch (e) { /* ignore */ }
+    }, 2500);
+    return false;
+  }
   /* 主循环钩子：true = 本 tick 已被活动逻辑接管（进入 / 返回期间） */
   function eventTick() {
     if (!cfg.autoEvent) { if (st.event.phase !== 'idle') eventReset(); return false; }
@@ -5917,11 +5974,11 @@
             });
           } catch (e) { /* ignore */ }
           finally { E.gateBusy = false; }
-          /* ★ v2.6.181：踩对门进了战斗区 → 兜底「换图后画面同步」：2.2s 后核对屏幕底图，
-             没画对就调游戏 loadTravel() 重画（与「进入活动大厅」那步同样的兜底）。 */
+          /* ★ v2.6.213：踩对门进了战斗区 → 复用「进活动图」那套兜底
+             （等图 + loadTravel 重画 + 3s 复核 + 失败才刷新，见 eventWaitEnteredMap）。 */
           try {
             if (+character.current_map !== +from && isEventCombatMap(character.current_map)) {
-              scheduleRenderCheck(from, character.current_map);
+              await eventWaitEnteredMap(isEventCombatMap, function () { return eventAlive() && cfg.autoEvent; }, '战斗区');
             }
           } catch (e) { /* ignore */ }
         })();
@@ -6032,56 +6089,9 @@
           softReloadMap();   /* 若其实已进活动图只是没画出来 → 这一步会把它画出来 + 重同步 current_map */
           return;
         }
-        /* 实测进活动图基本必然「服务端已换图、客户端 current_map / 画面没跟上」， */
-        for (let i = 0; i < 15; i++) {
-          await sleep(1000);
-          if (!alive()) { if (E.phase === 'enter') E.phase = 'idle'; return; }
-          if (isEventLobby(character.current_map)) break;
-          if (i === 1 && !E.enterResync) {
-            E.enterResync = 1;
-            logEvent('活动：进入后未同步 → 主动重画画面');
-            setStatus('活动：进入后画面没同步，正在重同步…');
-            softReloadMap();
-          }
-        }
-        E.enterResync = 0;
-        if (isEventLobby(character.current_map)) {
-          /* ★ v2.6.111：先试「只刷新画面」—— 调游戏 loadTravel() 重画地图 + 对准镜头；
-             3 秒后还是没画出活动图（或 loadTravel 被客户端 retryCount>=5 卡成 no-op）→ 退回整页刷新。
-             （v2.6.10 的老办法是直接 location.reload()，能修但太重。） */
-          logEvent('活动：已进入活动图 → 先调游戏 loadTravel() 重画（不刷新网页）');
-          E.phase = 'idle';
-          E.insideHits = 0;
-          softReloadMap();
-          setTimeout(function () {
-            try {
-              if (!alive() || !inGame()) return;
-              if (!isEventLobby(character.current_map)) return;   /* 又离开活动图 → 不管 */
-              const drawn = renderedMapId() || renderMapId();
-              if (isEventLobby(drawn)) { recenterCamera(); return; }
-              logEvent('活动：loadTravel() 后仍未画出活动图（画面还是 ' + (drawn || '?') + '）→ 刷新页面');
-              saveCfgNow();
-              location.reload();
-            } catch (e) { /* ignore */ }
-          }, 3000);
-          return;
-        }
-        /* / 等满 15s 仍没切到活动图 —— 很可能是「服务端已换图，但客户端画面 / 状态没同步」 */
-        E.phase = 'idle';
-        logEvent('活动：进入后 15s 仍未切到活动图 → 再调 loadTravel() 重同步画面 / 状态');
-        setStatus('活动：进入后画面没同步，正在重同步…');
-        softReloadMap();
-        setTimeout(function () {
-          try {
-            if (!alive() || !inGame()) return;
-            if (isEventLobby(character.current_map)) {
-              logEvent('活动：重同步后确认已进入活动图「' + currentMapName() + '」→ 交给活动逻辑继续');
-              recenterCamera();
-              return;
-            }
-            logEvent('活动：重同步后仍未进入活动图（画面 / 状态没跟上）→ 交给画面看门狗，稍后重试');
-          } catch (e) { /* ignore */ }
-        }, 2500);
+        /* ★ v2.6.213：进活动图 / 战斗区共用同一套「进图后画面同步」兜底（见 eventWaitEnteredMap）。 */
+        await eventWaitEnteredMap(isEventLobby, alive, '活动图');
+        if (E.phase === 'enter') E.phase = 'idle';
       } catch (e) {
         if (!alive()) { if (E.phase === 'enter') E.phase = 'idle'; return; }
         E.checkFails = (E.checkFails || 0) + 1;
