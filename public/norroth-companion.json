@@ -1,8 +1,8 @@
 {
-  "version": "2.6.199",
+  "version": "2.6.201",
   "date": "2026-10-31",
-  "notes": "缓解：门重触发前先重同步（防「刚切完图又被弹回原地」）；维修验证不再只认 HUD 破损图标；界面没打开写清原因",
+  "notes": "修两个死循环：① HUD破损图标卡住导致每20s回城修一次 ② 背包快满但无可清装备导致每30s回城一次",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 936739,
-  "sha256": "a0010ecece08f66dcf02ce4298e5b1460da4081f2b91b8f8fee5f5ecfe49c115"
+  "size": 938203,
+  "sha256": "796b7307d6df386ee2886035d6bcf28db122c639b4afef01a8aca93b241be9a3"
 }

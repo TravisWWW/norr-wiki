@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.199
+// @version      2.6.201
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -193,7 +193,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.199';   // 与 @version 保持一致
+  const SCRIPT_VER = '2.6.201';   // 与 @version 保持一致
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -3887,9 +3887,16 @@
     return worst;
   }
   function repairNeeded() {
-    if (isDamaged()) return 'broken';
     const list = (st.dur && st.dur.list) || [];
     const w = durWorst(list);
+    /* ★ v2.6.200：游戏 HUD 的「破损」图标实测会卡住不灭（修完耐久满了图标还在）→ 不能只认它，
+       否则会陷入「每 20s 回城修一次、铁匠说不用修」的死循环（实测 10 分钟只打 4 只怪）。
+       ① 铁匠菜单说过「无需维修」→ 10 分钟内不再因这个图标触发；
+       ② 耐久读数新鲜且全部 ≥99% → 也不认这个图标。 */
+    const hudStale = !!(st.repair && st.repair.hudStaleUntil && now() < st.repair.hudStaleUntil);
+    const durFresh = !!(st.dur && st.dur.list && now() - st.dur.at < 60000);
+    const allFull = durFresh && list.length > 0 && (!w || w.pct >= 0.99);
+    if (isDamaged() && !hudStale && !allFull) return 'broken';
     if (w && w.pct <= Math.max(1, jitterVal(+cfg.repairDurPct || 15)) / 100) return 'low';
     /* ★ v2.6.192：工具耐久单独判一次（用户要求「工具耐久也纳入」）—— 即使它不是全局最低，
        只要 ≤ 阈值也算需维修。（durWorst 其实已涵盖工具，这里显式化 + 便于诊断日志。） */
@@ -4906,8 +4913,13 @@
       await ensureSmithDialog(smith);
       setStatus('检查并维修装备…');
       const rr = await repairAtSmith(smith, !!manual && !reason);
-      if (rr === 'ok') out.repaired = true;
-      else if (rr === 'none') { out.needRepair = false; out.repairNote = '游戏菜单里没有维修项（服务端判定无需维修）'; }
+      if (rr === 'ok') { out.repaired = true; st.repair.hudStaleUntil = now() + 600000; }
+      else if (rr === 'none') {
+        out.needRepair = false;
+        out.repairNote = '游戏菜单里没有维修项（服务端判定无需维修）';
+        /* ★ v2.6.200：服务端权威 —— 铁匠说不用修，就 10 分钟内别再因「破损图标」跑回来。 */
+        if (reason === 'broken') st.repair.hudStaleUntil = now() + 600000;
+      }
       else if (rr !== 'cancel') out.repairErr = '维修未生效（金币不足或 smith 菜单没打开）';
     }
     return out;
@@ -4961,6 +4973,10 @@
           out.sold = svc.sold || 0; out.sellErr = svc.sellErr || '';
           if (out.sold) logEvent(tag + (cfg.clearAction === 'salvage' ? '拆解' : '清包') + '：' + (cfg.clearAction === 'salvage' ? '拆解 ' : '卖出 ') + out.sold + ' 件');
           else if (out.sellErr) logEvent(tag + '清包失败：' + out.sellErr);
+          /* ★ v2.6.200：清包没清出东西（筛选不匹配）→ 长时间不再因「背包快满」回城，
+             否则会陷入「每 30s 回城一次、一件都卖不掉」的死循环（实测 8 分钟 0 杀）。 */
+          if (out.sold > 0) st.sell.cooldownUntil = now() + REPAIR_OK_COOLDOWN;
+          else { st.sell.cooldownUntil = now() + 600000; if (!out.sellErr) logEvent(tag + '清包：无可清装备 → 10 分钟内不再回城'); }
         } catch (e) { out.sellErr = (e && e.message) ? e.message : String(e); logEvent(tag + '清包失败 ' + out.sellErr); }
       }
       /* ② 存仓（在银行） */
