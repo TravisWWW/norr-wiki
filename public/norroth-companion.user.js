@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.209
+// @version      2.6.212
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -46,10 +46,7 @@
   const RANK_CN = { Boss: '首领', Elite: '精英', Rare: '稀有', Champion: '冠军', Normal: '普通' };
   const RANK_STAR = { Boss: '☠', Elite: '★★★', Rare: '★★', Champion: '★', Normal: '—' };
   const RANK_STARS = { Boss: 4, Elite: 3, Rare: 2, Champion: 1, Normal: 0 };   // ★ 星级数值（用于「采集中断条件」过滤）
-  /* ★ v2.6.19：采集点类型 —— 直接用游戏自己的 data-poi → 采集技能 映射
-     （travel.min.js 的 gathering_names，实测：poi_1 fishing / poi_2 mining / poi_3 chopping / poi_4 farming / poi_61 quarrying / poi_81 foraging）。
-     注：poi_81 = foraging，界面上显示为「觅食」（原来叫「拾荒」容易和 Scavenging 混）。
-     这样「采集点是什么类型」完全不看界面文案，中英文一致。 */
+  /* 采集点类型 —— 直接用游戏自己的 data-poi → 采集技能 映射 */
   const POI_PROF = { poi_1: 'fishing', poi_2: 'mining', poi_3: 'chopping', poi_4: 'farming', poi_61: 'quarrying', poi_81: 'foraging' };
   const PROF_POI = { fishing: 'poi_1', mining: 'poi_2', chopping: 'poi_3', farming: 'poi_4', quarrying: 'poi_61', foraging: 'poi_81' };
   /* ★ 模式名称（v1.7.1 起模式由勾选项推导） */
@@ -125,10 +122,7 @@
 
     /* 维修 / 清包 */
     repairOn: false,
-    /* ★ v1.8.1：维修规则 = 「真实耐久低于维修阈值就去修」。
-       为什么不能只看 HUD 图标：#hud_Equipment 只反映「破损（属性失效）」，
-       采集工具在还剩几十点时就采不动了，图标根本不亮。
-       真实耐久来源：/modal/character（含全部工具）+ 采集弹窗实时值。 */
+    /* 维修规则 = 「真实耐久低于维修阈值就去修」。 */
     repairDurPct: 15,        // ★ 维修阈值(%) —— 唯一的耐久设置：任一装备 耐久 ≤ max×该百分比 就去维修。
     repairPath: '',          // 旧版手填路径（未选城镇时的回退）
     serviceTown: '',         // ★ 维修/清包城镇（拜访过的 City 的 id）
@@ -193,7 +187,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.209';   // 与 @version 保持一致
+  const SCRIPT_VER = '2.6.212';   // 与 @version 保持一致
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -215,13 +209,7 @@
   var GH_WIKI_REPO = 'TravisWWW/norr-wiki';
   var GH_WIKI_BRANCH = 'main';
   var GH_WIKI_MERGE_WF = 'bestiary-merge.yml';
-  /* ★ v2.6.77：在线更新。
-     脚本托管在 GitHub Pages（和中文 Wiki 同一个仓库 / 同一次部署），元数据块里的
-     @updateURL / @downloadURL 都指向下面这个地址 —— Tampermonkey 会按自己的周期
-     （默认每天，可在设置里改成更短）静默拉取并自动升级。
-     这里再补一层「每次进游戏都查一次」的轻量检查：只读同目录的 norroth-companion.json
-     （几百字节，带 CORS 头），发现远端版本更高就把右上角版本号变成可点的升级角标。
-     注意：只有「从网址安装」的脚本才会自动更新；本地文件 / 复制粘贴安装的不会。 */
+  /* 在线更新。 */
   const UPD_BASE   = 'https://traviswww.github.io/norr-wiki/';
   const UPD_SCRIPT = UPD_BASE + 'norroth-companion.user.js';
   const UPD_META   = UPD_BASE + 'norroth-companion.json';
@@ -455,10 +443,7 @@
       const _gir = c.gatherInterruptRank;
       c.gatherInterruptRank = (_gir === 'champion') ? 'r1' : (['any', 'r1', 'r2', 'r3'].indexOf(_gir) >= 0 ? _gir : 'any');
     }
-    /* ★ v1.7.1：「模式」不再由下拉决定，而是由勾选项推导（用户 2026-10-17 指出下拉是冗余的）：
-         不勾「自动采集」              → 只打怪
-         勾「自动采集」+ 勾「采集时优先打怪」 → 一键挂机
-         勾「自动采集」+ 不勾打断        → 只采集 */
+    /* 「模式」不再由下拉决定，而是由勾选项推导（用户 2026-10-17 指出下拉是冗余的）： */
     c.autoGather = (c.autoGather === undefined) ? true : !!c.autoGather;
     c.gatherInterrupt = (c.gatherInterrupt === undefined) ? true : !!c.gatherInterrupt;
     c.gatherScrap = (c.gatherScrap === undefined) ? true : !!c.gatherScrap;
@@ -472,11 +457,7 @@
     /* ★ 旧版「顺路拾取」(collectInBattle) 已并入「拾取地面资源」：显式关过它 → 地面拾取一起关（一次性迁移） */
     if (c.collectInBattle === false) c.gatherScrap = false;
     delete c.collectInBattle;
-    /* ★ v2.6.0：任务（战斗 / 采集 / 爬塔）→ 运行模式
-         采集任务              → gather（只采集）
-         战斗任务 + 无怪采集   → auto（有怪打怪、无怪采集）
-         战斗任务 + 不采集     → battle（只打怪）
-         爬塔任务              → 占位（UI 会拦住开始） */
+    /* 任务（战斗 / 采集 / 爬塔）→ 运行模式 */
     c.task = (o.task === 'gather' || o.task === 'tower' || o.task === 'battle') ? o.task
            : ((c.autoGather && !c.gatherInterrupt) ? 'gather' : 'battle');   // 老配置迁移
     c.runMode = (c.task === 'tower') ? 'tower' : ((c.task === 'gather') ? 'gather' : (c.autoGather ? 'auto' : 'battle'));
@@ -607,10 +588,7 @@
   }
   /* ★ 节拍抖动：内部定时器 / 节流阈值也加同一个 min~max 随机波动 */
   function humanRhythmOn() { return !!cfg.humanDelay && !!cfg.humanRhythm && (+cfg.humanDelayMax || 0) > 0; }
-  /* ★ v2.6.59：节拍抖动对「轮询级」间隔（≥2s）按比例抖动。
-     原来只加动作间隔的 min~max 毫秒（典型 200~1000ms）—— 对 30s 的耐久 / 宠物 / 背包检查
-     等于没加，而且只会单向变长。现在大间隔按「阈值抖动幅度%」（默认 10%）双向抖动，
-     小间隔（动作级，<2s）仍按毫秒范围加。 */
+  /* 节拍抖动对「轮询级」间隔（≥2s）按比例抖动。 */
   const RHYTHM_BIG_MS = 2000;
   function rhythm(base) {
     if (!humanRhythmOn()) return base;
@@ -719,11 +697,7 @@
     }, 2500 + Math.floor(Math.random() * 4000));
   }
 
-  /* ★ v2.6.67：延迟发出时返回 'deferred'（**不是** true），真实结果通过 cb(ok) 回写。
-     旧实现直接 return true → 调用方以为「已经走起来了」，st.move.started 永远为真 →
-     checkMove 的「重发」分支变成死代码：走位被游戏挡掉（can_travel=false / 幽灵战斗态）时
-     脚本什么都不做，只能干等 45 秒的 checkStuck 看门狗 —— 实测「打完怪发呆 45 秒」。
-     cb 可选；不传就只当「已排队发出」（walkTileCore / nudgeRecover 这些不看返回值）。 */
+  /* 延迟发出时返回 'deferred'（**不是** true），真实结果通过 cb(ok) 回写。 */
   function installWalkRequestGuard() {
     const $ = jq();
     if (!$ || typeof $(document).on !== 'function') return;
@@ -753,12 +727,7 @@
     return go();
   }
 
-  /* ★ 2026-10-21 真机实测：游戏 walkTo(x,y) 成功时返回 **undefined**（不是 true），
-     只有被守卫拦下（can_travel=false / current_action≠Traveling / 已在走该格 / 寻路失败）才返回 false。
-     所以「已发起」的判据必须是 r !== false，而不是 r === true；
-     否则每次正常走位都会被误判成「没发起」→ 无意义地 abortWalk() 重发
-     （清掉正在走的队列）+ 日志刷「无法前往 X，已跳过」。
-     'deferred' = 真人化延迟发出，真实结果由回调回写。 */
+  /* ★ 2026-10-21 真机实测：游戏 walkTo(x,y) 成功时返回 **undefined**（不是 true）， */
   function walkStarted(r) { return r !== false && r !== 'deferred'; }
 
   /* ★ v2.6.163：陷阱（action="trap"）—— 游戏自己的寻路**不避让**陷阱（踩上去触发 triggerTravelTrap 掉血）。
@@ -852,10 +821,7 @@
     _walkRequests.clear();
     pending.forEach(function (xhr) { try { xhr.abort(); } catch (e) { /* ignore */ } });
     try {
-      /* ★ v2.6.70 兜底[落位]：中止一次「正在进行的走位」= 客户端动画停在半路，
-         而服务端已经把整条路径走完（实测服务端推进远快于客户端 400ms/格的动画）→
-         之后交互按服务端位置校验就会失败（Enemy Not Found / 采不了 / 不在采集点）。
-         这里只记一笔（时间+位置）；要不要真去「走开一格再走回」由 settleServerPos() 决定。 */
+      /* 兜底[落位]：中止一次「正在进行的走位」= 客户端动画停在半路， */
       try {
         const _q = (window.walkQueue && character && window.walkQueue[character.id]) || [];
         if (character && (character.walk_to || _q.length)) { st.pos.at = now(); st.pos.x = character.x; st.pos.y = character.y; }
@@ -875,11 +841,7 @@
          导致后续 walkTo 全部被拦 → 表现就是「打完怪站在原地发呆」。 */
       const _stuckCombat = (window.pendingCombatLoad === true);   // ★ 先记下：清掉前判断是不是「幽灵战斗」
       window.pendingCombatLoad = false;
-      /* ★ 2026-10-19 根因修复（「打完怪发呆」）：幽灵战斗态 —— 游戏把 pendingCombatLoad 一直挂着、
-         没有 #frame_Combat、current_action 停在「In combat」等非行走态，游戏 walkTo() 会直接 return false，
-         角色原地不动。用游戏自带的 abortCombatStart() 复位（无参调用不弹提示），再兜底把动作置回 Traveling。
-         ★ 只处理「pendingCombatLoad 卡住」这一种；正常的搜刮/拾取（pendingCombatLoad=false）不能动，
-           否则会把游戏自己的搜刮流程打断（那种交给 gameBusyAction 去「等」）。 */
+      /* ★ 2026-10-19 根因修复（「打完怪发呆」）：幽灵战斗态 —— 游戏把 pendingCombatLoad 一直挂着、 */
       if (_stuckCombat
           && !document.getElementById('frame_Combat')
           && !document.getElementById('battle_defeat')
@@ -894,10 +856,7 @@
   }
   let _unstickAt = 0;
 
-  /* ★ 2026-10-19：游戏 walkTo() 的守卫是 ——「character.current_action 为空或 'Traveling' 才允许行走」
-     （travel.min.js: if(character.current_action && character.current_action!=='Traveling') return false）。
-     所以只要 current_action 是别的值（自动搜刮的 'Collecting Scrap'、战斗中的 'In combat' …），角色就走不动。
-     脚本这时必须「等游戏做完」，不能去重试 / 拉黑 / 卡住自愈 —— 那是在跟游戏抢步，打能搜刮的怪时尤其明显。 */
+  /* ★ 2026-10-19：游戏 walkTo() 的守卫是 ——「character.current_action 为空或 'Traveling' 才允许行走」 */
   function gameBusyAction() {
     return !!(character && character.current_action && character.current_action !== 'Traveling');
   }
@@ -952,11 +911,12 @@
     };
     const noNudge = function () { /* 落位期间不做卡死自愈，避免又走开 */ };
     const done = function () { st.pos.at = 0; st.pos.hits = 0; };
-    await navWalkTile(n2[0], n2[1], { timeoutMs: 12000, alive: alive, onStuck: noNudge, cond: function () { return character.x === n2[0] && character.y === n2[1]; } });
-    if (!alive()) { done(); return false; }
+    const out = await navWalkTile(n2[0], n2[1], { timeoutMs: 12000, alive: alive, onStuck: noNudge, cond: function () { return character.x === n2[0] && character.y === n2[1]; } });
+    if (!alive() || out !== 'ok') return false;
     await sleep(600);
-    if (!alive()) { done(); return false; }
-    await navWalkTile(tx, ty, { timeoutMs: 15000, alive: alive, onStuck: noNudge, cond: function () { return character.x === tx && character.y === ty; } });
+    if (!alive()) return false;
+    const back = await navWalkTile(tx, ty, { timeoutMs: 15000, alive: alive, onStuck: noNudge, cond: function () { return character.x === tx && character.y === ty; } });
+    if (!alive() || back !== 'ok') return false;
     done();
     return true;
   }
@@ -1009,13 +969,7 @@
       if (!el) return false;
       if (getComputedStyle(el).display === 'none') return false;
       if (el.getBoundingClientRect().top >= (window.innerHeight - 5)) return false;   /* dismiss 后 top:100% → 在屏幕外 */
-      /* ★ v2.6.193：加载遮罩还盖在屏幕上，但**地图其实已经画对了**（.map_table 底图 id == character.current_map）
-         → 不算「切图卡住」。实测（2026-10-31，真·有头浏览器）：进图后游戏自己的 #transition_container
-         要 ~9-12s 才收起（慢网络更久），而 MAPLOAD_STUCK_MS=7s → 每次进图/换图都会误判「切图卡住」，
-         于是 checkMapLoad 反复重试、第 2 次还会 softReloadMap() 把遮罩又顶起来（自己制造循环）、
-         第 4 次直接整页刷新 → 行程被中途打断（表现：「维修菜单打不开」）。
-         同时 checkGhostCombat / checkMapRender / scheduleRenderCheck 都被 mapLoadStuck() 挡住 → 没有防卡。
-         判据用「屏幕上真正画出来的底图」(renderedMapId)，不是 window.map.id（换图时后者会先变）。 */
+      /* 加载遮罩还盖在屏幕上，但**地图其实已经画对了**（.map_table 底图 id == character.current_map） */
       try {
         const cm = +character.current_map || 0;
         const drawn = (typeof renderedMapId === 'function') ? renderedMapId() : 0;
@@ -1055,12 +1009,7 @@
     setStatus('切图卡住：正在重试加载地图底图…（第 ' + M.hits + ' 次）');
     return true;
   }
-  /* ★ v2.6.111：屏幕上**真正画出来**的地图 id —— 读 .map_table 的底图 URL。
-     比 window.map.id 更贴近「画面」：window.map 可能已经被响应脚本改掉，但 DOM 还是旧的。
-     ★ v2.6.113 真机实测修正：.map_table 的**计算样式** background-image 被游戏的网格线
-       （repeating-linear-gradient）覆盖了 → getComputedStyle 拿不到底图，必须读**内联 style**
-       （实测 map 1183：inline = "background-image: url(\"/images/maps/map_1183.jpg\")"，
-        computed = repeating-linear-gradient(...)）。两个都试，谁有算谁。 */
+  /* 屏幕上**真正画出来**的地图 id —— 读 .map_table 的底图 URL。 */
   function renderedMapId() {
     try {
       const el = document.querySelector('#map_container .map_table') || document.querySelector('.map_table');
@@ -1090,11 +1039,7 @@
       return true;
     } catch (e) { return false; }
   }
-  /* ★ v2.6.111：换图后「立刻」核对一次（用户要求把动作放在换图之后，而不是只等 8 秒看门狗）。
-     2.2s 后（够客户端把 map DOM 换完）读屏幕上真正画出来的底图：
-       · 画对了 → 顺手把镜头对准角色
-       · 没画对 → 调游戏 loadTravel() 重画（只刷新画面，不刷新网页）
-     加载页在转（mapLoadStuck）时不插一脚，交给 checkMapLoad。 */
+  /* 换图后「立刻」核对一次（用户要求把动作放在换图之后，而不是只等 8 秒看门狗）。 */
   function scheduleRenderCheck(fromMap, toMap) {
     setTimeout(function () {
       try {
@@ -1109,32 +1054,10 @@
       } catch (e) { /* ignore */ }
     }, 2200);
   }
-  /* ── 兜底[换图没重画] ───────────────────────────────────────────
-   * 症状：服务端已经把角色移到新图（character.current_map 变了、角色贴图也挪过去了），
-   *       但客户端**没有重画地图** → 画面还停在上一张图（旧的门 / 旧的怪 / 旧的地形）。
-   * 根因（读 1.0 客户端 travel.min.js，2026-10-23 复核）：
-   *   客户端只在「travel_data 推送里 current_map 变了 **且** character.current_action === 'Traveling'」
-   *   时才调 loadTravel() 重画地图；条件不满足（战斗中 / 搜刮中 / 其它动作态）就**静默跳过**，
-   *   而 current_map 已经被推送改掉了 → 之后再也对不上 → 永远停在旧图。
-   * 判据：换图后 RENDER_STUCK_MS 内 window.map.id（「渲染自己的 id」）仍 != character.current_map。
-   * 动作：先调游戏自己的 loadTravel()（= 手动换图那条链路：重拉 /includes/do/travel.php、
-   *       重画地图、重新对准镜头）—— **只刷新画面，不刷新网页**；
-   *       连续 RENDER_MAX 次仍没对上 → 退回整页刷新（老办法，最稳，刷新后自动续挂）。
-   * 上限：RENDER_MAX 次 → 刷新页面。
-   * 高级参数：不受影响。
-   * ───────────────────────────────────────────────────────────── */
+  /* ── 兜底[换图没重画] ─────────────────────────────────────────── */
   const RENDER_STUCK_MS = 6000;   /* ★ v2.6.208：4s → 6s，等久一点再重画，避免把瞬时不一致当成卡住 */
   const RENDER_MAX = 4;
-  /* 只刷新画面（不刷新网页）：调游戏自己的 loadTravel() —— 等价于手动换一次图。
-     ★ v2.6.209：去掉「走位中 / 交互中就不重画」的闸门 + 延迟重画（isWalkingNow / renderRedrawBlocked /
-     scheduleDeferredReload 全部删除）。原因：
-       1) 那个闸门判断不可靠 —— walkTo() 发出后、服务端寻路回包前，walk_to / walkQueue / .walking 都是空的，
-          会被判成「没在走位」；
-       2) 延迟重画更坏 —— scheduleDeferredReload 的 500ms 定时器会在**之后任意时刻**（甚至下一次走位途中）
-          才真正调 loadTravel() → clearQueue() 清掉正在走的队列 → 走到一半被弹回 / 之后移动失效。
-     现在只保留「换图」这一条真需求：所有调 softReloadMap() 的地方都是「current_map 变了但
-     客户端没重画 / 加载页卡住」（checkMapRender / checkRenderStale / scheduleRenderCheck / checkMapLoad /
-     活动进出）；正常走位时 current_map 不会变 → 根本不会触发重画。 */
+  /* 只刷新画面（不刷新网页）：调游戏自己的 loadTravel() —— 等价于手动换一次图。 */
   function softReloadMap() {
     try {
       if (typeof window.loadTravel === 'function') { window.loadTravel(); return true; }
@@ -1149,19 +1072,7 @@
     } catch (e) { /* ignore */ }
     return false;
   }
-  /* ── 兜底[到位没触发 action] ─────────────────────────────────────
-   * 症状：走到目标格了，但格子上的动作没触发（怪没开打 / 资源没拾取 / 门没切图）。
-   * 根因（读 1.0 客户端 nextStep 的走格动画完成回调，2026-10-23 复核）：
-   *   格子动作只在「动画完成的那一刻 character.x+'-'+character.y === character.walk_to」时才执行
-   *   （else if(character['x']+'-'+character['y']==character['walk_to']){ execTileAction(tileAction) }）。
-   *   而脚本自己会 abortWalk()（把 walk_to 清成 null：分段导航 / 重发走位 / 落位 / 卡住自愈），
-   *   只要清空的那一刻正好落在目标格上，动作就永远不会触发；另外「本来就在格上」也不会触发。
-   * 判据：到位后 ARRIVE_ACTION_MS 内，格子还有 action、角色还站在格上、且没有出现对应的窗口。
-   * 动作：显式调游戏自己的 execTileAction(action)（和爬塔门 / 采集点 / 传送站一样的做法）。
-   *       ★ v2.6.116：敌人格在 .map_table 里没有 action（敌人是 #players_container 覆盖层），改用 walkTo(同格) 触发游戏的「同格 → loadCombat」分支。
-   * 上限：每次到位只补触发 1 次（避免和游戏抢动作）。
-   * 高级参数：不受影响。
-   * ───────────────────────────────────────────────────────────── */
+  /* ── 兜底[到位没触发 action] ───────────────────────────────────── */
   const ARRIVE_ACTION_MS = 1300;
   function tileActionAt(x, y) {
     try { if (typeof window.getTileActionAt === 'function') return String(window.getTileActionAt(x, y) || ''); } catch (e) { /* ignore */ }
@@ -1187,6 +1098,7 @@
         if ((!running && !(st.event && st.event.on)) || seq !== runSeq || character.current_map !== mapId) return;
         if (!inGame()) return;
         if (+character.x !== +x || +character.y !== +y) return;   /* 已经走开了 → 不管 */
+        if (!walkVisualArrived(x, y) || st.settling || st.nudging || gameBusyAction()) return;
         if (mapLoadStuck()) return;                               /* 正在换图 → 别插一脚 */
         const act = tileActionAt(x, y);
         if (!act) {
@@ -1257,19 +1169,7 @@
     if (!softReloadMap()) R.hits = RENDER_MAX + 1;   /* 游戏没有 loadTravel → 下次直接走刷新分支 */
     return true;
   }
-  /* ── 兜底[画面没刷新 / 独立看门狗] ──────────────────────────────
-   * 症状：服务端已换图（甚至已把角色移进活动图），但客户端**没有重画** → .map_table 底图还停在旧图；
-   *       而这段时间事件状态机（eventTick 进入 / 返回期间）会占满 step()，checkMapRender 根本跑不到
-   *       → 画面永远不刷新，也没有任何看门狗触发（实测 2026-10-31：搓料理时进活动必现）。
-   * 判据（独立节拍，不受 running / 活动 / step() 早退影响）：
-   *   · character.current_map 与 .map_table 底图（真正画面）不一致，持续 RENDER2_STUCK_MS。
-   *   （★ v2.6.208：去掉 window.map.id 启发式 —— 只认「换图了但底图没跟上」这一条真需求。）
-   *    ★ v2.6.209：不再用「走位中先不重画」的闸门（判断不可靠 + 延迟重画会在之后任意时刻取消走位）。
-   * 动作：先 softReloadMap()（调游戏 loadTravel() 只重画画面 / 重拉 travel，不刷新网页）；
-   *       连续 RENDER2_MAX 次仍没对上 → 整页刷新（复用 norroth_render_reload_at 3 分钟防循环）。
-   * 上限：RENDER2_MAX 次 → 刷新页面。
-   * 高级参数：不受影响。
-   * ─────────────────────────────────────────────────────────── */
+  /* ── 兜底[画面没刷新 / 独立看门狗] ────────────────────────────── */
   const RENDER2_STUCK_MS = 8000;   /* ★ v2.6.208：7s → 8s */
   const RENDER2_MAX = 3;
   function checkRenderStale() {
@@ -1390,10 +1290,7 @@
   }
   /* 相同消息合并；指定 key 的高频过程按固定时间段汇总，错误和启停仍单列。
      firstAt 固定窗口起点，避免持续运行时一条摘要无限累加。 */
-  /* ★ v2.6.196：操作日志「一行化」精简。
-     面板窄，长句会折行、读起来乱。这里把常见长句压短，并保证显示宽度
-     ≤ 15 个汉字（全角按 2、半角按 1 计）。仅影响面板显示；导出的诊断日志
-     仍保留完整原文，方便排查。 */
+  /* 操作日志「一行化」精简。 */
   function logWidth(s) {
     let w = 0;
     for (let i = 0; i < s.length; i++) w += s.charCodeAt(i) >= 0x1100 ? 2 : 1;
@@ -1570,12 +1467,7 @@
 
   /* ======================= 4. 地图扫描 ======================= */
 
-  /* 星级识别 —— ★ 这是 v1.6.0 的一个真 bug：
-   * 旧代码写的是「星级 = 第一个 .char_name_tag 的文本」。但普通怪根本没有星级标签，
-   * 它的第一个 .char_name_tag 就是名字 <b>Bear (7)</b>，于是 rank 被解析成 "Bear (7)"。
-   * 后果：① 星级统计里冒出一堆怪名；② 用户取消勾选「普通」想跳过杂怪时完全失效。
-   * 正确做法：只认 .char_name_tag.text_small 这个星级标签（文本或图标），取不到就是 Normal。
-   */
+  /* 星级识别 —— ★ 这是 的一个真 bug： */
   function detectRank(el) {
     const rankEl = el.querySelector('.char_name_tag.text_small');
     if (rankEl) {
@@ -2055,10 +1947,7 @@
     updateStats();
   }
 
-  /* 普通挂机先把目的地设为真实路径的倒数第二格，不靠轮询抢在最后一步前刹车。
-     游戏 findWalkPath 返回逆序格子列表；也兼容终点在末尾的列表。
-     ★ v2.6.147：加诊断日志（按原因键去重，60s 内聚合成一条）——
-     用来区分「分段导航整个没生效」和「只是算不出前一格」。 */
+  /* 普通挂机先把目的地设为真实路径的倒数第二格，不靠轮询抢在最后一步前刹车。 */
   function navSegDiag(msg) {
     try { logEvent('分段导航：' + msg, { key: 'navseg:' + String(msg).replace(/[0-9]+/g, '#'), windowMs: 60000 }); } catch (e) { /* ignore */ }
   }
@@ -2087,11 +1976,11 @@
     try {
       if ((window.walkQueue && window.walkQueue[character.id] || []).length) return false;
       const el = document.getElementById('player_' + character.id);
-      if (!el) return true;
+      if (!el) return false;
       const $ = jq();
       if ($ && $(el).is(':animated')) return false;
       const left = parseFloat(el.style.left), top = parseFloat(el.style.top);
-      return (!Number.isFinite(left) || Math.abs(left - x * 48) < 1) && (!Number.isFinite(top) || Math.abs(top - y * 48) < 1);
+      return Number.isFinite(left) && Number.isFinite(top) && Math.abs(left - x * 48) < 1 && Math.abs(top - y * 48) < 1;
     } catch (e) { return false; }
   }
   function startMove(x, y, kind, label, opts) {
@@ -2226,7 +2115,7 @@
       startMove(s.tx, s.ty, s.kind, s.label, { finalLeg: true });
       return true;
     }
-    if (character.x === m.tx && character.y === m.ty) {                                    // 到位
+    if (character.x === m.tx && character.y === m.ty && walkVisualArrived(m.tx, m.ty)) {     // 到位：队列与动画均完成；否则继续超时检查
       if (m.segment) {
         // 原生 nextStep 在动画开始时就更新坐标，要等动画真正结束才计算停顿。
         if (!walkVisualArrived(m.tx, m.ty)) return true;
@@ -2285,14 +2174,7 @@
       return true;
     }
 
-    /* ── 兜底[走位无进展]（v2.6.67 新增）─────────────────────────────
-     * 症状：walkTo 被游戏「收下」了（返回真 / 已发起），但角色原地不动 → 打完怪发呆。
-     * 判据：已发起 + 位置连续 MOVE_STALL_MS 没变 + character.walk_to 已空 + 游戏不忙
-     *       （walk_to 还挂着 = 游戏以为在走，那是 checkFrozen 的活；游戏正忙 = 等它做完，这里都不抢）。
-     * 动作：abortWalk()（复位 can_travel / pendingCombatLoad）+ 重发，最多 8 次。
-     * 上限：8 次 → 拉黑该格 30s 并跳过。
-     * 高级参数：不受影响。
-     * ─────────────────────────────────────────────────────────── */
+    /* ── 兜底[走位无进展]（新增）───────────────────────────── */
     const _pos = character.x + '-' + character.y;
     if (m.lastPos !== _pos) { m.lastPos = _pos; m.lastPosAt = now(); }
     /* ★ 寻路请求在途：walkTo() 一发起就把 can_travel 置 false，直到寻路回包/走格动画结束才复位。
@@ -2374,20 +2256,7 @@
     return false;
   }
 
-  /* ★ 意外弹窗自愈：挂机时把「不是脚本自己用的」弹窗关掉。
-     典型场景：走位时踩到 NPC / 服务格（weaponsmith、inn、stash、quest_board…），
-     游戏 nextStep 会自动 execTileAction → createDialog → 弹出 frame_<Title>；
-     脚本不认识它就干等 —— 其中 frame_Quest 还会让游戏的 walkTo 直接 return（彻底卡死）。
-     ⚠ 维修/清包行程（st.repair/sell.active）和导航（navBusy）在 step() 里已经提前 return，
-       所以行程要用的 frame_Weaponsmith / frame_Waygate / frame_MapDetails 不会被误关。
-
-     ★★ 2026-09-21 修复「手动打开邮箱 / 公会 / 活动 / 商店被秒关」：
-     这两类弹窗在 DOM 上完全一样（都是 frame_<Title>），只能靠「前面有没有真人点击」区分：
-       · 玩家点 HUD 图标（hud_PostOffice / hud_Guild / hud_Activities / 市场…）或点链接 → 前面有一次 isTrusted 点击；
-       · 挂机踩到 NPC / 服务格由游戏自动弹 → 前面没有任何真人操作。
-     所以这里记录真人操作时间：真人点过之后的宽限期内出现的 frame 一律登记成「用户窗口」，
-     登记过的窗口脚本永不自动关；窗口被关掉（DOM 里消失）后自动从登记表里清掉，
-     下次再冒出来才会重新按「意外弹窗」处理。 */
+  /* ★ 意外弹窗自愈：挂机时把「不是脚本自己用的」弹窗关掉。 */
   const KEEP_FRAMES = ['frame_Combat', 'frame_Loot', 'frame_Scavenge', 'frame_CollectScrap',
                        'frame_Gathering', 'frame_FeedPet', 'frame_Use', 'frame_Inventory', 'frame_MapDetails', 'frame_OverlordLootbox',
                        'frame_TowerGate', 'frame_Entrance', 'frame_Quest', 'frame_AbyssalTower'];   /* ★ 爬塔：进/下一层的过渡窗与入口提示，被自动关弹窗关掉会打断传送 / 看不到任务要求 */
@@ -2603,10 +2472,7 @@
 
   const bagPotions = kind => (cfg.bagList || []).filter(i => heals(i, kind));
 
-  /* ★ v2.6.125：这件物品是不是「战斗中可用」的药水。
-     判据 = 游戏自带 tooltip 描述里写着 "can be used during battle"
-     （实测 22 条：tiny/small/…/sacred 的 health / mana / rejuv potion + starter_rejuv_potion；
-       食物 / 料理 / 生鱼一律没有这句）。 */
+  /* 这件物品是不是「战斗中可用」的药水。 */
   function combatUsable(key) {
     const db = ttDB(); if (!db) return false;
     const e = db[key];
@@ -2817,10 +2683,7 @@
    */
   const PET_CHECK_MS = 30000;
 
-  /* ★ v2.6.185：同一个 /modal/* 页面在短时间内的重复请求合并成一次（按 URL 缓存 HTML）。
-     readBag / readPetFood 都拉 /modal/inventory；readEquipDur / readPetInfo 都拉 /modal/character。
-     原来各自独立 fetch → 同一 URL 每分钟被拉 4~7 次；现在共享缓存，最多约 2 次/分。
-     force=true 时跳过缓存（休整前后 / 铁匠处等需要即时数据的场景）。 */
+  /* 同一个 /modal/* 页面在短时间内的重复请求合并成一次（按 URL 缓存 HTML）。 */
   const MODAL_HTML_TTL_MS = 30000;
   const _modalHtmlCache = new Map();
   async function fetchModalHtml(url, force) {
@@ -2933,11 +2796,7 @@
     const gap = Math.max(0, max - cur);
     if (!gap) { closeFrameById('frame_FeedPet'); setStatus('宠物能量已满（' + cur + '/' + max + '）'); return 'full'; }
 
-    /* ★ v2.6.71：按「不超出上限」喂 —— 用 floor 而不是 ceil。
-       每块饲料回的是**固定**能量（官方 id=198：150 × 饲料档位），
-       原来 ceil(gap/per) 为了补满缺口会多喂 1 块，超出上限的那部分被直接吃掉 = 白扔一块饲料。
-       现在只喂「装得下」的整数块；缺口不足 1 块时默认不喂（宁可差一点，也不浪费饲料）。
-       注：满能量时喂食才有机会涨 Growth（官方 id=198），那是另一件事 —— 本函数只负责补能量。 */
+    /* 按「不超出上限」喂 —— 用 floor 而不是 ceil。 */
     let n = Math.floor(gap / per);
     if (n < 1) {
       closeFrameById('frame_FeedPet');
@@ -3093,10 +2952,7 @@
     let edges = [], mon = {}, cities = [], updated = '', dirty = false;
     /* ★ 到图即刷新用：门「连续未见」计数（只在内存里，不落盘）+ 连续几次没看到才删门 */
     const miss = {};
-    /* ★ v2.6.105：3 → 20。实测：window.door_tiles 会短暂不完整（换图刚到 / 渲染未完），
-       而 liveMapSnapshot 的 matched===doors 只能保证「内部一致」，不能保证「完整」。
-       3 次（约 7.5s）就删会把真门误删（实测：5→25 / 5→12 / 5→7 被删）→ 导航突然算不出路线。
-       20 次（约 50s 持续看不到）才删。 */
+    /* 3 → 20。实测：window.door_tiles 会短暂不完整（换图刚到 / 渲染未完）， */
     const EDGE_MISS = 20;
 
     function blank(id) {
@@ -3306,23 +3162,14 @@
         if (ch) dirty = true;
         return ch;
       },
-      /* ★★ 到图即刷新（v1.7.0，2026-10-17 新前端）：每到一张图，就用「当前实测」覆盖该 map id 的记录。
-         和 learnDom（只补不覆盖）不同 —— 这里以实测为准：
-           名字 / 类型 / 采集点(g) / 门坐标 全部更新；连续 EDGE_MISS 次没再看到的门才删。
-         怪物(m) 仍是「只增不减」：scanEnemies() 只是当前刷出来的那一批，
-         刚落地/刚清完怪时可能是空的，拿它当全量会误删（采集点和门是静态地图要素，快照即事实）。
-         返回「这次改了哪些」的文字数组，供面板日志显示。 */
+      /* ★★ 到图即刷新（，2026-10-17 新前端）：每到一张图，就用「当前实测」覆盖该 map id 的记录。 */
       syncLive: function (id, live) {
         const r = rec(id); live = live || {};
         const diff = [];
         const uniq = function (a) { const o = []; (a || []).forEach(function (x) { if (x && o.indexOf(x) < 0) o.push(x); }); return o; };
         if (live.name && live.name !== r.name) { diff.push('名字 ' + (r.name || '?') + '→' + live.name); r.name = live.name; }
         if (live.type && live.type !== r.type) { diff.push('类型 ' + (r.type || '?') + '→' + live.type); r.type = live.type; }
-        /* ★ v2.6.66（F4）：采集点 / 坐标改成「只在实测点数 ≥ 已知点数时才覆盖」。
-           原因：换图未完成时 .map_table 可能只渲染了一部分 tile_poi，直接覆盖会把有效采集点删掉
-           （实测：合成页只给 1 个点 → 种子里的 3 个被覆盖成 1 个）。
-           点数变少 = 可疑（可能只是没渲染完）→ 只增不减；点数不变或变多 = 可信 → 正常纠错。
-           代价：游戏真删掉采集点时本图记录不会自动收缩（采集点是静态要素，误删的代价更大）。 */
+        /* （F4）：采集点 / 坐标改成「只在实测点数 ≥ 已知点数时才覆盖」。 */
         if (live.g && live.g.length >= (r.g || []).length) {
           const ng = uniq(live.g);
           if (ng.join('|') !== (r.g || []).join('|')) {
@@ -3679,14 +3526,7 @@
   /* 城镇名 → 地图 id：MapDB 的城镇清单（含世界地图补进来的） */
   function cityIdByName(name) { return MapDB.cityIdByName(name); }
 
-  /* ★ 维修/清包候选城镇 = 传送站城市（含还没探索出 id 的，先列出但停用）∪ 到过的城镇。
-   *   ★「能不能选」= 从当前图真的算得出路线，而不是「到过没到过」。
-   *     记录器导入的图（例如 Bungavik 169）会带 real 标记，但本机导航图里可能根本没有连过去
-   *     的那条边 —— 按 real 放行的话，选了必然走到「暂无路线」失败。反过来，没到过但能导航
-   *     过去的图应该可选。不在游戏里（拿不到 character）时退回「到过」判断，免得面板全灰。
-   *   ★★ 2026-09-22：**只收真能维修/清包的图**（类型 = City，或该图确实有 smith）。
-   *     野外传送点（带 waygate 图标但没有 smith / 邮箱 / 仓库，如 Itham's Anchorage 291、
-   *     The Shifting Tides 75、Desert of Illusions 224）一律不进下拉 —— 用户实测反馈过这个 bug。 */
+  /* ★ 维修/清包候选城镇 = 传送站城市（含还没探索出 id 的，先列出但停用）∪ 到过的城镇。 */
   function serviceTowns() {
     const out = [], seen = {};
     const canService = function (id) {
@@ -3760,23 +3600,11 @@
     return !!el && getComputedStyle(el).display !== 'none';
   }
 
-  /* ======================= 6b. 装备耐久（v1.8.1） =======================
-   * 为什么不能只看 #hud_Equipment：它的 tooltip 是「受损的装备 / 破损装备的属性将无法生效」
-   * —— 只在「属性失效」时亮。而采集工具（镐/耕耘/斧/钓竿）在还剩几十点时就采不动了，
-   * 那个图标根本不亮。所以直接读真实耐久：
-   *   ① GET /modal/character：每件已装备物品的 tooltip 里有「耐久度: cur / max」（含全部 4 件工具）
-   *   ② 采集弹窗 #gathering_popup #durability / #turns_left：实时值（1 回合 = 2 点耐久，实测）
-   * 触发（repairNeeded）—— 只留一个设置 cfg.repairDurPct（「维修阈值(%)」，默认 15）：
-   *   'broken' = 游戏自己判定破损（属性失效）—— 比阈值更硬，保留
-   *   'low'    = 任一装备的真实耐久 ≤ max × 阈值%
-   * ===================================================================== */
+  /* ======================= 6b. 装备耐久（） ======================= */
   const DUR_CACHE_MS = 30000;
   const TOOL_SLOT_RE = /pick|hoe|axe|rod|tool/i;
   function isToolSlot(s) { return TOOL_SLOT_RE.test(String(s || '')); }
-  /* ★ v2.6.53：宠物耐久（Energy）靠食物回，由「自动喂宠」负责，不参与自动维修。
-     判定依据：① 槽位 class 含 pet（如 <div class="pet">）；
-                ② tooltip 里带游戏自己的 data-name="pet_*" 锚点（和喂食窗口同一套）；
-                ③ tooltip 里是「Energy: x / y」（宠物专用，装备都是 Durability）。 */
+  /* 宠物耐久（Energy）靠食物回，由「自动喂宠」负责，不参与自动维修。 */
   const PET_SLOT_RE = /\bpet\b/i;
   function isPetItem(slot, content) {
     if (PET_SLOT_RE.test(String(slot || ''))) return true;
@@ -3900,10 +3728,7 @@
   function repairNeeded() {
     const list = (st.dur && st.dur.list) || [];
     const w = durWorst(list);
-    /* ★ v2.6.200：游戏 HUD 的「破损」图标实测会卡住不灭（修完耐久满了图标还在）→ 不能只认它，
-       否则会陷入「每 20s 回城修一次、铁匠说不用修」的死循环（实测 10 分钟只打 4 只怪）。
-       ① 铁匠菜单说过「无需维修」→ 10 分钟内不再因这个图标触发；
-       ② 耐久读数新鲜且全部 ≥99% → 也不认这个图标。 */
+    /* 游戏 HUD 的「破损」图标实测会卡住不灭（修完耐久满了图标还在）→ 不能只认它， */
     const hudStale = !!(st.repair && st.repair.hudStaleUntil && now() < st.repair.hudStaleUntil);
     const durFresh = !!(st.dur && st.dur.list && now() - st.dur.at < 60000);
     const allFull = durFresh && list.length > 0 && (!w || w.pct >= 0.99);
@@ -4022,7 +3847,14 @@
     const alive = function () { return cancelSeq === navCancelSeq && callerAlive(); };
     const cancel = function () { if (cancelSeq === navCancelSeq) { try { abortWalk(); } catch (e) {} } return 'cancel'; };
     if (!alive()) return 'cancel';
-    const cond = opts.cond || function () { return character.x === gx && character.y === gy; };
+    const arrivalMap = character.current_map;
+    const rawCond = opts.cond || function () { return character.x === gx && character.y === gy; };
+    const cond = function () {
+      if (!rawCond()) return false;
+      // 换图/窗口等独立成功条件仍可结束；同图目标坐标必须等动画真正落定。
+      if (character.current_map !== arrivalMap) return true;
+      return character.x !== gx || character.y !== gy || walkVisualArrived(gx, gy);
+    };
     const retrigger = !!opts.retrigger;
     const onStuck = opts.onStuck || nudgeRecover;
     /* ★ v2.6.156：导航途中也要等自动回血。由调用方注入（navWalkTile 传 supply）；
@@ -4030,7 +3862,7 @@
     const heal = (typeof opts.heal === 'function') ? opts.heal : function () { return false; };
     let from = null;
     try { from = character.current_map; } catch (e) { return 'cancel'; }
-    const onTile = function () { return character.x === gx && character.y === gy; };
+    const onTile = function () { return character.x === gx && character.y === gy && walkVisualArrived(gx, gy); };
     const mapChanged = function () { return character.current_map !== from; };
     const pts = window.points || [];
     /* ★ v2.6.163：陷阱避让 —— 直路踩陷阱时先走到「绕开陷阱的下一段终点」，到了再续走（不等卡住超时）。 */
@@ -4050,12 +3882,7 @@
       const n = nb(character.x, character.y)[0];
       if (n) { try { safeWalkTo(n[0], n[1]); } catch (e) { /* ignore */ } await sleep(2600); }
     };
-    /* ★ v2.6.129：分段导航改成「两段式」——长距离移动时，先走到目标「前一格」停下喘口气，再走到目标点位。
-       触发：本次移动开始时，角色到目标的曼哈顿距离 > cfg.navSegDist（「多少格算长距离」）。
-       原理：服务器把整条路径放在 window.walkQueue[charId]；角色贴着目标（曼哈顿 ≤1）时
-             abortWalk 停下 → 随机停顿 → 再 walkTo(同一目标)。停下的位置本来就在服务器原路径上，
-             重新请求得到同一条剩余路线 → 路线不变。
-       注：走路期间游戏把 can_travel 置 false，中途重新请求会被丢弃，所以必须「先停再请求」。 */
+    /* 分段导航改成「两段式」——长距离移动时，先走到目标「前一格」停下喘口气，再走到目标点位。 */
     const segOn = function () { return !!cfg.navSegOn && !retrigger; };
     const segDist = function () { return Math.max(3, Math.round(+cfg.navSegDist || 5)); };
     const onPoiTile = function () {
@@ -4065,10 +3892,7 @@
     let seg = null;   /* null = 本次移动不走两段式；{dist0} = 已武装，等角色贴到目标前一格 */
     let segDone = false;   /* ★ v2.6.130：两段式的第二段（走向目标点位）已发出 → 到位后要确认动作是否触发 */
 
-    /* ★ v2.6.130：两段式导航到位后，若目标格有 action 但没触发，走开一格再走回重触发。
-       根因：两段式会在目标前一格 abortWalk()（清掉 character.walk_to），若这次清空正好落在
-       目标格上，游戏就不会执行 execTileAction（见上方「兜底[到位没触发 action]」）→ 动作点不开。
-       这里在「两段式到位」后主动确认一次，没触发就走开一格再走回（最多 2 次）。 */
+    /* 两段式导航到位后，若目标格有 action 但没触发，走开一格再走回重触发。 */
     const actionOpened = function (act) {
       if (arriveActionFired(act)) return true;
       const ids = ['frame_Gate', 'frame_Quest', 'frame_SmugglersRoute', 'frame_CollectScrap', 'frame_Scavenge', 'frame_Gathering'];
@@ -4144,12 +3968,7 @@
       if (heal()) { paused += 300; await sleep(300); continue; }
       /* 战斗中：交给游戏自动战斗，等待期间不计入超时 */
       if (hasFrame('frame_Combat')) { if (opts.combatText) setStatus(opts.combatText); paused += 900; await sleep(900); continue; }
-      /* ★ v2.6.107 修复「导航途中击杀怪物后永久卡死」：
-         实测根因 —— 导航中打死怪 → 游戏弹出 #frame_Loot，而导航期间主循环被 navBusy 挡住、
-         没人去关这个窗；原来的写法只是 `await sleep(500); continue;`（不关窗、不超时、paused 不累加）
-         → 整个 walkTileCore 无限空转，角色原地卡死 20 分钟（实测 map 22 / map 41 多次复现）。
-         现在：frame_Loot → 主动 takeAllLoot()（点「全部拾取」，15s 拿不完会自动关窗）；
-              frame_Scavenge → 等游戏自动搜刮，但给 30s 上限，超时强关。 */
+      /* 修复「导航途中击杀怪物后永久卡死」： */
       if (hasFrame('frame_Loot')) {
         try { takeAllLoot(); } catch (e) { /* ignore */ }
         paused += 500; await sleep(500); continue;
@@ -4214,10 +4033,7 @@
     }
     /* 重触发场景：站到目标格但条件仍未成立 → 走开一格再走回，试几次（门要重踩才触发） */
     if (retrigger && onTile() && !cond()) {
-      /* ★ v2.6.199：走开再走回之前，先向服务端重同步一次客户端状态 ——
-         换图其实已经成功、只是客户端 current_map / 画面没跟上时（实测很常见），
-         直接走回门格会再触发一次该门 → 表现就是「刚切完图又被弹回原地」。
-         softRefreshEntities() = 游戏 fetchTravelData()：只重拉 travel 数据、不关弹窗（传送站面板不受影响）。 */
+      /* 走开再走回之前，先向服务端重同步一次客户端状态 —— */
       if (opts.mapChange) {
         try { softRefreshEntities(); } catch (e) { /* ignore */ }
         for (let w = 0; w < 10; w++) { await sleep(500); if (!alive()) return cancel(); if (cond()) return okOut(); }
@@ -4236,10 +4052,7 @@
 
   /* ★ v2.6.104：维修/清包行程的走格统一走模块 B navWalkTile()（见下方「模块 B」）。 */
 
-  /* ★ v2.6.96：当前生效的「维修/清包城镇」。
-     副角色行程中（st.altTrip）**只用该副角色自己的 serviceTown**，绝不回落到主角色的全局设置；
-     其余情况（主角色 / 手动行程）用主角色的全局设置 cfg.serviceTown。
-     —— 修掉「副角色没设城镇时会跑去主角色的维修城镇」这个串味 bug。 */
+  /* 当前生效的「维修/清包城镇」。 */
   function activeServiceTown() {
     return st.altTrip ? String(st.tripTown || '') : String(cfg.serviceTown || '');
   }
@@ -4393,10 +4206,7 @@
         if (now() - lastOpen > 1200) {
           if (link) { try { link.click(); } catch (e) { /* ignore */ } }
           else {
-            /* ★ v2.6.78：sell / salvage / repair 三个子页之间**没有互相跳转的链接**
-               （实测三个页面里 /sell、/salvage、/repair 的出现次数都是 0，只有 smith 主菜单有）。
-               若 frame 已经停在别的子页（例如上一次清包留下的收购页），「点链接」这条路走不通 →
-               会一直空转到超时，报「没打开 XXX 的拆解界面」。这里直接关掉重开目标子页。 */
+            /* sell / salvage / repair 三个子页之间**没有互相跳转的链接** */
             try { closeFrameById(fid); } catch (e) { /* ignore */ }
             await sleep(250);
             try { if (typeof window.createDialog === 'function') window.createDialog(title, '', 'ajax', url, true); } catch (e) { /* ignore */ }
@@ -4419,19 +4229,7 @@
     return !!f;
   }
 
-  /* ======================= 11b. 游戏 AJAX 接口（不点 DOM，不受语言影响） =======================
-   * ★★ 2026-10-17 新前端：修理/出售/回收/存取都有干净的 HTTP 接口（从游戏自己的
-   *   smithing.js / inventory.min.js 里读出来的，已实测）：
-   *     · 修理  POST /includes/ajax_repair.php    {ids, item_ids, locs}   （均为 JSON 字符串）
-   *     · 回收  POST /includes/ajax_salvage.php   {ids}
-   *     · 鉴定  POST /includes/ajax_identify.php  {ids}
-   *     · 出售  POST /includes/ajax_item_buy_sell.php {type:'sell', item:<res>, amount:N}
-   *     · 存包  POST /includes/ajax_inventory.php  {type:'DepositResource', value:<res>, to:null, slot_id:<slotid>}
-   *     · 取出  POST /includes/ajax_inventory.php  {type:'Split', value:<res>, to:<数量>}
-   *   所有 POST 都要带 csrf_token=<window.NORROTH_CSRF_TOKEN>（游戏用 $.ajaxPrefilter 自动加）
-   *   以及 X-Requested-With: XMLHttpRequest，否则返回 403 「安全性检查失败」。
-   *   ★ 用接口的好处：不用等内联脚本、不用点按钮、不会因为按钮文案被本地化而失败。
-   *   下面的实现都是「先走接口，失败再回退到点 DOM」。 */
+  /* ======================= 11b. 游戏 AJAX 接口（不点 DOM，不受语言影响） ======================= */
   function nrCsrf() { try { return window.NORROTH_CSRF_TOKEN || ''; } catch (e) { return ''; } }
   async function nrPost(url, data) {
     const body = new URLSearchParams();
@@ -4534,10 +4332,7 @@
     }
     for (let i = 0; i < 2; i++) {
       if (!tripAlive()) return 'cancel';
-      /* ★ 2026-10-17：维修页的按钮 onclick 是内联脚本（toggleAllSmithingRows / repairAllItems），
-         而游戏是「先塞 HTML、再跑内联脚本」，中间有个窗口期——直接点会报
-         "toggleAllSmithingRows is not defined"，一个钩都没打上（所以维修不生效）。
-         这里改成：① 先等内联函数就绪；② 直接勾 .smithing_pick 复选框（不依赖那个按钮）。 */
+      /* ★ 2026-10-17：维修页的按钮 onclick 是内联脚本（toggleAllSmithingRows / repairAllItems）， */
       await waitSmithingReady(2500);
       const picks = list.querySelectorAll('input.smithing_pick');
       for (let k = 0; k < picks.length; k++) {
@@ -4559,11 +4354,7 @@
   const BAG_CHECK_MS = 30000;
   /* 兜底[休整] 清包 / 存仓失败 → 120s 内不再尝试 */
   const SELL_FAIL_COOLDOWN = 120000;
-  /* ★ v2.6.78：按「名字」猜工具是个坑 —— 游戏里有 15 件「斧」类武器（Copper Berserker Axe /
-     Battle Axe / Twin-bladed Axe … Lv1~49），名字里也有 "Axe"，被 /\baxe\b/ 误判成采集工具
-     → isEquipBlock=false → 「出售」清包永远跳过它们（灰色斧头永远不会被卖掉）。
-     实测（2026-10-21，从武器商买一把灰色 Copper Berserker Axe）：收购列表里 2 件装备，脚本只认 1 件。
-     改成优先读游戏自己的物品类型文案（tooltip 的 <h2>，如 "Normal Weapon" / "Normal Chopping Axe"）。 */
+  /* 按「名字」猜工具是个坑 —— 游戏里有 15 件「斧」类武器（Copper Berserker Axe / */
   const TOOL_WORDS = /\b(pick|hoe|axe|rod)\b/i;        // 仅作最后兜底（读不到类型文案时）
   const TOOL_TYPES = /\b(mining pick|farmer hoe|chopping axe|fishing rod)\b/i;   // 真正的四种采集工具
 
@@ -4694,16 +4485,7 @@
     return f ? 'ok' : (tripAlive() ? 'timeout' : 'cancel');
   }
 
-  /** 点某个条目的 Sell；装备会弹确认框，点 Yes 才算卖出去
-   *  ★★ 2026-10-17 中文（及其它语言）界面修复：
-   *    ① 卖出按钮的文案会本地化（英文 Sell / 中文「出售」）—— 不能再按 /^sell$/i 找，
-   *      改成认 onclick 里的 sellItem(...)（与语言无关）。
-   *    ② 确认框的判定原来是 /sell/i.test(整段文案)，中文界面文案是「出售确认」
-   *      → 匹配失败 → 误点 No（卖不出去）。改成用格子自带的
-   *      data-confirm-title / data-confirm-text 去比对，并用 BootstrapDialog 的
-   *      btn-primary（接受）/ btn-danger | btn-default（取消）认按钮。
-   *      （实测确认框：中文界面下标题「出售确认」、正文「你确定要出售这些物品吗？」，
-   *       但按钮仍是 Yes(btn-primary)/No(btn-danger)）*/
+  /* 点某个条目的 Sell；装备会弹确认框，点 Yes 才算卖出去 */
   async function clickEquipSell(block) {
     const btns0 = $$q('button', block);
     let btn = btns0.filter(b => /sellItem\s*\(/.test(b.getAttribute('onclick') || '')).pop();
@@ -4804,12 +4586,7 @@
   async function salvageEquips(bag) {
     const box = document.getElementById('mass_salvage_list');
     if (!box) throw new Error('拆解界面没有出现');
-    /* ★★ v2.6.78：主选择器改回真实 DOM（实测 2026-10-21 抓的 /modal/weaponsmith/salvage）：
-         <div class='smithing_bulk_row' id='item_block_<ID>' data-id='<ID>'>
-           <input type='checkbox' class='smithing_pick' id='smithing_pick_salvage_<ID>' data-id='<ID>'>
-           <label class='divblock smithing_pick_label'>…<span class='item_name' rarity='normal'>…</span>…</label>
-       v2.6.76 以为主结构是 <input name='item_list[]'> —— 那个在「修理」和「拆解」列表里都不存在，
-       于是主分支永远 0 行，只靠下面的兼容分支在工作，而且诊断日志永远不打（排查时看不到任何线索）。 */
+    /* ★主选择器改回真实 DOM（实测 2026-10-21 抓的 /modal/weaponsmith/salvage）： */
     const picked = [];
     const rows = Array.prototype.slice.call(box.querySelectorAll('.smithing_bulk_row'));
     rows.forEach(function (r) {
@@ -4858,10 +4635,7 @@
     const out = { needRepair: false, repaired: false, needSell: false, sold: 0, sellErr: '', repairErr: '', repairNote: '', note: '' };
     if (!smith || !smith.action) return out;
 
-    /* ★ v2.6.7 修 bug：多角色/切号后 st.dur 常是空的 —— 主循环的 refreshEquipDur() 只在
-       pollSmithTrip() 里跑，而多角色行程期间 mcTick() 会让 step() 提前 return，永远不刷新；
-       切号是整页跳转，st.dur 又回到 null → repairNeeded() 读空列表 → 误判「装备无损坏」不修。
-       这里在判断前强制读一次真实耐久（缓存为空才读，正常主循环不受影响）。 */
+    /* 修 bug：多角色/切号后 st.dur 常是空的 —— 主循环的 refreshEquipDur() 只在 */
     /* ★ v2.6.182：到铁匠处一律强制重读一次真实耐久（原来只在缓存为空时读 —— 缓存陈旧 / 读失败会误判「无需维修」）。 */
     try { await readEquipDur(true); } catch (e) { /* ignore */ }
     const reason = repairNeeded();             // ★ v1.8.0：破损 或 工具已采不动（+可选提前量）
@@ -4886,10 +4660,7 @@
     const wantClear = (opts.sell === false) ? false : true;
     if (wantClear && clearFilterActive() && (manual || cfg.sellOn || st.sell.force)) {
       bag = await readBag(true);
-      /* ★ v2.6.127：只要这次休整到了铁匠、清包开关开着、且设了过滤条件，就无条件按过滤条件清一次。
-         旧实现 needSell = bag.free <= 阈值（st.sell.freeAt 或 cfg.sellFreeMin），而 freeAt 只在
-         「背包快满」触发时赋值 → 「耐久不足」触发的休整（freeAt=0 → 回落 sellFreeMin）常常
-         整段跳过清包，普通装备越攒越多。格数现在只用于「是否触发一次休整」。 */
+      /* 只要这次休整到了铁匠、清包开关开着、且设了过滤条件，就无条件按过滤条件清一次。 */
       out.needSell = !!bag;
     }
     if (!out.needRepair && !out.needSell) {
@@ -5073,19 +4844,7 @@
   }
 
   /* ======================= 12b. 自动存仓（银行） ======================= */
-  /* 到银行后存包，分两步：
-     ① 材料：POST /includes/ajax_inventory.php {type:'Stack',value:'stash'}
-        （= 游戏自己的 stackTobank()「快速存入」，只存材料）；接口不行就打开银行窗口点按钮。
-        按钮文案会本地化（中文「快速存入」），所以按 onclick=stackTobank 找。
-     ② 装备（★ v2.6.85 新增）：把「品质 ≥ cfg.sellRarity」的装备逐件存进银行的装备格。
-        游戏机制（实测 2026-10-22，El Caspar 银行）：
-          · 银行装备格 = #bank_equipment_slots 里的 25 个 .inventory_container#bank_slot_1..25
-            （空闲格的 .stash_slot 带 empty_stash）；
-          · 存一件装备 = POST /includes/ajax_inventory.php
-              {type:'BankTransfer', value:'<背包容器id invN>', to:'<银行格 bank_slot_K>'}
-            成功返回 ["BankTransfer",true,{mode:'deposit',...}]；失败 ["BankTransfer",false,"Unable to deposit"]；
-          · 背包里「装备/工具」的判据 = .inv_slot 的 use_name="item"（材料/药水是 ""/Consume/Open）。
-        用户要求：每件符合条件的装备各尝试存一次，存不进去就算了（不重试、不报错中断）。 */
+  /* 到银行后存包，分两步： */
 
   /** 确保银行窗口开着（读空闲装备格要用）；返回是否拿到 #bank_equipment_slots */
   async function ensureBankFrame() {
@@ -5238,10 +4997,7 @@
         if (!bag) return;
         st.sell.free = bag.free; st.sell.cap = bag.cap;
         updateStats();
-        /* ★ v2.6.78：阈值只摇一次，存进 st.sell.freeAt 给 doSmithServices 复用。
-           旧实现「触发」和「到铁匠后再判一次」各摇一次独立随机数：
-           sellFreeMin=2 + 抖动 5% 时 jitterVal(2) ∈ {1,2,3}，约 1/3 概率是「出发了，
-           走到铁匠又说不需要清」→ 静默空跑（日志里只剩每 30s 一条「回城休整」），背包永远清不掉。 */
+        /* 阈值只摇一次，存进 st.sell.freeAt 给 doSmithServices 复用。 */
         const thr = jitterVal(cfg.sellFreeMin);
         if (bag.free <= thr && !st.sell.active && !st.repair.active && !st.bank.active) {
           st.sell.freeAt = thr;
@@ -5616,11 +5372,7 @@
     return enemyTargetOf(e);
   }
 
-  /* 采集模式主循环
-   * ★ v2.0.0 的两个问题（用户反馈）：
-   *   ① handleFrames() 在 frame_CollectScrap 打开时直接 return —— 采集期间永远不扫怪；
-   *   ② 站在采集点上时 frame_Gathering 分支直接 return —— 同样不扫怪。
-   *   现在改成：采集窗口只做「计数」，不再阻塞；每 tick 都扫怪，有合适目标就中断采集去打。 */
+  /* 采集模式主循环 */
   function stepGather() {
     // 1) 战斗中：★ 只采集 + 勾了「遇怪逃跑」→ 点游戏自带的「逃跑」；否则交给游戏内置自动战斗
     if (hasFrame('frame_Combat')) {
@@ -5742,22 +5494,9 @@
     st.gatherQuickAt = 0;
     startMove(spot.x, spot.y, 'gather', '采集点·' + spot.name);
   }
-  /* ======================= 14.6 活动自动进入（采集时） =======================
-   * 游戏 1.0 的 Event（实测 2026-10-18）：
-   *   · 活动由玩家手动开启（Event Shard 开门），持续 20 分钟；聊天播报
-   *     「[NEW EVENT] The gate to <名> has been opened by <玩家> ... next 20 minutes. [Join Event]」；
-   *   · 判定开启：GET /modal/activities 里出现「Event Gate ... Join」按钮；
-   *   · 进入：GET /modal/event_gate（开启时返回脚本：关面板 + 显示返回门 + loadTravel()）；
-   *   · 活动地图 = 1183（The Sacred Wilds Lobby），公共采集枢纽、无怪；
-   *   · 采集点按「资源类型」对应（外面 Copper Mine → 里面 Mine）；
-   *   · 时间到服务器自动把角色弹出（回到入口城镇），再用导航回原图继续采（勾了「使用传送点」就走传送）。
-   * 状态机：idle → enter → in → return → idle；eventTick() 返回 true = 本 tick 被接管。
-   * ===================================================================== */
+  /* ======================= 14.6 活动自动进入（采集时） ======================= */
   const EVENT_MAP_ID = 1183;
-  /* ★ v2.6.73：活动检查的节流 / 超时 / 兜底（详见 eventTick 步骤 ④）
-     - 间隔 30s：别太频繁地打 /modal/activities
-     - 单次请求 8s 超时：fetch 挂死时靠 AbortController 主动中断（原来会永久挂住 → E.busy 卡死 → 再也不检查）
-     - busy 兜底 20s：即使超时逻辑没兜住（页面切走 / 异常），超过 20s 也强制释放 busy 重新检查 */
+  /* 活动检查的节流 / 超时 / 兜底（详见 eventTick 步骤 ④） */
   const EVENT_CHECK_INTERVAL_MS = 10000;   /* ★ v2.6.182：30s→10s —— 活动开了更快发现 */
   const EVENT_CHECK_TIMEOUT_MS = 8000;
   const EVENT_CHECK_STUCK_MS = 20000;
@@ -5772,29 +5511,15 @@
     const p = s.split(/\s+/);
     return p[p.length - 1].toLowerCase();
   }
-  /* ★ v2.6.101：活动「战斗型」—— 大厅（1183）里有按等级分的战斗区入口，进「当前等级」对应的那个。
-     ★★ v2.6.109 用户更正：**1184 不是战斗区，而是「出活动区域的门」；活动没有 Lv1-9 的区域**。
-     所以战斗区只有 5 个：1185=10-19 / 1186=20-29 / 1187=30-39 / 1188=40-49 / 1189=50-60。
-     （Lv1-9 的角色没有可进的战斗区 —— eventCombatTargetId() 返回 0，脚本会明确报出来。） */
+  /* 活动「战斗型」—— 大厅（1183）里有按等级分的战斗区入口，进「当前等级」对应的那个。 */
   const EVENT_COMBAT_MAPS = { '1185': [10, 19], '1186': [20, 29], '1187': [30, 39], '1188': [40, 49], '1189': [50, 60] };
   /* ★ v2.6.109：大厅里「通向 1184（出活动区域的门）」的等级门 —— **绝对不能踩**（踩了就离开活动）。
      实测 2026-10-23：门 @14-41 → env_1184.jpg。 */
   const EVENT_LOBBY_EXIT_MAPS = { '1184': 1 };
   const EVENT_LOBBY_EXIT_GATES = { '14-41': 1184 };
-  /* ★ v2.6.108：活动大厅（1183）的「等级门」—— 格子 action='level_gate'，name 只有 'Level Gate'，
-     **等级不在格子上**，要踩上去看弹出的 #frame_LevelGate：
-       <h1>The Sacred Wilds (Level 10-19)</h1> + <img src="/images/maps/ambient/env_1185.jpg">
-     → env_<目标图id>.jpg 就是这道门通向哪张图。踩对等级的门会**直接进图**（不弹窗）；
-        踩错才弹这个窗（"A strong force is holding you back"）。
-     实测 2026-10-23（Doubledawn 活动 / 角色 Lv10，大厅 1183）：
-       17-13→1186(20-29) · 38-13→1187(30-39) · 52-12→1188(40-49) · 54-26→1189(50-60) · 11-25→1185(10-19)；
-       14-41→1184 = **出活动区域的门**（不是战斗区，见 EVENT_LOBBY_EXIT_GATES，绝不踩）。
-     用法：① 优先用「本次活动实测学到」的门→图映射；② 否则用下面这张内置表；③ 都对不上就逐个试（踩错就关窗换下一道）。 */
+  /* 活动大厅（1183）的「等级门」—— 格子 action='level_gate'，name 只有 'Level Gate'， */
   const EVENT_LOBBY_GATE_MAP = { '17-13': 1186, '38-13': 1187, '52-12': 1188, '54-26': 1189, '11-25': 1185 };
-  /* ★ v2.6.176：其它活动地图组 —— 万圣节「Sleepy Hollow」地图 id 与 Sacred Wilds 完全不同，
-     硬编码一套会导致「进了活动却不去战斗区」。大厅 1157；战斗区
-     1158=1-9 / 1159=10-19 / 1160=20-29 / 1161=30-39 / 1162=40-49 / 1163=50-59。
-     来源：wiki 地图数据（metadataVerifiedDate=2026-10-29）。门→目标图映射留空，靠踩门实测学习。 */
+  /* 其它活动地图组 —— 万圣节「Sleepy Hollow」地图 id 与 Sacred Wilds 完全不同， */
   const EVENT_ALT_SETS = {
     '1157': { name: 'Sleepy Hollow',
       combat: { '1158': [1, 9], '1159': [10, 19], '1160': [20, 29], '1161': [30, 39], '1162': [40, 49], '1163': [50, 59] },
@@ -5997,11 +5722,7 @@
     } catch (e) { throw e; }
     finally { if (timer) clearTimeout(timer); }
   }
-  /* 进入活动：等价于游戏活动面板里「Event Gate」磁贴的 onclick ——
-     createDialog('Event Gate','','ajax','/modal/event_gate')。
-     ★ v2.6.9 修 bug：原来只 fetch('/modal/event_gate') 并用正则看返回里有没有 hud_portal/loadTravel，
-       但**从不执行**服务端返回的那段脚本 → loadTravel() 永远不跑 → 永远「进入失败（没切到活动图）」。
-       必须交给游戏自己的 createDialog 去加载并执行响应脚本（关面板 + 显示 #hud_portal + loadTravel()）。 */
+  /* 进入活动：等价于游戏活动面板里「Event Gate」磁贴的 onclick —— */
   async function eventEnterGate(alive) {
     alive = alive || function () { return true; };
     try {
@@ -6039,11 +5760,7 @@
     tiles.sort(byDist);
     return tiles[0].name;
   }
-  /* ★ v2.6.108：当前是否在「副本 / 塔」里 —— 这种地方**不能进活动**。
-     实测（2026-10-23）：角色在深渊塔（map 901）里点 Event Gate，服务端直接返回
-       <script>quickNote('Failed: Inside Event','red'); closeFrame(...)</script>
-     → 白白浪费整个 20 分钟活动窗口。所以进活动前先判这个。
-     判据：① 深渊塔地图（900-911）；② MapDB 类型是 Dungeon / Secret 的图。 */
+  /* 当前是否在「副本 / 塔」里 —— 这种地方**不能进活动**。 */
   function inDungeonOrTower() {
     try {
       const m = +character.current_map;
@@ -6055,11 +5772,7 @@
     } catch (e) { /* ignore */ }
     return '';
   }
-  /* ★ v2.6.136：判断一个 HUD 元素「现在真的显示着」。
-     游戏的隐藏类是 `.no_display{display:none}`（无 !important），而显示时用 jQuery
-     `slideDown()` 只加一个**行内** display（优先级高于类）—— **class 不会被去掉**。
-     所以不能看 class，只能看计算后的 display。
-     （也不能用 offsetParent：HUD 那一排可以被折叠，折叠时 offsetParent 会是 null。） */
+  /* 判断一个 HUD 元素「现在真的显示着」。 */
   function hudShown(el) {
     try {
       if (!el) return false;
@@ -6069,11 +5782,7 @@
     } catch (e) { return false; }
   }
 
-  /* ★ v2.6.135：活动「返回传送门」。
-     进活动时游戏会给一个 #hud_portal（tooltip：You have an open portal. You can travel back to
-     your latest location. The portal will close after being used.）。点它 = 游戏原生全局函数
-     backPortal()，直接回到「进入活动前的位置」，比 navToMap 一步步走回去快得多（一次性。
-     实测记录（资料汇编 36 章）：活动结束被服务器弹出后 #hud_portal 仍在，仍可 backPortal() 回去。 */
+  /* 活动「返回传送门」。 */
   function tryBackPortal(tag) {
     const t = tag || '活动结束';
     try {
@@ -6258,10 +5967,7 @@
     /* ③ 正在进入 / 返回 → 接管本 tick，别让角色乱跑 */
     if (E.phase !== 'idle') return true;
 
-    /* ④ 定期检查活动是否开启（战斗 / 采集 / 爬塔 都生效）。
-       ★ v2.6.73：战斗任务里也要检查，但「只在战斗状态外」检查 —— 正在打（#frame_Combat 在）就本 tick 不查，
-       打完这一场（战斗窗口消失）后的第一个 tick 再查，避免战斗中切图 / 打断战斗。
-       检查带超时（EVENT_CHECK_TIMEOUT_MS）+ 兜底（E.busy 超过 EVENT_CHECK_STUCK_MS 强制释放）+ 诊断日志。 */
+    /* ④ 定期检查活动是否开启（战斗 / 采集 / 爬塔 都生效）。 */
     /* ★ v2.6.182：战斗中「照常检查」（只是不进入 —— 见下面 E.lastHas 之后的让路）。
        原来战斗中整段不查 → 长战斗里活动开启很久都不知道。 */
     if (inCombatNow()) E.combatSkipAt = now();
@@ -6326,10 +6032,7 @@
           softReloadMap();   /* 若其实已进活动图只是没画出来 → 这一步会把它画出来 + 重同步 current_map */
           return;
         }
-        /* ★ v2.6.198：实测进活动图基本必然「服务端已换图、客户端 current_map / 画面没跟上」，
-           原来要干等满 30s 才兜底 → 每次进活动都先卡 30s。改成：先给客户端 2s 自己同步，
-           还没同步就主动调 loadTravel() 重同步（重拉 travel → 更新 current_map + 重画画面），
-           之后每秒再看一次，最多 15s（正常情况下重同步后 1~2s 内就切进活动图）。 */
+        /* 实测进活动图基本必然「服务端已换图、客户端 current_map / 画面没跟上」， */
         for (let i = 0; i < 15; i++) {
           await sleep(1000);
           if (!alive()) { if (E.phase === 'enter') E.phase = 'idle'; return; }
@@ -6363,10 +6066,7 @@
           }, 3000);
           return;
         }
-        /* ★ v2.6.191 / v2.6.198：等满 15s 仍没切到活动图 —— 很可能是「服务端已换图，但客户端画面 / 状态没同步」
-           （实测 2026-10-31：搓料理时进活动，服务端已把角色移进活动，客户端 current_map 却还是原图、
-             画面也没重画 → 报「进入失败」，下一拍再进就撞 Inside Event）。
-           这里主动调游戏 loadTravel() 重拉 travel（重同步 current_map + 重画画面），2.5s 后再判一次。 */
+        /* / 等满 15s 仍没切到活动图 —— 很可能是「服务端已换图，但客户端画面 / 状态没同步」 */
         E.phase = 'idle';
         logEvent('活动：进入后 15s 仍未切到活动图 → 再调 loadTravel() 重同步画面 / 状态');
         setStatus('活动：进入后画面没同步，正在重同步…');
@@ -6394,20 +6094,7 @@
   }
 
 
-  /* ======================= 14.7 Overlord（世界 Boss）自动参战 =======================
-   * 官方（help 111 / wiki 161）：Overlord 在服务器时间 01:00 / 10:00 / 19:00 刷新，全服一起打；
-   *   Activities 面板的「Overlord Chamber」磁贴带 data-countdown-epoch = 下一次刷新的 UTC 秒。
-   * 实测（2026-10-24，build P20261023）：
-   *   · Activities 磁贴：<div onclick="quickNote('Unlocks at Level 30')">… Overlord Chamber … <div class=promo-countdown data-countdown-epoch=…>
-   *   · 详情：GET /modal/overlord_chamber → 头图 + 倒计时（data-countdown-epoch）+ 上一场排行榜
-   *   · 参战入口：游戏 HUD 里有个隐藏的「Global Overlord」图标（[content="Global Overlord"]），
-   *     可参战时去掉 class=no_display；它的 onclick =
-   *       createDialog('Join Overlord Battle?', …, 'confirm',
-   *         "javascript:createDialog('Overlord Chamber','','ajax','/modal/overlord_chamber?src=activities');")
-   *     = 游戏自己的 overlordChamber('activities')。脚本直接走这一步（跳过确认弹窗）。
-   * HUD 图标只代表入口开放；必须结合最新倒计时，在设定提前时间内才进入。
-   * 参战要求：角色 Lv30+（官方 wiki 161）。
-   * ===================================================================== */
+  /* ======================= 14.7 Overlord（世界 Boss）自动参战 ======================= */
   function ovlHudJoinBtn() {
     try {
       const els = $$q('[content="Global Overlord"]');
@@ -6443,10 +6130,7 @@
     try { if (O && O.phase !== 'idle' && ovlBossTile()) return true; } catch (e) { /* ignore */ }
     return false;
   }
-  /* ★ v2.6.195：Overlord 倒计时接口 /modal/overlord_chamber 冷启动实测要 ~18s（HTTP 缓存热起来后 <0.5s），
-     而原来复用了 EVENT_CHECK_TIMEOUT_MS=8s → 每次都在 8s 被 AbortController 中断 → 响应收不全 → 缓存永远热不起来
-     → ovlReadCountdown 永远返回 epoch 0 → O.nextEpoch 一直是 0 → 「到参战点(near)」永远不成立 → Overlord 完全不触发
-     （日志里连一条 Overlord 都没有）。这里给 Overlord 单独一个宽松超时（30s），让第一次冷请求能跑完、把缓存热起来。 */
+  /* Overlord 倒计时接口 /modal/overlord_chamber 冷启动实测要 ~18s（HTTP 缓存热起来后 <0.5s）， */
   const OVL_FETCH_TIMEOUT_MS = 30000;
   async function ovlReadCountdown() {
     let ac = null, timer = 0;
@@ -6548,11 +6232,7 @@
       }
       return true;
     }
-    /* 房内没有 Boss 了（已打完 / 还没刷）→ 直接离场。
-       先试游戏自己的返回传送门；没有传送门就等系统把角色传出房间
-       （ovlTick 的 O.on 分支会检测到「已离开房间」并登记返程）。
-       ★ 只在「本场确实打过」之后才试传送门，避免刚进房就被传走。
-       ★ v2.6.159 兜底：进房很久仍没开打（Boss 一直没刷 / 没识别到）→ 也离场，别永久卡死。 */
+    /* 房内没有 Boss 了（已打完 / 还没刷）→ 直接离场。 */
     O.phase = 'waiting'; st.phase = 'idle'; st.target = null;
     if (!O.fought) {
       const stuck = O.enteredAt && now() - O.enteredAt > (+cfg.ovlLeaveSec || 600) * 1000;
@@ -6563,10 +6243,7 @@
       if (!O.goneAt) O.goneAt = now();
       if (now() - O.goneAt < OVL_BOSS_GONE_MS) { setStatus('Overlord：Boss 暂时不见，等待…'); return true; }
     }
-    /* 本场打过、房内已无 Boss → 离场。
-       ① 先试游戏自己的返回传送门（#hud_portal / backPortal()）；
-       ② 没有传送门 → 用世界地图直接传出去（★ v2.6.155：实测房内不会自动传出）。
-          传出去后 ovlTick 的 O.on 分支会检测到「已离开房间」并登记回挂机图的导航。 */
+    /* 本场打过、房内已无 Boss → 离场。 */
     if (tryBackPortal('Overlord 结束')) { O.phase = 'leaving'; return true; }
     if (!O.leaveBusy && (O.leaveTries || 0) < 3 && now() - (O.leaveAt || 0) >= 5000) {
       const home = +O.homeMap || +cfg.farmMap || 0;
@@ -6757,16 +6434,7 @@
       }
       return orig.call(this, props, duration, easing, complete);
     };
-    /* ★ 走位链保命补丁（2026-09-20 实测根因）：
-       游戏 clearQueue() = walkQueue[id]=[] + $(player).queue('fx',[]).stop()。
-       jQuery 1.11.3 的无参 .stop() 走 rejectWith，animate 的 complete 不会触发 ——
-       而 character.x/y 的更新、以及 nextStep() 的递归，全都只写在那个 complete 里。
-       后果：精灵停在格子中间、坐标停在上一格、走位链彻底断掉；
-       且 character.walk_to 仍等于目标，重发同一目标会被游戏 walkTo 的守卫挡成 no-op。
-       这里把「对自己精灵的无参 stop」改成 stop(true, true)（跳到终点）：
-       complete 必然触发 → 坐标对齐、链继续。
-       安全性：clearQueue 是先清 walkQueue 再 stop，所以 complete 里的 nextStep
-       会 pop 到空队列直接返回，不会多走一格。 */
+    /* ★ 走位链保命补丁（2026-09-20 实测根因）： */
     const origStop = jq.fn.stop;
     jq.fn.stop = function (type, clearQueue, gotoEnd) {
       try {
@@ -6827,19 +6495,7 @@
   }
 
   /* ---- 收益统计：经验/分、击杀/分（滑动窗口，跨级时按 max_exp 补偿回绕） ---- */
-  /* 读 HUD 金币（金/银/铜 1:100:10000），换算成铜（游戏基础币）
-     ★ 2026-10-21 根因修复（「金币/分一直涨、钱包却没变」）：
-     游戏 HUD 的金/银/铜数字是它自己的 kFormatter() 写的，≥1000 会缩写—— 1000→"1k"、1200→"1.2k"、
-     9999→"10k"、123456→"123.5k"。旧实现 parseInt(text.replace(/[^\d]/g,'')) 把 "1.2k" 读成 12、
-     "10k" 读成 10，于是同一笔钱在不同数量级下读出来呈锯齿状（999 → 1 → 12 → 10 → 123 …），
-     而 updatePerf 只累加正增量（totalCoin += max(0, coin - lastCoin)），每一段锯齿的上升沿都被当成
-     「进账」→ 累计收入越滚越大、金币/分一直涨，可钱包其实没动。
-     双保险修法：
-       ① 挂游戏自己的 window.updateCoins(coins) —— 它收到的就是**原始铜币整数**，零量化误差；
-       ② 兜底解析 HUD 文本时识别 k/m/b 后缀（"1.2k" → 1200），不再丢数量级。
-     为什么不直接信 HUD：实测抓到 HUD 会被别的代码短暂写坏（silver 77 → 1 → 77），
-     而且 kFormatter 把每个分量量化到 0.1k（金越大误差越大）。原始值和 HUD 是同一个
-     updateCoins 写的，永远不比 HUD 旧 —— 所以只要挂上了就一直用它，不做「HUD 更大就采信 HUD」的推断。 */
+  /* 读 HUD 金币（金/银/铜 1:100:10000），换算成铜（游戏基础币） */
   let _coinsRaw = null;
   function installCoinsHook() {
     try {
@@ -7054,14 +6710,21 @@
    * 高级参数：阈值抖动（stuckSec 上下漂移）、节拍抖动（本函数由主循环驱动）。
    * ─────────────────────────────────────────────────────────── */
 
-  /* 卡死强恢复：清掉旧队列后，只试一次可直达的相邻空白格。
-     没有安全邻格就不移动；不再扩大到远处，也不排队连点多个方向。 */
+  /* 空闲试探：不停止移动、不强制解锁；仅在队列、请求、动画均结束时试一个邻格。 */
   function nudgeRecover() {
     if (st.nudging && now() - st.nudging < 2600) return 0;
     const cancelSeq = navCancelSeq, mapId = character.current_map, charId = character.id;
+    const moveSeq = walkSeq;
     const cx = character.x, cy = character.y;
+    const idle = function () {
+      return inGame() && cancelSeq === navCancelSeq && moveSeq === walkSeq &&
+        character.id === charId && character.current_map === mapId &&
+        character.x === cx && character.y === cy && window.can_travel !== false &&
+        !window.pendingCombatLoad && !gameBusyAction() && !mapLoadStuck() &&
+        !_walkRequests.size && !hasFrame('frame_Combat') && walkVisualArrived(cx, cy);
+    };
     try {
-      abortWalk();
+      if (!idle()) return 0;
       const p = (window.points || []).find(function (p) {
         if (!p || Math.abs(p.x - cx) + Math.abs(p.y - cy) !== 1) return false;
         if (tileActionAt(p.x, p.y)) return false; // 不踩门、陷阱、采集点等动作格
@@ -7075,14 +6738,11 @@
       });
       if (!p) return 0; // 没有安全直达邻格时不扩大搜索距离
       const alive = function () {
-        return cancelSeq === navCancelSeq && character.id === charId && character.current_map === mapId &&
-          character.x === cx && character.y === cy && !hasFrame('frame_Combat') && !tileActionAt(p.x, p.y);
+        return idle() && !tileActionAt(p.x, p.y);
       };
       st.nudging = now();
       setTimeout(function () {
         if (!alive()) return;
-        window.can_travel = true;
-        abortWalk();
         safeWalkTo(p.x, p.y, null, alive); // 真人化延迟结束时再次确认仍只走一格
       }, 300);
       return 1;
@@ -7155,18 +6815,7 @@
     setStatus('检测到卡住，已自动复位（第 ' + W.heals + ' 次）…');
   }
 
-  /* ── 兜底[幽灵战斗 / current_action 卡死] ────────────────────────
-   * 症状：移动途中触发了战斗，但 #frame_Combat 没弹出来（战斗加载回调丢失 / 画面没渲染），
-   *       character.current_action 卡在非 'Traveling' 的战斗态 → 游戏 walkTo() 直接 return false，
-   *       角色原地不动；而 checkFrozen / checkStuck 都把「游戏正忙」当正常 → 全部跳过 → 永久卡死
-   *       （连自动刷新都触发不了）。2026-10-30 实测：移动中开战、窗口没弹出时必现。
-   * 判据：没有 frame_Combat / frame_Loot / 采集 / 搜刮 / 拾取窗口、不在切图，
-   *       且 character.current_action 是非 'Traveling' 的值持续 > GHOST_ACTION_MS。
-   * 动作：调游戏 abortCombatStart() 复位 + current_action='Traveling' + can_travel=true + pendingCombatLoad=false；
-   *       若脚下确实还有怪 → 用游戏 loadCombat(1) 补开战（别白白走开）。
-   * 上限：GHOST_MAX 次强恢复仍无位移进展 → 整页刷新。
-   * 高级参数：不受影响。
-   * ─────────────────────────────────────────────────────────── */
+  /* ── 兜底[幽灵战斗 / current_action 卡死] ──────────────────────── */
   const GHOST_ACTION_MS = 12000;   /* 非 Traveling 的动作最多容忍多久（自动搜刮 ~4.5s，留足余量） */
   const GHOST_MAX = 6;             /* 连续强恢复次数上限 → 整页刷新 */
   function checkGhostCombat() {
@@ -7197,7 +6846,7 @@
     let refought = false;
     try {
       if (typeof window.findEnemyAtCoords === 'function' && typeof window.loadCombat === 'function' &&
-          window.findEnemyAtCoords(character.x, character.y).length) {
+          walkVisualArrived(character.x, character.y) && window.findEnemyAtCoords(character.x, character.y).length) {
         window.loadCombat(1); refought = true;
       }
     } catch (e) { /* ignore */ }
@@ -7284,24 +6933,10 @@
     setStatus('角色阵亡，正在复活…（第 ' + defeatTries + ' 次）');
   }
 
-  /* ======================= 21. 自动爬塔（Abyssal Tower） =======================
-   * 实测机制（2026-10-19，账号 723412117@qq.com / char #1378）：
-   *   · 必须在城镇里才能进塔（野外请求 /modal/abyssal_tower/1 返回 "Must be in Town"）。
-   *   · 入口：createDialog('Abyssal Tower','','ajax','/modal/abyssal_tower/<diff>') → 传送到 map 900。
-   *   · map 900（Abyssal Tower Entrance）：走到 tower_gate 格 → 进入第 1 层（map 901）。
-   *   · 每层（901+）Help 格写明：Step1 杀光本层所有怪 → Step2 进入下一层 → Step3 领奖。
-   *   · 下一层入口 = 本层的 tower_gate 格（action=tower_gate）。
-   * ==================================================================== */
+  /* ======================= 21. 自动爬塔（Abyssal Tower） ======================= */
   const TOWER_MAP_MIN = 900, TOWER_MAP_MAX = 911;
   const TOWER_DIFF_CN = { 1: 'Normal', 2: 'Nightmare', 3: 'Chaos' };
-  /* ★★ 待确认（2026-10-20）：据玩家反馈，深渊塔【每 10 层需要交一把「与当前等级匹配的钥匙」】才能过这一层。
-     · 钥匙 Tier（按等级）：Copper 1-9 / Iron 10-19 / Bronze 20-29 / Steel 30-39 / Mithril 40-49。
-     · ⚠ 具体交互【尚未实测确认】：在 tower_gate 弹窗里怎么交？交完是直接进下一层、还是要再点一次 Enter？
-       测试账号 723412117@qq.com 的角色最高只有 Lv8，打不到第 10 层，所以暂时抓不到那个弹窗。
-     · 待办：有高等级号时 → 爬到第 10 层 → 抓 frame_TowerGate 的 DOM → 确认「交钥匙」按钮 / 接口 → 在 stepTower 里实现：
-       预计逻辑 = 检测到钥匙要求时，若背包里没有对应 Tier 的钥匙 → stop('爬塔：第 N 层需要 X 钥匙，已停止')；
-       有钥匙 → 在弹窗里点「交钥匙」，然后继续。
-     · 层数目前是本地计数（进塔=1，每次成功进下一层 +1，见 st.towerFloor），正好可用来判断是否到 10 的倍数。 */
+  /* ★★ 待确认（2026-10-20）：据玩家反馈，深渊塔【每 10 层需要交一把「与当前等级匹配的钥匙」】才能过这一层。 */
   function isTowerMap(id) { id = +id; return id >= TOWER_MAP_MIN && id <= TOWER_MAP_MAX; }
 
   /* 扫描当前地图上的塔相关格子 */
@@ -7449,12 +7084,7 @@
     navToMap(town).then(function (ok) { if (!ok) logEvent('爬塔：前往城镇失败'); }, function () {});
   }
 
-  /* ---- 爬塔前置任务：自动完成第 1 层 entrance 要求的任务链（The Note / Finding The Key） ----
-   * 机制（实测 2026-10-20）：entrance 被任务锁住时，它的弹窗里带一个 guidePath 链接 → 指向「当前该做的任务」的起点；
-   *   走到起点会弹 frame_Quest（[data-quest-root]，含 .coordinates 目标 + Accept/Finish 按钮）；
-   *   点按钮 → 按 .coordinates 走到下一步 → 再点 → …做完后回 entrance 读下一个要求，直到入口解锁。
-   * 全程只认 DOM 结构（data-quest-root / .coordinates / 按钮文案），不依赖界面语言。
-   * 返回 true = 正在处理任务（上层别做别的）；false = 没有任务要求（入口已解锁，交给正常爬塔逻辑）。 */
+  /* ---- 爬塔前置任务：自动完成第 1 层 entrance 要求的任务链（The Note / Finding The Key） ---- */
   function stepTowerQuest() {
     const tq = st.tq || (st.tq = {});
     /* A) frame_Quest 打开 → 读坐标 / 点按钮 */
@@ -7549,12 +7179,7 @@
       return 'map' + cur + ' 角色' + character.x + '-' + character.y + ' ｜ door_tiles:' + dtxt + ' ｜ 格子:' + tiles + ' ｜ 已走过:' + used + ' ｜ 已验证:' + ok + ' ｜ 怪:' + enemies;
     } catch (e) { return '(诊断失败 ' + (e && e.message) + ')'; }
   }
-  /* ★ v2.6.164：踩一道房间门过去；返回 true = 本 tick 已处理。
-     旧逻辑（≤v2.6.163）只要站在门上 2.5 秒就 execTileAction 一次并把门标记「已走过」，
-     但游戏 execTileAction 在「角色正在做别的动作 / 脚下有怪 / 不在可触发状态」时会静默什么都不做，
-     于是门被误标已走过 → towerRoomDoor() 认为「门都试过了」→ 再也不进 → 卡在「还有怪够不到」。
-     新逻辑：触发后等角色被传走（可达片区指纹变化）才算成功；没传走就「走开再走回」逼游戏在
-     走进这一格时执行格子动作；连续多次仍无效才把这扇门标记已试过（换别的门）。 */
+  /* 踩一道房间门过去；返回 true = 本 tick 已处理。 */
   function towerStepThroughDoor(door, isBack) {
     if (!door) return false;
     const dk = door.x + '-' + door.y;
@@ -7650,11 +7275,7 @@
     /* ★ 前置任务跟随：一旦开始（有目标 / 正在走开走回），每 tick 都优先跑，
        否则角色一离开 entrance 那一格，stepTowerQuest 就不再被调用 → 目标丢失 → 被普通逻辑拉回入口。 */
     if (st.tq && (st.tq.target || st.tq.off)) { st.phase = 'quest'; if (stepTowerQuest()) return; }
-    /* ★ frame_TowerGate 检查 + 层数计数：必须放在索敌之前。
-       否则「点 Enter 进下一层 → 立刻刷出新怪 → pickTarget 命中」会在到达计数那行之前 return，
-       层数永远不涨（也就永远触发不了「爬到第 N 层停止」）。
-       实测（2026-10-20）：走到 tower_gate 会打开 frame_TowerGate（标题 'Prove Yourself Worthy'，
-       正文 'Clear the floor / Slay the N remaining enemies'），里面有「Enter」按钮（/modal/tower_gate?enter）。 */
+    /* ★ frame_TowerGate 检查 + 层数计数：必须放在索敌之前。 */
     if (tg) {
       /* ★ v2.6.166：每 10 层可能需要交钥匙 / 特殊任务（需人工介入）→ 不自动处理，直接停止并提示。 */
       if (/key|钥匙/i.test(tg.textContent || '')) {
@@ -7727,20 +7348,10 @@
       return;
     }
 
-    /* 1.5) ★ v2.6.107：本层被一道门分成两个房间 —— 另一侧房间的怪「走不到」（不在可达集合里），
-       pickTarget 会跳过它们 → 脚本误以为本层清完去下楼，结果被塔门拦住。
-       所以只要还有走不到的怪，就先去把「房间门」踩一遍（过门到另一侧），清完才能下楼。
-       用 st.towerRoomTries 限制次数，避免门踩不动时死循环。 */
-    /* ★ v2.6.108：一层塔被若干道「房间门」切成多个区域 —— 别的区域的怪「走不到」，
-       pickTarget 会跳过它们 → 脚本会误以为本层清完去下楼。
-       通用做法（不假定只有 2 个房间）：只要还有够不到的怪，就去踩一道「本层还没走过的」房间门，
-       过门继续清；反复「清区域 → 过门」直到本层一只怪都不剩，才去下一层入口。
-       房间门判据 = door_tiles 里「目的地 = 本图自己」的自环门（实测 map 901：901→901 @26,36）。 */
+    /* 1.5) 本层被一道门分成两个房间 —— 另一侧房间的怪「走不到」（不在可达集合里）， */
+    /* 一层塔被若干道「房间门」切成多个区域 —— 别的区域的怪「走不到」， */
     /* ★ v2.6.163：够不到的怪 / 塔门提示还有剩余 → 过房间门去找怪（清完本片区后，若怪在门另一侧会卡住）。 */
-    /* ★ v2.6.166：房间门按「图遍历（DFS）」的思路做：
-       前进 = 走一扇「本层还没走过」的门去探索新房间；
-       回溯 = 没有新门了就走回「来路」（st.towerPath 栈顶那扇门），去别的房间继续找怪 / 找下楼口。
-       不再需要「最近的可达门 / 避开上一扇门 / 复用计数」这些启发式。 */
+    /* 房间门按「图遍历（DFS）」的思路做： */
     const _unreach = unreachableEnemies();
     if (_unreach > 0 || ((st.towerRemain || 0) > 0 && !st.towerSearchDone)) {
       /* 前进：一扇没走过的门 */
@@ -7975,14 +7586,7 @@
     const html = await r.text();
     const doc = new DOMParser().parseFromString(html, 'text/html');
     const out = [];
-    /* ★ v2.6.19b：已排队的槽位 = 游戏自己给的 id="gather_slot_N"（空槽没有这个 id）。
-       实测 markup（2026-10-19，角色排队中）：
-         <div class="divblock" id="gather_slot_0">
-           <span class="label label-normal">Noble - Owranbu River (Lv. 7) - Elm</span>
-           <div class="gathering_bar"><span data-countdown-epoch="..."><b class=timer>..</b></span></div>
-           <button class="btn btn-danger" onclick="...cancel=3960...">Cancel</button>
-         </div>
-       标签在 .label（**不在** .gathering_bar 里 —— 里面那个 span 是倒计时），倒计时在 [data-countdown-epoch]。 */
+    /* b：已排队的槽位 = 游戏自己给的 id="gather_slot_N"（空槽没有这个 id）。 */
     const tab = doc.getElementById('tab_gathering');
     if (!tab) return out;
     const parseSlot = function (el) {
@@ -8094,10 +7698,7 @@
     const tab = doc.getElementById('tab_gathering');
     if (!tab) { _mcGatherRaw = '(无 tab_gathering)'; return null; }
     _mcGatherRaw = tab.textContent.replace(/\s+/g, ' ');
-    /* ★ v2.6.19：不再按「You can gather for X (Y turns)」文案匹配。
-       用游戏自己的 DOM 锚点：Idle Mode 图标 div[name="idle_mode"] → 它所在的 .divblock，
-       里面两个 <b> 依次是「时长」「回合数」（回合数是纯数字，语言无关）。
-       Limited by 取 .label.label-default。 */
+    /* 不再按「You can gather for X (Y turns)」文案匹配。 */
     const icon = tab.querySelector('div[name="idle_mode"]');
     const block = icon ? (icon.closest('.divblock') || icon.parentNode) : null;
     if (!block) return null;
@@ -8136,10 +7737,7 @@
     const main = mcMain();
     if (!main) return false;
     if (String(character.id) === String(main.id)) {
-      /* ★ v2.6.152：多角色调度器只管副角色 —— 主角色的挂机完全由挂机模块自己管理
-         （用户操作 / 断线续挂 autoResume），这里绝不 beginRun、绝不恢复主角色挂机。
-         原来这里有一块「切回主角色自动恢复 rot.mainRun」的逻辑：它越权启动了主角色挂机，
-         导致「停止挂机后 ~1.2s 又被调度器拉起来」。已删除。 */
+      /* 多角色调度器只管副角色 —— 主角色的挂机完全由挂机模块自己管理 */
       /* ★ v2.6.79：暂停中不读队列 —— mcWatchQueue() 会 mcBeginTrip() → mcSwitch() 切号，
          实测把守卫只放在下面（副角色分支）根本挡不住：主角色页每 20s 读一次队列就把号切走了。 */
       if (!rot.paused) mcWatchQueue();
@@ -8651,11 +8249,7 @@
       /* 新主角色不该再背副角色的 idle 记录 / 行程 */
       delete rot.idle[c.id]; delete rot.fail[c.id];
       if (String(rot.tripAlt) === String(c.id)) { rot.tripAlt = null; rot.phase = 'MAIN'; rot.step = null; rot.firstStart = false; }
-      /* ★ v2.6.189：切为主角色 → 立刻中止「正在跑的副角色行程」。
-         原来只清了 altTrip / mcBusy，没清 tripManual + 三个 active 标志 →
-         tripAlive() 仍返回 true，runRestock / runRepairAndDeposit 会继续把角色带去
-         副角色的城镇维修 / 存仓、再回副角色挂机图（用户反馈：切成主角色后还在跑副角色任务）。
-         配置（gatherMap / node / serviceTown）保留不动，只是不让主角色继续执行。 */
+      /* 切为主角色 → 立刻中止「正在跑的副角色行程」。 */
       if (st.altTrip) {
         st.tripManual = false; st.tripTown = ''; st.tripHome = ''; st.tripOrigin = '';
         st.repair.active = false; st.sell.active = false; st.bank.active = false;
@@ -8684,10 +8278,7 @@
     if (!rot) mcLoadRot();
     if (rot.on) mcStopAll(); else mcStartAll();
   }
-  /* ★ v2.6.79：暂停 / 继续。
-     和「停止」的区别：停止 = 关掉多角色（cfg.multiChar=false）并切回主角色；
-     暂停 = 保留多角色的一切状态（队列、idle 记录），只是不再切号、不再跑副角色行程。
-     ★ v2.6.174：暂停就地生效 —— 不再切回主角色（用户要求）；人在哪个角色页就留在哪个角色页。 */
+  /* 暂停 / 继续。 */
   function mcTogglePause() {
     mcSeq++;
     if (!rot) mcLoadRot();
@@ -8823,11 +8414,7 @@
 
     // ★ 多角色轮转：副角色行程进行中 → 主循环让路；否则主角色盯队列 + 正常挂机
     if (st.mcBusy) {
-      /* ★ v2.6.192：副角色行程由 mcTick() 驱动、自己 await walkTileCore，主循环整段让路。
-         但这样「切图卡住 / 换图没重画 / 幽灵战斗」三个看门狗也一起被跳过了 —— 行程里只有
-         walkTileCore 的 onStuck（救不了 current_action 卡死的幽灵战斗）。
-         这里让这三个「与走位引擎不冲突」的看门狗照常跑；checkFrozen/checkStuck 会和
-         walkTileCore 抢 abortWalk/walkTo，故意不跑（位置卡死交给 walkTileCore 自己）。 */
+      /* 副角色行程由 mcTick() 驱动、自己 await walkTileCore，主循环整段让路。 */
       if (checkMapLoad()) return;
       if (checkMapRender()) return;
       checkGhostCombat();
@@ -8852,21 +8439,13 @@
     if (checkMapRender()) return;
     // ★ 兜底[怪物列表过期]：定期强制拉一次实体列表（人多抢怪时，画面上的怪可能已经被别人杀了）
     checkEntityFresh();
-    /* ★ v2.6.175：换图 → 立刻安排一次「快速重画核对」（2.2s 后读屏幕底图，没画对就调 loadTravel）。
-       独立于事件 / Overlord 逻辑 —— 原来这一步只在下面的「换图块」里做，而活动 / Overlord
-       进出图时 step() 会被事件逻辑提前 return，换图块跑不到 → 只能等 8s 的 checkMapRender 看门狗，
-       表现为「切了活动图要等很久画面才同步」。 */
+    /* 换图 → 立刻安排一次「快速重画核对」（2.2s 后读屏幕底图，没画对就调 loadTravel）。 */
     if (st.mapSeen !== character.current_map) {
       const _seenFrom = st.mapSeen;
       st.mapSeen = character.current_map;
       if (_seenFrom != null) scheduleRenderCheck(_seenFrom, character.current_map);
     }
-    /* ★ v2.6.172：Event / Overlord 监控提到最上层 —— 独立于挂机 / 维修 / 清包 / 多角色行程。
-       这两种都是「限时」的（活动 / 世界 Boss），一旦被别的模块的早退跳过，就可能错过整场
-       （实测：修装备 / 卖装备 / 切角色期间，脚本像「忘了活动」，很久之后才回到活动图）。
-       这里放在所有功能模块的早退之前：即使维修 / 清包 / 卡住自愈正在进行，也照样推进
-       Event / Overlord 的状态机（倒计时轮询 / 活动开关检查），只是不让它们抢占本 tick。
-       切图 / 导航进行中仍然让路（避免和正在进行的导航抢路）。 */
+    /* Event / Overlord 监控提到最上层 —— 独立于挂机 / 维修 / 清包 / 多角色行程。 */
     /* ★ v2.6.182：Event / Overlord 监控即使在导航 / 切图进行中也照常「检查」（只是不让它们抢占本 tick）。
        原来整段被 navBusy / st.mapSwitch.active 挡住 → 挂机（频繁走位 + 切图刷怪）时活动开启很久都进不去。
        现在：检查照跑，只有「真正进入 / 参战」那一步等导航让出（见 eventTick / ovlTick 里的 navBusy 判据）。 */
@@ -8879,10 +8458,7 @@
     }
     /* ★ v2.6.173：未开挂机 → 只跑「活动」相关逻辑（勾了「自动进活动」即生效，不需要开挂机）。 */
     if (!running) {
-      /* ★ v2.6.186：活动单独运行（未开挂机）时，也要跑「自愈」兜底 —— 否则活动里一旦
-         走位卡死（character.walk_to 挂着但人不动）/ 冒出挡路弹窗 / 离线结算弹窗，就永远卡住。
-         原来整段被 !running 提前 return 跳过；而 checkMove 只处理「walk_to 已空」的停滞，
-         处理不了「walk_to 还挂着」的卡死（那正是活动里最常见的卡法）。 */
+      /* 活动单独运行（未开挂机）时，也要跑「自愈」兜底 —— 否则活动里一旦 */
       if (hasFrame('frame_Loot')) takeAllLoot();
       if (eventCombatActive() || (cfg.autoEvent && st.event && st.event.on && isEventLobby(character.current_map))) {
         sweepStrayFrames();
@@ -8959,13 +8535,7 @@
     if (st.nudging && now() - st.nudging < 2600) { setStatus('卡住自愈：正在试探走位…'); return; }
     if (st.settling && now() - st.settling < 40000) { setStatus('落位：正在同步服务端位置…'); return; }
 
-    /* ★ 战斗中不计入走位超时（2026-09-21 实测根因）：
-       三个模式都是「先判 frame_Combat 就 return」，checkMove() 排在后面 →
-       整场战斗期间 checkMove() 根本不会被调用，st.move 带着战斗前的 at 活过战斗。
-       战斗结束后 checkMove() 第一次运行，now() - m.at 已经把「走位时间 + 战斗时间」
-       一起算进 cfg.moveTimeout（默认 15 秒）→ 走超时分支 → 把「本来要去找的那一格」
-       黑名单 30 秒。表现就是「寻敌途中打了一架，打完脚本就当目标已经没了」。
-       这里让战斗时间不计入超时预算（一行覆盖 auto / battle / gather 三个模式）。 */
+    /* ★ 战斗中不计入走位超时（2026-09-21 实测根因）： */
     if (hasFrame('frame_Combat') && st.move) st.move.at = now();
 
     /* ★ 活动自动进入：战斗 / 采集 / 爬塔 都生效。进入 / 返回期间接管本 tick；
@@ -9718,11 +9288,7 @@
     return true;
   }
 
-  /* 面板定位：统一用 left/top（不用 right，避免滚动条宽度导致基准漂移）。
-   * ★ cfg.uiX/uiY 存的是「用户想要的位置」，只在拖动 / 双击复位时改变；
-   *   渲染时只把它钳制进视口，绝不回写。
-   *   这样面板临时变高（切标签页、展开日志、统计行渲染完）不会把用户的位置永久改掉，
-   *   缩回去还能回到原处 —— 这是 v1.6.0「缩放后面板乱飘」的根因。 */
+  /* 面板定位：统一用 left/top（不用 right，避免滚动条宽度导致基准漂移）。 */
   function placePanel(init) {
     const p = els.panel;
     if (!p) return;
@@ -9745,10 +9311,7 @@
   function bindPanel(panel) {
     // 拖动（pointer 事件 + setPointerCapture，拖到 iframe 上也不丢）
     els.head.addEventListener('pointerdown', e => {
-      /* ★ v2.6.17：标题栏里的按钮/下拉/输入不触发拖动（否则 pointer capture 会吞掉 click，工作台按钮点不动）
-         ★ v2.6.77：加上 #nr-ver —— 版本号角标要能点（点开在线更新安装页）；
-         实测（puppeteer 真实鼠标事件）：不加这一项时 pointerdown 触发拖动 + setPointerCapture，
-         后续 click 被吞掉，programmatic .click() 却能过 —— 是个只有真点才复现的坑。 */
+      /* 标题栏里的按钮/下拉/输入不触发拖动（否则 pointer capture 会吞掉 click，工作台按钮点不动） */
       if (e.target.closest('#nr-fold,#nr-ver,#nr-hbtn,#nr-gameskin,#nr-skinmute,button,select,input,a')) return;
       dragging = { dx: e.clientX - panel.offsetLeft, dy: e.clientY - panel.offsetTop };
       els.head.setPointerCapture(e.pointerId);
@@ -10183,15 +9746,7 @@
   }
   function onModeSwitch() { deriveRunMode(); renderTaskUI(); }
 
-  /* ======================= 18c. 工作外观（v1.9.0） =======================
-   * 目标：让游戏页面看起来像「工程图 / 调度看板」，但**元素照常可见、可点、脚本照常工作**。
-   * ★ 只用 CSS 覆盖，绝不 display:none / visibility:hidden / opacity:0：
-   *   脚本多处靠 getComputedStyle(...).display 判状态（isDamaged / gatheringActive / 弹窗），
-   *   藏元素会直接让脚本误判（例如以为装备破损 → 立刻跑去维修）。
-   * 结构：#window_map（木纹底）→ #map_container → .map_table（地形 JPG）/ #players_container（单位）；
-   *   HUD 在 body 下：.icons_hud / .character_hud / #window_chat / #hud_chat；弹窗在 #frame_container。
-   * 档位：gray = 去色（保留地形）；grid = 去色 + 地形贴图换成网格（更像工程图）。
-   * ===================================================================== */
+  /* ======================= 18c. 工作外观（） ======================= */
   const SKIN_TITLE = '数据看板 · 内部';
   const SKIN_CSS = [
     /* 去色：只罩游戏表面，不碰小伴侣面板 */
@@ -10797,10 +10352,7 @@
     syncRunButtons();
   }
 
-  /* ★ v2.6.76：开始挂机前处理挂机地图锁定（战斗 / 采集 / 一键挂机）：
-     · 未锁定 → 自动把当前地图设为锁定地图；
-     · 已锁定但当前地图不同 → 弹窗问是否替换。
-     爬塔不参与；断线续挂 / 复活恢复（opts.resume）不弹窗、不改写。 */
+  /* 开始挂机前处理挂机地图锁定（战斗 / 采集 / 一键挂机）： */
   async function ensureFarmMapLock(mode) {
     if (mode === 'tower') return;
     if (!inGame()) return;
@@ -10885,15 +10437,7 @@
   /* ★ 地图数据（MapDB，第 11 节）在 boot() 之前就已初始化完毕。 */
   let navReady = false;
 
-  /* ======================= 17b. 在线更新（v2.6.77） =======================
-   * 远端版本号来源：<UPD_META>，由 tools/publish_userscript.ps1 在每次发布时生成，
-   * 形如 {"version":"2.6.77","date":"2026-10-21","notes":"...","url":"..."}。
-   * 行为：
-   *   1) boot() 里调一次 checkUpdate()（5 分钟节流，落 localStorage）；
-   *   2) 远端更高 -> 右上角版本号变金色可点角标 + 日志 + 桌面通知；
-   *   3) 点角标 / 高级页「检查更新」按钮 -> 打开 UPD_SCRIPT，交给 Tampermonkey 弹安装框。
-   * 失败（离线 / 被墙 / 404）一律静默，绝不影响挂机。
-   * ---------------------------------------------------------------------- */
+  /* ======================= 17b. 在线更新（） ======================= */
   let updInfo = null;      // { version, url, notes } —— 远端有新版时才非空
 
   function verParts(v) { return String(v || '').split('.').map(function (x) { return parseInt(x, 10) || 0; }); }
@@ -11031,25 +10575,7 @@
 
   boot();
 
-  /* ======================= 18b. 地图缩放解锁（新前端） =======================
-   * 新前端自带滚轮缩放：给 #map_container 设 transform: scale(s)，s ∈ [1,2]（step 0.2），
-   * 而且 wheel 处理器里 e.preventDefault() 会把浏览器的 Ctrl+滚轮缩放也一起挡掉。
-   * 这里：
-   *   1) Ctrl/⌘ + 滚轮 → 直接放行（stopImmediatePropagation 拦下游戏的处理器，让它不再 preventDefault）→ 浏览器缩放；
-   *   2) 普通滚轮 → 用更宽的范围缩放 #map_container，并同步 .map_table 的 font-size(=12/scale，游戏原逻辑)。
-   * 用 document 的 capture 阶段监听，先于游戏绑在 #map_container 上的处理器跑。
-   *
-   * ★★ v1.9.3 修「缩放后点击错位」：
-   *   新前端把「屏幕坐标 → 地图本地坐标」抽成了全局函数
-   *     mapEventToLocalXY(e, el, scale) => { click_x: (e.clientX - rect.left)/scale - 100, ... }
-   *   其中 rect 来自 getBoundingClientRect()（**会被我们的 transform 影响**），
-   *   而 scale 用的是它自己那个闭包变量（只在游戏自己的滚轮处理器里变）。
-   *   我们自己改 transform 后，游戏那边 scale 还是旧值 → 除错 → 点哪都偏。
-   *   所以这里把 mapEventToLocalXY 包一层，强制用 DOM 上**真实**的缩放值。
-   *   拿不到这个函数（旧前端 legacy，点击换算写死在页面里）就不接管滚轮，
-   *   免得把点击搞坏 —— 旧前端本来也没有滚轮缩放。
-   * 可用 cfg.zoomUnlock 关闭（默认开）。
-   * ============================================================== */
+  /* ======================= 18b. 地图缩放解锁（新前端） ======================= */
   const ZOOM_MIN = 0.4, ZOOM_MAX = 4, ZOOM_STEP = 0.2;
   let _zoomWheelBound = false;
 
@@ -11128,10 +10654,7 @@
   /* ★ 自动学习地图信息用的 localStorage 键（边学边存） */
   const NAV_LEARN_KEY = 'norroth_nav_learn_v1';
 
-  /* ★★ 实测快照（v1.7.0）：把「当前这张图」的真实数据抓成一份 live 记录。
-     只有在该图**确实加载完**、而且 door_tiles 与地图 DOM 互相印证时才返回，否则返回 null。
-     为什么需要守卫：换图那一瞬间 window.map / window.door_tiles 可能还是上一张图的，
-     不校验就会把旧图的数据写到新图的 id 上。 */
+  /* ★★ 实测快照（）：把「当前这张图」的真实数据抓成一份 live 记录。 */
   let _liveSkipLogAt = 0;
   /* ★ v2.6.106：_liveLastId/_liveLastIdAt/_liveNameMiss/LIVE_NAME_MISS_MAX 已删除 ——
      id 直接取 window.map.id，不再需要「等 id 稳定」和「按名字兜底」。 */
@@ -11139,15 +10662,7 @@
      这些是静态地图要素，进图就实测，随地图数据一起共享。 */
   const EXIT_TILE_ACTIONS = ['gate', 'waygate', 'entrance', 'event_gate', 'smugglers_route', 'dungeon',
                              'portal', 'teleport', 'secret', 'secret_passage', 'passage', 'stairs', 'tunnel', 'cave', 'exit'];
-  /* ★★ v2.6.106：地图渲染的「身份 id」—— 学地图数据时唯一可靠的 key。
-     实测（2026-10-22，证据 tmp/_render_body.xml + tmp/probe_maptrace2.log）：
-     换图时服务端 /includes/do/travel.php 的响应里有一段脚本**原子地**设置
-       character.current_map = N;  map = {..., "id": N};  window.walkable_tiles = ...;  door_tiles = ...;
-     但 character.current_map 还会被另一条通道（角色状态推送）先改掉 ——
-     100ms 采样 513 次里有 264 次（51%）出现 character.current_map != window.map.id。
-     所以「这份 door_tiles / points / DOM 属于哪张图」的唯一可靠答案 = window.map.id。
-     用 character.current_map 当 key，就会把上一张图的门写到新图名下
-     （实测：Ururg 229 被写进 Trescan 281 的 4 扇门 280/323/324/342 → 回图时被传到 Ururg 原地打转）。 */
+  /* ★地图渲染的「身份 id」—— 学地图数据时唯一可靠的 key。 */
   let _rmIdWarnAt = 0;
   function renderMapId() {
     try {
@@ -11170,10 +10685,7 @@
   }
   function liveMapSnapshot() {
     if (!inGame()) return null;
-    /* ★ v2.6.106：key 改成「渲染自己的 id」（window.map.id），不再用 character.current_map。
-       两者是同一段脚本原子赋值的，但 character.current_map 会被另一条通道先改掉 →
-       用它当 key 就会把上一张图的门写到新图名下（假门）。
-       因为 id 与 door_tiles 同源，这里也不再需要「等 id 稳定 3 秒」那道闸。 */
+    /* key 改成「渲染自己的 id」（window.map.id），不再用 character.current_map。 */
     const id = renderMapId();
     if (!(id > 0)) return null;
     const pts = window.points || [];
@@ -11232,10 +10744,7 @@
     });
     const wm = window.map || {};
     const wmName = String(wm.name || '').trim();
-    /* ★ v2.6.106：删掉 v2.6.62/65 那套「等 3 秒 + 名字不符就作废」的守卫。
-       原因：id 现在直接取 window.map.id，名字和 id 同源，不可能再串图；
-       而「Dark Boreal」这种同名图有 12 张（324-327/342-347/349/350），按名字校验反而会误判。
-       名字只用来兜底：实测名优先，读不到才退回登记名。 */
+    /* 删掉 /65 那套「等 3 秒 + 名字不符就作废」的守卫。 */
     let refName = '';
     try { if (mapDict && mapDict.byId) refName = String(mapDict.byId[id] || '').trim(); } catch (e) { refName = ''; }
     if (!refName) { const seed = MAPDB_SEED.maps[String(id)]; if (seed && seed.name) refName = String(seed.name).trim(); }
@@ -11465,17 +10974,7 @@
     return character.current_map === destId;
   }
 
-  /* ======================= Smugglers Route（走私路线：付金币换图） =======================
-   * 实测（2026-10-22，map 90 格子 45-60 → 目的地 Sirocco Springs #76）：
-   *   格子 action = 'smugglers_route'。走到格上 → execTileAction('smugglers_route')
-   *   → createDialog('Smugglers Route','','ajax','/modal/smugglers_route') → 面板 #frame_SmugglersRoute。
-   *   面板内容：
-   *     · 目的地 id  = .avatar 的 style 里 world_map_<id>_<wx>_<wy>.jpg（兜底 [data-map-info-id]）
-   *     · 目的地名/等级 = .frame-content h2 两行
-   *     · Ride 按钮 = .frame-content button.btn-danger，onclick = createDialog(...,'/modal/smugglers_route?ride',true)
-   *   点 Ride **直接换图，没有二次确认**（用户确认）。
-   *   花费 = 目的地等级下界 × 80 铜；脚本**不预检**金币，交给游戏 —— 没换图 = 失败 → 报错停止（不回退）。
-   * ================================================================================== */
+  /* ======================= Smugglers Route（走私路线：付金币换图） ======================= */
 
   /* 找本图的 smugglers 格子（action=smugglers_route） */
   function findSmugglersTile() {
@@ -11640,14 +11139,7 @@
     return +character.current_map === +destId;
   }
 
-  /* ── 导航「待办目的地」（v2.6.119）─────────────────────────────
-   * 症状：导航没走到目的地就「就地开始任务」（采集 / 打怪）；或中途被带偏后不再回正。
-   * 做法：设一个待办目的地；主循环每 tick 调 navPendingTick()：
-   *   · 已到达 → 清除；
-   *   · 没到 → 从当前位置**重新规划**（navToMap 按当前图重算路线），期间**不开始挂机任务**；
-   *   · 连续失败 NAV_PENDING_MAX_TRIES 次 → 放弃并提示（避免永远不干活）。
-   * 说明：这是通用的导航意图，不再写死在「阵亡回图」里 —— 任何模块都能 navSetPending()。
-   * ─────────────────────────────────────────────────────────── */
+  /* ── 导航「待办目的地」（）───────────────────────────── */
   const NAV_PENDING_MAX_TRIES = 5;
   const NAV_PENDING_GIVEUP_MS = 600000;   /* ★ v2.6.202：反复失败后「暂时放弃」多久再试（不再永久放弃） */
   let navPending = null;   /* { dest, reason, tries, nextAt } */
@@ -11664,10 +11156,7 @@
     if (why) logEvent('导航待办完成：' + why);
     navPending = null;
   }
-  /* ★ v2.6.148：把「当前不在挂机地图」登记成待办导航。
-     暂停继续 / 断线续挂都属于「接着上次的挂机」——先回挂机地图再干活，
-     否则会在暂停期间被带到的别的地图上直接开打/采集。
-     返回 true = 已登记待办（主循环会先导航，不开始任务）。 */
+  /* 把「当前不在挂机地图」登记成待办导航。 */
   function ensureAtFarmMap(reason) {
     if (!cfg.farmMap) return false;
     if (!inGame()) return false;
@@ -11681,21 +11170,7 @@
     setStatus('当前不在挂机地图，先导航回「' + navMapName(cfg.farmMap) + '」…');
     return true;
   }
-  /* ★ v2.6.160：兜底[回图] —— 采集 / 一键挂机 / 战斗 期间，只要被「非阵亡」的原因
-     （活动弹出、游戏自身传送、被怪推走…）带离挂机地图，就自动登记「回挂机地图」待办导航，
-     由 navPendingTick 负责导航回去，回去后继续原来的任务。
-
-     背景：阵亡回图（returnToFarm）和活动结束回图（eventTick 分支②）各自只覆盖自己那一条路径；
-     其它原因把角色带离挂机图时没有任何回图逻辑 —— 实测（2026-10-26，角色 Noble #1378）：
-     采集锁定 El Caspar(#5) 后把角色挪到 Brisban Pond(#6)，脚本就地开打，再也不回 #5。
-
-     不插手的场景（各自有专门逻辑 / 属于正常行为）：
-       · 没有挂机地图 / 爬塔模式 / 锁图刷怪（cfg.autoMapSwitch，本来就要离开挂机图）；
-       · 正在切图、导航、维修、清包、存仓、手动行程、阵亡复活；
-       · 活动进出中 / 活动图 / 活动战斗区 / Overlord 房 / 副本 / 塔（各自模块负责进出）；
-       · 刚离开挂机图还没到 HOME_GUARD_DELAY_MS（抖动 / 换图渲染中）。
-     上限：不停止；两次登记之间至少隔 HOME_GUARD_COOLDOWN_MS，避免和 navPendingTick 的
-          「连续 5 次放弃」互相打架。 */
+  /* 兜底[回图] —— 采集 / 一键挂机 / 战斗 期间，只要被「非阵亡」的原因 */
   const HOME_GUARD_DELAY_MS = 10000;
   const HOME_GUARD_COOLDOWN_MS = 90000;
   function homeGuardTick() {
@@ -11756,11 +11231,7 @@
   /* 传送站逻辑：dist(cur,最近传送站) + 5 < dist(cur,dest) 才绕去传送站 */
   async function navWaygateLogic(dest, page, alive, force) {
     const cur = +character.current_map;
-    /* ★ v2.6.197：已经在目的地 → 直接算到达。
-       实测（2026-10-31，真机）：休整城镇 Elundi(16) 就在隔壁，nearestWaygateMap(15)=16，
-       于是「先走到传送站图 Elundi」→ 到了 Elundi 又开传送站想传到 Elundi 自己 →
-       Cities 页里没有 Elundi → 退而求其次传到 El Caspar(5) → 再想逃回 Elundi → 来回横跳，
-       最后「维修失败：无法导航到 Elundi」。走到目的地=传送站图时就不该再传。 */
+    /* 已经在目的地 → 直接算到达。 */
     if (cur === +dest) return true;
     const d = navDist(cur, dest);
     const w = nearestWaygateMap(cur);
@@ -11814,12 +11285,7 @@
     return !!out;
   }
 
-  /* ★ v2.6.117：目的地是野外图（不是城市、也不是野外锚点）时，
-     优先「传送到离目的地最近的传送站图（城市∪野外锚点）+ 步行」，
-     而不是从当前位置一路走过去。
-     场景：挂机图设 Dark Boreal（324/325/…，只有 327 是野外锚点），
-           复活 / 出活动后从很远的地方走 → 又慢又容易卡。
-     返回 true = 已经用这条路到达目的地。 */
+  /* 目的地是野外图（不是城市、也不是野外锚点）时， */
   async function navTeleportNear(dest, alive, allowCity, allowWild) {
     const cur = +character.current_map;
     const D = +dest;
@@ -11929,22 +11395,8 @@
   }
 
   /* 传送门回主城（死亡恢复） */
-  /* ======================= 世界地图传送（野外 → 城镇） =======================
-   * 实测 2026-10-19：世界地图 = #world_map_container（openWorldMap() 打开），
-   *   每张已探索地图一个 <g id="map_<id>" map_id="<id>" role="button">，只认 **pointerup**；
-   *   pointerup → GET /modal/map_info?id=<id> → 打开 #frame_MapDetails。
-   *   Map Details 里的按钮：
-   *     · 没有传送道具 → a.btn-primary「How to Travel」 onclick="openHelp(55)"（图标 res=world_tp）
-   *     · 有传送道具 / Noble → 同一个按钮变成 Teleport 动作（onclick 不再是 openHelp）
-   *   所以判据：找带 world_tp/home_scroll 图标、且 onclick 不是 openHelp 的按钮 = 可以传送。
-   *   ★ v2.6.104：删掉「失败冷却 5 分钟」（游戏里没这机制）。
-   * ===================================================================== */
-  /* 在 Map Details 里找「传送」按钮。
-   * ★ 实测（Noble 账号，2026-10-19，城市 Ururg #229）：
-   *   <a class="btn btn-unique" onclick="loadTravel(false,'teleport=229&cH=<token>')">
-   *     <div res="subscription" hover_title="Noble Potion" coins="179700" ...></div> Free Teleport</a>
-   *   → 精确判据：onclick 里带 teleport=<id>（cH 是服务端给的 token，照原样点就行）。
-   *   没道具时这里只剩 openHelp(55) 的「How to Travel」→ 返回 null，交给上层走传送站/步行。 */
+  /* ======================= 世界地图传送（野外 → 城镇） ======================= */
+  /* 在 Map Details 里找「传送」按钮。 */
   function findMapDetailsTeleport(md) {
     if (!md) return null;
     const all = $$q('a,button', md);
@@ -11965,11 +11417,7 @@
   function worldTeleportTarget(destId) {
     const dest = +destId;
     if (isTownMap(dest)) return dest;
-    /* ★ v2.6.63：优先用户自己设的「休整城镇」。
-       用户是按「休整城镇就在挂机图旁边」配的，比纯粹按跳数选更符合预期。
-       实测：挂机图 Swamp(117) 离 Vileton(113) 4 跳、离 Owranbu(23) 5 跳，
-       但传送站没解锁 Vileton 时会退到 Owranbu —— 用户看到「复活后先传送去 Owranbu」很困惑。
-       只在「不比重算出来的最优差太多（+2 跳以内）」时才优先，免得设了个很远的城镇反而绕路。 */
+    /* 优先用户自己设的「休整城镇」。 */
     let best = dest, bestLen = Infinity;
     try {
       (serviceTowns() || []).forEach(function (t) {
@@ -12038,11 +11486,7 @@
    *   主要用于「死亡后落在只有传送站的泉水图」这种没有陆路的情况。
    *   可前往的按钮长这样： onclick="createDialog('Waygate','','ajax','/modal/waygate?id=N',true)"
    *   返回传送后所在的图 id（失败返回 0）。 */
-  /* ★ 传送站目的地（实测 2026-10-20，游戏里打开 gateway 面板就能看到，含未解锁项）：
-     · 城市页（Cities）：见 MAPDB_SEED.cities（14 座城镇，带 map id）。
-     · 野外页（Wilderness）：下面 22 个「野外锚点」，只能从传送站 Wilderness 页传过去（实测 2026-10-20）。
-     注：Noble 会员可以不依赖传送站，直接在世界地图点城市 → Map Details → Free Teleport 免费传城市；
-         野外锚点没有这个免费入口，只能走传送站。 */
+  /* ★ 传送站目的地（实测 2026-10-20，游戏里打开 gateway 面板就能看到，含未解锁项）： */
   const WAYGATE_WILD = [
     { name: 'Fountain of Rebirth', id: 1,   lv: 1  },
     { name: 'Mirage Mountains',    id: 67,  lv: 13 },
@@ -12068,11 +11512,7 @@
     { name: 'Red Desert',          id: 336, lv: 54 }
   ];
 
-  /* ★ v2.6.86：没有步行路线 ≠ 到不了。
-     勾了「城市传送点」→ 任何 City（= 传送站 Cities 页 / Noble 世界地图免费传）都能传送过去；
-     勾了「野外传送点」→ 22 个野外锚点（WAYGATE_WILD）也能传过去。
-     城镇下拉的「可不可选」要把这条算进去，否则「没路但传送点能到」的城镇会被误灰掉。
-     （Cities 页清单 = MAPDB_SEED.cities = 所有 type==='City' 的图，与 isServiceTownById 一致。） */
+  /* 没有步行路线 ≠ 到不了。 */
   function waygateReachable(id) {
     id = +id; if (!(id > 0)) return false;
     try {
@@ -12165,10 +11605,7 @@
       return out;
     };
     let cands = collect();
-    /* ★ v2.6.118：目标不在「本页可前往」列表里时，不再直接放弃。
-       旧版会误报「没解锁 / 精华不够」并卡在原地（用户实测：在泉水说精华不足，但精华是够的，
-       只是那个目的地没解锁）。现在：记清楚「本页可前往的有哪些」，再交给下面的评分逻辑
-       挑一个「能到目标、路线最短」的候选；连一个能算出路线的都没有才放弃（不乱传）。 */
+    /* 目标不在「本页可前往」列表里时，不再直接放弃。 */
     if (strict && cands.indexOf(+destId) < 0) {
       logEvent('传送站：' + (tab || '?') + ' 页里没有「' + navMapName(destId) + '」→ 本页可前往：' +
         (cands.length ? cands.map(function (id) { return navMapName(id) + '(' + id + ')'; }).join('、') : '(无)') + '；改挑一个能到目标的');
@@ -12242,14 +11679,7 @@
         .find(function (b) { return new RegExp('waygate\\?id=' + id + '(?!\\d)').test(b.getAttribute('onclick') || ''); }) || null;
     };
     const from = character.current_map;
-    /* ── 兜底[传送站] ─────────────────────────────────────────────
-     * 症状：点了传送按钮但没换图（城市没解锁 / 精华不足 / 按钮被禁用）→ 卡死在传送站。
-     * 判据：点击后等 TP_WAIT_MS，character.current_map 没变。
-     * 动作：换下一个候选（order：休整城镇 → 评分序 → 原顺序，去重，最多 4 个）。
-     * 上限：整个「点传送」阶段总预算 TP_BUDGET —— 超了立刻退出（★ v2.6.65）。
-     *       第 1 个候选试 2 次，其余各 1 次；每次等 TP_WAIT_MS。
-     * 高级参数：不受影响。
-     * ─────────────────────────────────────────────────────────── */
+    /* ── 兜底[传送站] ───────────────────────────────────────────── */
     /* ★ v2.6.65：v2.6.63 改成「一个点不动就换下一个」之后，最坏情况变成
        4 个候选 × 2 次 × 15 秒 ≈ 2 分钟，再加走到传送站的 70 秒 —— 表现就是「又卡住了」。
        传送要么 1~2 秒内就换图、要么永远不换，所以缩短单次等待 + 加总预算。 */
@@ -12352,11 +11782,7 @@
   }
   function navHideBar() { if (navBar) { navBar.remove(); navBar = null; } }
 
-  /* ★ v2.6.124：恢复「第 N/M 跳」进度显示。
-     v2.6.104 把 Move 按钮的导航统一到 navToMap() 时，原来内联在 navTravelTo 里的
-     「(i+1)/plan.length　当前：A → B」进度条被一起删掉了（用户反馈「导航之前都有显示 X/X，现在没了」）。
-     现在放回统一路径 navWalkPlanTo()：只在导航条已存在时更新（= 从世界地图「导航」按钮发起的），
-     阵亡回图 / 自动切图这类后台导航不弹条，避免打扰。 */
+  /* 恢复「第 N/M 跳」进度显示。 */
   function navProgressHop(i, total, destId, nextId) {
     if (!navBar) return;
     const pct = (total > 0) ? Math.round((i / total) * 100) : null;
@@ -12410,16 +11836,7 @@
     } finally { if (cancelSeq === navCancelSeq) navBusy = false; }
   }
 
-  /* ---- 自动切图刷怪（v2.6.151）：在「挂机图 home」和一张合格的邻图之间来回刷 ----------------
-   * 设计（方案 A —— home 是唯一锚点，邻图只是临时驻留点）：
-   *   · 在 home  → 挑一张合格邻图走过去；到了由主循环正常打怪。
-   *   · 在邻图  → 回 home（此时 home 的怪已刷新）。
-   *   · 「合格」= 门 action==='gate' + 目标图 type==='Normal'
-   *                + 到达后真实怪里有能通过现有过滤器（等级 / 名单 / 黑名单 / 星级）的怪；
-   *                不合格就拉黑（st.roam.bad）换下一张。
-   *   · 被移走（阵亡 / 活动 / 切角色）→ 现有恢复路径一律回 home（ensureAtFarmMap / returnToFarm），
-   *     本函数也自愈：只要不在 home，下一轮就把角色送回 home。
-   * 旧实现是「出去兜一圈立刻回来」：既不在邻图打怪，回来也太快（home 的怪没刷新）→ 无效。 */
+  /* ---- 自动切图刷怪（）：在「挂机图 home」和一张合格的邻图之间来回刷 ---------------- */
   const ROAM_BAD_TTL = 30 * 60 * 1000;   // 判定「不合适」的邻图拉黑时长
   /* 本图（当前渲染地图）里有没有「能通过现有过滤器」的怪 —— 用到达后的真实怪数据判，不依赖离线表 */
   function roamMapHasTargets() {
@@ -12458,11 +11875,7 @@
       const gateOk = all.filter(isSwitchableDoor);
       const blocked = all.filter(function (k) { return !isSwitchableDoor(k); });
       if (blocked.length) logEvent('切图跳过（不是普通门）：' + blocked.map(function (k) { return navMapName(k) + '[' + (doorActionTo(k) || '?') + ']'; }).join('、'));
-      /* 候选 = 本图所有「普通门」邻图，排除：城镇（没怪）、已知不合适的（st.roam.bad）。
-         ★ v2.6.153 修回归：不再硬性要求 MapDB.type==='Normal'。
-         种子数据里 329 张图有 206 张没有 type（MapDB.type 返回 ''），硬过滤会把绝大多数邻图挡掉，
-         表现为「切图刷怪完全没反应」。真正「能不能打」由到达后的真实怪数据 + 现有过滤器判定
-         （roamMapHasTargets）。副本入口已由门格子 action!=='gate' 排除，放宽是安全的。 */
+      /* 候选 = 本图所有「普通门」邻图，排除：城镇（没怪）、已知不合适的（st.roam.bad）。 */
       const tnow = now();
       const badCnt = gateOk.filter(function (k) { return st.roam.bad[k] > tnow; }).length;
       const pool = gateOk.filter(function (k) {
@@ -12586,29 +11999,13 @@
    * （原来这些信息是点开「Map Details」才显示的，现在改成悬浮即见。） */
   const WM_BASE_ATTR = 'data-nr-wm-base';      /* 记下游戏原始 content，之后都从它重建，避免叠加 */
 
-  /* ---- 世界地图 tooltip 的「全图数据」（v2.6.81）----
-   * 以前只有「去过的图」才有资源点 / 怪物（MapDB 靠踩图学），未探索的图 tooltip 是空的。
-   * 这里补一份**不依赖探索**的静态数据：
-   *   · 采集点：官方 Wiki「采集点」页 141 条（专业 + 层级 + 等级），按世界坐标匹配到地图 → 覆盖 86 张图；
-   *     条目总数正好等于 map_info 里采集图标的数量（fishing37+mining21+quarrying18+chopping27+farming19+foraging19=141），两边互相印证。
-   *   · 怪物：官方 Wiki「敌人」页的「群系」列表 + 等级区间反推（群系命中 且 等级区间与地图等级有交集）。
-   *     对已探索的 111 张非城镇图校验：**召回 99.2% / 精确 99.5%**（基本等于真值）。城镇（38 张）是安全区，不推怪。
-   *   · 地标：map_info 图标（副本 / 世界BOSS / 召唤图腾 / 商队路线 / 码头 / 邮箱 / 传送站），380/380。
-   * 数据来源：data/wiki_official_1.0/site-data/{gathering,bestiary}.json + data/bestiary.json + data/map_meta_1.0.json。
-   * 有踩图学到的真实数据时优先用真实的（真实点位名 / 真实怪物名单），没有才用这份推算。 */
+  /* ---- 世界地图 tooltip 的「全图数据」（）---- */
 const WM_POI_MON=[["Angry Egg",198],["Ankheg",110],["Ape Brute",203],["Arcane Imp",182],["Armored Ram",221],["Arynx",128],["Badger",8],["Basilisk",165],["Bear",19],["Beaver",11],["Berserker",186],["Bison",37],["Blood Queen",121],["Blue Stirge",171],["Bog Worm",118],["Boggard",119],["Bogleech",120],["Bone Scarab",51],["Brute Spider",99],["Carrion Harpy",132],["Cassowary",104],["Catoblepas",130],["Centaur",96],["Cockatrice",109],["Cockroach",47],["Cougar",30],["Crocodile",22],["Decaying Worm",116],["Deer",3],["Drow",111],["Druid",97],["Dryad",113],["Dune Glider",105],["Dwarven Caster",224],["Dwarven Guard",222],["Dwarven Hunter",223],["Eel",52],["Faery",199],["Fire Elemental",205],["Foliage Shaman",24],["Forest Guardian",112],["Frost Elemental",178],["Frostbinder",43],["Ghost Pirate",141],["Giant Vulture",185],["Gnoll Warlock",153],["Gnoll Warrior",129],["Goblin Engineer",217],["Goblin Pyro",54],["Goblin Soldier",55],["Hare",5],["Hydra",173],["Hypnotic Bat",28],["Killer Centipede",49],["Knight",67],["Komodo Basilisk",225],["Leech",45],["Light Elemental",204],["Lightning Elemental",179],["Lizardman",87],["Loot Goblin",230],["Luminous Plant",202],["Mana Webber",101],["Merfolk",88],["Miner",64],["Monstrous Bat",29],["Monstrous Worm",16],["Mothman",114],["Mountain Troll",86],["Mutated Lizardman",152],["Myconid",115],["Nomadic Cleric",175],["Ogre Mage",183],["Ooze",193],["Orc Hunter",159],["Orc Warlock",160],["Orc Warrior",158],["Owlbear",106],["Peasant",13],["Phantom Miner",214],["Phoenix",172],["Pirate",57],["Polar Bear",167],["Purifier",40],["Purple Worm",143],["Raider",103],["Rat",1],["Red Stirge",170],["River Troll",56],["Rust Monster",213],["Salamanderoid",10],["Sasquatch",65],["Scorpion",27],["Skeleton",147],["Skeleton Archer",148],["Skeleton Mage",149],["Skeleton Warrior",150],["Snake",2],["Snapping Turtle",23],["Snow Rabbit",237],["Sphinx",184],["Spitter",100],["Stone Centipede",166],["Stone Hulk",108],["Succubus",176],["Swamp Dragon",151],["Tarn Linnorm",122],["Terastodon",131],["Thorny Vines",62],["Tiger",25],["Toad",4],["Toxic Toad",21],["Troglodyte",14],["Troll Boar",117],["Valkyrie",187],["Vampire Bat",135],["Venomous Viper",195],["Vine Sniper",201],["Wandering Ent",98],["Warg",161],["Wasp",168],["Wendigo",107],["Werebat",216],["Wererat Slinger",71],["Wererat Soldier",70],["Wererat Wizard",72],["Werewolf",95],["Wild Dog",6],["Wild Hog",20],["Wisp Phantom",174],["Wizard",181],["Wolf",32],["Woodland Snake",15],["Woodland Spider",33],["Wraith",200],["Wyvern",138],["Xorn",215],["Yak",188],["Zombie",146],["Zombie Horse",177],["Zombie Pirate",89]];
 const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"m":[50,120,127],"s":["mailbox"]},"5":{"g":[["fishing","1","1"],["foraging","1","1"]],"s":["mailbox","waygate"]},"6":{"g":[["fishing","1","1-3"],["quarrying","1","1-3"]],"m":[28,50,97,120,127]},"7":{"m":[11,28,90,97,120,127,128]},"8":{"g":[["mining","1","4-6"],["quarrying","1","6-9"]],"m":[48,52,64,66,97,112]},"9":{"g":[["mining","1","4-6"],["quarrying","1","6-9"]],"m":[48,52,64,66,97,108,112]},"10":{"g":[["quarrying","1","4-6"]],"m":[11,48,49,131]},"11":{"g":[["farming","1","1-3"]],"m":[28,50,97,120,127]},"12":{"m":[6,9,28,78,132]},"13":{"g":[["fishing","1","5-6"]],"m":[6,8,9,28,78,128,131,132,133]},"14":{"g":[["farming","1","4-6"],["fishing","1","4-6"],["foraging","1","4-6"]],"m":[9,26,88,90,98,110,111]},"15":{"g":[["fishing","2","7-10"]],"m":[26,88,90,98,110,111]},"16":{"g":[["farming","2","10"],["fishing","2","10"]],"s":["dock","mailbox","waygate"]},"17":{"g":[["chopping","1","1-3"],["farming","1","1-3"],["fishing","1","1-3"],["foraging","1","1-3"],["mining","1","1-3"]],"m":[6,9,28,78,132]},"18":{"g":[["chopping","1","4-6"],["fishing","1","4-6"]],"m":[9,26,88,90,98,110,111]},"19":{"g":[["fishing","2","7-10"]],"m":[26,88,90,98,110,111]},"20":{"g":[["chopping","1","1-3"],["farming","1","1-3"],["fishing","1","1-3"]],"m":[28,50,97,120,127]},"21":{"g":[["chopping","1","4-6"]],"m":[6,8,9,28,78,128,131,132,133]},"22":{"g":[["chopping","2","7-10"],["farming","2","7-10"],["fishing","2","7-10"],["foraging","2","7-10"],["mining","2","7-10"]],"m":[6,8,78,128,131,132,133]},"23":{"s":["mailbox","waygate"]},"24":{"m":[11,48,49,131],"s":["dungeon"]},"25":{"m":[11,28,90,97,120,127,128]},"26":{"m":[48,52,64,66,97,108,112],"s":["dungeon"]},"27":{"m":[48,52,66,97,108,112],"s":["dungeon"]},"28":{"m":[27,31,67,70,113]},"29":{"g":[["chopping","2","12-13"],["fishing","2","12-13"]],"m":[27,31,67,70,113]},"30":{"m":[27,31,67,70,113],"s":["dungeon"]},"31":{"m":[26,59,63,68]},"32":{"g":[["fishing","2","14-15"]],"m":[26,59,63,68],"s":["dungeon"]},"33":{"m":[43,81,140],"s":["dungeon"]},"34":{"m":[24,36,56,86],"s":["dungeon"]},"35":{"m":[24,26,36,56,86],"s":["dungeon"]},"36":{"m":[123,124,125],"s":["dungeon"]},"37":{"m":[48,78,112]},"38":{"m":[48,78,112]},"39":{"m":[48,78,112]},"40":{"m":[48,52,64,66,97,112]},"41":{"m":[17,20,32,71,85,92]},"42":{"m":[48,52,66,97,108,112]},"43":{"m":[48,52,66,97,108,112]},"44":{"g":[["chopping","1","1-3"],["farming","1","1-3"],["fishing","1","1-3"],["foraging","1","1-3"],["mining","1","1-3"]],"m":[78]},"45":{"m":[48,52,66,97,112],"s":["dungeon"]},"46":{"m":[8,115]},"47":{"m":[8,115]},"48":{"m":[22,30,48,49,77,118,126]},"49":{"g":[["chopping","2","11-12"]],"m":[22,30,48,49,77,118,126],"s":["dungeon"]},"50":{"m":[22,30,48,49,77,118,126]},"51":{"m":[22,30,48,49,77,118,126]},"52":{"g":[["fishing","2","14-15"]],"m":[22,30,48,49,77,118,126]},"53":{"g":[["chopping","2","14-15"]],"s":["waygate"]},"54":{"m":[22,30,48,49,77,118,126]},"55":{"g":[["quarrying","2","14-15"]],"m":[22,30,48,49,77,118,126]},"56":{"g":[["quarrying","5","41-42"]],"m":[29,47,79,89,122,136]},"57":{"g":[["quarrying","5","41-42"]],"m":[29,47,79,89,122,136]},"58":{"g":[["fishing","5","41-42"],["quarrying","5","41-42"]],"s":["waygate"]},"59":{"g":[["quarrying","5","41-42"]],"m":[29,47,79,89,122,136]},"61":{"m":[17,20,32,71,85,92]},"62":{"m":[17,20,32,71,85,92],"s":["caravan","mailbox"]},"63":{"m":[17,20,32,71,85,92]},"64":{"m":[17,20,32,71,85,92]},"65":{"g":[["mining","2","11-12"],["quarrying","2","11-12"]],"m":[17,20,32,71,85,92]},"66":{"m":[17,20,32,71,85,92]},"67":{"s":["caravan","mailbox","waygate"]},"68":{"g":[["chopping","4","30"],["fishing","4","30"]],"m":[21,74,75,76,107,119],"s":["dungeon"]},"69":{"g":[["chopping","4","30"],["fishing","4","30"]],"m":[94,95,96,103],"s":["dungeon"]},"72":{"m":[17,20,32,71,85,92]},"73":{"m":[17,20,32,71,85,92]},"74":{"m":[17,20,32,71,85,92]},"75":{"s":["caravan","mailbox","waygate"]},"76":{"m":[17,20,32,71,85,92],"s":["caravan","mailbox"]},"77":{"m":[40]},"78":{"m":[40]},"83":{"m":[17,20,32,71,85,92]},"84":{"m":[17,20,32,71,80,85,92]},"85":{"g":[["chopping","2","16-17"],["fishing","2","16-17"]],"m":[15,26,59,63],"s":["caravan","mailbox"]},"87":{"m":[15,26,59,63],"s":["caravan","mailbox"]},"90":{"m":[17,20,32,71,85,92],"s":["caravan","mailbox"]},"91":{"s":["mailbox","waygate"]},"92":{"m":[5,19,45,46,92,107]},"93":{"m":[5,19,45,46,92,107]},"94":{"g":[["mining","2","14-15"]],"m":[17,20,32,71,85,92]},"95":{"g":[["mining","2","16-17"]],"m":[17,20,32,71,80,85,92]},"96":{"m":[17,20,32,71,85,92]},"97":{"s":["totem","waygate"]},"98":{"m":[17,20,32,71,85,92]},"99":{"m":[17,20,32,71,85,92],"s":["caravan","mailbox"]},"100":{"g":[["farming","2","14-15"],["foraging","2","14-15"]],"m":[17,20,32,71,85,92]},"106":{"m":[5,19,45,46,92,107]},"107":{"m":[5,19,45,46,92,107]},"110":{"s":["caravan","mailbox","waygate"]},"111":{"m":[18,62,101]},"112":{"m":[11,48,49,68],"s":["dock"]},"113":{"s":["mailbox","waygate"]},"114":{"m":[14,15,16,53,106]},"115":{"m":[12,14,15,16,106]},"116":{"g":[["chopping","3","19-20"],["farming","3","19-20"],["fishing","3","19-20"]],"m":[12,14,15,16,106]},"117":{"m":[51,69,105,129]},"118":{"m":[51,69,105,129]},"119":{"m":[51,69,105,129]},"120":{"m":[51,69,105,129]},"121":{"s":["totem","waygate"]},"122":{"g":[["fishing","3","19-20"],["foraging","3","19-20"]],"m":[12,14,15,16,106],"s":["dungeon"]},"123":{"g":[["chopping","4","29-30"],["fishing","4","29-30"],["foraging","4","29-30"]],"m":[51,69,105,129]},"124":{"g":[["foraging","3","26-28"]],"m":[51,69,105,129]},"125":{"m":[51,69,105,129]},"126":{"g":[["fishing","3","19-20"]],"m":[12,14,15,16,106]},"127":{"m":[12,14,15,16,106]},"128":{"m":[12,14,15,16,106]},"129":{"m":[12,14,15,16,106]},"130":{"m":[48,52,66,97,108,112],"s":["dungeon"]},"131":{"m":[94,95,96,103],"s":["dungeon"]},"133":{"m":[3,41,58,72,130]},"134":{"s":["mailbox","waygate"]},"135":{"m":[48,52,66,97,112]},"136":{"m":[63],"s":["dungeon"]},"137":{"g":[["fishing","2","17-18"],["foraging","2","17-18"]],"m":[12,14,15,16,106]},"138":{"m":[29,47,79,89,122,136],"s":["dungeon"]},"139":{"m":[29,47,79,89,122,136]},"141":{"m":[29,47,79,89,122,136]},"142":{"m":[29,47,79,89,122,136]},"143":{"s":["dock","mailbox","waygate"]},"169":{"s":["dock","mailbox","waygate"]},"170":{"m":[27,31,67,70,113]},"171":{"m":[27,31,67,70,113]},"172":{"g":[["chopping","2","18-19"],["farming","2","18-19"],["foraging","2","18-19"]],"s":["totem","waygate"]},"179":{"m":[22,30,48,49,77,118,126]},"180":{"g":[["chopping","4","31-33"],["farming","4","31-33"],["foraging","4","31-33"]],"m":[1,23,29,40,121]},"181":{"m":[1,23,29,40,121]},"182":{"m":[1,23,29,40,121]},"183":{"s":["mailbox","waygate"]},"184":{"m":[1,23,29,40,121]},"185":{"g":[["mining","4","34-37"]],"m":[1,23,29,40,121]},"186":{"g":[["chopping","4","38-39"],["fishing","4","38-39"]],"m":[1,23,29,40,121]},"187":{"m":[1,23,29,40,121],"s":["dungeon","totem"]},"188":{"m":[1,23,29,40,121]},"189":{"m":[1,23,29,40,121]},"190":{"m":[5,19,45,46,92,107]},"191":{"m":[5,19,45,46,92,107]},"192":{"m":[5,19,45,46,92,107]},"193":{"m":[5,19,45,46,92,107]},"194":{"m":[5,19,45,46,92,107]},"195":{"g":[["mining","3","19-20"],["quarrying","3","19-20"]],"m":[5,19,45,46,92,107]},"196":{"m":[5,19,45,46,92,107],"s":["caravan","mailbox"]},"197":{"m":[5,19,45,46,92,107]},"198":{"m":[5,19,45,46,92,107]},"199":{"m":[5,19,45,46,92,107]},"200":{"g":[["fishing","3","21-22"]],"m":[94,95,96,139]},"201":{"s":["mailbox","waygate"]},"202":{"m":[94,95,96,139]},"203":{"m":[94,95,96,139]},"204":{"g":[["chopping","3","19-20"],["farming","3","19-20"],["fishing","3","19-20"]]},"209":{"m":[5,19,45,46,92,107],"s":["caravan","mailbox"]},"210":{"m":[20,32,71,85]},"211":{"m":[10,25,42,82,114,137],"s":["caravan","mailbox"]},"212":{"g":[["mining","5","41-42"]],"s":["waygate","worldboss"]},"213":{"g":[["farming","5","43-44"]],"m":[10,25,42,82,114,137]},"214":{"g":[["chopping","5","45-46"]],"m":[10,25,42,82,114,137]},"215":{"m":[10,25,42,82,114,137]},"216":{"m":[10,25,42,82,114,137]},"217":{"m":[10,25,42,82,114,137]},"218":{"g":[["mining","2","14-15"]],"m":[17,20,32,71,85,92]},"219":{"m":[17,20,32,71,85,92]},"220":{"m":[17,20,32,71,80,85,92]},"221":{"m":[48,65,66,84,103],"s":["caravan","mailbox"]},"222":{"g":[["quarrying","2","16-17"]],"m":[17,20,32,71,80,85,92]},"224":{"s":["waygate"]},"225":{"m":[17,20,32,71,80,85,92]},"226":{"m":[17,20,32,71,80,85,92],"s":["caravan","mailbox"]},"227":{"g":[["chopping","3","21-22"]],"m":[19,21,74,75,76,107]},"228":{"g":[["farming","3","21-22"],["fishing","3","21-22"],["foraging","3","21-22"]],"m":[19,21,74,75,76,107]},"229":{"s":["caravan","mailbox","waygate"]},"230":{"m":[7,102]},"231":{"m":[94,95,96,139]},"232":{"m":[94,95,96,103],"s":["worldboss"]},"233":{"m":[94,95,96,103],"s":["worldboss"]},"234":{"m":[48,65,66,84,103],"s":["dungeon"]},"235":{"m":[48,66,84,103],"s":["dungeon"]},"239":{"m":[17,20,32,71,80,85,92],"s":["caravan","mailbox"]},"240":{"m":[19,21,75,76,107]},"241":{"m":[17,20,32,71,80,85,92]},"243":{"m":[17,20,32,71,80,85,92]},"244":{"m":[7,44,75,76,102]},"245":{"m":[7,44,75,76,102]},"246":{"m":[7,44,75,76,102]},"247":{"m":[48,65,66,84,103]},"248":{"g":[["mining","3","20-21"],["quarrying","3","20-21"]],"m":[7,44,74,75,76,102]},"249":{"m":[7,44,74,75,76,102]},"250":{"m":[20,32,71,85]},"251":{"s":["waygate"]},"252":{"m":[94,95,96,139]},"253":{"m":[94,95,96,139]},"254":{"m":[94,95,96,139]},"255":{"m":[94,95,96,139]},"256":{"m":[94,95,96,139]},"257":{"g":[["mining","4","29-30"],["quarrying","4","29-30"]],"s":["waygate"]},"260":{"g":[["fishing","3","19-20"],["foraging","3","19-20"]],"m":[13,87],"s":["dungeon"]},"262":{"m":[20,32,71,85]},"263":{"m":[20,32,71,85]},"264":{"m":[20,32,71,85]},"265":{"s":["totem","waygate"]},"266":{"g":[["mining","3","27-28"]],"m":[10,25,42,82,114]},"267":{"g":[["fishing","3","27-28"]],"m":[10,25,42,82,114]},"268":{"g":[["chopping","4","29-30"]],"m":[10,25,42,82,114,137]},"269":{"g":[["farming","5","40-41"]],"m":[74,75,76,107]},"271":{"g":[["chopping","5","43-44"]],"s":["waygate"]},"275":{"m":[19,21,74,75,76,107]},"276":{"m":[19,21,74,75,76,107],"s":["dungeon"]},"277":{"g":[["chopping","4","31-33"],["farming","4","31-33"],["fishing","4","31-33"],["foraging","4","31-33"]],"s":["waygate"]},"278":{"m":[74,75,76,107,119]},"279":{"g":[["mining","4","34-35"]],"m":[29,103]},"280":{"m":[74,75,76,107,119]},"281":{"g":[["farming","4","30"],["foraging","4","30"]],"s":["mailbox","waygate"]},"282":{"m":[10,25,42,82,114,137]},"283":{"g":[["quarrying","4","31-32"]],"m":[10,25,42,82,114,137]},"284":{"s":["mailbox","waygate"]},"285":{"m":[10,25,42,82,114,137]},"286":{"m":[10,25,42,82,114,137],"s":["dungeon"]},"287":{"m":[25,42,82,137]},"288":{"m":[37,63],"s":["caravan","mailbox"]},"289":{"g":[["fishing","4","34-35"]],"m":[37,63]},"290":{"m":[37,63]},"291":{"g":[["fishing","4","36-37"],["mining","4","36-37"]],"s":["waygate","worldboss"]},"293":{"m":[2,39,61,109,117],"s":["caravan","mailbox"]},"294":{"g":[["chopping","4","31-32"],["fishing","4","31-32"]],"m":[2,39,61,109,117]},"295":{"g":[["mining","4","33-34"]],"m":[2,39,61,109,117]},"296":{"m":[2,39,61,109,117]},"297":{"g":[["chopping","4","35-36"]],"m":[2,39,61,109,117]},"298":{"s":["waygate"]},"301":{"m":[2,39,61,109,117]},"302":{"m":[2,39,61,109,117],"s":["dungeon"]},"304":{"m":[2,39,61,109,117]},"306":{"g":[["fishing","5","39-40"]],"m":[2,39,61,109,117]},"307":{"g":[["chopping","5","41-42"]],"m":[2,39,61,109,117]},"308":{"m":[94,95,96,139]},"309":{"m":[94,95,96,139]},"310":{"g":[["chopping","3","27-28"],["farming","3","27-28"],["fishing","3","27-28"],["foraging","3","27-28"],["mining","3","27-28"]],"s":["totem","waygate"]},"311":{"g":[["chopping","3","27-28"],["farming","3","27-28"],["fishing","3","27-28"],["foraging","3","27-28"],["mining","3","27-28"]],"m":[94,95,96,103]},"316":{"g":[["farming","5","43-45"],["foraging","5","43-45"]],"m":[2,39,61,109,117]},"317":{"s":["mailbox","waygate"]},"318":{"m":[65,83,100],"s":["worldboss"]},"319":{"s":["worldboss"]},"320":{"g":[["mining","5","41-42"]],"m":[25,42,82,137]},"321":{"m":[2,39,61,109,117]},"322":{"m":[2,39,117]},"323":{"g":[["fishing","4","34-35"]],"m":[37,63],"s":["dock"]},"324":{"m":[4,33,34,35,55]},"325":{"g":[["mining","5","41-42"]],"m":[4,33,34,35,55]},"326":{"g":[["fishing","5","43-44"]],"m":[4,33,34,35,55],"s":["dungeon","totem"]},"327":{"g":[["chopping","5","45-46"]],"s":["waygate","worldboss"]},"329":{"m":[4,33,34,35,55]},"330":{"g":[["quarrying","6","49-50"]],"m":[4,33,34,35,55]},"332":{"m":[4,33,34,35,55]},"333":{"g":[["fishing","5","40-42"],["mining","5","40-42"]],"m":[41,54,58,72,130]},"334":{"m":[41,54,58,72,130]},"335":{"m":[41,54,58,72,130]},"336":{"s":["waygate"]},"337":{"g":[["quarrying","6","57-59"]]},"338":{"s":["dungeon"]},"342":{"m":[4,33,34,35,55]},"343":{"m":[4,33,34,35,55]},"344":{"m":[4,33,34,35,55]},"345":{"m":[4,33,34,35,55]},"346":{"g":[["farming","5","47-48"],["foraging","5","47-48"],["quarrying","5","47-48"]],"m":[4,33,34,35,55],"s":["caravan","mailbox"]},"347":{"g":[["chopping","5","48-49"]],"m":[4,33,34,35,55]},"348":{"s":["mailbox","waygate"]},"350":{"g":[["chopping","6","51-52"]]},"351":{"g":[["farming","6","52-53"],["fishing","6","52-53"],["foraging","6","52-53"]]},"352":{"s":["totem","waygate"]},"353":{"g":[["fishing","6","54-55"],["quarrying","6","54-55"]]},"354":{"g":[["mining","6","55-56"]]},"357":{"s":["worldboss"]},"358":{"s":["worldboss"]},"360":{"s":["mailbox","waygate"]},"363":{"g":[["mining","6","51-52"]],"s":["dungeon"]},"901":{"m":[50,120,127]},"903":{"m":[17,20,32,71,80,85,92]},"906":{"m":[10,25,42,82,114,137]},"1000":{"s":["waygate"]},"1001":{"m":[82]},"1002":{"m":[82]},"1003":{"m":[82]},"1004":{"m":[10,25,42,82,114]},"1005":{"m":[10,25,42,82,114,137]},"1006":{"m":[10,25,42,82,114,137]},"1007":{"m":[10,25,42,82,114,137]},"1027":{"m":[104]},"1028":{"m":[104]},"1029":{"m":[104]},"1030":{"m":[104]},"1031":{"m":[104]},"1032":{"m":[104]},"1033":{"m":[104]},"1041":{"m":[11,28,50,90,97,120,127,128]},"1042":{"m":[11,97,120,127,128]},"1066":{"m":[116]},"1067":{"m":[50,116]},"1068":{"m":[71,116]},"1069":{"m":[71,116]},"1070":{"m":[71,116]},"1071":{"m":[116]},"1072":{"m":[116]},"1145":{"m":[11,48,49,131]},"1146":{"m":[11,48,49,68,131]},"1147":{"m":[48,49,68]},"1157":{"m":[43,93]},"1158":{"m":[43,52,93]},"1159":{"m":[43,52,93]},"1160":{"m":[43,93,139]},"1161":{"m":[43,93,139]},"1162":{"m":[43,93]},"1163":{"m":[43,93]},"1183":{"m":[135]},"1184":{"m":[135]},"1185":{"m":[135]},"1186":{"m":[135]},"1187":{"m":[135]},"1188":{"m":[135]},"1189":{"m":[135]},"2001":{"m":[6,132]},"2002":{"m":[6,8,78,128,131,132,133]},"2003":{"m":[6]},"2100":{"m":[6,8,9,28,78,128,131,132,133]}};
   const WM_PROF_EN = { fishing: 'Fishing', mining: 'Mining', quarrying: 'Quarrying', chopping: 'Chopping', farming: 'Farming', foraging: 'Foraging' };
   const WM_LAND_EN = { dungeon: 'Dungeon', worldboss: 'World Boss', totem: 'Summoning Totem', caravan: 'Smugglers Route', dock: 'Dock', mailbox: 'Mailbox', waygate: 'Waygate' };
 
-  /* ======================= 19c. 世界地图 POI 实时数据（v2.6.82） =======================
-   * tooltip 的「资源点 / 怪物」原来是内嵌快照，会过期（实测：游戏敌人页 157 条 vs 内嵌 141 条，少 16 个）。
-   * 游戏自己就把这两张表放在帮助页里，可以直接读：
-   *   GET /modal/help_detail?id=49 → 采集点（专业 + 地图名 + Tier + Level + openWorldMap('wx/wy')）
-   *   GET /modal/help_detail?id=53 → 敌人（名字 + 图标 + Level Range + Biome）
-   * 进游戏后拉一次、缓存 24 小时，实时重建每张图的 POI；拉不到就回退内嵌快照 WM_POI。
-   * 地标（副本/世界BOSS/图腾/商队/码头/邮箱/传送站）来自 map_info 图标，没有批量接口，仍用内嵌快照。
-   * ============================================================================= */
+  /* ======================= 19c. 世界地图 POI 实时数据（） ======================= */
   const WM_LIVE_KEY = 'norroth_wm_live_v1';
   const WM_LIVE_TTL = 24 * 3600 * 1000;
   let _wmPoi = WM_POI;            /* 当前生效的 POI 表（实时优先，回退内嵌） */
@@ -12757,10 +12154,7 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
       return '<span class="nr-wm-chip ' + cls + '">' +
              (icon ? '<img src="' + icon + '" alt="">' : '') + escapeHtml(name) + '</span>';
     };
-    /* 资源点：真实点位名 + Wiki 层级（T）合并显示（v2.6.126）
-       · 本地扫到过 → 用真实点位名，并按「专业」从 Wiki 数据补上 T（例：Copper Mine T1）；
-       · 本地没扫到 → 用 Wiki 的「专业 T层级 · Lv等级」；
-       · 本地扫到过、但 Wiki 还列了别的专业 → 一并补上（不丢信息）。 */
+    /* 资源点：真实点位名 + Wiki 层级（T）合并显示（） */
     let gChips = '';
     if (gs.length) {
       const wikiTierOf = function (prof) {
@@ -12790,12 +12184,7 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
     /* 怪物：真实名单优先；没有就用图鉴（群系 + 等级）推算 */
     let mChips = '';
     if (ms.length) {
-      /* ★★ 2026-09-22 修：这里原来写的是 `mon[nm] || monL[nm]`，而 `monL` 是 MapDB 重构前的遗留变量
-         （老代码：`mon = NAV_EMBED.mon, monL = _poiLearn.mon`），现在脚本里根本没有它。
-         于是**只要某张图的怪里有一个不在图鉴里**（例：map64 Droughtlands 的 "Ruin Guard"），
-         这一行就抛 ReferenceError → navDecorateWorldMap 的循环整个中断 →
-         世界地图上「这张图以及排在它后面的所有图」的怪/资源点全部不显示（看起来就像怪被漏掉了）。
-         MapDB.mon 本身已经是「内置图鉴 + 边玩边学」的合并结果，不需要再兜底查 monL。 */
+      /* ★★ 2026-09-22 修：这里原来写的是 `mon[nm] || monL[nm]`，而 `monL` 是 MapDB 重构前的遗留变量 */
       const monIdOf = function (nm) { const n = parseInt(mon[nm], 10); return isNaN(n) ? null : n; };
       const msSorted = ms.slice().sort(function (a, b) {
         const ia = monIdOf(a), ib = monIdOf(b);
@@ -12859,18 +12248,7 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
            noteHtml + '</div>';
   }
 
-  /* ======================= 19b. 世界地图「解锁未访问地图」(v2.6.80) =======================
-   * 游戏的世界地图只渲染「角色访问过的」地图节点（实测 2026-10-21：整张图只有 11 个 <g map_id>），
-   * 未访问的地图连 DOM 都没有，而且整幅地图还盖着一层战争迷雾（rect.world-map-fog + #fogMask）。
-   * 但服务端并不拦：GET /modal/map_info?id=N 对任何 id 都返回完整内容（实测 380/380 全成功），
-   * 点击节点也只是 createDialog(..., '/modal/map_info?id=N')，不需要额外授权。
-   * 所以这里用抓好的全量世界坐标（data/map_meta_1.0.json，380 张 / 379 个有坐标）在客户端补齐：
-   *   · 按 <g map_id=N transform="translate(wx-8,wy-8)"> 注入缺失的地图点（和游戏原生节点同款式）；
-   *   · 去掉 rect.world-map-fog（迷雾遮罩）→ 整幅地图清晰可见；
-   *   · 注入的节点绑自己的 pointerup → 和原生节点一样打开真实的 Map Details（可看详情 / 传送）。
-   * 由 cfg.worldMapUnlock 控制（默认开）。数据每行：[id, name, level, biome, continent, wx, wy]。
-   * 坐标来源：世界地图缩略图文件名 world_map_<id>_<wx>_<wy>.jpg / location[wx/wy]（两处冗余互校）。
-   * ============================================================================= */
+  /* ======================= 19b. 世界地图「解锁未访问地图」() ======================= */
   const WM_UNLOCK_MAPS = [[1,"Fountain of Rebirth","1","Enchanted Forest","",887,1797],[2,"Lower Fountain’s Descent","1","Temperate Forest","Arodas",721,1783],[3,"Sasquatch Grotto","1","Underground","Arodas",731,1721],[4,"Upper Fountain’s Descent","1","Grassland","Arodas",814,1683],[5,"El Caspar","1","Grassland","Arodas",871,1551],[6,"Brisban Pond","1-3","Grassland","Arodas",721,1499],[7,"Akelay Foothills","4-6","Grassland","Arodas",771,1445],[8,"Akelay Cave Level 1","4-6","Underground","Arodas",738,1440],[9,"Akelay Cave Level 2","6-9","Underground","Arodas",738,1440],[10,"Mount Akelay","4-6","Mountain","Arodas",767,1413],[11,"Elena’s Crossroad","1-3","Grassland","Arodas",869,1435],[12,"Forested Canyon","4-5","Temperate Forest","Arodas",878,1328],[13,"Tree of Life","5-6","Temperate Forest","Arodas",804,1231],[14,"Arodas Lakeshore","4-6","Coastal","Arodas",625,1464],[15,"Arodas Beach","7-10","Coastal","Arodas",583,1367],[16,"Elundi","10","Temperate Forest","Arodas",585,1250],[17,"Southern Foothill","1-3","Temperate Forest","Arodas",925,1672],[18,"Bay’s Alley","4-6","Coastal","Arodas",974,1729],[19,"Bay’s Alley","7-10","Coastal","Arodas",1047,1754],[20,"Windy Fields","1-3","Grassland","Arodas",1026,1539],[21,"Forest Of Owranbu","4-6","Temperate Forest","Arodas",1093,1584],[22,"Owranbu River","7-10","Temperate Forest","Arodas",1182,1558],[23,"Owranbu","10","Temperate Forest","Arodas",1285,1561],[24,"Manor’s Courtyard","4-6","Mountain","Arodas",1054,1452],[25,"Laverne Foothill","4-6","Grassland","Arodas",990,1397],[26,"Grasping Maze","6-7","Underground","Arodas",799,1208],[27,"Heart of the Tree","7","Underground","",799,1208],[28,"Dying Forest","10-11","Dying Forest","Arodas",1345,1650],[29,"Dead Leaves Tiara","12-13","Dying Forest","",1323,1681],[30,"Venom Arch Forest","14-15","Dying Forest","",1387,1728],[31,"Pirate Wreck Foothill","11-13","Coastal","Arodas",1106,1775],[32,"Pirate Wreck Beach","14-15","Coastal","Arodas",1135,1837],[33,"The Pirate Wreck","15-16","Shipwreck","Arodas",1107,1883],[34,"Sewers","1-3","Sewers","Arodas",826,1537],[35,"Deep Sewers","4-6","Sewers","",826,1537],[36,"Ratdom","5","Ratdom","",826,1537],[37,"Manor Main Floor","4-6","Urban","Arodas",1074,1426],[38,"Manor 1st Floor","4-6","Urban","",1074,1426],[39,"Manor Attic","4-6","Urban","",1074,1426],[40,"Manor Cellar","4-6","Underground","Arodas",1074,1426],[41,"Owranbu Drylands","10-11","Dry Desert","Tharnoth",1315,1504],[42,"The Cult Tunnel","7-9","Underground","Arodas",751,1424],[43,"The Cult Hideout","7-9","Underground","Arodas",751,1424],[44,"Farmer’s House","4","Urban","",925,1672],[45,"Baron’s Lair","9","Underground","",1074,1426],[46,"Bear Den","10","Bear Den","",638,1161],[47,"Den Of Devourer","10","Den Of Devourer","",638,1161],[48,"Elundi Garden","10-11","Deep Forest","Ruahnia",580,1175],[49,"Elundi Garden","11-12","Deep Forest","Ruahnia",624,1130],[50,"Deep Forest","12-13","Deep Forest","Ruahnia",675,1109],[51,"Deep Forest","13-14","Deep Forest","Ruahnia",717,1076],[52,"Deep Forest","14-15","Deep Forest","Ruahnia",754,1065],[53,"Deep Forest","14-15","Deep Forest","Ruahnia",790,1052],[54,"Elm’s Rest","15","Deep Forest","",617,1070],[55,"Way to Morwen","14-15","Deep Forest","",778,998],[56,"Abandoned Mine","41-42","Underground","",724,960],[57,"Abandoned Mine","41-42","Underground","",667,937],[58,"Abandoned Mine","41-42","Underground","",618,935],[59,"Abandoned Mine","41-42","Underground","",565,949],[61,"Sandstorm Pass","11-12","Dry Desert","Tharnoth",1343,1440],[62,"Sun-Scorched Plateau","11-12","Dry Desert","Tharnoth",1322,1396],[63,"Sandspire Summit","13-14","Dry Desert","",1375,1364],[64,"Droughtlands","13-14","Dry Desert","",1397,1312],[65,"Mesa Mine Area","11-12","Dry Desert","Tharnoth",1396,1445],[66,"Rock Valley","11-12","Dry Desert","Tharnoth",1446,1462],[67,"Mirage Mountains","13-14","Dry Desert","Tharnoth",1499,1485],[68,"Yurk’s Yard","30","Shrubland","",2527,1147],[69,"Yurk’s Lodge","30","Underground","",2527,1147],[72,"Shifting Sands","13-14","Dry Desert","Tharnoth",1559,1488],[73,"Radiant Heat Flats","13-14","Dry Desert","Tharnoth",1602,1455],[74,"Sunken Sands","14-15","Dry Desert","Tharnoth",1655,1454],[75,"The Shifting Tides","14-15","Dry Desert","Tharnoth",1698,1421],[76,"Sirocco Springs","14-15","Dry Desert","",1683,1366],[77,"Guardian Queen Hive","39","Guardian Queen Hive","",1169,843],[78,"Guardian Queen Hive","39","Guardian Queen Hive","",1169,843],[83,"Khamsin Cliffs","14-15","Dry Desert","",1716,1329],[84,"Golden Sandscape","16-17","Dry Desert","",1717,1275],[85,"Oasis","16-17","Oasis","",1753,1234],[87,"Oasis","16-17","Oasis","",1780,1172],[90,"Whispering Sands","14-15","Dry Desert","",1607,1185],[91,"Drouver","15","Savanna","",1577,1124],[92,"Savanna","14-15","Savanna","",1516,1111],[93,"Savanna","14-15","Savanna","",1453,1107],[94,"Scorpion`s Nest","14-15","Dry Desert","",1385,1133],[95,"Dry Mirage","16-17","Dry Desert","",1335,1108],[96,"Dune Sea","13-14","Dry Desert","",1349,1181],[97,"Ancient Ruins","13-14","Dry Desert","",1353,1252],[98,"Burning Sands","13-14","Dry Desert","",1433,1258],[99,"Burnt Sienna Wastes","14-15","Dry Desert","",1493,1265],[100,"Dust Outskirts","14-15","Dry Desert","",1549,1221],[106,"Savanna","16-17","Savanna","",1726,1102],[107,"Savanna","15-16","Savanna","",1656,1096],[110,"Corduin","24-25","Ruins","",2009,1077],[111,"Spider Den","15","Spider Den","",1387,1728],[112,"Vileton Entrance","14-15","Mountain","Arodas",1181,1838],[113,"Vileton","15","Mountain","Arodas",1263,1835],[114,"Marsh","15-16","Marsh","",1467,1785],[115,"Marsh","17-18","Marsh","",1513,1756],[116,"Marsh","19-20","Marsh","",1552,1718],[117,"Swamp","24-25","Swamp","",1469,1825],[118,"Swamp","26-28","Swamp","",1458,1862],[119,"Swamp","24-25","Swamp","",1409,1843],[120,"Swamp","21-23","Swamp","Arodas",1361,1858],[121,"Marsh","19-20","Marsh","",1506,1894],[122,"Marsh","19-20","Marsh","",1530,1854],[123,"Swamp","29-30","Swamp","",1447,1907],[124,"Swamp","26-28","Swamp","",1430,1949],[125,"Swamp","24-25","Swamp","",1429,1995],[126,"Marsh","19-20","Marsh","",1479,2073],[127,"Marsh","19-20","Marsh","",1523,1955],[128,"Marsh","19-20","Marsh","",1491,2005],[129,"Marsh","21-23","Marsh","",1441,2040],[130,"Secret Cave Tunnel","7-10","Underground","",1006,1683],[131,"The Squid Lair","25","Underground","",1043,1665],[133,"Magic Plains","19-20","Magic Plains","",1511,2119],[134,"Sanjuo","19","Magic Plains","",1533,2204],[135,"Chamber of Oracles","10","Underground","Arodas",848,1328],[136,"The Bilge","19","Marine","",1107,1883],[137,"Marsh","17-18","Marsh","",1547,1804],[138,"Abandoned Mine","43-44","Underground","",581,900],[139,"Ghrorak’s Prison","49","Underground","",581,852],[141,"Abandoned Mine","41-42","Underground","",500,945],[142,"Abandoned Mine","41-42","Underground","",444,938],[143,"Nythrendal","40","Mountain","",353,926],[144,"Abandoned Mine","","Underground","",748,925],[145,"Abandoned Mine","","Underground","",783,908],[146,"Abandoned Mine","","Underground","",772,867],[147,"Abandoned Mine","","Underground","",749,830],[148,"Abandoned Mine","","Underground","",730,783],[167,"Mountain","","Mountain","",1272,655],[168,"Tundra","","Savanna","",1322,686],[169,"Bungavik","20","Savanna","",1433,705],[170,"Dying Forest","15-16","Dying Forest","",1445,1678],[171,"Dying Forest","16-17","Dying Forest","",1483,1642],[172,"Dying Forest","18-19","Dying Forest","",1539,1633],[179,"Deep Forest","14-15","Deep Forest","Ruahnia",835,1041],[180,"Caeltys’ Causeway","31-33","Dark Forest","Ruahnia",875,1011],[181,"Caeltys’ Causeway","31-33","Dark Forest","",913,972],[182,"Caeltys’ Causeway","31-33","Dark Forest","",982,957],[183,"Caeltys","30","Enchanted Forest","",1059,929],[184,"Caeltys’ Yarden","31-33","Dark Forest","",1131,943],[185,"Caeltys’ Yarden","34-37","Dark Forest","",1173,923],[186,"Caeltys’ Yarden","38-39","Dark Forest","",1165,883],[187,"Caeltys’ Yarden","38-39","Dark Forest","",1169,843],[188,"Caeltys’ Yarden","34-37","Dark Forest","",1131,845],[189,"Caeltys’ Yarden","30-33","Dark Forest","",1099,866],[190,"Savanna","16-17","Savanna","",1576,1039],[191,"Savanna","16-17","Savanna","",1583,993],[192,"Savanna","17-18","Savanna","",1534,968],[193,"Savanna","17-18","Savanna","",1487,933],[194,"Savanna","18-19","Savanna","",1460,887],[195,"Savanna","19-20","Savanna","",1463,836],[196,"Savanna","19-20","Savanna","",1443,774],[197,"Desert","16-17","Savanna","",1778,1067],[198,"Desert","17-18","Savanna","",1809,1025],[199,"Desert","19-20","Savanna","",1820,981],[200,"Haunted Forest","21-22","Haunted Forest","",1860,951],[201,"Saurville","20","Haunted Forest","",1873,866],[202,"Haunted Forest","21-22","Haunted Forest","",1886,994],[203,"Desert of Whispers","22-23","Haunted Forest","",1940,1042],[204,"Pumpkin King`s Lodge","29","Pumpkin Lodge","",1552,1718],[209,"Savanna","19-20","Savanna","",1724,852],[210,"Crimson Dust","21-22","Dry Desert","",1781,857],[211,"Taiga","40-41","Taiga","",1165,1343],[212,"Taiga","41-42","Taiga","",1141,1306],[213,"Taiga","43-44","Taiga","",1144,1257],[214,"Taiga","45-46","Taiga","",1157,1217],[215,"Taiga","47-48","Taiga","",1187,1188],[216,"Taiga","48-49","Taiga","",1195,1145],[217,"Taiga","48-49","Taiga","",1107,1177],[218,"Desert of Lost Hope","14-15","Dry Desert","",1746,1452],[219,"Sandstorm Ridge","14-15","Dry Desert","",1787,1477],[220,"Burning Moon Sands","16-17","Dry Desert","",1840,1504],[221,"Deserted Cavern","16-17","Underground","",1882,1533],[222,"The Living Desert","16-17","Dry Desert","",1931,1490],[224,"Desert of Illusions","18-19","Dry Desert","",1987,1466],[225,"Devil’s Gulch","18-19","Dry Desert","",2057,1426],[226,"Temple Entrance","18-19","Dry Desert","",1969,1360],[227,"Shrubland","21-22","Shrubland","",2248,1304],[228,"Shrubland","21-22","Shrubland","",2301,1245],[229,"Ururg","20","Shrubland","",2410,1256],[230,"Red Desert","50-52","Red Desert","",2187,1626],[231,"Old Graveyard","22-23","Haunted Forest","",1948,957],[232,"Mausoleum Stairway","23-25","Underground","",1980,915],[233,"Mausoleum Chamber","23-25","Underground","",1980,915],[234,"Medusa’s Hallway","18-19","Underground","",1303,1096],[235,"Medusa’s Chamber","20","Underground","",1303,1096],[239,"Orc Domain Entrance","19-20","Dry Desert","",2161,1348],[240,"Shrubland","19-20","Shrubland","",2217,1336],[241,"Desert of the Damned","19-20","Dry Desert","",2115,1381],[243,"Sands of Echoes","18-19","Dry Desert","",2010,1532],[244,"Red Desert","18-19","Red Desert","",2039,1587],[245,"Red Desert","18-19","Red Desert","",2115,1613],[246,"Red Desert","19-20","Red Desert","",2114,1680],[247,"Underground","19-20","Underground","",2121,1736],[248,"Red Desert","20-21","Red Desert","",2114,1790],[249,"Red Desert","21-22","Red Desert","",2140,1845],[250,"Cactus Canyon","22-23","Dry Desert","",2132,1894],[251,"Unison Obelisk","23-24","Dry Desert","",2090,1925],[252,"Haunted Forest","21-22","Haunted Forest","",1931,797],[253,"Haunted Forest","23-24","Haunted Forest","",1998,801],[254,"Haunted Forest","25-26","Haunted Forest","",2061,801],[255,"Toxic River","27-28","Haunted Forest","",2044,855],[256,"Haunted Forest","27-28","Haunted Forest","",2081,890],[257,"Necropolis","29-30","Underground","",2138,844],[260,"Stirge Lair","29","Stirge Lair","",1530,1854],[262,"Sands of the Forgotten","21-22","Dry Desert","",1712,799],[263,"Mirage’s Eye","23-24","Dry Desert","",1682,758],[264,"Sandstorm Plains","25-26","Dry Desert","",1668,706],[265,"Taiga","25-26","Taiga","",1663,653],[266,"Taiga","27-28","Taiga","",1680,600],[267,"Taiga","27-28","Taiga","",1715,554],[268,"Taiga","29-30","Taiga","",1736,496],[269,"Orc’s Bone Road","40-41","Shrubland","",2438,1353],[270,"Orc’s Bone Road","41-42","Shrubland","",2448,1403],[271,"Orc’s Bone Road","43-44","Shrubland","",2449,1454],[272,"Shrubland","45-46","Shrubland","",2495,1501],[273,"Shrubland","47-48","Shrubland","",2540,1536],[274,"Shrubland","49-50","Shrubland","",2602,1541],[275,"Shrubland","21-23","Shrubland","",2461,1185],[276,"Shrubland","24-26","Shrubland","",2487,1127],[277,"Shrubland","31-33","Shrubland","",2506,1072],[278,"Shrubland","34-35","Shrubland","",2562,1028],[279,"Ancient Worm Tunnel","34-35","Underground","",2625,995],[280,"Shrubland","36-37","Shrubland","",2685,963],[281,"Trescan","30","Shrubland","",2752,890],[282,"Taiga","31-32","Taiga","",1711,462],[283,"Taiga","31-32","Taiga","",1676,420],[284,"Stogow","30","Tundra","",1656,342],[285,"Taiga","33-34","Taiga","",1722,306],[286,"Taiga","34-35","Taiga","",1752,266],[287,"Yeti’s Cave","35","Frost Cave","",1789,230],[288,"Itham’s Lakeshore","31-33","Coastal","",1927,1715],[289,"Itham’s Crator","34-35","Coastal","",1977,1767],[290,"Itham’s Old Bay","34-35","Coastal","",2009,1829],[291,"Itham’s Anchorage","36-37","Coastal","",1975,1895],[292,"Itham’s Heart","38-40","Itham’s Heart","",1774,1931],[293,"Rainforest","31-32","Rainforest","",3122,1529],[294,"Rainforest","31-32","Rainforest","",3163,1554],[295,"Rainforest","33-34","Rainforest","",3210,1580],[296,"Rainforest","33-34","Rainforest","",3217,1643],[297,"Rainforest","35-36","Rainforest","",3169,1644],[298,"Rainforest","35-36","Rainforest","",3109,1651],[299,"Rainforest","","Rainforest","",3261,1598],[300,"Rainforest","","Rainforest","",3318,1613],[301,"Rainforest","31-33","Rainforest","",3262,1687],[302,"Coveted Blossom","31-33","Rainforest","",3316,1712],[303,"Rainforest","","Rainforest","",3370,1648],[304,"Rainforest","37-38","Rainforest","",3161,1700],[305,"Rainforest","","Rainforest","",3412,1695],[306,"Rainforest","39-40","Rainforest","",3173,1767],[307,"Rainforest","41-42","Rainforest","",3130,1820],[308,"Haunted Forest","23-24","Haunted Forest","",1932,734],[309,"Haunted Forest","25-26","Haunted Forest","",1985,701],[310,"Haunted Forest","27-28","Haunted Forest","",2056,691],[311,"Haunted Forest","29-30","Underground","",2056,691],[313,"Haunted Forest","","Haunted Forest","",2243,724],[314,"Haunted Forest","","Haunted Forest","",2178,737],[315,"Haunted Forest","","Haunted Forest","",2123,777],[316,"Rainforest","43-45","Rainforest","",3123,1877],[317,"Galkathos","45","Rainforest","",3180,1890],[318,"Temple Hall","18-19","Temple","",2009,1333],[319,"Valdor’s Throneroom","23-25","Temple","",2009,1333],[320,"Glacierbane’s Hollow","49","Frost Cave","",1141,1306],[321,"Goliathor’s Temple","40","Rainforest","",3316,1712],[322,"Goliathor’s Throne Room","40","Ape Temple","",3316,1712],[323,"Trescan’s Dock","34-35","Coastal","",2605,900],[324,"Dark Boreal","40-41","Dark Boreal","",2703,799],[325,"Dark Boreal","41-42","Dark Boreal","",2720,723],[326,"Dark Boreal","43-44","Dark Boreal","",2735,654],[327,"Dark Boreal","45-46","Dark Boreal","",2727,594],[328,"The Ghost Shore","47-49","Ghost Shore","",2641,564],[329,"Dark Boreal","47-48","Dark Boreal","",2813,556],[330,"Dark Boreal","49-50","Dark Boreal","",2894,581],[331,"Dark Boreal","50-51","Dark Boreal","",2990,545],[332,"Grimble’s Camp","45","Dark Boreal","",2688,658],[333,"Magic Plains","40-42","Magic Plains","",1666,2299],[334,"Magic Plains","42-44","Magic Plains","",1753,2280],[335,"Magic Plains","44-46","Magic Plains","",1838,2266],[336,"Red Desert","54-56","Red Desert","",2118,1550],[337,"Red Desert","57-59","Red Desert","",2171,1510],[338,"Trial of Embers","59","Vulcanic Underground","",2213,1482],[339,"Tunnel of Embers","59","Vulcanic Underground","",2213,1482],[340,"Hall of Embers","59","Vulcanic Underground","",2213,1482],[341,"The Ember Forge","59","Vulcanic Underground","",2213,1482],[342,"Dark Boreal","40-41","Dark Boreal","",2833,994],[343,"Dark Boreal","41-42","Dark Boreal","",2870,1028],[344,"Dark Boreal","43-44","Dark Boreal","",2911,1054],[345,"Dark Boreal","45-46","Dark Boreal","",2945,1088],[346,"Dark Boreal","47-48","Dark Boreal","",2975,1122],[347,"Dark Boreal","48-49","Dark Boreal","",3028,1114],[348,"Laen Dorei","50","Dark Boreal","",3153,1085],[349,"Dark Boreal","50-51","Dark Boreal","",3158,1186],[350,"Dark Boreal","51-52","Dark Boreal","",3200,1240],[351,"Wardens’ Bridge","52-53","Coastal","",3260,1247],[352,"Wardens’ Bridge","53-54","Coastal","",3337,1246],[353,"Wardens’ Bridge","54-55","Coastal","",3415,1247],[354,"Mountain","55-56","Mountain","",3460,1271],[355,"Mountain","57-58","Mountain","",3480,1325],[356,"Mountain","59","Mountain","",3526,1361],[357,"Red Desert Cave","53-55","Vulcanic Underground","",2284,1622],[358,"Red Desert Cave","55","Vulcanic Underground","",2284,1622],[359,"House of Zehrak","59","Urban","",3526,1361],[360,"Dominion Spire","50","Urban","",2680,1547],[361,"Dominion Spire 2nd Floor","50","Urban","",2680,1547],[362,"Dominion Spire Roof","50","Urban","",2680,1547],[363,"Moldrir Depths","51-52","Underground","",3066,477],[364,"The Living Cavern","55","Underground","",3022,418],[900,"Abyssal Tower Entrance","1","Urban","",651,1998],[901,"Abyssal Tower","1","Grassland","",651,1998],[902,"Abyssal Tower","10","Magic Plains","",651,1998],[903,"Abyssal Tower","20","Dry Desert","",651,1998],[904,"Abyssal Tower","30","Deep Forest","",651,1998],[905,"Abyssal Tower","40","Haunted Forest","",651,1998],[906,"Abyssal Tower","50","Taiga","",651,1998],[907,"Abyssal Tower","60","Urban","",651,1998],[908,"Abyssal Tower","70","Urban","",651,1998],[909,"Abyssal Tower","80","Urban","",651,1998],[910,"Abyssal Tower","90","Urban","",651,1998],[911,"Abyssal Tower","100","Urban","",651,1998],[998,"Fall of Rebirth","60","Enchanted Forest","",887,1797],[1000,"Fountain of Rebirth","1","Enchanted Forest","Arodas",887,1797],[1001,"Winter Wonderland Lobby","100","Taiga","",541,1868],[1002,"Winter Wonderland","1-9","Taiga","",541,1868],[1003,"Winter Wonderland","10-19","Taiga","",541,1868],[1004,"Winter Wonderland","20-29","Taiga","",541,1868],[1005,"Winter Wonderland","30-39","Taiga","",541,1868],[1006,"Winter Wonderland","40-49","Taiga","",541,1868],[1007,"Winter Wonderland","50-59","Taiga","",541,1868],[1027,"Loveland Lobby","100","Loveland","",541,1868],[1028,"Loveland","1-9","Loveland","",541,1868],[1029,"Loveland","10-19","Loveland","",541,1868],[1030,"Loveland","20-29","Loveland","",541,1868],[1031,"Loveland","30-39","Loveland","",541,1868],[1032,"Loveland","40-49","Loveland","",541,1868],[1033,"Loveland","50-59","Loveland","",541,1868],[1040,"Patrick’s Land Lobby","100","Grassland","",541,1868],[1041,"Patrick’s Land","1-9","Grassland","",541,1868],[1042,"Patrick’s Land","10-19","Grassland","",541,1868],[1043,"Patrick’s Land","20-29","Grassland","",541,1868],[1044,"Patrick’s Land","30-39","Grassland","",541,1868],[1045,"Patrick’s Land","40-49","Grassland","",541,1868],[1046,"Patrick’s Land","50-59","Grassland","",541,1868],[1066,"Bunnyland Lobby","100","Spring Fields","",541,1868],[1067,"Bunnyland","1-9","Spring Fields","",541,1868],[1068,"Bunnyland","10-19","Spring Fields","",541,1868],[1069,"Bunnyland","20-29","Spring Fields","",541,1868],[1070,"Bunnyland","30-39","Spring Fields","",541,1868],[1071,"Bunnyland","40-49","Spring Fields","",541,1868],[1072,"Bunnyland","50-59","Spring Fields","",541,1868],[1144,"Das Festhalle Lobby","100","Mountain","",541,1868],[1145,"Das Festhalle","1-9","Mountain","",541,1868],[1146,"Das Festhalle","10-19","Mountain","",541,1868],[1147,"Das Festhalle","20-29","Mountain","",541,1868],[1148,"Das Festhalle","30-39","Mountain","",541,1868],[1149,"Das Festhalle","40-49","Mountain","",541,1868],[1150,"Das Festhalle","50-59","Mountain","",541,1868],[1157,"Sleepy Hollow Lobby","100","Hollow Forest","",541,1868],[1158,"Sleepy Hollow","1-9","Hollow Forest","",541,1868],[1159,"Sleepy Hollow","10-19","Hollow Forest","",541,1868],[1160,"Sleepy Hollow","20-29","Hollow Forest","",541,1868],[1161,"Sleepy Hollow","30-39","Hollow Forest","",541,1868],[1162,"Sleepy Hollow","40-49","Hollow Forest","",541,1868],[1163,"Sleepy Hollow","50-59","Hollow Forest","",541,1868],[1183,"The Sacred Wilds Lobby","100","Wyvern Forest","",541,1868],[1184,"The Sacred Wilds","1-9","Wyvern Forest","",541,1868],[1185,"The Sacred Wilds","10-19","Wyvern Forest","",541,1868],[1186,"The Sacred Wilds","20-29","Wyvern Forest","",541,1868],[1187,"The Sacred Wilds","30-39","Wyvern Forest","",541,1868],[1188,"The Sacred Wilds","40-49","Wyvern Forest","",541,1868],[1189,"The Sacred Wilds","50-59","Wyvern Forest","",541,1868],[2001,"Overgrown Land","1","Temperate Forest","",503,1787],[2002,"Encampment","10","Temperate Forest","",503,1787],[2003,"Fenced Encampment","20","Temperate Forest","",503,1787],[2004,"Village","30","Temperate Forest","",503,1787],[2005,"Tudor Village","40","Temperate Forest","",503,1787],[2006,"Motte-and-Bailey","50","Temperate Forest","",503,1787],[2007,"Stone Keep","60","Temperate Forest","",503,1787],[2100,"Ashspire Battlegrounds","1-60","Temperate Forest","",503,1787]];
   function navUnlockWorldMap() {
     if (!cfg.worldMapUnlock) return;
@@ -12954,10 +12332,7 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
     }
   }
 
-  /* ★★ 2026-10-17 中文（及其它非英文）界面：游戏的 frame id = 'frame_' + 标题.replace(/[^a-zA-Z]+/g,'') 。
-     标题被本地化后（例：Map Details → 「地图详细资讯」），id 直接变成 `frame_`（空）——
-     于是 getElementById('frame_MapDetails') 永远拿不到，导航按钮就注入不了。
-     这里改成「先按 id，再按内容特征（地图缩略图 / data-map-info-id）反查最内层那个 frame」。 */
+  /* ★★ 2026-10-17 中文（及其它非英文）界面：游戏的 frame id = 'frame_' + 标题.replace(/[^a-zA-Z]+/g,'') 。 */
   function navMapDetailsFrame() {
     const byId = document.getElementById('frame_MapDetails');
     if (byId) return byId;
@@ -12999,10 +12374,7 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
       if (blk) mapId = (+blk.getAttribute('data-map-info-id')) || 0;
     }
     if (!mapId) { done('未识别到地图 id（缩略图与内容块都没有），跳过'); return; }
-    /* ★ v2.6.18：锚点必须是「传送 / How to Travel」那个动作按钮本身（btn-epic / btn-unique / btn-primary），
-       并把「导航」插在它**后面、同一个 .align_left 里** —— 这样两个按钮才会在同一行。
-       旧版只认 a.btn-epic：Noble 的 Free Teleport 是 a.btn-unique → 匹配不到 → 退回块级 .align_left
-       → 导航永远另起一行（用户反馈）。 */
+    /* 锚点必须是「传送 / How to Travel」那个动作按钮本身（btn-epic / btn-unique / btn-primary）， */
     const actBtn = findMapDetailsTeleport(f)
                  || f.querySelector('.align_left a.btn-unique, .align_left a.btn-primary, .align_left a.btn-epic')
                  || f.querySelector('a.btn-unique, a.btn-primary, a.btn-epic');
@@ -13464,10 +12836,7 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
     return j;
   }
 
-  /* ★ v2.6.99：上传单个文件到数据仓库，自动处理 409「sha 不匹配」。
-     GitHub contents API 是「先 GET 拿 sha，再 PUT 带 sha」；当两个客户端（多开标签页 / 多角色同时跑）
-     几乎同时上传同一个文件时，后到的那个会拿到 409 "<path> does not match <sha>"。
-     这里遇到 409 就重新取 sha 再传（最多 3 次，带退避）。 */
+  /* 上传单个文件到数据仓库，自动处理 409「sha 不匹配」。 */
   async function ghPutFile(fpath, message, text, token, tries) {
     tries = tries || 3;
     let lastErr = null;
@@ -13648,11 +13017,11 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
     nearestResource: nearestResource, checkFrozen: checkFrozen,
     sweepStrayFrames: sweepStrayFrames, registerUserFrames: registerUserFrames,
     tryGatherFlee: tryGatherFlee, gameRunAway: gameRunAway, altPageCombatPolicy: altPageCombatPolicy, applyHighlightSelf: applyHighlightSelf, exportErrorLog: exportErrorLog,
-    supply: supply, verifyPotion: verifyPotion, togglePotion: togglePotion, startPotionLoop: startPotionLoop, stopPotionLoop: stopPotionLoop, healInfo: healInfo, ensureTTDB: ensureTTDB, potionKey: potionKey, 
+    supply: supply, verifyPotion: verifyPotion, togglePotion: togglePotion, startPotionLoop: startPotionLoop, stopPotionLoop: stopPotionLoop, healInfo: healInfo, ensureTTDB: ensureTTDB, potionKey: potionKey,
     questTargets: () => _questCache.list,
-    recordVisit: recordVisit, visitedTowns: visitedTowns,  
+    recordVisit: recordVisit, visitedTowns: visitedTowns,
     renderDet: renderDet, readCoins: readCoins, readCoinsHud: readCoinsHud, parseCoinText: parseCoinText, installCoinsHook: installCoinsHook, coinRatePerMin: coinRatePerMin, minutesToLevel: minutesToLevel,
-    perfSlope: perfSlope, perfSpanMin: perfSpanMin, 
+    perfSlope: perfSlope, perfSpanMin: perfSpanMin,
     updateStats: updateStats, isNormalMap: isNormalMap, navRoamStep: navRoamStep,
     applyBagDiff: applyBagDiff, parseInvItems: parseInvItems, initBagSnap: initBagSnap,
     pause: pause, resume: resume, toggleRun: toggleRun, runElapsedMs: runElapsedMs, pollBagGain: pollBagGain,
