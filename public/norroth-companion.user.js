@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.218
+// @version      2.6.219
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -187,7 +187,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.218';   // 与 @version 保持一致
+  const SCRIPT_VER = '2.6.219';   // 与 @version 保持一致
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -897,6 +897,36 @@
    * 上限：单次 settle 由 walkTileCore 自带超时（25s + 30s）；同时只允许一个（st.settling）。
    * 高级参数：不受影响。
    * ───────────────────────────────────────────────────────────── */
+  /* ── 公共「走开一格再走回」──────────────────────────────────────
+   * 用途：① 重新触发目标格的格子动作（NPC 菜单 / 门 / 采集点）；② 强制同步服务端位置。
+   * 原理：走开这一步会重新发 ajax_get_path.php（带客户端当前格），服务端据此重新校准角色位置；
+   *       走回目标格会重新执行该格的格子动作（游戏只在「走进这一格」时执行）。
+   * 实测：站上 smith 格会开 frame_<Title>，走开就关、走回又开。
+   * opts = { alive, aside, asideTimeoutMs, backTimeoutMs, asideSleepMs, backSleepMs, onStuck, light }
+   *   light = true：fire-and-forget（safeWalkTo + sleep），用于 walkTileCore 内部，避免嵌套 navWalkTile。
+   * 返回 true = 已走回 (tx,ty)。 */
+  async function stepAsideAndBack(tx, ty, opts) {
+    opts = opts || {};
+    const alive = opts.alive || function () { return true; };
+    if (!alive()) return false;
+    const aside = opts.aside || mcAdjWalkTile(tx, ty) || mcAdjWalkTile(character.x, character.y);
+    if (!aside || !aside.length) return false;
+    if (opts.light) {
+      try { safeWalkTo(aside[0], aside[1]); } catch (e) { /* ignore */ }
+      await sleep(opts.asideSleepMs == null ? 2600 : opts.asideSleepMs);
+      if (!alive()) return false;
+      try { safeWalkTo(tx, ty); } catch (e) { /* ignore */ }
+      await sleep(opts.backSleepMs == null ? 0 : opts.backSleepMs);
+      return alive();
+    }
+    await navWalkTile(aside[0], aside[1], { timeoutMs: opts.asideTimeoutMs || 12000, alive: alive, onStuck: opts.onStuck, cond: function () { return character.x === aside[0] && character.y === aside[1]; } });
+    if (!alive()) return false;
+    await sleep(opts.asideSleepMs == null ? 500 : opts.asideSleepMs);
+    if (!alive()) return false;
+    await navWalkTile(tx, ty, { timeoutMs: opts.backTimeoutMs || 15000, alive: alive, onStuck: opts.onStuck, cond: function () { return character.x === tx && character.y === ty; } });
+    return alive() && character.x === tx && character.y === ty;
+  }
+
   async function settleAtSpot(tx, ty, why) {
     const cancelSeq = navCancelSeq;
     const n2 = mcAdjWalkTile(tx, ty);
@@ -911,12 +941,8 @@
     };
     const noNudge = function () { /* 落位期间不做卡死自愈，避免又走开 */ };
     const done = function () { st.pos.at = 0; st.pos.hits = 0; };
-    const out = await navWalkTile(n2[0], n2[1], { timeoutMs: 12000, alive: alive, onStuck: noNudge, cond: function () { return character.x === n2[0] && character.y === n2[1]; } });
-    if (!alive() || out !== 'ok') return false;
-    await sleep(600);
-    if (!alive()) return false;
-    const back = await navWalkTile(tx, ty, { timeoutMs: 15000, alive: alive, onStuck: noNudge, cond: function () { return character.x === tx && character.y === ty; } });
-    if (!alive() || back !== 'ok') return false;
+    const ok = await stepAsideAndBack(tx, ty, { alive: alive, aside: n2, asideTimeoutMs: 12000, backTimeoutMs: 15000, asideSleepMs: 600, onStuck: noNudge });
+    if (!alive() || !ok) return false;
     done();
     return true;
   }
@@ -3881,10 +3907,10 @@
     /* ★ v2.6.120：邻格也用 8 邻接（和游戏一致）；顺序仍是「右→左→下→上→斜」，stepAside 取第一个可走格的行为不变。 */
     const nb = function (x, y) { return [[x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1], [x + 1, y + 1], [x + 1, y - 1], [x - 1, y + 1], [x - 1, y - 1]]
       .filter(function (p) { return pts.some(function (q) { return q.x === p[0] && q.y === p[1]; }); }); };
+    /* 走开一格再走回（轻量：fire-and-forget，避免在 walkTileCore 内嵌套 navWalkTile）—— 复用公共 stepAsideAndBack */
     const stepAside = async function () {
       if (!alive()) return;
-      const n = nb(character.x, character.y)[0];
-      if (n) { try { safeWalkTo(n[0], n[1]); } catch (e) { /* ignore */ } await sleep(2600); }
+      await stepAsideAndBack(gx, gy, { alive: alive, aside: nb(character.x, character.y)[0], light: true, asideSleepMs: 2600 });
     };
     /* 分段导航改成「两段式」——长距离移动时，先走到目标「前一格」停下喘口气，再走到目标点位。 */
     const segOn = function () { return !!cfg.navSegOn && !retrigger; };
@@ -4187,22 +4213,6 @@
   /** 可靠打开 smith 的某个子页：page='' 主菜单 / 'sell' / 'salvage' / 'repair'。
    *  ★ 游戏 walkTo 的 closeFrames 会留下「空壳 frame」，此时 createDialog 不会重载 —— 先关掉再重开。
    *  返回 frame 元素（成功）或 null。 */
-  /** ★ v2.6.218：smith 界面打不开时的兜底 —— 走开一格再走回，重新触发目标格的格子动作。
-      实测：站上 smith 格会开 frame_<Title>，走开就关、走回又开；所以「走开一格再走回」能重触发 NPC 菜单。
-      返回 true = 已走回原格（可以再试一次打开）。 */
-  async function smithStepAsideRetry(smith) {
-    if (!smith || !Number.isFinite(smith.x) || !Number.isFinite(smith.y)) return false;
-    const n2 = mcAdjWalkTile(smith.x, smith.y);
-    if (!n2) return false;
-    try {
-      await navWalkTile(n2[0], n2[1], { timeoutMs: 12000, alive: tripAlive, cond: function () { return character.x === n2[0] && character.y === n2[1]; } });
-      if (!tripAlive()) return false;
-      await sleep(500);
-      await navWalkTile(smith.x, smith.y, { timeoutMs: 15000, alive: tripAlive, cond: function () { return character.x === smith.x && character.y === smith.y; } });
-      return tripAlive();
-    } catch (e) { return false; }
-  }
-
   async function ensureSmithFrame(smith, page, readyCheck, timeoutMs, retried) {
     const title = smith.action.charAt(0).toUpperCase() + smith.action.slice(1);
     const fid = 'frame_' + title;
@@ -4242,7 +4252,7 @@
       try {
         logEvent('界面打不开（' + url + '）→ 走开一格再走回重触发（' + smith.x + '-' + smith.y + '）');
         setStatus('界面打不开，走开再走回重触发…');
-        if (await smithStepAsideRetry(smith)) return await ensureSmithFrame(smith, page, readyCheck, timeoutMs, true);
+        if (await stepAsideAndBack(smith.x, smith.y, { alive: tripAlive })) return await ensureSmithFrame(smith, page, readyCheck, timeoutMs, true);
       } catch (e) { /* ignore */ }
     }
     /* ★ v2.6.199：写清「为什么没打开」，别再只报「没打开 XXX 界面」 */
@@ -4717,7 +4727,7 @@
         try {
           logEvent('维修未生效 → 走开一格再走回重触发（' + smith.x + '-' + smith.y + '）');
           setStatus('维修未生效，走开再走回重触发…');
-          if (await smithStepAsideRetry(smith)) {
+          if (await stepAsideAndBack(smith.x, smith.y, { alive: tripAlive })) {
             await ensureSmithDialog(smith);
             rr = await repairAtSmith(smith, !!manual && !reason);
           }
@@ -7898,10 +7908,7 @@
       const n2 = mcAdjWalkTile(tx, ty);
       if (!n2) { await sleep(1500); info = await mcIdleInfo(); continue; }
       logEvent('多角色：服务端还没确认「' + tx + '-' + ty + '」是采集点 → 走开一格再走回（第 ' + (k + 1) + ' 次）');
-      await navWalkTile(n2[0], n2[1], { timeoutMs: 25000, alive: alive, cond: function () { return character.x === n2[0] && character.y === n2[1]; } });
-      if (!alive()) return null;
-      await sleep(800);
-      await navWalkTile(tx, ty, { timeoutMs: 30000, alive: alive, cond: function () { return character.x === tx && character.y === ty; } });
+      await stepAsideAndBack(tx, ty, { alive: alive, aside: n2, asideTimeoutMs: 25000, backTimeoutMs: 30000, asideSleepMs: 800 });
       if (!alive()) return null;
       await sleep(1200);
       info = await mcIdleInfo();

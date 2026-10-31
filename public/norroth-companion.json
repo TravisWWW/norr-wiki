@@ -1,8 +1,8 @@
 {
-  "version": "2.6.218",
+  "version": "2.6.219",
   "date": "2026-11-01",
-  "notes": "修复交互失败不再走开一格：smith 界面（售卖/维修）打不开、或维修未生效时，新增「走开一格再走回」重触发 NPC 菜单的兜底（实测走开再走回能重开 frame_<Smith>），再重试一次。另：实测确认 walkVisualArrived 工作正常（动画中 false、落定 true），不是元凶。",
+  "notes": "重构：把「走开一格再走回」抽成公共函数 stepAsideAndBack(tx,ty,opts)，settleAtSpot / mcSettleAtSpot / walkTileCore 内部 / smith 交互（售卖/维修）四处统一复用；删除上一版新增的 smithStepAsideRetry。行为不变，只是去重。",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 877296,
-  "sha256": "b6e16b846c6d5fef6f0f5da2d7cf2da65a60a159282d1118b9695b9321629516"
+  "size": 878108,
+  "sha256": "f3c10747a69f15be23294495df342e1db6c499eb484dfdf6cd07fac3d1acc823"
 }
