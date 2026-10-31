@@ -1,7 +1,7 @@
 {
   "version": "2.6.217",
   "date": "2026-11-01",
-  "notes": "删除全脚本未引用的死代码（、loadVisited、findSellLink、_th/_g/_fmt、smithResultText、nudged、stuckAct、NAV_WALK_PREFER、nobleActive+_nobleCache/_nobleAt、ghUserToken、setGhToken）",
+  "notes": "删除全脚本未引用的死代码（$q、loadVisited、findSellLink、_th/_g/_fmt、smithResultText、nudged、stuckAct、NAV_WALK_PREFER、nobleActive+_nobleCache/_nobleAt、ghUserToken、setGhToken）",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
   "size": 875066,
   "sha256": "10dcd05b703592fa47cf5efd2239e303affab0fd2e4153427eddbbfc352f5256"
