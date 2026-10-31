@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.202
+// @version      2.6.209
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -193,7 +193,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.202';   // 与 @version 保持一致
+  const SCRIPT_VER = '2.6.209';   // 与 @version 保持一致
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -336,7 +336,8 @@
    *  [位置同步] syncServerPos()        · 状态 _posSyncAt              · 判据「没有正在走的队列」            · 动作「重发空 walk queue（零移动）」 · 节流 800ms（便宜但通常不够）
    *  [落位]     settleServerPos()      · 状态 st.pos / st.settling    · 判据「走位被打断过 或 调用方 force」· 动作「走开一格再走回（重发寻路）」 · 单次上限 walkTileCore 超时
    *  [换图没重画] scheduleRenderCheck()· 状态 st.render             · 判据「换图后 2.2s .map_table 底图 id != current_map」· 动作「调游戏 loadTravel() 只重画画面 + 对准镜头」 · 看门狗 8s/4 次 → 整页刷新
-   *  [画面没刷新] checkRenderStale()  · 状态 st.render2            · 判据「window.map.id 与 .map_table 底图不一致 / 角色图与渲染图不一致 持续 7s」· 动作「调游戏 loadTravel() 重画」· 独立节拍（不受 running/活动/step 早退影响）· 3 次 → 整页刷新
+    *  [画面没刷新] checkRenderStale()  · 状态 st.render2            · 判据「current_map 与 .map_table 底图不一致 持续 8s」· 动作「调游戏 loadTravel() 重画」· 独立节拍（不受 running/活动/step 早退影响）· 4 次 → 整页刷新
+    *  （★ v2.6.209：重画不再等「角色空下来」也不延迟 —— 三个看门狗只在「换图」时触发，换图即重画）
    *  [怪物列表过期] checkEntityFresh()· 状态 st.entity.at            · 判据「距上次强制拉取 >20s」          · 动作「调游戏 fetchTravelData() 重拉实体」 · 不停止（节流 20s）
    *  [抢怪·出发前确认] startMove 入口  · 状态 st.entity.at            · 判据「去打 >3 格外的怪 且 距上次刷新 >6s」· 动作「先 fetchTravelData() 重拉实体，本 tick 不动」 · 不停止（节流 6s）
    *  [到位没触发动作] scheduleArriveAction()· 状态 无（一次性）        · 判据「到位 1.3s 后格子还有 action 且没出对应窗口」· 动作「补一次 execTileAction(action)」；敌人格无 action 则改用 walkTo(同格) 重触发战斗 · 每次到位 1 次
@@ -733,11 +734,11 @@
       _walkRequests.add(xhr);
     }).on('ajaxComplete.nrWalkCancel', function (_ev, xhr) { _walkRequests.delete(xhr); });
   }
-  function safeWalkTo(x, y, cb) {
+  function safeWalkTo(x, y, cb, alive) {
     if (!inGame()) return false;
     const seq = walkSeq, id = character.id, mapId = character.current_map;
     const go = function () {
-      if (seq !== walkSeq || !inGame() || character.id !== id || character.current_map !== mapId) return false;
+      if (seq !== walkSeq || !inGame() || character.id !== id || character.current_map !== mapId || (alive && !alive())) return false;
       installWalkRequestGuard();
       const previous = _walkRequestOwner;
       _walkRequestOwner = { seq: seq, id: id, mapId: mapId };
@@ -1122,9 +1123,18 @@
    * 上限：RENDER_MAX 次 → 刷新页面。
    * 高级参数：不受影响。
    * ───────────────────────────────────────────────────────────── */
-  const RENDER_STUCK_MS = 4000;   /* ★ v2.6.175：8s → 4s，换图没重画时更快恢复 */
+  const RENDER_STUCK_MS = 6000;   /* ★ v2.6.208：4s → 6s，等久一点再重画，避免把瞬时不一致当成卡住 */
   const RENDER_MAX = 4;
-  /* 只刷新画面（不刷新网页）：调游戏自己的 loadTravel() —— 等价于手动换一次图 */
+  /* 只刷新画面（不刷新网页）：调游戏自己的 loadTravel() —— 等价于手动换一次图。
+     ★ v2.6.209：去掉「走位中 / 交互中就不重画」的闸门 + 延迟重画（isWalkingNow / renderRedrawBlocked /
+     scheduleDeferredReload 全部删除）。原因：
+       1) 那个闸门判断不可靠 —— walkTo() 发出后、服务端寻路回包前，walk_to / walkQueue / .walking 都是空的，
+          会被判成「没在走位」；
+       2) 延迟重画更坏 —— scheduleDeferredReload 的 500ms 定时器会在**之后任意时刻**（甚至下一次走位途中）
+          才真正调 loadTravel() → clearQueue() 清掉正在走的队列 → 走到一半被弹回 / 之后移动失效。
+     现在只保留「换图」这一条真需求：所有调 softReloadMap() 的地方都是「current_map 变了但
+     客户端没重画 / 加载页卡住」（checkMapRender / checkRenderStale / scheduleRenderCheck / checkMapLoad /
+     活动进出）；正常走位时 current_map 不会变 → 根本不会触发重画。 */
   function softReloadMap() {
     try {
       if (typeof window.loadTravel === 'function') { window.loadTravel(); return true; }
@@ -1252,25 +1262,26 @@
    *       而这段时间事件状态机（eventTick 进入 / 返回期间）会占满 step()，checkMapRender 根本跑不到
    *       → 画面永远不刷新，也没有任何看门狗触发（实测 2026-10-31：搓料理时进活动必现）。
    * 判据（独立节拍，不受 running / 活动 / step() 早退影响）：
-   *   · window.map.id（渲染状态）与 .map_table 底图（真正画面）都读得到且**不一致**，持续 RENDER2_STUCK_MS；
-   *   · 或 character.current_map 与渲染状态不一致持续 RENDER2_STUCK_MS（换图没跟上）。
+   *   · character.current_map 与 .map_table 底图（真正画面）不一致，持续 RENDER2_STUCK_MS。
+   *   （★ v2.6.208：去掉 window.map.id 启发式 —— 只认「换图了但底图没跟上」这一条真需求。）
+   *    ★ v2.6.209：不再用「走位中先不重画」的闸门（判断不可靠 + 延迟重画会在之后任意时刻取消走位）。
    * 动作：先 softReloadMap()（调游戏 loadTravel() 只重画画面 / 重拉 travel，不刷新网页）；
    *       连续 RENDER2_MAX 次仍没对上 → 整页刷新（复用 norroth_render_reload_at 3 分钟防循环）。
    * 上限：RENDER2_MAX 次 → 刷新页面。
    * 高级参数：不受影响。
    * ─────────────────────────────────────────────────────────── */
-  const RENDER2_STUCK_MS = 7000;
+  const RENDER2_STUCK_MS = 8000;   /* ★ v2.6.208：7s → 8s */
   const RENDER2_MAX = 3;
   function checkRenderStale() {
     const R = st.render2 || (st.render2 = { key: '', at: 0, hits: 0 });
     if (!inGame()) { R.key = ''; R.at = 0; R.hits = 0; return false; }
     if (mapLoadStuck()) { R.key = ''; R.at = 0; R.hits = 0; return false; }   /* 加载页在转 → 交给 checkMapLoad */
     const cm = +character.current_map || 0;
-    const rid = renderMapId();       /* window.map.id —— 渲染状态 */
     const drawn = renderedMapId();   /* .map_table 底图 —— 真正画面 */
+    /* ★ v2.6.208：判据只看「角色所在图 vs 屏幕上真正画出来的底图」——
+       不再用 window.map.id 做启发式（正常播放时它和底图可能短暂不一致 → 误报重画）。 */
     let why = '';
-    if (rid > 0 && drawn > 0 && rid !== drawn) why = '画面(' + drawn + ')与渲染状态(' + rid + ')不一致';
-    else if (rid > 0 && cm > 0 && cm !== rid) why = '角色在 ' + cm + '，渲染状态还是 ' + rid;
+    if (cm > 0 && drawn > 0 && cm !== drawn) why = '角色在 ' + cm + '，画面还停在 ' + drawn;
     if (!why) { R.key = ''; R.at = 0; R.hits = 0; return false; }
     if (R.key !== why) { R.key = why; R.at = now(); R.hits = 0; return false; }   /* 刚出现 → 先给客户端时间 */
     if (now() - R.at < RENDER2_STUCK_MS) return false;
@@ -5934,14 +5945,32 @@
       return isEventCombatMap(character.current_map);
     } catch (e) { return false; }
   }
+  function eventExitPending(E) {
+    const t = now(), id = +character.current_map;
+    if (!E.exitSince) E.exitSince = t;
+    const drawn = renderedMapId();
+    const loading = !(id > 0) || E.gateBusy || E.phase === 'enter' || !renderSynced() || mapLoadStuck() || (drawn > 0 && drawn !== id);
+    if (loading) { E.exitMap = 0; E.exitAt = 0; }
+    else if (E.exitMap !== id) { E.exitMap = id; E.exitAt = t; }
+    if (!loading && t - E.exitAt >= 3000) return false;
+    setStatus('活动：切图状态待确认，保留活动任务…');
+    // 切图失败只重同步画面，不把一次临时地图值当成活动已结束。
+    if (t - E.exitSince >= 10000 && t - (E.exitResyncAt || 0) >= 15000 && !E.gateBusy) {
+      E.exitResyncAt = t;
+      logEvent('活动：离图状态未稳定 → 重同步画面，暂不恢复主任务');
+      softReloadMap();
+    }
+    return true;
+  }
   function eventReset() {
     const E = st.event; if (!E) return;
     E.on = false; E.phase = 'idle'; E.busy = false; E.pointName = ''; E.enteredAt = 0;
     E.busyAt = 0; E.checkAt = 0; E.checkFails = 0; E.combatSkipAt = 0; E.lastHas = null;   /* ★ v2.6.73：清掉检查态，避免残留 busy 卡死 */
-    E.gateBusy = false; E.gateLogAt = 0; E.combatMap = 0;   /* ★ v2.6.101 */
+    E.gateBusy = false; E.gateLogAt = 0; E.combatMap = 0; E.combatSeenMap = 0;
     E.dungeonLogAt = 0;                                     /* ★ v2.6.108 */
     E.gateMap = {}; E.gateTried = {};                       /* ★ v2.6.108：大厅等级门「门→目标图」实测表 / 已试过的门 */
     E.insideHits = 0; E.insideAt = 0;                       /* ★ v2.6.191：Inside Event 退避计数 */
+    E.exitSince = 0; E.exitMap = 0; E.exitAt = 0; E.exitResyncAt = 0; E.returnAt = 0; E.returnFromMap = 0;
   }
   /* 活动是否开启：/modal/activities 里有没有 Event Gate 的 Join 按钮（实测：活动结束按钮消失） */
   async function eventActivitiesHasJoin() {
@@ -6085,9 +6114,28 @@
        进出活动会从第 1 层重新开始。已在活动图里时仍按原逻辑处理（正常采集 / 结束返回）。 */
     if (st.mode === 'tower' && !E.on) { if (E.phase !== 'idle') eventReset(); return false; }
 
+    /* ★ v2.6.205：活动结束后正在用「返回传送门」回进入前的位置 → 接管本 tick，等切图稳定再交给主任务。
+       用户要求（2026-10-31）：活动完结后先检查 portal 是否存在，在的话点它回原位置，然后再衔接主任务。 */
+    if (E.phase === 'returning') {
+      const _waited = now() - (E.returnAt || 0);
+      /* 传送门回图成功的判据：① 地图已切换且画面同步；② 传送门已消失（用过后会关闭）且已过 3s。
+         任一满足即算回图完成；最多等 15s，超时也放行交给主任务（避免卡死）。 */
+      const _moved = (+character.current_map !== +E.returnFromMap) && renderSynced() && !mapLoadStuck();
+      const _portalGone = !hudShown(document.getElementById('hud_portal'));
+      const _done = _moved || (_portalGone && _waited >= 3000);
+      if (!_done && _waited < 15000) {
+        setStatus('活动结束：使用返回传送门回原位置…');
+        return true;
+      }
+      E.phase = 'idle';
+      logEvent('活动：返回传送门已把角色送回「' + currentMapName() + '」→ 交给当前任务');
+      return false;
+    }
+
     /* ① 已在活动里（大厅 1183 或 战斗区 1184~1189） */
     const onCombatArea = isEventCombatMap(character.current_map);
     if (onEventMap || onCombatArea) {
+      E.exitSince = 0; E.exitMap = 0; E.exitAt = 0; E.exitResyncAt = 0;
       /* ★ v2.6.150：已经在活动图里 → 任何「回挂机地图」的待办导航都是过期的，清掉。
          否则 eventTick 在采集 / 战斗分支让出 tick 后，navPendingTick() 会把角色从活动图拽走
          （「切副角色收东西再切回主角色」时必现：恢复挂机登记了回图待办 → 再也进不去活动）。 */
@@ -6095,8 +6143,9 @@
       /* ★ v2.6.101：战斗型 —— 大厅里走到「当前等级对应的战斗区」入口；战斗区里就正常开打 */
       if (cfg.eventRes === 'combat') {
         if (onCombatArea) {
-          if (!E.on) {
+          if (!E.on || E.combatSeenMap !== +character.current_map) {
             E.on = true; E.phase = 'in'; E.enteredAt = now(); E.combatMap = +character.current_map;
+            E.combatSeenMap = +character.current_map;
             logEvent('活动：已进入战斗区「' + currentMapName() + '」（角色 Lv ' + (character.level || '?') + '）→ 开始战斗');
             setStatus('活动：在战斗区战斗（' + currentMapName() + '）…');
           }
@@ -6124,6 +6173,10 @@
         if (E.gateBusy) return true;
         /* ★ v2.6.182：导航 / 切图进行中 → 先别开始走向门（避免和正在进行的导航抢路）。 */
         if (navBusy || st.mapSwitch.active) return true;
+        if (!renderSynced() || mapLoadStuck()) {
+          setStatus('活动：等待大厅切图完成，再选择战斗区入口…');
+          return true;
+        }
         const gate = eventCombatGate();
         if (!gate) {
           /* ★ v2.6.109：先分清「本等级根本没有战斗区」（Lv1-9）和「有区域但没找到门」 */
@@ -6139,6 +6192,7 @@
           setStatus('活动：等待战斗区入口（Lv ' + (character.level || '?') + '）…');
           return true;
         }
+        E.on = true; E.phase = 'in'; // 走向战斗区期间保留活动归属
         E.gateBusy = true; if (gate.id) E.combatMap = gate.id;
         logEvent('活动：前往战斗区「' + gate.name + '」@' + gate.x + ',' + gate.y + '（角色 Lv ' + (character.level || '?') + '）');
         setStatus('活动：进入战斗区（' + gate.name + '）…');
@@ -6184,12 +6238,20 @@
        这里别误判「活动结束」去抢导航，也别清 E.on / pointName。 */
     if (st.repair.active || st.sell.active || st.bank.active) return true;
 
-    /* ② 刚被弹出活动图（活动结束服务器自动弹出）→ ★ v2.6.190：取消「找返回传送门 / 手动导航回原图」。
-       用户要求：弹出后直接交给「当前设置的任务」——有任务（挂机中）就按任务继续，没任务就原地待命。
-       （原来会 tryBackPortal() 找退出按钮，找不到再 navToMap(home) 手动走回原图。） */
+    /* ② 刚被弹出活动图（活动结束服务器自动弹出）→ ★ v2.6.205：先试「返回传送门」回进入前的位置，再交给当前任务。
+       用户要求（2026-10-31）：活动完结后先检查 portal 是否存在，在的话点它回原位置，然后再衔接主任务。
+       （v2.6.190 曾按当时要求取消这一步；现按新要求恢复：有 portal 就点它回去，没有就直接交给当前任务。） */
     if (E.on) {
-      E.on = false; E.phase = 'idle'; E.pointName = '';
-      logEvent('活动：已离开活动地图（' + currentMapName() + '）→ 交给当前任务（未设任务则原地待命）');
+      if (eventExitPending(E)) return true;
+      E.on = false; E.pointName = '';
+      if (tryBackPortal('活动结束')) {
+        E.phase = 'returning';
+        E.returnAt = now();
+        E.returnFromMap = +character.current_map;
+        return true;   /* 接管本 tick，等返回传送门把角色送回原图 */
+      }
+      E.phase = 'idle';
+      logEvent('活动：已离开活动地图（' + currentMapName() + '）→ 未发现返回传送门，交给当前任务（未设任务则原地待命）');
       return false;   /* 不抢本 tick：让主循环按当前任务继续；没任务就停着 */
     }
 
@@ -6992,45 +7054,39 @@
    * 高级参数：阈值抖动（stuckSec 上下漂移）、节拍抖动（本函数由主循环驱动）。
    * ─────────────────────────────────────────────────────────── */
 
-  /* ★ 卡死强恢复：像真人一样「点几个不同方向的邻近格子」把游戏重新走起来。
-     真人卡住时点几下别处就能恢复；这里用同样思路：先复位 can_travel + 清队列，
-     再朝 3 个不同方向的邻近可走格各点一次。期间主循环让路（st.nudging），避免打架。 */
+  /* 卡死强恢复：清掉旧队列后，只试一次可直达的相邻空白格。
+     没有安全邻格就不移动；不再扩大到远处，也不排队连点多个方向。 */
   function nudgeRecover() {
+    if (st.nudging && now() - st.nudging < 2600) return 0;
     const cancelSeq = navCancelSeq, mapId = character.current_map, charId = character.id;
-    let tried = 0;
+    const cx = character.x, cy = character.y;
     try {
       abortWalk();
-      const pts = (window.points || []).filter(p => p && typeof p.x === 'number' && typeof p.y === 'number');
-      const cx = character.x, cy = character.y;
-      const cand = pts
-        .filter(p => (p.x !== cx || p.y !== cy))
-        .map(p => ({ x: p.x, y: p.y, d: Math.abs(p.x - cx) + Math.abs(p.y - cy) }))
-        .filter(p => p.d >= 1 && p.d <= 8)
-        .sort((a, b) => a.d - b.d);
-      const picks = [], seen = {};
-      for (const p of cand) {
-        const dir = (p.x >= cx ? 'E' : 'W') + (p.y >= cy ? 'S' : 'N');
-        if (seen[dir]) continue;
-        seen[dir] = 1; picks.push(p);
-        if (picks.length >= 3) break;
-      }
-      if (!picks.length && cand.length) picks.push(cand[0]);
-      if (!picks.length) return 0;
-      st.nudging = now();
-      picks.forEach((p, i) => {
-        setTimeout(() => {
-          try {
-            if (cancelSeq !== navCancelSeq || character.id !== charId || character.current_map !== mapId) return;
-            if (hasFrame('frame_Combat')) return;      // 已经打起来了就别再乱点
-            window.can_travel = true;
-            abortWalk();
-            safeWalkTo(p.x, p.y);
-          } catch (e) { /* ignore */ }
-        }, 300 + i * 500);
+      const p = (window.points || []).find(function (p) {
+        if (!p || Math.abs(p.x - cx) + Math.abs(p.y - cy) !== 1) return false;
+        if (tileActionAt(p.x, p.y)) return false; // 不踩门、陷阱、采集点等动作格
+        if (typeof window.findWalkPath === 'function') {
+          const path = window.findWalkPath(cx, cy, p.x, p.y);
+          if (!Array.isArray(path)) return false;
+          const steps = path.filter(function (s) { return typeof s === 'string' && /^\d+-\d+$/.test(s) && s !== cx + '-' + cy; });
+          if (steps.length !== 1 || steps[0] !== p.x + '-' + p.y) return false;
+        }
+        return true;
       });
-      tried = picks.length;
-    } catch (e) { /* ignore */ }
-    return tried;
+      if (!p) return 0; // 没有安全直达邻格时不扩大搜索距离
+      const alive = function () {
+        return cancelSeq === navCancelSeq && character.id === charId && character.current_map === mapId &&
+          character.x === cx && character.y === cy && !hasFrame('frame_Combat') && !tileActionAt(p.x, p.y);
+      };
+      st.nudging = now();
+      setTimeout(function () {
+        if (!alive()) return;
+        window.can_travel = true;
+        abortWalk();
+        safeWalkTo(p.x, p.y, null, alive); // 真人化延迟结束时再次确认仍只走一格
+      }, 300);
+      return 1;
+    } catch (e) { return 0; }
   }
 
   function checkFrozen() {
@@ -8816,7 +8872,8 @@
        现在：检查照跑，只有「真正进入 / 参战」那一步等导航让出（见 eventTick / ovlTick 里的 navBusy 判据）。 */
     {
       const _evOvlBusy = st.returning || st.mcBusy || st.repair.active || st.sell.active || st.bank.active ||
-                         st.nudging || st.settling || st.tripManual;
+                         (st.nudging && now() - st.nudging < 2600) ||
+                         (st.settling && now() - st.settling < 40000) || st.tripManual;
       if (ovlTick() && !_evOvlBusy) return;
       if (eventTick() && !_evOvlBusy) return;
     }
@@ -10963,7 +11020,7 @@
   }, TICK);
   /* ★ v2.6.191：独立[画面没刷新]看门狗 —— 不受 running / 活动 / step() 早退影响。
      事件进入 / 返回期间 eventTick 会占满 step()（提前 return），checkMapRender 根本跑不到 →
-     画面卡在旧图时没有任何看门狗能触发。这里用独立节拍兜底：检测「渲染状态 vs 真正画面」不一致 → 重画 / 刷新。 */
+     画面卡在旧图时没有任何看门狗能触发。这里用独立节拍兜底：检测「角色所在图 vs 真正画面(.map_table 底图)」不一致 → 重画 / 刷新。 */
   rhythmTimer(function () { try { checkRenderStale(); } catch (e) { /* ignore */ } }, 2000);
 
   const spdBoot = setInterval(() => {
@@ -11528,10 +11585,11 @@
     return out;
   }
   /* 离 cur 跳数最小的「有传送站的地图」（含 cur 自己） */
-  function nearestWaygateMap(cur) {
+  function nearestWaygateMap(cur, allowCity, allowWild) {
     cur = +cur; if (!(cur > 0)) return 0;
     let best = 0, bl = Infinity;
     waygateMaps().forEach(function (id) {
+      if ((isTownMap(id) && allowCity === false) || (!isTownMap(id) && allowWild === false)) return;
       const d = navDist(cur, id);
       if (d < bl) { bl = d; best = id; }
     });
@@ -11688,7 +11746,7 @@
     setStatus('导航中 → ' + navMapName(p.dest) + '（第 ' + p.tries + ' 次）…');
     (async function () {
       try {
-        const ok = await navToMap(p.dest, { alive: function () { return running && navPending === p; }, allowCity: true, allowWild: true });
+        const ok = await navToMap(p.dest, { alive: function () { return running && navPending === p; }, allowCity: true });
         if (ok && navPending === p) navClearPending('已到达「' + navMapName(p.dest) + '」');
       } catch (e) { /* ignore */ }
     })();
@@ -11743,6 +11801,12 @@
     if (!(cur > 0)) return false;
     const target = escapeTarget(dest, allowCity, allowWild);
     if (!(target > 0) || target === cur) return false;
+    /* ★ v2.6.206：目标是城镇且勾了「城市传送点」= 有会员 → 优先世界地图免费传（更快），失败再走传送站。 */
+    if (allowCity && isTownMap(target)) {
+      const out = await navWorldTeleport(target, alive);
+      if (alive && !alive()) return false;
+      if (+out === target) return true;
+    }
     const page = isTownMap(target) ? 'cities' : 'wilderness';
     logEvent('无通路：从传送站逃生 → 「' + navMapName(target) + '」');
     let out = await navWaygateOut(target, alive, page, true, true);   /* ★ v2.6.118：卡住时允许退而求其次（随便出去一个） */
@@ -11761,12 +11825,27 @@
     const D = +dest;
     if (!(D > 0) || !(cur > 0) || cur === D) return false;
     if (isTownMap(D) || isWildAnchor(D)) return false;      /* 这两种走已有分支 */
-    const anchor = nearestWaygateMap(D);                    /* 离目的地最近的传送站图 */
+    const dWalk = navDist(cur, D);                          /* 从当前位置直接走到目的地 */
+    if (!(dWalk < Infinity)) return false;
+    /* ★ v2.6.206：勾了「城市传送点」= 有会员 → 非城镇目的地也优先「世界地图免费传到最近的城镇 + 步行」，
+       失败 / 不划算再走传送站。世界地图从任意位置直接传，比走到传送站快。 */
+    if (allowCity) {
+      const tw = worldTeleportTarget(D);
+      if (tw > 0 && tw !== cur && isTownMap(tw)) {
+        const dw = navDist(tw, D);
+        if (dw < Infinity && dw + WAYGATE_SLACK < dWalk) {
+          logEvent('世界地图传送：目的地「' + navMapName(D) + '」较远 → 先免费传到「' + navMapName(tw) + '」再走（' + dw + ' 跳）');
+          const wout = await navWorldTeleport(tw, alive);
+          if (alive && !alive()) return false;
+          if (+wout === tw && await navWalkPlanTo(D, alive)) return true;
+        }
+      }
+    }
+    const anchor = nearestWaygateMap(D, allowCity, allowWild); /* 仅从允许的目的地类型中选锚点 */
     if (!(anchor > 0) || anchor === D) return false;
     const page = isTownMap(anchor) ? 'cities' : 'wilderness';
     if (page === 'cities' && !allowCity) return false;
     if (page === 'wilderness' && !allowWild) return false;
-    const dWalk = navDist(cur, D);                          /* 从当前位置直接走到目的地 */
     const dAnchor = navDist(anchor, D);                     /* 从锚点走到目的地 */
     if (!(dAnchor < Infinity)) return false;
     /* 只有「传送到锚点再走」明显比「直接走」省时，才绕传送站（不然就直走） */
@@ -11796,7 +11875,7 @@
     const callerAlive = opts.alive || function () { return true; };
     const alive = function () { return cancelSeq === navCancelSeq && callerAlive(); };
     const allowCity = (opts.allowCity === undefined) ? !!cfg.useWaygateCity : !!opts.allowCity;
-    const allowWild = (opts.allowWild === undefined) ? !!cfg.useWaygateWild : !!opts.allowWild;
+    const allowWild = !!cfg.useWaygateWild && opts.allowWild !== false; // 调用方不能覆盖用户关闭的野外传送开关
     const walkOnly = !!opts.walkOnly;
     if (navBusy && !opts._nested) return false;
     if (!opts._nested) navBusy = true;
@@ -11805,13 +11884,13 @@
       if (!walkOnly) {
         /* ② 目的地是城市 + 城市传送点开 */
         if (isTownMap(dest) && allowCity) {
-          if (nobleActive()) {
-            const out = await navWorldTeleport(dest, alive);
-            if (alive && !alive()) return false;
-            if (+out === dest) return true;
-            _nobleCache = null;                           /* 传不动 → 可能不是 Noble 了，下次重判 */
-          }
-          /* ★ v2.6.192：目的地是城镇且勾了「城市传送点」→ 一律走传送站（不再按「划不划算」跳过）。 */
+          /* ★ v2.6.206：勾了「城市传送点」= 有会员 → 优先世界地图免费传（更快）；失败才用传送站兜底。
+             （原来只在检测到 Noble buff 时才试世界地图，检测不到就直接走传送站。） */
+          const out = await navWorldTeleport(dest, alive);
+          if (alive && !alive()) return false;
+          if (+out === dest) return true;
+          _nobleCache = null;                             /* 传不动 → 可能不是 Noble 了，下次重判 */
+          /* 世界地图传不动 → 传送站兜底（★ v2.6.192：目的地是城镇且勾了「城市传送点」→ 不再按「划不划算」跳过）。 */
           if (await navWaygateLogic(dest, 'cities', alive, true)) return true;
           if (alive && !alive()) return false;
         }
@@ -12013,6 +12092,8 @@
   }
   async function navWaygateOut(destId, alive, tab, strict, anyOk) {
     if (+character.current_map === +destId) return +destId;   /* ★ v2.6.197：已在目的地 → 不传 */
+    if (!cfg.useWaygateWild && tab === 'wilderness') return 0;
+    if (!tab && !cfg.useWaygateWild) tab = 'cities';
     const wg = findWaygateTile();
     if (!wg) return 0;
     if (alive && !alive()) return 0;
@@ -12078,6 +12159,7 @@
         if (!m) return;
         const id = +m[1];
         if (!(id > 0) || id === +character.current_map) return;
+        if (!cfg.useWaygateWild && !isTownMap(id)) return;
         if (out.indexOf(id) < 0) out.push(id);
       });
       return out;
@@ -12179,6 +12261,7 @@
         break;
       }
       const want = order[k];
+      if ((alive && !alive()) || (!cfg.useWaygateWild && !isTownMap(want))) return 0;
       if (!btnOf(want)) continue;
       setStatus('传送站：前往「' + navMapName(want) + '」…');
       logEvent('传送站 → ' + navMapName(want));
@@ -12189,8 +12272,15 @@
         const steps = Math.round(Math.min(TP_WAIT_MS, remain) / 500);
         const btn = btnOf(want);
         if (!btn) break;
-        try { humanClick(btn); } catch (e) { /* ignore */ }
-        for (let i = 0; i < steps; i++) { await sleep(500); if (character.current_map !== from) break; }
+        const canTeleport = function () {
+          return (!alive || alive()) && character.current_map === from && (cfg.useWaygateWild || isTownMap(want));
+        };
+        humanDefer(function () { if (canTeleport()) btn.click(); }, canTeleport);
+        for (let i = 0; i < steps; i++) {
+          await sleep(500);
+          if (alive && !alive()) return 0;
+          if (character.current_map !== from) break;
+        }
         if (character.current_map !== from) break;
         await sleep(600);
       }
@@ -12286,7 +12376,7 @@
     try {
       setStatus('阵亡复活：导航回挂机地图「' + townName(dest) + '」…');
       logEvent('阵亡→回图 ' + townName(dest));
-      const ok = await navToMap(dest, { alive: () => running, allowCity: true, allowWild: true });   // ★ 阵亡回图：必须允许传送出来
+      const ok = await navToMap(dest, { alive: () => running, allowCity: true }); // 城市逃生仍可用，野外目的地遵守用户开关
       st.returnFails = ok ? 0 : ((st.returnFails || 0) + 1);
       if (ok) navClearPending('已到达「' + navMapName(dest) + '」');
       logEvent(ok ? ('已回图 ' + townName(dest)) : ('回图失败(第' + st.returnFails + '次)'));

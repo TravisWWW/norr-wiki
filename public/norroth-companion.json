@@ -1,8 +1,8 @@
 {
-  "version": "2.6.202",
-  "date": "2026-10-31",
-  "notes": "导航待办改为「暂时放弃」（长退避后重试）；总表删掉「损坏图标残留」措辞",
+  "version": "2.6.209",
+  "date": "2026-11-01",
+  "notes": "修复走位途中被弹回：删除不可靠的「走位中不重画」闸门与延迟重画，重画只在换图时触发；活动结束用返回传送门回原位；城市传送点=会员优先世界地图免费传送",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 938717,
-  "sha256": "9fd1f26443e987b9ebbc7d93b941cbd1d23f502bba2da1a6d2ea6fbb5686a9ec"
+  "size": 945267,
+  "sha256": "8e6b6de5e04a25e270ee425b6cc706c2206b5d67cd7e59b7d66ed9647382d37f"
 }
