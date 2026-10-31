@@ -1,8 +1,8 @@
 {
-  "version": "2.6.215",
+  "version": "2.6.216",
   "date": "2026-11-01",
-  "notes": "手动「扫描背包」也改成静默扫描（不打开背包窗口，直接读 /modal/inventory），与自动扫描走同一条路",
+  "notes": "背包扫描合并为单一函数 scanBag（静默：直接读 /modal/inventory，不打开背包窗口）；删除冗余的 scanBagSilent 包装",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 877904,
-  "sha256": "ce16bddbceafa9aac8860eb8a0bc8cb0d8d9167070921fb6d603d52e4f10ce6d"
+  "size": 877590,
+  "sha256": "4d33a5ef0e60583c0c31ac8ada00d07a2c140053784a1bed4f0844857be5ee76"
 }

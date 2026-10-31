@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.215
+// @version      2.6.216
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -187,7 +187,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.215';   // 与 @version 保持一致
+  const SCRIPT_VER = '2.6.216';   // 与 @version 保持一致
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -5116,23 +5116,12 @@
 
   /* ======================= 13. 背包扫描 ======================= */
 
-  /* ★ v2.6.215：手动「扫描背包」也改成静默扫描（不打开背包窗口）—— 直接拉 /modal/inventory。
-     旧版会点开游戏的背包窗口再读 DOM，现在与自动扫描走同一条路。 */
+  /* ★ v2.6.216：背包扫描只有一个函数（静默：直接读 /modal/inventory，不打开背包窗口）。
+     原来「开窗口读 DOM」的旧实现已删除；手动「扫描背包」按钮、自动扫描、rescanBagForPotion 都走这里。
+     解析口径：use_name 过滤 + 图标缓存 + 数量 span（invCount 天然跳过 🔒）。 */
   async function scanBag() {
     const btn = document.getElementById('nr-scan');
     if (btn) { btn.disabled = true; btn.textContent = '扫描中…'; }
-    try {
-      const ok = await scanBagSilent();
-      setStatus(ok ? ('背包扫描完成，发现 ' + ((cfg.bagList || []).length) + ' 种可用物品') : '背包扫描失败：读不到背包数据');
-      return ok;
-    } finally {
-      if (btn) { btn.disabled = false; btn.textContent = '重新扫描背包'; }
-    }
-  }
-  /* ★ v2.6.214：静默扫一次背包（不打开背包窗口）—— 直接拉 /modal/inventory 重建 cfg.bagList。
-     解析口径与旧版「开窗口读 DOM」一致：use_name 过滤 + 图标缓存 + 数量 span（invCount 天然跳过 🔒）。
-     手动「扫描背包」按钮与「没选补药」的自动扫描都走这里。 */
-  async function scanBagSilent() {
     try {
       await ensureTTDB();   // ★ 先拿到物品效果库，才能精确分类补血/补蓝
       const h = await fetchModalHtml('/modal/inventory', true);
@@ -5174,8 +5163,14 @@
       if (cfg.mpPotion && !list.some(i => i.key === cfg.mpPotion)) cfg.mpPotion = '';
       saveCfg();
       renderPotionSelects();
+      setStatus('背包扫描完成，发现 ' + list.length + ' 种可用物品');
       return true;
-    } catch (e) { return false; }
+    } catch (e) {
+      setStatus('背包扫描失败：' + (e && e.message ? e.message : String(e)));
+      return false;
+    } finally {
+      if (btn) { btn.disabled = false; btn.textContent = '重新扫描背包'; }
+    }
   }
   /* ★ v2.6.214：还没选补血/补蓝药时，自动静默扫一次背包（节流）。
      触发点：① 切到「食物」页；② 自动补药需要补药但当前没有可选项。返回 true = 本次真的发起了扫描。 */
@@ -5185,7 +5180,7 @@
     if (cfg.hpPotion || cfg.mpPotion) return false;         /* 已经选过 → 不打扰 */
     if (now() - _autoScanBagAt < 15000) return false;       /* 节流：15s 内只自动扫一次 */
     _autoScanBagAt = now();
-    scanBagSilent().then(ok => { if (ok) setStatus('未选择补药 → 已自动扫描背包，可在「食物」页选择'); });
+    scanBag().then(ok => { if (ok) setStatus('未选择补药 → 已自动扫描背包，可在「食物」页选择'); });
     return true;
   }
 
