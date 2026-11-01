@@ -1,8 +1,8 @@
 {
-  "version": "2.6.233",
+  "version": "2.6.234",
   "date": "2026-11-02",
-  "notes": "v2.6.233：装备 tooltip 改在「Quality」下加一行「基础：…」，直接列出该底材的固定词条（基础属性），其余为随机词条。改为按底材名匹配，不再受随机词条叠加/数值变化影响；覆盖背包、身上装备、银行、战利品、Inspect 对话框、交易行。",
+  "notes": "v2.6.234：装备 tooltip「基础：…」数据源改为游戏自身的 item_tooltip_boxes（tooltip_texts.js 全局），随游戏更新自动生效；覆盖全部装备（含活动/独特如南瓜帽、副手法书、宝石、戒指项链），按底材名+等级匹配；修正上一版误用旧 wiki 数据导致的基础值/词条名错误。",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 946269,
-  "sha256": "6e04e0332c7dbda5bb3a86af4950c6c68485eae9497df5ca39405020cdd133ba"
+  "size": 900290,
+  "sha256": "9dd74e670522fc0c441a56cc0f41eb883dea3987309c2c7b5a447747fe231b66"
 }
