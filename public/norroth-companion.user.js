@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.226
+// @version      2.6.227
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -187,7 +187,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.226';   // 与 @version 保持一致
+  const SCRIPT_VER = '2.6.227';   // 与 @version 保持一致
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -2633,11 +2633,12 @@
     if (st.pendingCheck) return true;                                                 // 上一瓶还没结算 → 等它
     if (now() - st.lastUse < Math.max(200, jitterVal(+cfg.potionDelayMs || 1500))) return true;  // 用药冷却中 → 等
 
+    let scanning = false;
     for (const kind of need) {
       const key = potionKey(kind);
       if (!key) {
         /* ★ v2.6.224：没选 / 选中的已用完 → 自动（静默）扫一次背包，然后选「数量最多的补品」。 */
-        if (autoScanAndPick(kind)) setStatus('缺少' + (kind === 'hp' ? '补血' : '补蓝') + '药，正在自动扫描背包并重选…');
+        if (autoScanAndPick(kind)) { scanning = true; setStatus('缺少' + (kind === 'hp' ? '补血' : '补蓝') + '药，正在自动扫描背包并重选…'); }
         else setStatus('缺少' + (kind === 'hp' ? '补血' : '补蓝') + '药，请到「食物」页扫描背包');
         continue;
       }
@@ -2662,6 +2663,11 @@
         return true;
       }
     }
+
+    /* ★ v2.6.227：背包扫描进行中 → 仍算「回血中」，先别急着去寻敌（扫完会自动选好补品接着补）。
+       只在「扫描真的在跑」时阻塞；autoScanAndPick 被 15s 节流、或扫完仍无可用补品时返回 false，
+       这里就落到下面的 st.healing=false，不会死等。 */
+    if (scanning) return true;
 
     /* 需要补但没药 / 药连续失败 → 不阻塞主循环，继续正常挂机（避免死等） */
     st.healing = false;

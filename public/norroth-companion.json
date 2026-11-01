@@ -1,8 +1,8 @@
 {
-  "version": "2.6.226",
+  "version": "2.6.227",
   "date": "2026-11-01",
-  "notes": "v2.6.226：① 回血期间「停住、不寻敌」——把让路判据提前到 retarget/checkMove 之前，并中止正在进行的走位（原来走位中会被绕过，还没补到阈值就又进战斗）；② 吃药最小间隔 700→200。",
+  "notes": "v2.6.227：选中的食物吃完触发自动扫背包时，扫描期间也算「回血中」→ 先别去寻怪（原来扫描期间 st.healing 被置回 false，会照常去寻下一只怪）。扫完自动选好补品接着补，无死等。",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 887394,
-  "sha256": "d0002fcc904a95fc70c06ce123db2a25112bf9d0cbedcb8e53f9fb0328341932"
+  "size": 887816,
+  "sha256": "1645eec46b082649bf228cba9cf9cb0a329a4460c51071af43419e37183ece27"
 }
