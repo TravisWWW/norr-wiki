@@ -1,8 +1,8 @@
 {
-  "version": "2.6.235",
+  "version": "2.6.236",
   "date": "2026-11-02",
-  "notes": "修复基础词条标注重建 tooltip 导致 reroll 延迟显示回调失效；插入和移除基础行均保留原属性节点。",
+  "notes": "活动离场回到进入前地图，或已离开 Elundi(16)，即结束 portal 返回流程，避免重复使用返回传送门。",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 901406,
-  "sha256": "b4b9e36f550401841c5653b36016980bbad2cd86a0336f67528ba9b2bad48c90"
+  "size": 901662,
+  "sha256": "41f0b59603a2f0d4e9c2a21fa57607b709b8bfde5a3c04769fe2e78c04f6bb3e"
 }

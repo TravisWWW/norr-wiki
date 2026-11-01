@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.235
+// @version      2.6.236
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -188,7 +188,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.235';   // 与 @version 保持一致
+  const SCRIPT_VER = '2.6.236';   // 与 @version 保持一致
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -5968,6 +5968,13 @@
     }, 2500);
     return false;
   }
+  /* 活动离场：回到原图，或已经离开 Elundi(16)，就不再使用返回传送门。
+     活动大厅 / 战斗区以及未同步的切图状态不算返回完成。 */
+  function eventReturnedMap(target) {
+    const id = +character.current_map;
+    return id > 0 && !isEventLobby(id) && !isEventCombatMap(id) &&
+      ((+target > 0 && id === +target) || id !== 16) && renderSynced() && !mapLoadStuck();
+  }
   /* 主循环钩子：true = 本 tick 已被活动逻辑接管（进入 / 返回期间） */
   function eventTick() {
     if (!cfg.autoEvent) { if (st.event.phase !== 'idle') eventReset(); return false; }
@@ -5997,18 +6004,18 @@
     if (E.phase === 'returning') {
       const _waited = now() - (E.returnAt || 0);
       const _target = +E.returnTarget || 0;
-      /* ★ v2.6.220：回图成功的判据改成「回到进入活动前那张图（E.enterFromMap）」——
-         只要回到目标图且画面同步就算完成；没有目标图时退回「传送门已消失且已过 3s」。
-         最多等 15s，超时也放行交给主任务（避免卡死）。 */
-      const _atTarget = !!(_target && +character.current_map === _target) && renderSynced() && !mapLoadStuck();
+      /* 回到原图或离开 Elundi 即完成；保留 portal 消失 / 15s 超时兜底。 */
+      const _atTarget = !!(_target && +character.current_map === _target);
+      const _returned = eventReturnedMap(_target);
       const _portalGone = !hudShown(document.getElementById('hud_portal'));
-      const _done = _atTarget || (_portalGone && _waited >= 3000);
+      const _done = _returned || (_portalGone && _waited >= 3000);
       if (!_done && _waited < 15000) {
         setStatus('活动结束：使用返回传送门回原位置…');
         return true;
       }
       E.phase = 'idle';
-      if (_atTarget) logEvent('活动：返回传送门已把角色送回进入前的图「' + currentMapName() + '」→ 交给当前任务');
+      if (_returned && _atTarget) logEvent('活动：返回传送门已把角色送回进入前的图「' + currentMapName() + '」→ 交给当前任务');
+      else if (_returned) logEvent('活动：已离开 Elundi（当前「' + currentMapName() + '」）→ 返回完成，不再点传送门');
       else logEvent('活动：返回传送门处理完毕（当前「' + currentMapName() + '」）→ 交给当前任务');
       return false;
     }
@@ -6125,12 +6132,11 @@
     if (E.on) {
       if (eventExitPending(E)) return true;
       E.on = false; E.pointName = '';
-      /* ★ v2.6.220：返回判据 = 「回到进入活动前那张图（E.enterFromMap）」。
-         已经在那张图 → 不点 portal（避免重复点 / 被送回别处）。 */
+      /* 已回原图，或者已离开 Elundi → 不再点 portal。 */
       const _target = +E.enterFromMap || 0;
-      if (_target && +character.current_map === _target) {
+      if (eventReturnedMap(_target)) {
         E.phase = 'idle';
-        logEvent('活动：已离开活动图，且已在进入前的图「' + currentMapName() + '」→ 不点返回传送门');
+        logEvent('活动：已离开活动图，已回原图或离开 Elundi（当前「' + currentMapName() + '」）→ 不点返回传送门');
         return false;
       }
       if (tryBackPortal('活动结束')) {
