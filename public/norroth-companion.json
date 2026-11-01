@@ -1,8 +1,8 @@
 {
-  "version": "2.6.231",
-  "date": "2026-11-01",
-  "notes": "v2.6.231：修传送站「Fountain of Rebirth」按钮 id 1→1000（1 只是世界地图节点、没有 waygate 图标；泉水面板实际是 waygate?id=1000）。",
+  "version": "2.6.232",
+  "date": "2026-11-02",
+  "notes": "v2.6.232：新增「装备基础词条标注」——悬停/查看装备时，把该底材的固定词条（基础属性）前面打绿色「基」标记并加图例，其余为随机词条。数据源：游戏内 help id=113~132 可制作装备表（695 件底材）。覆盖背包、身上装备、银行、战利品、Inspect 对话框（聊天装备链接）、交易行装备列表；可在「高级」页开关。",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 890354,
-  "sha256": "35f5e1fd83d998b23a4ba10ff407704072944ae5f77191d8f02d040eb87e190c"
+  "size": 941230,
+  "sha256": "0c5973017ec00db751f0625068132a08247b1051c2bec4847fccd4653f337f8e"
 }
