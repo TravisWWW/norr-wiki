@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.229
+// @version      2.6.230
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -187,7 +187,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.229';   // 与 @version 保持一致
+  const SCRIPT_VER = '2.6.230';   // 与 @version 保持一致
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -4166,7 +4166,8 @@
       if (!plan) {
         /* ★ v2.6.86：没有步行路线 ≠ 到不了 —— 勾了传送点的话，travelToRepairPoint 会走 navToMap 用传送点过去，
            所以这里只在「既没步行路线、传送点也用不了」时才报错。返回的占位路线在选了城镇时会被忽略。 */
-        if (!waygateReachable(townId)) throw new Error('暂无到「' + townName(townId) + '」的路线（该区域还没探索过，先手动走一趟让插件学习；也可勾选「城市/野外传送点」）');
+        /* ★ v2.6.230：本图有传送站（如重生泉水 1000）时也不报错 —— navToMap 的逃生兜底能传出去（含 El Caspar 保底）。 */
+        if (!waygateReachable(townId) && !isWaygateMap(character.current_map)) throw new Error('暂无到「' + townName(townId) + '」的路线（该区域还没探索过，先手动走一趟让插件学习；也可勾选「城市/野外传送点」）');
         return [{ id: String(townId), name: navMapName(townId) }];
       }
       return plan.map(id => ({ id: String(id), name: navMapName(id) }));
@@ -5121,7 +5122,7 @@
   }
 
   /* ★ v2.6.52：回城休整原因文案（挂机时自动触发的回城，日志里写清楚为什么） */
-  const RESTOCK_WHY_CN = { repair: '装备/工具耐久不足', bag: '背包快满', manual: '手动立即维护' };
+  const RESTOCK_WHY_CN = { repair: '装备/工具耐久不足', bag: '背包快满', manual: '手动立即维护', death: '阵亡复活休整' };
   /** 触发一次「回城休整」行程（清包 → 存仓 → 修理，按配置）
       reason = 'repair' | 'bag' | 'manual'；detail = 补充说明（耐久明细 / 背包剩余格数） */
   function startRestock(reason, detail) {
@@ -8530,13 +8531,12 @@
     if (dead && st.mode === 'tower' && cfg.towerStopDeath) { stop('爬塔：角色阵亡，按设置停止'); return; }
     if (dead && cfg.autoRespawn) { handleDefeat(); return; }
     if (!dead && defeatAt) {
-      resetDefeat(); logEvent('已复活，继续挂机'); setStatus('已复活，继续挂机');
-      /* ★ v2.6.119：死亡后登记「待办目的地 = 挂机图」→ 没到之前不开始任务，中途被带偏会自动重规划 */
-      if (cfg.farmMap) navSetPending(cfg.farmMap, '阵亡复活');
-      // ★ 复活后若不在挂机地图，延迟几秒（等游戏刷新位置）再自动导航回去
-      if (cfg.farmMap) setTimeout(() => {
-        if (running && !st.returning && String(character.current_map) !== String(cfg.farmMap)) returnToFarm();
-      }, 4000);
+      resetDefeat();
+      /* ★ v2.6.230：阵亡复活后先走一趟「回城休整」（出售/拆解 → 存仓 → 修理），休整完再回挂机地图。
+         原来直接 returnToFarm() 回挂机图 —— 装备坏了 / 背包满了也照打。 */
+      logEvent('已复活 → 先回城休整，再回挂机地图');
+      setStatus('已复活：先回城休整…');
+      setTimeout(function () { try { deathRestock(); } catch (e) { /* ignore */ } }, 4000);
     }
     if (dead) { stop('角色已阵亡，已停止挂机（请手动复活后重新开始）'); return; }
 
@@ -11003,7 +11003,12 @@
     id = +id; if (!(id > 0)) return false;
     try { return MapDB.cities().some(function (c) { return +c.id === id; }); } catch (e) { return false; }
   }
-  function isWaygateMap(id) { id = +id; return id > 0 && (isCityId(id) || isWildAnchor(id)); }
+  function isWaygateMap(id) {
+    id = +id; if (!(id > 0)) return false;
+    if (isCityId(id) || isWildAnchor(id)) return true;
+    /* ★ v2.6.230：重生泉水(1000) 的 map_info 里带 waygate 图标 = 有传送站格（WAYGATE_WILD 里那条记的是世界地图节点 1，不是它）。 */
+    return id === RESPAWN_MAP;
+  }
   /* 从 from 出发、可传送到达的图（按边类型） */
   function tpTargets(from, kind) {
     from = +from; const out = [];
@@ -11443,19 +11448,31 @@
   async function navEscapeStuck(dest, alive, allowCity, allowWild) {
     const cur = +character.current_map;
     if (!(cur > 0)) return false;
+    /* 试一个逃生目的地：目标城镇 → 先世界地图免费传（★ v2.6.206），失败再走传送站；非城镇 → 只走传送站。 */
+    const tryOne = async function (id, walkAny) {
+      if (!(id > 0) || id === cur) return false;
+      if (allowCity && isTownMap(id)) {
+        const out = await navWorldTeleport(id, alive);
+        if (alive && !alive()) return false;
+        if (+out === id) return true;
+      }
+      const page = isTownMap(id) ? 'cities' : 'wilderness';
+      let out = await navWaygateOut(id, alive, page, true, true);   /* ★ v2.6.118：卡住时允许退而求其次（随便出去一个） */
+      if (!out && walkAny) out = await navWalkToAnyExit(alive);     /* 本图没有传送站 → 走任意出口 */
+      return !!out;
+    };
     const target = escapeTarget(dest, allowCity, allowWild);
-    if (!(target > 0) || target === cur) return false;
-    /* ★ v2.6.206：目标是城镇且勾了「城市传送点」= 有会员 → 优先世界地图免费传（更快），失败再走传送站。 */
-    if (allowCity && isTownMap(target)) {
-      const out = await navWorldTeleport(target, alive);
+    if (target > 0 && target !== FREE_FALLBACK_MAP) {
+      logEvent('无通路：从传送站逃生 → 「' + navMapName(target) + '」');
+      if (await tryOne(target, true)) return true;
       if (alive && !alive()) return false;
-      if (+out === target) return true;
     }
-    const page = isTownMap(target) ? 'cities' : 'wilderness';
-    logEvent('无通路：从传送站逃生 → 「' + navMapName(target) + '」');
-    let out = await navWaygateOut(target, alive, page, true, true);   /* ★ v2.6.118：卡住时允许退而求其次（随便出去一个） */
-    if (!out) out = await navWalkToAnyExit(alive);        /* 本图没有传送站 → 走任意出口 */
-    return !!out;
+    /* ★ v2.6.230：世界地图 / 传送站都失败（或两个传送开关都没开）→ 保底传 El Caspar（传送站 Cities 页费用 0）。 */
+    if (cur !== FREE_FALLBACK_MAP) {
+      logEvent('无通路：兜底传「' + navMapName(FREE_FALLBACK_MAP) + '」（El Caspar，免费）');
+      if (await tryOne(FREE_FALLBACK_MAP, false)) return true;
+    }
+    return false;
   }
 
   /* ===== 模块 A 主函数 ===== */
@@ -11925,6 +11942,28 @@
     } catch (e) {
       logEvent('回图出错 ' + (e && e.message ? e.message : String(e)));
     } finally { st.returning = false; }
+  }
+
+  /* ★ v2.6.230：阵亡复活后的行程 —— 先「回城休整」（去「休整」页设的休整城镇），休整完回挂机地图。
+     runRestock 负责「进城 → 出售/拆解 → 存仓 → 修理 → 返程」；返程目标 = st.tripHome = 挂机地图。 */
+  let deathRestockAt = 0;
+  function deathRestock() {
+    if (!running || !inGame()) return;
+    if (st.repair.active || st.sell.active || st.bank.active) return;
+    if (now() - deathRestockAt < 30000) return;         /* 防抖：30s 内只触发一次 */
+    deathRestockAt = now();
+    navClearPending();                                  /* 休整行程自己负责导航，别让「待办导航」抢 */
+    st.tripHome = String(cfg.farmMap || '');
+    st.tripOrigin = '';
+    /* 没设休整城镇 / 三个休整项都没开 → 城里没事可做，直接回挂机地图（避免白跑一趟）。 */
+    const anySvc = (cfg.sellOn && clearFilterActive()) || !!cfg.autoDeposit || !!cfg.repairOn;
+    if (!cfg.serviceTown || !anySvc) {
+      logEvent('阵亡休整：' + (!cfg.serviceTown ? '未设「休整城镇」' : '未开任何休整项') + ' → 跳过休整，直接回挂机地图');
+      setStatus('阵亡休整：跳过休整，直接回挂机地图…');
+      returnToFarm();
+      return;
+    }
+    startRestock('death', '阵亡复活');
   }
 
   /* ---- 导航到目标地图（Move 按钮调用）—— 纯 UI 壳，实现在模块 A ---- */
@@ -13139,7 +13178,7 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
     applyBagDiff: applyBagDiff, parseInvItems: parseInvItems, initBagSnap: initBagSnap,
     pause: pause, resume: resume, toggleRun: toggleRun, runElapsedMs: runElapsedMs, pollBagGain: pollBagGain,
     startRoundTrip: function () { const seq = ++navAutoSeq; st.mapSwitch.active = true; return navRoamStep(seq); },
-    returnToFarm: returnToFarm, navToMap: navToMap, navGoTo: navToMap, navWalkTile: navWalkTile, navDist: navDist, tpTargets: tpTargets, tpEdgeKind: tpEdgeKind, navNeighbors: navNeighbors, isCityId: isCityId, isWaygateMap: isWaygateMap, escapeTarget: escapeTarget, navSetPending: navSetPending, navClearPending: navClearPending, navPendingTick: navPendingTick, navPendingDest: navPendingDest, waygateMaps: waygateMaps, isWildAnchor: isWildAnchor, isTownMap: isTownMap, suppliesEmpty: suppliesEmpty,  navWaygateOut: navWaygateOut, navWorldTeleport: navWorldTeleport, findMapDetailsTeleport: findMapDetailsTeleport, navWalkToAnyExit: navWalkToAnyExit, townName: townName,
+    returnToFarm: returnToFarm, deathRestock: deathRestock, navToMap: navToMap, navGoTo: navToMap, navWalkTile: navWalkTile, navDist: navDist, tpTargets: tpTargets, tpEdgeKind: tpEdgeKind, navNeighbors: navNeighbors, isCityId: isCityId, isWaygateMap: isWaygateMap, escapeTarget: escapeTarget, navEscapeStuck: navEscapeStuck, navSetPending: navSetPending, navClearPending: navClearPending, navPendingTick: navPendingTick, navPendingDest: navPendingDest, waygateMaps: waygateMaps, isWildAnchor: isWildAnchor, isTownMap: isTownMap, suppliesEmpty: suppliesEmpty,  navWaygateOut: navWaygateOut, navWorldTeleport: navWorldTeleport, findMapDetailsTeleport: findMapDetailsTeleport, navWalkToAnyExit: navWalkToAnyExit, townName: townName,
     navImportRecorder: navImportRecorder,
     mapDB: MapDB,
     nav: { graph: MapDB, route: navRoute, travelTo: navTravelTo, hop: navHop, learn: navLearn,
