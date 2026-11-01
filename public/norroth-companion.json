@@ -1,8 +1,8 @@
 {
-  "version": "2.6.224",
+  "version": "2.6.225",
   "date": "2026-11-01",
-  "notes": "重写补药/食物的「兜底自动选择」：① 去掉旧的兜底（potionKey 只认显式选择，不再用旧快照 autoPotionKey 自动挑）。② 现在「没选补品」或「选中的吃完（游戏回 Insufficient <物品>）」→ 自动静默扫描背包 → 选当前数量最多的补品（战斗药水仍排最后，v2.6.125 的既有要求）。③ 挂游戏 handleResults 捕捉 Insufficient 回包，清掉失效选择并允许立刻重扫。④ suppliesEmpty 改用「按背包内容」判断，避免没选时被误判成没药而暂停挂机。实测：未选 → 扫完选 mucky_fruit_skewer（数量最多）；模拟 Insufficient → 清空选择并记日志。",
+  "notes": "修顺序：原来 step() 里先 suppliesEmpty() 判「没吃的」→ 4s 后 stop()，而自动扫描背包在 supply() 里、排在后面 → 背包里其实还有食物也会被误停。现在改成先扫描再判定：pauseNoSupply 分支在判定前先触发 autoScanAndPick（扫完选数量最多的）；autoScanAndPick 增加「扫描进行中」标记，扫描期间不判「没吃的」。实测：旧快照+未选补品+低血量 → 不再停挂机，约 9s 扫完并选好 mucky_fruit_skewer。",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 885001,
-  "sha256": "ec9a3978e83202dc11474413ee28552644fdd4f9da1803109eb167e3e365cde3"
+  "size": 886183,
+  "sha256": "af50d35126343f84040b6dff830d8cd0515e3040f12da0cd488ef46c2ccec4ca"
 }

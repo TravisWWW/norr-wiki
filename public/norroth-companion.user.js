@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.224
+// @version      2.6.225
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -187,7 +187,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.224';   // 与 @version 保持一致
+  const SCRIPT_VER = '2.6.225';   // 与 @version 保持一致
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -5253,12 +5253,15 @@
     }
   }
   /* ★ v2.6.224：没选补品 / 选中的已用完 → 自动（静默）扫一次背包，然后选「当前数量最多的补品」。
-     kind = 'hp' | 'mp'。返回 true = 本次真的发起了扫描。 */
+     kind = 'hp' | 'mp'。返回 true = 本次真的发起了扫描（或正在扫描中）。 */
   let _autoScanBagAt = 0;
+  let _autoScanInFlight = false;
   function autoScanAndPick(kind) {
     if (!inGame()) return false;
+    if (_autoScanInFlight) return true;                     /* ★ v2.6.225：扫描进行中 → 当作「处理中」，别急着判「没吃的」 */
     if (now() - _autoScanBagAt < 15000) return false;       /* 节流：15s 内只自动扫一次 */
     _autoScanBagAt = now();
+    _autoScanInFlight = true;
     scanBag().then(ok => {
       if (!ok) return;
       const pick = pickMostAbundant(kind);
@@ -5268,7 +5271,7 @@
       try { renderPotionSelects(); } catch (e) { /* ignore */ }
       try { logEvent('自动补药：扫描背包后选「' + itemName(pick) + '」（数量最多）'); } catch (e) { /* ignore */ }
       setStatus('自动补药：已选「' + itemName(pick) + '」');
-    });
+    }).catch(() => { /* ignore */ }).then(() => { _autoScanInFlight = false; });
     return true;
   }
   /* ★ 切到「食物」页时：没选补品 → 静默扫一次背包（只填下拉框，让用户自己选）。 */
@@ -8584,7 +8587,17 @@
        判据：需要补血/补蓝（低于阈值）但背包里已经没有可用的对应物品，且持续 >4s（防误判）。
        动作：stop()。补货后重新开始即可。 */
     if (cfg.pauseNoSupply && cfg.bagScanned) {
-      if (suppliesEmpty()) {
+      /* ★ v2.6.225：先「扫描背包找补品」再判「是不是真没了」。
+         原来顺序反了：先 suppliesEmpty() 判「没吃的」→ 4s 后 stop()，而自动扫描在 supply() 里、排在后面，
+         结果背包里其实还有食物也会被误停。这里在判定前先触发一次自动扫描（扫完会选数量最多的）。 */
+      let _scanning = false;
+      if (cfg.autoPotion && character) {
+        const _mh = character.max_health || 0, _mm = character.max_mana || 0;
+        if (_mh > 0 && character.current_health / _mh * 100 < cfg.hpPct && !potionKey('hp')) _scanning = autoScanAndPick('hp') || _scanning;
+        if (_mm > 0 && character.current_mana / _mm * 100 < cfg.mpPct && !potionKey('mp')) _scanning = autoScanAndPick('mp') || _scanning;
+      }
+      if (_scanning) { st.noSupplyAt = 0; }
+      else if (suppliesEmpty()) {
         if (!st.noSupplyAt) st.noSupplyAt = now();
         else if (now() - st.noSupplyAt > 4000) { stop('没吃的了：补血/补蓝物品已用完，已暂停挂机'); return; }
       } else st.noSupplyAt = 0;
