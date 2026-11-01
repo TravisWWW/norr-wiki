@@ -79,10 +79,10 @@
    {
     "file": "char-3197.json",
     "char": "#3197",
-    "level": 29,
-    "time": "2026-10-30T19:14:48.482Z",
+    "level": 59,
+    "time": "2026-11-01T17:50:59.766Z",
     "count": 194,
-    "recorded": 73,
+    "recorded": 85,
     "mergedAt": "2026-11-01"
    }
   ],
@@ -12049,7 +12049,19 @@
    "tab": "boss",
    "icon": "https://www.norroth.com/images/maps/items/enemy_252.gif",
    "bg": "vulcanic_underground.jpg",
-   "recorded": true
+   "recorded": true,
+   "levelRange": "59 - 59",
+   "alignment": "Neutral",
+   "health": "High",
+   "defense": "High",
+   "resistance": "Medium",
+   "drops": [
+    {
+     "name": "Bronze Sestertii",
+     "res": "coin_bronze",
+     "pct": "100%"
+    }
+   ]
   },
   {
    "id": 253,
