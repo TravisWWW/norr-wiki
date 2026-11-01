@@ -1,7 +1,7 @@
 {
  "meta": {
   "source": "小伴侣地图数据（MapDB）· 13 位贡献者合并",
-  "updated": "2026-11-01T20:44:44.019Z",
+  "updated": "2026-11-01T21:26:19.413Z",
   "version": "1.0",
   "contributors": [
    {
@@ -15,9 +15,9 @@
    {
     "file": "maps-1330.json",
     "char": "#1330",
-    "level": 56,
-    "time": "2026-10-27T21:03:05.031Z",
-    "count": 350,
+    "level": 60,
+    "time": "2026-11-01T21:26:05.231Z",
+    "count": 392,
     "mergedAt": "2026-11-01"
    },
    {
@@ -906,7 +906,7 @@
    ]
   },
   "15": {
-   "at": 1793258514750,
+   "at": 1793439174646,
    "name": "Arodas Beach",
    "type": "Normal",
    "g": [
@@ -960,7 +960,7 @@
    ]
   },
   "16": {
-   "at": 1793539093800,
+   "at": 1793543170765,
    "name": "Elundi",
    "type": "City",
    "g": [
@@ -1404,7 +1404,7 @@
    ]
   },
   "22": {
-   "at": 1793376593283,
+   "at": 1793565722121,
    "name": "Owranbu River",
    "type": "Normal",
    "g": [
@@ -1484,7 +1484,7 @@
    ]
   },
   "23": {
-   "at": 1793388622892,
+   "at": 1793565719620,
    "name": "Owranbu",
    "type": "City",
    "g": [
@@ -1497,6 +1497,22 @@
      "Combat Training"
     ]
    ],
+   "m": [
+    "Bone Scarab",
+    "Dune Glider",
+    "Cassowary",
+    "Scorpion",
+    "Nomadic Cleric",
+    "Raider",
+    "Woodland Snake",
+    "Wild Hog",
+    "Wolf",
+    "Woodland Spider",
+    "Peasant",
+    "Badger",
+    "Tiny Spider",
+    "Bear"
+   ],
    "ex": [
     [
      52,
@@ -1508,7 +1524,7 @@
      33,
      30,
      "waygate",
-     "Portal"
+     "Waygate"
     ],
     [
      9,
@@ -2540,7 +2556,7 @@
    ]
   },
   "53": {
-   "at": 1793143194776,
+   "at": 1793550537307,
    "name": "Deep Forest",
    "type": "Normal",
    "g": [
@@ -2573,7 +2589,7 @@
      51,
      23,
      "waygate",
-     "Portal"
+     "Waygate"
     ],
     [
      53,
@@ -5805,7 +5821,7 @@
    ]
   },
   "181": {
-   "at": 1793143083688,
+   "at": 1793550706953,
    "name": "Caeltys’ Causeway",
    "m": [
     "Drow",
@@ -5847,15 +5863,14 @@
    ]
   },
   "182": {
-   "at": 1793426546164,
+   "at": 1793550731904,
    "name": "Caeltys’ Causeway",
-   "type": "Normal",
    "m": [
-    "Forest Guardian",
-    "Cockatrice",
     "Wendigo",
+    "Cockatrice",
+    "Ankheg",
     "Drow",
-    "Ankheg"
+    "Forest Guardian"
    ],
    "ex": [
     [
@@ -5890,7 +5905,7 @@
    ]
   },
   "183": {
-   "at": 1793426265323,
+   "at": 1793550759314,
    "name": "Caeltys",
    "type": "City",
    "ex": [
@@ -5898,7 +5913,7 @@
      21,
      12,
      "waygate",
-     "Portal"
+     "Waygate"
     ],
     [
      46,
@@ -5946,32 +5961,49 @@
    ]
   },
   "184": {
-   "at": 0,
+   "at": 1793568315171,
    "name": "Caeltys’ Yarden",
+   "type": "Normal",
    "m": [
-    "Wendigo",
-    "Forest Guardian",
-    "Cockatrice",
     "Ankheg",
-    "Drow"
+    "Drow",
+    "Forest Guardian",
+    "Wendigo",
+    "Cockatrice"
+   ],
+   "ex": [
+    [
+     5,
+     29,
+     "gate",
+     "Caeltys (Lv.30)"
+    ],
+    [
+     61,
+     32,
+     "gate",
+     "Caeltys’ Yarden (Lv.34)"
+    ]
    ],
    "edges": [
     [
      184,
      183,
      5,
-     29
+     29,
+     "gate"
     ],
     [
      184,
      185,
      61,
-     32
+     32,
+     "gate"
     ]
    ]
   },
   "185": {
-   "at": 0,
+   "at": 1793550988842,
    "name": "Caeltys’ Yarden",
    "g": [
     "Coal Mine"
@@ -5984,24 +6016,40 @@
     ]
    ],
    "m": [
-    "Forest Guardian",
-    "Ankheg",
+    "Drow",
     "Wendigo",
+    "Forest Guardian",
     "Cockatrice",
-    "Drow"
+    "Ankheg"
+   ],
+   "ex": [
+    [
+     31,
+     7,
+     "gate",
+     "Caeltys’ Yarden (Lv.38)"
+    ],
+    [
+     4,
+     29,
+     "gate",
+     "Caeltys’ Yarden (Lv.31)"
+    ]
    ],
    "edges": [
     [
      185,
      184,
      4,
-     29
+     29,
+     "gate"
     ],
     [
      185,
      186,
      31,
-     7
+     7,
+     "gate"
     ]
    ]
   },
@@ -6230,7 +6278,7 @@
    ]
   },
   "191": {
-   "at": 1793042577595,
+   "at": 1793551808596,
    "name": "Savanna",
    "m": [
     "Carrion Harpy",
@@ -6273,7 +6321,7 @@
    ]
   },
   "192": {
-   "at": 1793042652975,
+   "at": 1793551918606,
    "name": "Savanna",
    "m": [
     "Terastodon",
@@ -6316,7 +6364,7 @@
    ]
   },
   "193": {
-   "at": 1793042693275,
+   "at": 1793551958493,
    "name": "Savanna",
    "m": [
     "Gnoll Warrior",
@@ -6824,7 +6872,7 @@
    ]
   },
   "204": {
-   "at": 1793523545411,
+   "at": 1793555901069,
    "name": "Pumpkin King`s Lodge",
    "m": [
     "Jacked-o-Lantern"
@@ -6837,7 +6885,6 @@
      "Marsh (Lv.19)"
     ]
    ],
-   "visited": true,
    "edges": [
     [
      204,
@@ -7347,9 +7394,8 @@
    ]
   },
   "224": {
-   "at": 1793427164692,
+   "at": 1793547707033,
    "name": "Desert of Illusions",
-   "type": "Normal",
    "m": [
     "Cassowary",
     "Dune Glider",
@@ -7376,7 +7422,7 @@
      35,
      46,
      "waygate",
-     "Portal"
+     "Waygate"
     ],
     [
      39,
@@ -7665,8 +7711,49 @@
    ]
   },
   "230": {
-   "at": 0,
-   "name": "Red Desert"
+   "at": 1793548289030,
+   "name": "Red Desert",
+   "m": [
+    "Roc",
+    "Orc Warrior",
+    "Basilisk",
+    "Girtablilu",
+    "Sand Golem",
+    "Orc Hunter",
+    "Stone Centipede",
+    "Sandworm",
+    "Orc Warlock"
+   ],
+   "ex": [
+    [
+     5,
+     28,
+     "gate",
+     "Red Desert (Lv.18)"
+    ],
+    [
+     59,
+     30,
+     "gate",
+     "Red Desert Cave (Lv.53)"
+    ]
+   ],
+   "edges": [
+    [
+     230,
+     245,
+     5,
+     28,
+     "gate"
+    ],
+    [
+     230,
+     357,
+     59,
+     30,
+     "gate"
+    ]
+   ]
   },
   "231": {
    "at": 0,
@@ -7900,7 +7987,7 @@
    ]
   },
   "244": {
-   "at": 1792686391863,
+   "at": 1793547747277,
    "name": "Red Desert",
    "m": [
     "Orc Warrior",
@@ -7935,25 +8022,78 @@
      244,
      243,
      21,
-     7
+     7,
+     "gate"
     ],
     [
      244,
      245,
      50,
-     58
+     58,
+     "gate"
     ],
     [
      244,
      336,
      53,
-     15
+     15,
+     "gate"
     ]
    ]
   },
   "245": {
-   "at": 0,
-   "name": "Red Desert"
+   "at": 1793548344840,
+   "name": "Red Desert",
+   "m": [
+    "Orc Warrior",
+    "Stone Centipede",
+    "Orc Warlock",
+    "Basilisk",
+    "Giant Vulture"
+   ],
+   "ex": [
+    [
+     22,
+     14,
+     "gate",
+     "Red Desert (Lv.18)"
+    ],
+    [
+     54,
+     57,
+     "gate",
+     "Red Desert (Lv.50)"
+    ],
+    [
+     51,
+     60,
+     "gate",
+     "Red Desert (Lv.19)"
+    ]
+   ],
+   "edges": [
+    [
+     245,
+     230,
+     54,
+     57,
+     "gate"
+    ],
+    [
+     245,
+     244,
+     22,
+     14,
+     "gate"
+    ],
+    [
+     245,
+     246,
+     51,
+     60,
+     "gate"
+    ]
+   ]
   },
   "246": {
    "at": 0,
@@ -8176,7 +8316,7 @@
    "name": "Taiga"
   },
   "269": {
-   "at": 1793127327080,
+   "at": 1793546191767,
    "name": "Orc’s Bone Road",
    "g": [
     "Ramie Field"
@@ -8230,7 +8370,7 @@
    ]
   },
   "270": {
-   "at": 1793127359335,
+   "at": 1793547147072,
    "name": "Orc’s Bone Road",
    "m": [
     "Orc Warlock",
@@ -8270,7 +8410,7 @@
    ]
   },
   "271": {
-   "at": 1793127389379,
+   "at": 1793547174622,
    "name": "Orc’s Bone Road",
    "g": [
     "Beech Grove"
@@ -8326,7 +8466,7 @@
    ]
   },
   "272": {
-   "at": 1793127992564,
+   "at": 1793547292826,
    "name": "Shrubland",
    "g": [
     "Largemouth Bass Pier"
@@ -8376,7 +8516,7 @@
    ]
   },
   "273": {
-   "at": 1793128107542,
+   "at": 1793547337852,
    "name": "Shrubland",
    "m": [
     "Orc Warrior",
@@ -8416,7 +8556,7 @@
    ]
   },
   "274": {
-   "at": 1793128348478,
+   "at": 1793547374967,
    "name": "Shrubland",
    "m": [
     "Orc Warrior",
@@ -8557,7 +8697,7 @@
    ]
   },
   "277": {
-   "at": 1793379178795,
+   "at": 1793393333363,
    "name": "Shrubland",
    "g": [
     "Smallmouth Bass Pier",
@@ -8638,7 +8778,7 @@
    ]
   },
   "278": {
-   "at": 1792932244188,
+   "at": 1793393348342,
    "name": "Shrubland",
    "m": [
     "Orc Hunter",
@@ -8685,7 +8825,7 @@
    ]
   },
   "279": {
-   "at": 1792932356668,
+   "at": 1793393366102,
    "name": "Ancient Worm Tunnel",
    "g": [
     "Coal Mine"
@@ -8736,7 +8876,7 @@
    ]
   },
   "280": {
-   "at": 1792932371771,
+   "at": 1793399146781,
    "name": "Shrubland",
    "m": [
     "Orc Warrior",
@@ -10149,7 +10289,7 @@
    ]
   },
   "323": {
-   "at": 1793426906707,
+   "at": 1793546972207,
    "name": "Trescan’s Dock",
    "g": [
     "Smallmouth Bass Pier"
@@ -10642,20 +10782,147 @@
    "name": "Magic Plains"
   },
   "336": {
-   "at": 0,
+   "at": 1793548604592,
    "name": "Red Desert",
-   "type": "Normal"
+   "type": "Normal",
+   "m": [
+    "Sandworm (?)",
+    "Sand Golem (?)",
+    "Girtablilu (?)",
+    "Roc (?)",
+    "Girtablilu",
+    "Roc",
+    "Sand Golem",
+    "Sandworm"
+   ],
+   "ex": [
+    [
+     36,
+     30,
+     "waygate",
+     "Waygate"
+    ],
+    [
+     64,
+     33,
+     "gate",
+     "Red Desert (Lv.57)"
+    ],
+    [
+     5,
+     47,
+     "gate",
+     "Red Desert (Lv.18)"
+    ]
+   ],
+   "edges": [
+    [
+     336,
+     244,
+     5,
+     47,
+     "gate"
+    ],
+    [
+     336,
+     337,
+     64,
+     33,
+     "gate"
+    ]
+   ]
   },
   "337": {
-   "at": 0,
-   "name": "Red Desert"
+   "at": 1793548987826,
+   "name": "Red Desert",
+   "g": [
+    "Travertine Quarry"
+   ],
+   "gt": [
+    [
+     45,
+     18,
+     "Travertine Quarry"
+    ]
+   ],
+   "m": [
+    "Sandworm",
+    "Sand Golem",
+    "Girtablilu",
+    "Roc"
+   ],
+   "ex": [
+    [
+     61,
+     18,
+     "gate",
+     "Trial of Embers (Lv.59)"
+    ],
+    [
+     2,
+     41,
+     "gate",
+     "Red Desert (Lv.54)"
+    ]
+   ],
+   "edges": [
+    [
+     337,
+     336,
+     2,
+     41,
+     "gate"
+    ],
+    [
+     337,
+     338,
+     61,
+     18,
+     "gate"
+    ]
+   ]
   },
   "338": {
-   "at": 0,
-   "name": "Trial of Embers"
+   "at": 1793549025779,
+   "name": "Trial of Embers",
+   "m": [
+    "Mountain Giant",
+    "Fire Elemental",
+    "Terramancer"
+   ],
+   "ex": [
+    [
+     46,
+     18,
+     "gate",
+     "Tunnel of Embers (Lv.59)"
+    ],
+    [
+     4,
+     39,
+     "gate",
+     "Red Desert (Lv.57)"
+    ]
+   ],
+   "edges": [
+    [
+     338,
+     337,
+     4,
+     39,
+     "gate"
+    ],
+    [
+     338,
+     339,
+     46,
+     18,
+     "gate"
+    ]
+   ]
   },
   "339": {
-   "at": 1793548797765,
+   "at": 1793549075433,
    "name": "Tunnel of Embers",
    "m": [
     "Mountain Giant",
@@ -10743,7 +11010,7 @@
    ]
   },
   "342": {
-   "at": 1793373620641,
+   "at": 1793393806551,
    "name": "Dark Boreal",
    "m": [
     "Armored Ram",
@@ -10785,7 +11052,7 @@
    ]
   },
   "343": {
-   "at": 1792896742537,
+   "at": 1793393982660,
    "name": "Dark Boreal",
    "m": [
     "Dwarven Guard",
@@ -10827,7 +11094,7 @@
    ]
   },
   "344": {
-   "at": 1792896793447,
+   "at": 1793394077271,
    "name": "Dark Boreal",
    "m": [
     "Dwarven Guard",
@@ -10869,7 +11136,8 @@
    ]
   },
   "345": {
-   "at": 1793137330010,
+   "at": 1793394432257,
+   "name": "Dark Boreal",
    "m": [
     "Armored Ram",
     "Dwarven Guard",
@@ -10910,7 +11178,7 @@
    ]
   },
   "346": {
-   "at": 1793501442419,
+   "at": 1793543055044,
    "name": "Dark Boreal",
    "g": [
     "Laterite Quarry",
@@ -10987,7 +11255,7 @@
    ]
   },
   "347": {
-   "at": 1793495463254,
+   "at": 1793551101087,
    "name": "Dark Boreal",
    "g": [
     "Beech Grove"
@@ -11040,14 +11308,14 @@
    ]
   },
   "348": {
-   "at": 1793507238980,
+   "at": 1793524088959,
    "name": "Laen Dorei",
    "type": "City",
    "m": [
     "Dwarven Hunter",
     "Dwarven Guard",
-    "Dwarven Caster",
     "Armored Ram",
+    "Dwarven Caster",
     "Komodo Basilisk"
    ],
    "ex": [
@@ -11253,7 +11521,7 @@
    ]
   },
   "352": {
-   "at": 1792957241708,
+   "at": 1793536254866,
    "name": "Wardens’ Bridge",
    "type": "Normal",
    "m": [
@@ -11281,6 +11549,7 @@
      "Wardens’ Bridge (Lv.54)"
     ]
    ],
+   "visited": true,
    "edges": [
     [
      352,
@@ -11299,9 +11568,8 @@
    ]
   },
   "353": {
-   "at": 1792957415586,
+   "at": 1793536579082,
    "name": "Wardens’ Bridge",
-   "type": "Normal",
    "g": [
     "Travertine Quarry",
     "Northern Pike Pier"
@@ -11337,6 +11605,7 @@
      "Wardens’ Bridge (Lv.53)"
     ]
    ],
+   "visited": true,
    "edges": [
     [
      353,
@@ -11355,9 +11624,8 @@
    ]
   },
   "354": {
-   "at": 1792957533715,
+   "at": 1793518918272,
    "name": "Mountain",
-   "type": "Normal",
    "g": [
     "Valentaal Mine"
    ],
@@ -11405,9 +11673,8 @@
    ]
   },
   "355": {
-   "at": 1792957709698,
+   "at": 1793520903694,
    "name": "Mountain",
-   "type": "Normal",
    "m": [
     "Stone Dragon",
     "Mountain Giant",
@@ -11445,9 +11712,8 @@
    ]
   },
   "356": {
-   "at": 1792957794803,
+   "at": 1793520953606,
    "name": "Mountain",
-   "type": "Normal",
    "m": [
     "Stone Dragon",
     "Mountain Giant",
@@ -11472,8 +11738,30 @@
    ]
   },
   "357": {
-   "at": 0,
-   "name": "Red Desert Cave"
+   "at": 1793548076104,
+   "name": "Red Desert Cave",
+   "m": [
+    "Fire Elemental",
+    "Mountain Giant",
+    "Terramancer"
+   ],
+   "ex": [
+    [
+     2,
+     31,
+     "gate",
+     "Red Desert (Lv.50)"
+    ]
+   ],
+   "edges": [
+    [
+     357,
+     230,
+     2,
+     31,
+     "gate"
+    ]
+   ]
   },
   "358": {
    "at": 1793124029814,
@@ -11504,7 +11792,7 @@
    "name": "House of Zehrak"
   },
   "360": {
-   "at": 1793150244977,
+   "at": 1793547407357,
    "name": "Dominion Spire",
    "type": "City",
    "ex": [
@@ -11512,7 +11800,7 @@
      34,
      19,
      "waygate",
-     "Portal"
+     "Waygate"
     ],
     [
      15,
@@ -11545,8 +11833,31 @@
    ]
   },
   "361": {
-   "at": 0,
-   "name": "Dominion Spire 2nd Floor"
+   "at": 1793547425118,
+   "name": "Dominion Spire 2nd Floor",
+   "ex": [
+    [
+     34,
+     19,
+     "waygate",
+     "Waygate"
+    ],
+    [
+     34,
+     31,
+     "gate",
+     "Dominion Spire (Lv.50)"
+    ]
+   ],
+   "edges": [
+    [
+     361,
+     360,
+     34,
+     31,
+     "gate"
+    ]
+   ]
   },
   "362": {
    "at": 0,
@@ -11839,7 +12150,7 @@
    "name": "Fountain of Rebirth"
   },
   "1000": {
-   "at": 1793495219841,
+   "at": 1793524386732,
    "name": "Fountain of Rebirth",
    "type": "Normal",
    "ex": [
@@ -12008,7 +12319,7 @@
    "name": "Das Festhalle"
   },
   "1157": {
-   "at": 1793536586105,
+   "at": 1793555346944,
    "name": "Sleepy Hollow Lobby",
    "g": [
     "Quarry",
@@ -12050,9 +12361,6 @@
      "Patch"
     ]
    ],
-   "m": [
-    "Armored Ram"
-   ],
    "ex": [
     [
      24,
@@ -12077,7 +12385,7 @@
    "name": "Sleepy Hollow"
   },
   "1159": {
-   "at": 1793341438089,
+   "at": 1793552571834,
    "name": "Sleepy Hollow",
    "m": [
     "Hypnotic Bat",
@@ -12105,14 +12413,14 @@
    ]
   },
   "1160": {
-   "at": 1793391479250,
+   "at": 1793554634172,
    "name": "Sleepy Hollow",
    "m": [
     "Ghost Pirate",
     "Skeleton",
+    "Skeleton Warrior",
     "Zombie Horse",
-    "Arcelia",
-    "Skeleton Warrior"
+    "Arcelia"
    ],
    "ex": [
     [

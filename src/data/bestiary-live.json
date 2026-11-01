@@ -7,10 +7,10 @@
    {
     "file": "char-1330.json",
     "char": "#1330",
-    "level": 55,
-    "time": "2026-10-25T19:57:49.217Z",
-    "count": 193,
-    "recorded": 130,
+    "level": 60,
+    "time": "2026-11-01T21:26:14.286Z",
+    "count": 194,
+    "recorded": 150,
     "mergedAt": "2026-11-01"
    },
    {
@@ -89,8 +89,8 @@
   "count": 200,
   "recordedCount": 194,
   "withLore": 199,
-  "withStats": 89,
-  "withSkills": 106,
+  "withStats": 91,
+  "withSkills": 107,
   "withBg": 184,
   "tabs": {
    "normal": 163,
@@ -6103,7 +6103,30 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_123.gif",
    "bg": "red_desert.jpg",
-   "recorded": true
+   "recorded": true,
+   "levelRange": "50 - 60",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "High",
+   "defense": "High",
+   "resistance": "Low",
+   "scavenging": [
+    {
+     "name": "High Quality Meat",
+     "res": "high_quality_meat",
+     "pct": "42%"
+    },
+    {
+     "name": "High Quality Fang",
+     "res": "high_quality_fang",
+     "pct": "17%"
+    },
+    {
+     "name": "High Quality Tendon",
+     "res": "high_quality_tendon",
+     "pct": "42%"
+    }
+   ]
   },
   {
    "id": 124,
@@ -6114,7 +6137,20 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_124.gif",
    "bg": "red_desert.jpg",
-   "recorded": true
+   "recorded": true,
+   "levelRange": "50 - 60",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "Medium",
+   "defense": "High",
+   "resistance": "Low",
+   "drops": [
+    {
+     "name": "Bronze Sestertii",
+     "res": "coin_bronze",
+     "pct": "100%"
+    }
+   ]
   },
   {
    "id": 125,
@@ -6141,7 +6177,14 @@
    "alignment": "Neutral",
    "health": "High",
    "defense": "High",
-   "resistance": "Low"
+   "resistance": "Low",
+   "drops": [
+    {
+     "name": "Bronze Sestertii",
+     "res": "coin_bronze",
+     "pct": "100%"
+    }
+   ]
   },
   {
    "id": 128,
@@ -10523,7 +10566,25 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_205.gif",
    "bg": "vulcanic_isle.jpg",
-   "recorded": true
+   "recorded": true,
+   "levelRange": "1 - 60",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "Low",
+   "defense": "Medium",
+   "resistance": "High",
+   "drops": [
+    {
+     "name": "Bronze Sestertii",
+     "res": "coin_bronze",
+     "pct": "100%"
+    },
+    {
+     "name": "Spirit Essence",
+     "res": "spirit_essence",
+     "pct": "100%"
+    }
+   ]
   },
   {
    "id": 206,
@@ -11563,6 +11624,28 @@
      "res": "coin_bronze",
      "pct": "100%"
     }
+   ],
+   "skills": [
+    {
+     "name": "crow_attack",
+     "id": 119,
+     "level": 6
+    },
+    {
+     "name": "spectral_fear",
+     "id": 10077,
+     "level": 6
+    },
+    {
+     "name": "flaming_lantern",
+     "id": 10132,
+     "level": 6
+    },
+    {
+     "name": "pitchfork_impale",
+     "id": 10195,
+     "level": 6
+    }
    ]
   },
   {
@@ -11733,7 +11816,42 @@
      "id": 10146,
      "level": 10
     }
-   ]
+   ],
+   "stats": {
+    "Base Damage": 20,
+    "Physical Damage": 3,
+    "Blunt Damage": 0,
+    "Spell Damage": 0,
+    "Bleed Damage": 0,
+    "Arcane Damage": 0,
+    "Cold Damage": 0,
+    "Dark Damage": 0,
+    "Fire Damage": 0,
+    "Light Damage": 0,
+    "Lightning Damage": 0,
+    "Poison Damage": 0,
+    "Thorn Damage": 0,
+    "Defense": 10,
+    "Block Chance": 0,
+    "Block Rating": 0,
+    "Arcane Resist": 5,
+    "Cold Resist": 15,
+    "Dark Resist": 5,
+    "Fire Resist": 15,
+    "Light Resist": 5,
+    "Poison Resist": 15,
+    "Evasion": 5,
+    "Critical Chance": 8,
+    "Critical Strike": 10,
+    "Hit Rating": 30,
+    "Attack Speed": 6,
+    "Armor Penetration": 1,
+    "Life Steal": 0,
+    "Mana Steal": 0,
+    "Life Regeneration": 2,
+    "Mana Regeneration": 0,
+    "Maximum Life": 90
+   }
   },
   {
    "id": 245,
@@ -11823,7 +11941,27 @@
     "Light Damage": 0,
     "Lightning Damage": 0,
     "Poison Damage": 0,
-    "Thorn Damage": 0
+    "Thorn Damage": 0,
+    "Defense": 10,
+    "Block Chance": 0,
+    "Block Rating": 0,
+    "Arcane Resist": 15,
+    "Cold Resist": 15,
+    "Dark Resist": 5,
+    "Fire Resist": 15,
+    "Light Resist": 5,
+    "Poison Resist": 5,
+    "Evasion": 5,
+    "Critical Chance": 8,
+    "Critical Strike": 25,
+    "Hit Rating": 20,
+    "Attack Speed": 6,
+    "Armor Penetration": 1,
+    "Life Steal": 0,
+    "Mana Steal": 0,
+    "Life Regeneration": 2,
+    "Mana Regeneration": 0,
+    "Maximum Life": 90
    }
   },
   {
@@ -11895,7 +12033,43 @@
      "id": 68,
      "level": 10
     }
-   ]
+   ],
+   "stats": {
+    "Base Damage": 10,
+    "Physical Damage": 3,
+    "Blunt Damage": 0,
+    "Spell Damage": 0,
+    "Bleed Damage": 0,
+    "Arcane Damage": 0,
+    "Cold Damage": 0,
+    "Dark Damage": 0,
+    "Fire Damage": 0,
+    "Light Damage": 0,
+    "Lightning Damage": 0,
+    "Poison Damage": 0,
+    "Thorn Damage": 0,
+    "Defense": 5,
+    "Block Chance": 0,
+    "Block Rating": 0,
+    "Arcane Resist": 30,
+    "Cold Resist": 30,
+    "Dark Resist": 20,
+    "Fire Resist": 30,
+    "Light Resist": 20,
+    "Lightning Resist": 0,
+    "Poison Resist": 20,
+    "Evasion": 5,
+    "Critical Chance": 8,
+    "Critical Strike": 10,
+    "Hit Rating": 30,
+    "Attack Speed": 6,
+    "Armor Penetration": 1,
+    "Life Steal": 0,
+    "Mana Steal": 0,
+    "Life Regeneration": 2,
+    "Mana Regeneration": 0,
+    "Maximum Life": 90
+   }
   },
   {
    "id": 247,
