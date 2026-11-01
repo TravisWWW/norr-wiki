@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.225
+// @version      2.6.226
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -187,7 +187,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.225';   // 与 @version 保持一致
+  const SCRIPT_VER = '2.6.226';   // 与 @version 保持一致
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -372,7 +372,7 @@
     o = (o && typeof o === 'object') ? o : {};
     const c = Object.assign({}, DEFAULTS, o);
     // 与现有输入控件范围一致；损坏的持久化值不能直接进入补给决策。
-    [['hpPct', 1, 100], ['mpPct', 1, 100], ['petEnergyPct', 1, 100], ['potionDelayMs', 700, 10000]].forEach(function (r) {
+    [['hpPct', 1, 100], ['mpPct', 1, 100], ['petEnergyPct', 1, 100], ['potionDelayMs', 200, 10000]].forEach(function (r) {
       const n = Number(c[r[0]]);
       c[r[0]] = Number.isFinite(n) ? Math.min(r[2], Math.max(r[1], n)) : DEFAULTS[r[0]];
     });
@@ -1926,6 +1926,7 @@
     return {
       tick: function () {
         if (!running || st.paused || !inGame()) return false;
+        if (st.healing) return false;                          /* ★ v2.6.226：回血期间不换目标 */
         const m = st.move;
         if (!m) { st.retargetHist = {}; return false; }        /* 没在走 → 清空「已锁定过」历史，交给正常选目标流程 */
         if (m.segment && m.segment.phase === 'pause') return false;
@@ -2143,6 +2144,8 @@
   function checkMove() {
     const m = st.move;
     if (!m) return false;
+    /* ★ v2.6.226：回血期间中止正在进行的走位（否则游戏会继续走到怪格 → 又进战斗）。 */
+    if (st.healing) { st.move = null; try { abortWalk(); } catch (e) { /* ignore */ } setStatus('回血中…（补到阈值后再继续寻敌）'); return true; }
     const goal = m.segment || m;
 
     if (hasFrame('frame_Combat')) { st.move = null; st.phase = 'combat'; return true; }   // 走到怪格 → 游戏自动开战
@@ -2628,7 +2631,7 @@
        之前的 bug：吃完一瓶只挂起 pendingCheck 就继续往下走 → 战斗间隙只吃 1 瓶就跑去打下一只。 */
     st.healing = true;
     if (st.pendingCheck) return true;                                                 // 上一瓶还没结算 → 等它
-    if (now() - st.lastUse < Math.max(700, jitterVal(+cfg.potionDelayMs || 1500))) return true;  // 用药冷却中 → 等
+    if (now() - st.lastUse < Math.max(200, jitterVal(+cfg.potionDelayMs || 1500))) return true;  // 用药冷却中 → 等
 
     for (const kind of need) {
       const key = potionKey(kind);
@@ -2663,6 +2666,17 @@
     /* 需要补但没药 / 药连续失败 → 不阻塞主循环，继续正常挂机（避免死等） */
     st.healing = false;
     return false;
+  }
+
+  /* ★ v2.6.226：回血期间「停住不动、不寻敌」。
+     用户反馈：吃食物回血时脚本还在走向下一只怪 → 还没补到阈值就又进战斗。
+     做法：只要处于回血中（st.healing，由 supply() 维持），就中止正在进行的走位并让主循环原地等待；
+     补到阈值（supply() 返回 false）后才恢复寻敌。 */
+  function holdForHeal() {
+    if (!st.healing) return false;
+    if (st.move) { st.move = null; try { abortWalk(); } catch (e) { /* ignore */ } }
+    setStatus('回血中…（补到阈值后再继续寻敌）');
+    return true;
   }
 
   /* ★ 爬塔停止条件用：补血/补蓝药是否已耗尽（当前低于阈值，但背包里已经没有可用的对应药） */
@@ -8458,7 +8472,11 @@
     }
 
     if (handleFrames()) return;
-    const healing = supply();
+    supply();
+    /* ★ v2.6.226：回血期间「停住、不寻敌」—— 提前到 retarget / checkMove 之前。
+       原来这个让路判据排在 checkMove 之后：一旦角色正在走位（或游戏战斗结束后自动续走），
+       checkMove 先 return，判据被绕过 → 还没补到阈值就继续走向下一只怪、又进战斗。 */
+    if (holdForHeal()) return;
     if (retargetCombat.tick()) return;   /* ★ 途中持续索敌：更优目标立刻切换 */
     if (checkMove()) return;
 
@@ -8471,8 +8489,6 @@
       }
     } catch (e) { /* ignore */ }
     if (pollSmithTrip()) return;
-    /* ★ 补到阈值再开始下一个寻敌（否则战斗间隙只吃一瓶就走） */
-    if (healing) { setStatus('回血中…（补到阈值后再继续寻敌）'); return; }
 
     const t = pickTarget();
     if (!t) {
@@ -9197,7 +9213,7 @@
             <label title="补药列表里剔除「基础食材」（鱼 / 蔬菜 / 水果等原始材料，游戏 tooltip 写 Usable at: Cook）；烹饪成品、药水不受影响。"><input type="checkbox" class="chk" id="nr-potionnoing">剔除基础食材</label>
           </div>
           <div class="half" style="margin-top:6px">
-            <div><span class="lbl">吃药间隔(毫秒)</span><input type="number" id="nr-potdelay" min="700" max="10000" step="100"></div>
+            <div><span class="lbl">吃药间隔(毫秒)</span><input type="number" id="nr-potdelay" min="200" max="10000" step="100"></div>
             <div><span class="lbl">&nbsp;</span><button id="nr-scan" style="width:100%;padding:5px 10px">扫描背包</button></div>
           </div>
           <div class="half" style="margin-top:6px">
@@ -9644,7 +9660,7 @@
     bindNum('nr-hppct', 'hpPct', 1);
     bindNum('nr-mppct', 'mpPct', 1);
     bindNum('nr-petpct', 'petEnergyPct', 1);
-    bindNum('nr-potdelay', 'potionDelayMs', 700);
+    bindNum('nr-potdelay', 'potionDelayMs', 200);
     bindNum('nr-sellfree', 'sellFreeMin', 1);
     bindNum('nr-sellmaxlv', 'sellEquipMaxLv', 0);
 

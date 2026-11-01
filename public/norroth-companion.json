@@ -1,8 +1,8 @@
 {
-  "version": "2.6.225",
+  "version": "2.6.226",
   "date": "2026-11-01",
-  "notes": "修顺序：原来 step() 里先 suppliesEmpty() 判「没吃的」→ 4s 后 stop()，而自动扫描背包在 supply() 里、排在后面 → 背包里其实还有食物也会被误停。现在改成先扫描再判定：pauseNoSupply 分支在判定前先触发 autoScanAndPick（扫完选数量最多的）；autoScanAndPick 增加「扫描进行中」标记，扫描期间不判「没吃的」。实测：旧快照+未选补品+低血量 → 不再停挂机，约 9s 扫完并选好 mucky_fruit_skewer。",
+  "notes": "v2.6.226：① 回血期间「停住、不寻敌」——把让路判据提前到 retarget/checkMove 之前，并中止正在进行的走位（原来走位中会被绕过，还没补到阈值就又进战斗）；② 吃药最小间隔 700→200。",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 886183,
-  "sha256": "af50d35126343f84040b6dff830d8cd0515e3040f12da0cd488ef46c2ccec4ca"
+  "size": 887394,
+  "sha256": "d0002fcc904a95fc70c06ce123db2a25112bf9d0cbedcb8e53f9fb0328341932"
 }
