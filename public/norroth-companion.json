@@ -1,8 +1,8 @@
 {
-  "version": "2.6.234",
+  "version": "2.6.235",
   "date": "2026-11-02",
-  "notes": "v2.6.234：装备 tooltip「基础：…」数据源改为游戏自身的 item_tooltip_boxes（tooltip_texts.js 全局），随游戏更新自动生效；覆盖全部装备（含活动/独特如南瓜帽、副手法书、宝石、戒指项链），按底材名+等级匹配；修正上一版误用旧 wiki 数据导致的基础值/词条名错误。",
+  "notes": "修复基础词条标注重建 tooltip 导致 reroll 延迟显示回调失效；插入和移除基础行均保留原属性节点。",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 900290,
-  "sha256": "9dd74e670522fc0c441a56cc0f41eb883dea3987309c2c7b5a447747fe231b66"
+  "size": 901406,
+  "sha256": "b4b9e36f550401841c5653b36016980bbad2cd86a0336f67528ba9b2bad48c90"
 }

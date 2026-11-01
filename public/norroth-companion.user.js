@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.234
+// @version      2.6.235
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -188,7 +188,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.234';   // 与 @version 保持一致
+  const SCRIPT_VER = '2.6.235';   // 与 @version 保持一致
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -12715,7 +12715,8 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
     for (let i = 0; i < roots.length; i++) {
       const r = roots[i];
       if (r.innerHTML.indexOf('nr-base-line') < 0) continue;
-      r.innerHTML = nrStripItemHtml(r.innerHTML);
+      const lines = r.querySelectorAll('.nr-base-line');
+      for (let j = 0; j < lines.length; j++) lines[j].remove();
     }
   }
   let _nrBaseOn = true;
@@ -12753,8 +12754,28 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
       const r = roots[i];
       const html = r.innerHTML;
       if (html.indexOf('nr-base-line') >= 0) continue;
-      const next = nrDecorateItemHtml(html);
-      if (next !== html) r.innerHTML = next;
+      const name = nrItemName(html);
+      const arr = nrBaseStatsFor(name, nrItemLevel(html));
+      const line = nrBaseLineHtml(arr);
+      if (!line) continue;
+      /* 不能重写 innerHTML：reroll 的逐条显示回调已持有属性节点引用。
+         替换节点会让回调只显示脱离页面的旧节点，新属性永久停在 display:none。 */
+      const headings = r.querySelectorAll('h2');
+      let anchor = null;
+      for (let j = 0; j < headings.length; j++) {
+        if (/Quality/i.test(headings[j].textContent || '')) { anchor = headings[j]; break; }
+      }
+      if (!anchor) {
+        const walker = document.createTreeWalker(r, NodeFilter.SHOW_TEXT);
+        let node;
+        while ((node = walker.nextNode())) {
+          if (!/Quality:\s*/i.test(node.textContent || '')) continue;
+          let next = node.nextSibling;
+          while (next && next.nodeType === 3 && !next.textContent.trim()) next = next.nextSibling;
+          if (next && next.nodeName === 'BR') { anchor = next; break; }
+        }
+      }
+      if (anchor) anchor.insertAdjacentHTML('afterend', line);
     }
   }
   (function () {
