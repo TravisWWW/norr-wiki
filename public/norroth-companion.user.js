@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.227
+// @version      2.6.228
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -187,7 +187,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.227';   // 与 @version 保持一致
+  const SCRIPT_VER = '2.6.228';   // 与 @version 保持一致
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -3472,10 +3472,14 @@
   })();
 
   /* ---- 世界地图字典（运行时权威名字来源） ---- */
-  let mapDict = null, mapDictTask = null;
+  let mapDict = null, mapDictTask = null, mapDictAt = 0;
+  /* ★ v2.6.228：/modal/world_map 里出现的图 = 该角色「已发现（已解锁传送）」的图。
+     未发现的传送点在游戏里没解锁（传送站面板显示 Not Discovered Yet），所以传送边只连已发现的。 */
+  const MAPDICT_TTL = 600000;
+  let wmDiscovered = null;
 
-  function getMapDict() {
-    if (mapDict) return Promise.resolve(mapDict);
+  function getMapDict(force) {
+    if (mapDict && !force && (now() - mapDictAt) < MAPDICT_TTL) return Promise.resolve(mapDict);
     if (mapDictTask) return mapDictTask;
     mapDictTask = (async () => {
       const t = await (await fetch('/modal/world_map', { credentials: 'same-origin' })).text();
@@ -3495,7 +3499,9 @@
       if (!Object.keys(byId).length) throw new Error('世界地图数据为空');
       /* ★ 世界地图是「按 id 的权威名字来源」：直接写进 MapDB（唯一数据源） */
       try { MapDB.applyWorldMap(byId, town); } catch (e) { /* ignore */ }
+      try { wmDiscovered = new Set(Object.keys(byId)); } catch (e) { wmDiscovered = null; }
       mapDict = { byId: byId, byName: byName, town: town };
+      mapDictAt = now();
       return mapDict;
     })();
     mapDictTask.catch(() => { mapDictTask = null; });
@@ -10982,6 +10988,59 @@
 
   function navMapName(id) { return MapDB.name(id); }
 
+  /* ======================= 传送边（统一寻路） =======================
+   * ★ v2.6.228：把传送点做成「和 smugglers 一样的边」，交给同一套 BFS 处理。
+   *   - waygate_city：任意图 → 已发现城市（会员走世界地图免费传；失败退传送站 Cities 页）
+   *   - waygate_wild：有传送站的图 → 已发现野外锚点（传送站 Wilderness 页）
+   *   「已发现」= /modal/world_map 里出现的图（未发现的传送点在游戏里没解锁）。
+   *   边不写进 MapDB.edges（不污染共享地图库、也不被「连续未见删门」误删），运行时现算。
+   * ================================================================ */
+  let _navAllowCity = null, _navAllowWild = null;   /* navToMap 执行期间的临时覆盖（null = 用 cfg） */
+  function tpAllowCity() { return _navAllowCity === null ? !!cfg.useWaygateCity : !!_navAllowCity; }
+  function tpAllowWild() { return _navAllowWild === null ? !!cfg.useWaygateWild : !!_navAllowWild; }
+  function tpDiscovered(id) { return !wmDiscovered || wmDiscovered.has(String(id)); }
+  function isCityId(id) {
+    id = +id; if (!(id > 0)) return false;
+    try { return MapDB.cities().some(function (c) { return +c.id === id; }); } catch (e) { return false; }
+  }
+  function isWaygateMap(id) { id = +id; return id > 0 && (isCityId(id) || isWildAnchor(id)); }
+  /* 从 from 出发、可传送到达的图（按边类型） */
+  function tpTargets(from, kind) {
+    from = +from; const out = [];
+    if (kind === 'city') {
+      if (!tpAllowCity()) return out;
+      try {
+        MapDB.cities().forEach(function (c) {
+          const id = +c.id;
+          if (id > 0 && id !== from && tpDiscovered(id) && out.indexOf(id) < 0) out.push(id);
+        });
+      } catch (e) { /* ignore */ }
+      return out;
+    }
+    if (!tpAllowWild()) return out;
+    if (!isWaygateMap(from)) return out;            /* 野外传送只能从有传送站的图走 */
+    WAYGATE_WILD.forEach(function (w) {
+      const id = +w.id;
+      if (id > 0 && id !== from && tpDiscovered(id) && out.indexOf(id) < 0) out.push(id);
+    });
+    return out;
+  }
+  /* from→to 是不是传送边（返回边类型；不是则 ''） */
+  function tpEdgeKind(from, to) {
+    from = +from; to = +to;
+    if (!(from > 0) || !(to > 0) || from === to) return '';
+    if (tpAllowCity() && isCityId(to) && tpDiscovered(to)) return 'waygate_city';
+    if (tpAllowWild() && isWaygateMap(from) && isWildAnchor(to) && tpDiscovered(to)) return 'waygate_wild';
+    return '';
+  }
+  /* 寻路用的邻接：可步行边 + 传送边 */
+  function navNeighbors(id) {
+    const a = MapDB.adjWalk(id).slice();
+    tpTargets(id, 'city').forEach(function (t) { if (a.indexOf(t) < 0) a.push(t); });
+    tpTargets(id, 'wild').forEach(function (t) { if (a.indexOf(t) < 0) a.push(t); });
+    return a;
+  }
+
   function navRoute(from, to) {
     /* ★ 地图 id 统一成数字：nearestTowerTown() / 城镇下拉框给的是字符串（"5"），
        而这里用严格相等（t === to）做 BFS 匹配，字符串永远匹配不上数字 → 返回 null（表现为「无步行路线」）。 */
@@ -10991,7 +11050,7 @@
     const q = [[from, []]], seen = {}; seen[from] = 1;
     while (q.length) {
       const cur = q.shift(), c = cur[0], p = cur[1];
-      const nx = MapDB.adjWalk(c);
+      const nx = navNeighbors(c);
       for (let i = 0; i < nx.length; i++) {
         const t = nx[i];
         if (seen[t]) continue;
@@ -11195,17 +11254,19 @@
   }
 
   /* ========================= 模块 A：地图到地图导航（唯一） ===========================
-   * 决策流程（详见 skill/references/pathfinding-redesign.md）：
+   * 决策流程（★ v2.6.228：传送点已做成「图里的边」，与步行 / smuggler 边同一套 BFS）：
    *   ① cur == dest → 完成
-   *   ② dest 是城市 且 城市传送点开：Noble → 世界地图免费传（无跳数限制）；失败/非 Noble → 传送站 Cities 页
-   *   ③ dest 是野外锚点 且 野外传送点开：传送站逻辑(dest,'wilderness')
-   *   ④ 有步行通路 → 步行（gate 边 + smuggler 边）
-   *   ⑤ 无步行通路（泉水/死胡同）→ 强制传送逃生
+   *   ② 有通路（可步行边 + 传送边）→ 按 navRoute 计划逐跳走（navHopStep 按边类型分派）
+   *        · gate → 走门   · smugglers → 付金币坐走私路线
+   *        · waygate_city → 世界地图免费传（失败退传送站 Cities 页）
+   *        · waygate_wild → 传送站 Wilderness 页
+   *      「传送边」只在对应开关开、且目标「已发现」时才存在（见 tpTargets / tpEdgeKind）。
+   *   ③ 无通路（泉水/死胡同）→ 强制传送逃生（navEscapeStuck）
+   *   注：不再有「先传送到最近传送站再步行」的前置启发式，也没有 5 跳以内不走传送的判据。
    * 脚本里**所有「换图」都必须走这里**。
    * opts: { alive, allowCity, allowWild, walkOnly }
    * ============================================================================ */
 
-  const WAYGATE_SLACK = 5;          /* 传送站判据里的固定 +5 */
   const FREE_FALLBACK_MAP = 5;      /* 都没开传送点时，免费传送的兜底图（El Caspar） */
 
   function isWildAnchor(id) {
@@ -11219,20 +11280,24 @@
     try { WAYGATE_WILD.forEach(function (w) { if (w && +w.id > 0 && out.indexOf(+w.id) < 0) out.push(+w.id); }); } catch (e) { /* ignore */ }
     return out;
   }
-  /* 离 cur 跳数最小的「有传送站的地图」（含 cur 自己） */
-  function nearestWaygateMap(cur, allowCity, allowWild) {
-    cur = +cur; if (!(cur > 0)) return 0;
-    let best = 0, bl = Infinity;
-    waygateMaps().forEach(function (id) {
-      if ((isTownMap(id) && allowCity === false) || (!isTownMap(id) && allowWild === false)) return;
-      const d = navDist(cur, id);
-      if (d < bl) { bl = d; best = id; }
-    });
-    return best;
-  }
-
   /* 按边类型执行一跳：smugglers → Ride；其余 → 走普通门 */
+  /* 传送一跳：waygate_city（世界地图免费传 → 传送站 Cities 页兜底）/ waygate_wild（传送站 Wilderness 页） */
+  async function navTeleportHop(destId, kind, alive) {
+    const dest = +destId;
+    if (+character.current_map === dest) return true;
+    if (kind === 'waygate_city') {
+      const out = await navWorldTeleport(dest, alive);
+      if (alive && !alive()) return false;
+      if (+out === dest) return true;
+      const out2 = await navWaygateOut(dest, alive, 'cities', true);
+      return +out2 === dest;
+    }
+    const out = await navWaygateOut(dest, alive, 'wilderness', true);
+    return +out === dest;
+  }
   async function navHopStep(destId, alive) {
+    const tk = tpEdgeKind(+character.current_map, +destId);
+    if (tk) return await navTeleportHop(+destId, tk, alive);
     const kind = MapDB.edgeKind(+character.current_map, +destId);
     if (kind === 'smugglers') {
       const out = await rideSmugglers(destId, alive);
@@ -11352,30 +11417,6 @@
     return true;
   }
 
-  /* 传送站逻辑：dist(cur,最近传送站) + 5 < dist(cur,dest) 才绕去传送站 */
-  async function navWaygateLogic(dest, page, alive, force) {
-    const cur = +character.current_map;
-    /* 已经在目的地 → 直接算到达。 */
-    if (cur === +dest) return true;
-    const d = navDist(cur, dest);
-    const w = nearestWaygateMap(cur);
-    if (!(w > 0)) return false;
-    /* ★ v2.6.192：force=true（目的地是城镇 + 勾了「城市传送点」）→ 一律走传送站，不再按「划不划算」跳过。 */
-    if (!force) {
-      if (d < WAYGATE_SLACK) return false;               /* 太近，直接走 */
-      if (!(navDist(cur, w) + WAYGATE_SLACK < d)) return false;   /* 绕去传送站不划算 */
-    }
-    if (alive && !alive()) return false;
-    if (+character.current_map !== w) {
-      logEvent('传送站：先走到最近的有传送站的图「' + navMapName(w) + '」（' + navDist(cur, w) + ' 跳）');
-      if (!await navWalkPlanTo(w, alive)) return false;
-    }
-    if (alive && !alive()) return false;
-    if (+character.current_map === +dest) return true;   /* ★ v2.6.197：传送站图就是目的地 → 走到即到达 */
-    const out = await navWaygateOut(dest, alive, page, true);
-    return +out === +dest;
-  }
-
   /* 逃生目标：按开关选「城市∪锚点里离目的地跳数最小」的（平手优先城市）；都没开 → 免费图 5。 */
   function escapeTarget(dest, allowCity, allowWild) {
     if (!allowCity && !allowWild) return FREE_FALLBACK_MAP;
@@ -11409,52 +11450,6 @@
     return !!out;
   }
 
-  /* 目的地是野外图（不是城市、也不是野外锚点）时， */
-  async function navTeleportNear(dest, alive, allowCity, allowWild) {
-    const cur = +character.current_map;
-    const D = +dest;
-    if (!(D > 0) || !(cur > 0) || cur === D) return false;
-    if (isTownMap(D) || isWildAnchor(D)) return false;      /* 这两种走已有分支 */
-    const dWalk = navDist(cur, D);                          /* 从当前位置直接走到目的地 */
-    if (!(dWalk < Infinity)) return false;
-    /* ★ v2.6.206：勾了「城市传送点」= 有会员 → 非城镇目的地也优先「世界地图免费传到最近的城镇 + 步行」，
-       失败 / 不划算再走传送站。世界地图从任意位置直接传，比走到传送站快。 */
-    if (allowCity) {
-      const tw = worldTeleportTarget(D);
-      if (tw > 0 && tw !== cur && isTownMap(tw)) {
-        const dw = navDist(tw, D);
-        if (dw < Infinity && dw + WAYGATE_SLACK < dWalk) {
-          logEvent('世界地图传送：目的地「' + navMapName(D) + '」较远 → 先免费传到「' + navMapName(tw) + '」再走（' + dw + ' 跳）');
-          const wout = await navWorldTeleport(tw, alive);
-          if (alive && !alive()) return false;
-          if (+wout === tw && await navWalkPlanTo(D, alive)) return true;
-        }
-      }
-    }
-    const anchor = nearestWaygateMap(D, allowCity, allowWild); /* 仅从允许的目的地类型中选锚点 */
-    if (!(anchor > 0) || anchor === D) return false;
-    const page = isTownMap(anchor) ? 'cities' : 'wilderness';
-    if (page === 'cities' && !allowCity) return false;
-    if (page === 'wilderness' && !allowWild) return false;
-    const dAnchor = navDist(anchor, D);                     /* 从锚点走到目的地 */
-    if (!(dAnchor < Infinity)) return false;
-    /* 只有「传送到锚点再走」明显比「直接走」省时，才绕传送站（不然就直走） */
-    if (!(dAnchor + WAYGATE_SLACK < dWalk)) return false;
-    if (alive && !alive()) return false;
-    logEvent('传送站：目的地「' + navMapName(D) + '」较远 → 先传到「' + navMapName(anchor) + '」再走（' + dAnchor + ' 跳）');
-    /* 先走到「离当前位置最近的传送站图」（若当前就在传送站图则直接传） */
-    const w = nearestWaygateMap(cur);
-    if (w > 0 && w !== cur) {
-      logEvent('传送站：先走到最近的有传送站的图「' + navMapName(w) + '」');
-      if (!await navWalkPlanTo(w, alive)) return false;
-    }
-    if (alive && !alive()) return false;
-    const out = await navWaygateOut(anchor, alive, page, true);
-    if (+out !== +anchor) return false;
-    if (await navWalkPlanTo(D, alive)) return true;
-    return false;
-  }
-
   /* ===== 模块 A 主函数 ===== */
   async function navToMap(destId, opts) {
     opts = opts || {};
@@ -11469,30 +11464,14 @@
     const walkOnly = !!opts.walkOnly;
     if (navBusy && !opts._nested) return false;
     if (!opts._nested) navBusy = true;
+    const _prevCity = _navAllowCity, _prevWild = _navAllowWild;
+    _navAllowCity = walkOnly ? false : allowCity;
+    _navAllowWild = walkOnly ? false : allowWild;
     try {
       navLearn();
-      if (!walkOnly) {
-        /* ② 目的地是城市 + 城市传送点开 */
-        if (isTownMap(dest) && allowCity) {
-          /* ★ v2.6.206：勾了「城市传送点」= 有会员 → 优先世界地图免费传（更快）；失败才用传送站兜底。
-             （原来只在检测到 Noble buff 时才试世界地图，检测不到就直接走传送站。） */
-          const out = await navWorldTeleport(dest, alive);
-          if (alive && !alive()) return false;
-          if (+out === dest) return true;
-          /* 世界地图传不动 → 传送站兜底（★ v2.6.192：目的地是城镇且勾了「城市传送点」→ 不再按「划不划算」跳过）。 */
-          if (await navWaygateLogic(dest, 'cities', alive, true)) return true;
-          if (alive && !alive()) return false;
-        }
-        /* ③ 目的地是野外锚点 + 野外传送点开 */
-        if (allowWild && isWildAnchor(dest)) {
-          if (await navWaygateLogic(dest, 'wilderness', alive)) return true;
-          if (alive && !alive()) return false;
-        }
-        /* ③.5 ★ v2.6.117：目的地是野外图（非城市 / 非锚点）→ 先传到离它最近的传送站图再走 */
-        if (await navTeleportNear(dest, alive, allowCity, allowWild)) return true;
-        if (alive && !alive()) return false;
-      }
-      /* ④ 有步行通路 → 步行 */
+      /* ★ v2.6.228：传送点已做成图里的边（tpTargets / navNeighbors），
+         原来的「先传送到最近传送站再步行」前置启发式（含 WAYGATE_SLACK 5 跳判据）已删除。
+         这里直接按统一寻路（步行边 + 传送边）走。 */
       if (navRoute(character.current_map, dest)) {
         if (await navWalkPlanTo(dest, alive)) return true;
         if (alive && !alive()) return false;
@@ -11514,7 +11493,10 @@
         if (!renderSynced()) break;                 // 不用上一张图的门继续规划
       }
       return +character.current_map === dest;
-    } finally { if (!opts._nested && cancelSeq === navCancelSeq) navBusy = false; }
+    } finally {
+      _navAllowCity = _prevCity; _navAllowWild = _prevWild;
+      if (!opts._nested && cancelSeq === navCancelSeq) navBusy = false;
+    }
   }
 
   /* 传送门回主城（死亡恢复） */
@@ -11536,11 +11518,11 @@
     });
     return cands[0] || null;
   }
-  /* 选一个「最适合传过去」的地图：目标是城镇就传它本身；否则选离目标跳数最少的城镇 */
+  /* 选一个「最适合传过去」的城镇：目标是城镇就传它本身；否则选离目标跳数最少的城镇。
+     （★ v2.6.228：寻路本身已不再用它，但 Overlord 离场「世界地图传回挂机图附近」仍需要。） */
   function worldTeleportTarget(destId) {
     const dest = +destId;
     if (isTownMap(dest)) return dest;
-    /* 优先用户自己设的「休整城镇」。 */
     let best = dest, bestLen = Infinity;
     try {
       (serviceTowns() || []).forEach(function (t) {
@@ -11573,7 +11555,9 @@
     try { window.openWorldMap(''); } catch (e) { return 0; }
     /* 等世界地图 marker 就绪 */
     let g = null;
-    for (let i = 0; i < 20; i++) { if (alive && !alive()) return 0; await sleep(300); g = document.getElementById('map_' + dest); if (g) break; }
+    /* ★ v2.6.228：世界地图的 marker 是异步渲染的，实测有时要 6~12s 才出现 —— 原来只等 6s，
+       经常「没找到标记」→ 白白退到传送站。这里放宽到 12s。 */
+    for (let i = 0; i < 40; i++) { if (alive && !alive()) return 0; await sleep(300); g = document.getElementById('map_' + dest); if (g) break; }
     const bail = function () { try { if (typeof window.closeWorldMap === 'function') window.closeWorldMap(); } catch (e) {} return 0; };
     if (!g) { logEvent('世界地图传送：世界地图里没找到地图 ' + dest + ' 的标记'); return bail(); }
     /* pointerup 打开 Map Details（世界地图标记只认 pointerup，click 无效） */
@@ -13147,7 +13131,7 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
     applyBagDiff: applyBagDiff, parseInvItems: parseInvItems, initBagSnap: initBagSnap,
     pause: pause, resume: resume, toggleRun: toggleRun, runElapsedMs: runElapsedMs, pollBagGain: pollBagGain,
     startRoundTrip: function () { const seq = ++navAutoSeq; st.mapSwitch.active = true; return navRoamStep(seq); },
-    returnToFarm: returnToFarm, navToMap: navToMap, navGoTo: navToMap, navWalkTile: navWalkTile, navDist: navDist, escapeTarget: escapeTarget, navTeleportNear: navTeleportNear, navSetPending: navSetPending, navClearPending: navClearPending, navPendingTick: navPendingTick, navPendingDest: navPendingDest, nearestWaygateMap: nearestWaygateMap, waygateMaps: waygateMaps, isWildAnchor: isWildAnchor, isTownMap: isTownMap, suppliesEmpty: suppliesEmpty,  navWaygateOut: navWaygateOut, navWorldTeleport: navWorldTeleport, worldTeleportTarget: worldTeleportTarget, findMapDetailsTeleport: findMapDetailsTeleport, navWalkToAnyExit: navWalkToAnyExit, townName: townName,
+    returnToFarm: returnToFarm, navToMap: navToMap, navGoTo: navToMap, navWalkTile: navWalkTile, navDist: navDist, tpTargets: tpTargets, tpEdgeKind: tpEdgeKind, navNeighbors: navNeighbors, isCityId: isCityId, isWaygateMap: isWaygateMap, escapeTarget: escapeTarget, navSetPending: navSetPending, navClearPending: navClearPending, navPendingTick: navPendingTick, navPendingDest: navPendingDest, waygateMaps: waygateMaps, isWildAnchor: isWildAnchor, isTownMap: isTownMap, suppliesEmpty: suppliesEmpty,  navWaygateOut: navWaygateOut, navWorldTeleport: navWorldTeleport, findMapDetailsTeleport: findMapDetailsTeleport, navWalkToAnyExit: navWalkToAnyExit, townName: townName,
     navImportRecorder: navImportRecorder,
     mapDB: MapDB,
     nav: { graph: MapDB, route: navRoute, travelTo: navTravelTo, hop: navHop, learn: navLearn,

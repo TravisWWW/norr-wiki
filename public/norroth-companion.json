@@ -1,8 +1,8 @@
 {
-  "version": "2.6.227",
+  "version": "2.6.228",
   "date": "2026-11-01",
-  "notes": "v2.6.227：选中的食物吃完触发自动扫背包时，扫描期间也算「回血中」→ 先别去寻怪（原来扫描期间 st.healing 被置回 false，会照常去寻下一只怪）。扫完自动选好补品接着补，无死等。",
+  "notes": "v2.6.228：传送点做成「图里的边」，统一寻路。① 传送站/smuggler 一样是一条边，navHopStep 按类型分派；② 城市/野外边分别由对应开关启用，目标未「已发现」不启用（已发现 = /modal/world_map 里出现的图）；③ 不加权、删掉 5 跳判据；④ 不检测会员，勾了城市传送点即当会员（世界地图免费传，失败退传送站）。",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 887816,
-  "sha256": "1645eec46b082649bf228cba9cf9cb0a329a4460c51071af43419e37183ece27"
+  "size": 887168,
+  "sha256": "ba507abb5c3e19a33b5c018a5f5024b727d4bff11f222b761d18fdb6c3f9245e"
 }
