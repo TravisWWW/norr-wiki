@@ -1,8 +1,8 @@
 {
-  "version": "2.6.230",
+  "version": "2.6.231",
   "date": "2026-11-01",
-  "notes": "v2.6.230：① 阵亡复活后先「回城休整」（出售/拆解→存仓→修理，去「休整」页设的休整城镇），休整完回挂机地图；② 重生泉水(1000) 有传送站 → 视为可传送地图，泉水能走世界地图/传送站出去；③ 传 El Caspar 降为保底（世界地图+传送站都失败、或两个传送开关都没开时）。",
+  "notes": "v2.6.231：修传送站「Fountain of Rebirth」按钮 id 1→1000（1 只是世界地图节点、没有 waygate 图标；泉水面板实际是 waygate?id=1000）。",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 890237,
-  "sha256": "6c3f2b4c76690acda384ffe43690270a28558c4af935fb1940a111c8fe48d24e"
+  "size": 890354,
+  "sha256": "35f5e1fd83d998b23a4ba10ff407704072944ae5f77191d8f02d040eb87e190c"
 }

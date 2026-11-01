@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.230
+// @version      2.6.231
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -187,7 +187,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.230';   // 与 @version 保持一致
+  const SCRIPT_VER = '2.6.231';   // 与 @version 保持一致
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -11620,7 +11620,7 @@
    *   返回传送后所在的图 id（失败返回 0）。 */
   /* ★ 传送站目的地（实测 2026-10-20，游戏里打开 gateway 面板就能看到，含未解锁项）： */
   const WAYGATE_WILD = [
-    { name: 'Fountain of Rebirth', id: 1,   lv: 1  },
+    { name: 'Fountain of Rebirth', id: 1000, lv: 1 },   /* ★ v2.6.231：实测面板按钮是 waygate?id=1000（1 只是世界地图节点，没有 waygate 图标） */
     { name: 'Mirage Mountains',    id: 67,  lv: 13 },
     { name: 'Ancient Ruins',       id: 97,  lv: 13 },
     { name: 'Deep Forest',         id: 53,  lv: 14 },
