@@ -1,7 +1,7 @@
 {
  "meta": {
   "source": "小伴侣地图数据（MapDB）· 13 位贡献者合并",
-  "updated": "2026-11-01T16:27:42.527Z",
+  "updated": "2026-11-01T17:50:57.597Z",
   "version": "1.0",
   "contributors": [
    {
@@ -103,9 +103,9 @@
    {
     "file": "maps-3197.json",
     "char": "#3197",
-    "level": 48,
-    "time": "2026-10-31T18:44:02.162Z",
-    "count": 391,
+    "level": 59,
+    "time": "2026-11-01T17:50:44.207Z",
+    "count": 392,
     "mergedAt": "2026-11-01"
    }
   ],
@@ -231,13 +231,13 @@
    ]
   },
   "5": {
-   "at": 1793407899696,
+   "at": 1793554069288,
    "name": "El Caspar",
    "type": "City",
    "g": [
     "Minnow Pier",
-    "Mucky Patch",
-    "Combat Training"
+    "Combat Training",
+    "Mucky Patch"
    ],
    "gt": [
     [
@@ -960,7 +960,7 @@
    ]
   },
   "16": {
-   "at": 1793440525608,
+   "at": 1793539093800,
    "name": "Elundi",
    "type": "City",
    "g": [
@@ -980,8 +980,8 @@
      "Silk Field"
     ],
     [
-     16,
-     29,
+     14,
+     31,
      "Combat Training"
     ]
    ],
@@ -6824,7 +6824,7 @@
    ]
   },
   "204": {
-   "at": 1793469551133,
+   "at": 1793523545411,
    "name": "Pumpkin King`s Lodge",
    "m": [
     "Jacked-o-Lantern"
@@ -8783,7 +8783,7 @@
    ]
   },
   "281": {
-   "at": 1793467153349,
+   "at": 1793553977678,
    "name": "Trescan",
    "type": "City",
    "g": [
@@ -10346,7 +10346,7 @@
    ]
   },
   "327": {
-   "at": 1793472160607,
+   "at": 1793553995554,
    "name": "Dark Boreal",
    "type": "Normal",
    "g": [
@@ -10430,7 +10430,7 @@
    ]
   },
   "329": {
-   "at": 1793472239997,
+   "at": 1793554195929,
    "name": "Dark Boreal",
    "type": "Normal",
    "m": [
@@ -10473,8 +10473,9 @@
    ]
   },
   "330": {
-   "at": 1792894631570,
+   "at": 1793554203690,
    "name": "Dark Boreal",
+   "type": "Normal",
    "g": [
     "Travertine Quarry"
    ],
@@ -10525,8 +10526,47 @@
    ]
   },
   "331": {
-   "at": 0,
-   "name": "Dark Boreal"
+   "at": 1793555436692,
+   "name": "Dark Boreal",
+   "type": "Normal",
+   "m": [
+    "Armored Ram",
+    "Dwarven Guard",
+    "Komodo Basilisk",
+    "Dwarven Hunter",
+    "Dwarven Caster"
+   ],
+   "ex": [
+    [
+     53,
+     9,
+     "gate",
+     "Moldrir Depths (Lv.51)"
+    ],
+    [
+     5,
+     37,
+     "gate",
+     "Dark Boreal (Lv.49)"
+    ]
+   ],
+   "visited": true,
+   "edges": [
+    [
+     331,
+     330,
+     5,
+     37,
+     "gate"
+    ],
+    [
+     331,
+     363,
+     53,
+     9,
+     "gate"
+    ]
+   ]
   },
   "332": {
    "at": 1792857802040,
@@ -10615,16 +10655,92 @@
    "name": "Trial of Embers"
   },
   "339": {
-   "at": 0,
-   "name": "Tunnel of Embers"
+   "at": 1793548797765,
+   "name": "Tunnel of Embers",
+   "m": [
+    "Mountain Giant",
+    "Fire Elemental",
+    "Terramancer"
+   ],
+   "ex": [
+    [
+     33,
+     7,
+     "dungeon",
+     "Hall of Embers (Lv.59)"
+    ],
+    [
+     33,
+     65,
+     "gate",
+     "Trial of Embers (Lv.59)"
+    ]
+   ],
+   "edges": [
+    [
+     339,
+     338,
+     33,
+     65,
+     "gate"
+    ],
+    [
+     339,
+     340,
+     33,
+     7,
+     "other"
+    ]
+   ]
   },
   "340": {
-   "at": 0,
-   "name": "The Ember Forge"
+   "at": 1793547861403,
+   "name": "Hall of Embers",
+   "m": [
+    "Fire Elemental",
+    "Mountain Giant",
+    "Terramancer",
+    "Drazhul, The Demon Smith"
+   ],
+   "ex": [
+    [
+     7,
+     41,
+     "gate",
+     "Tunnel of Embers (Lv.59)"
+    ]
+   ],
+   "visited": true,
+   "edges": [
+    [
+     340,
+     339,
+     7,
+     41,
+     "gate"
+    ]
+   ]
   },
   "341": {
-   "at": 0,
-   "name": "The Ember Forge"
+   "at": 1793548795233,
+   "name": "The Ember Forge",
+   "ex": [
+    [
+     6,
+     41,
+     "gate",
+     "Tunnel of Embers (Lv.59)"
+    ]
+   ],
+   "edges": [
+    [
+     341,
+     339,
+     6,
+     41,
+     "gate"
+    ]
+   ]
   },
   "342": {
    "at": 1793373620641,
@@ -10794,7 +10910,7 @@
    ]
   },
   "346": {
-   "at": 1793381069245,
+   "at": 1793501442419,
    "name": "Dark Boreal",
    "g": [
     "Laterite Quarry",
@@ -10871,7 +10987,7 @@
    ]
   },
   "347": {
-   "at": 1793380973119,
+   "at": 1793495463254,
    "name": "Dark Boreal",
    "g": [
     "Beech Grove"
@@ -10924,9 +11040,16 @@
    ]
   },
   "348": {
-   "at": 1793228256585,
+   "at": 1793507238980,
    "name": "Laen Dorei",
    "type": "City",
+   "m": [
+    "Dwarven Hunter",
+    "Dwarven Guard",
+    "Dwarven Caster",
+    "Armored Ram",
+    "Komodo Basilisk"
+   ],
    "ex": [
     [
      35,
@@ -10967,7 +11090,8 @@
    ]
   },
   "349": {
-   "at": 1793228302776,
+   "at": 1793548001677,
+   "name": "Dark Boreal",
    "m": [
     "Dwarven Guard (?)",
     "Dwarven Guard",
@@ -11010,7 +11134,8 @@
    ]
   },
   "350": {
-   "at": 1793228424534,
+   "at": 1793548039508,
+   "name": "Dark Boreal",
    "g": [
     "Ash Grove"
    ],
@@ -11061,7 +11186,8 @@
    ]
   },
   "351": {
-   "at": 1792961208208,
+   "at": 1793548111048,
+   "name": "Wardens’ Bridge",
    "g": [
     "Northern Pike Pier",
     "High Quality Patch",
@@ -11713,7 +11839,7 @@
    "name": "Fountain of Rebirth"
   },
   "1000": {
-   "at": 1793448062103,
+   "at": 1793495219841,
    "name": "Fountain of Rebirth",
    "type": "Normal",
    "ex": [
@@ -11882,7 +12008,7 @@
    "name": "Das Festhalle"
   },
   "1157": {
-   "at": 1793459770290,
+   "at": 1793536586105,
    "name": "Sleepy Hollow Lobby",
    "g": [
     "Quarry",
@@ -11923,6 +12049,9 @@
      45,
      "Patch"
     ]
+   ],
+   "m": [
+    "Armored Ram"
    ],
    "ex": [
     [
@@ -12034,7 +12163,7 @@
    ]
   },
   "1162": {
-   "at": 1793459775719,
+   "at": 1793485203065,
    "name": "Sleepy Hollow",
    "m": [
     "Ghost Pirate",
@@ -12061,8 +12190,31 @@
    ]
   },
   "1163": {
-   "at": 0,
-   "name": "Sleepy Hollow"
+   "at": 1793539033471,
+   "name": "Sleepy Hollow",
+   "m": [
+    "Ghost Pirate",
+    "Skeleton",
+    "Arcelia"
+   ],
+   "ex": [
+    [
+     53,
+     12,
+     "gate",
+     "Sleepy Hollow Lobby (Lv.100)"
+    ]
+   ],
+   "visited": true,
+   "edges": [
+    [
+     1163,
+     1157,
+     53,
+     12,
+     "gate"
+    ]
+   ]
   },
   "1183": {
    "at": 1793227167784,
