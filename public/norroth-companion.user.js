@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.236
+// @version      2.7.0
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -50,8 +50,16 @@
   const POI_PROF = { poi_1: 'fishing', poi_2: 'mining', poi_3: 'chopping', poi_4: 'farming', poi_61: 'quarrying', poi_81: 'foraging' };
   const PROF_POI = { fishing: 'poi_1', mining: 'poi_2', chopping: 'poi_3', farming: 'poi_4', quarrying: 'poi_61', foraging: 'poi_81' };
   /* ★ 模式名称（v1.7.1 起模式由勾选项推导） */
-  const MODE_CN = { auto: '一键挂机', battle: '只打怪', gather: '只采集', tower: '爬塔' };
-  const TASK_CN = { battle: '战斗', gather: '采集', tower: '爬塔' };
+  const MODE_CN = { auto: '一键挂机', battle: '只打怪', gather: '只采集', tower: '爬塔', craft: '制造' };
+  const TASK_CN = { battle: '战斗', gather: '采集', tower: '爬塔', craft: '制造' };
+  const CRAFT_STATIONS = {
+    cooking: ['cook', 'Cook', '烹饪'], jeweling: ['jeweler', 'Jeweler', '珠宝'],
+    weaponsmithing: ['weaponsmith', 'Weaponsmith', '铸武'], armorsmithing: ['armorsmith', 'Armorsmith', '铸甲'],
+    tailoring: ['tailor', 'Tailor', '裁缝'], leatherworking: ['leatherworker', 'Leatherworker', '制皮'],
+    alchemy: ['alchemist', 'Alchemist', '炼金'], carpentry: ['carpenter', 'Carpenter', '木工'],
+    cartography: ['cartographer', 'Cartographer', '制图'], hunting: ['hunter', 'Hunter', '狩猎'],
+    stonemasonry: ['stonemason', 'Stonemason', '石工']
+  };
 
   const DEFAULTS = {
     /* 战斗 */
@@ -144,7 +152,8 @@
     mcChars: [],             // [{id,name,role,enabled,gatherMap,nodeX,nodeY,profession,serviceTown,repairOn,depositOn}]
 
     /* 挂机模式 */
-    task: 'battle',             // ★ 任务：battle(战斗) / gather(采集) / tower(爬塔)
+    task: 'battle',             // 战斗 / 采集 / 爬塔 / 制造
+    craftJobs: [],              // 制造清单；数量按配方执行次数，进度随成功回包保存
     towerDiff: 1,               // ★ 爬塔难度：1=Normal / 2=Nightmare / 3=Chaos
     towerTown: '',              // ★ 爬塔出发城镇（空 = 自动选最近的城镇）
     towerStopDeath: false,      // ★ 爬塔停止条件：阵亡即停
@@ -188,7 +197,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.236';   // 与 @version 保持一致
+  const SCRIPT_VER = '2.7.0';   // 与 @version 保持一致
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -459,9 +468,10 @@
     if (c.collectInBattle === false) c.gatherScrap = false;
     delete c.collectInBattle;
     /* 任务（战斗 / 采集 / 爬塔）→ 运行模式 */
-    c.task = (o.task === 'gather' || o.task === 'tower' || o.task === 'battle') ? o.task
+    c.task = (o.task === 'gather' || o.task === 'tower' || o.task === 'battle' || o.task === 'craft') ? o.task
            : ((c.autoGather && !c.gatherInterrupt) ? 'gather' : 'battle');   // 老配置迁移
-    c.runMode = (c.task === 'tower') ? 'tower' : ((c.task === 'gather') ? 'gather' : (c.autoGather ? 'auto' : 'battle'));
+    c.runMode = (c.task === 'craft') ? 'craft' : ((c.task === 'tower') ? 'tower' : ((c.task === 'gather') ? 'gather' : (c.autoGather ? 'auto' : 'battle')));
+    c.craftJobs = (Array.isArray(o.craftJobs) ? o.craftJobs : []).slice(0, 100).map(craftNormalizeJob).filter(Boolean);
     c.towerDiff = (c.towerDiff === 2 || c.towerDiff === 3) ? c.towerDiff : 1;
     c.towerTown = c.towerTown ? String(c.towerTown) : '';
     c.towerStopDeath = !!o.towerStopDeath;
@@ -479,7 +489,7 @@
     c.questMonsters = (c.targetMode === 'priority' || c.targetMode === 'all');
     c.farmMapLocked = !!c.farmMapLocked;
     /* ★ v2.6.13：「查看中的任务」= 任务按钮当前选中的那个（运行中只切查看、不切正在跑的任务） */
-    c.uiTask = (o.uiTask === 'gather' || o.uiTask === 'tower' || o.uiTask === 'battle') ? o.uiTask : c.task;
+    c.uiTask = (o.uiTask === 'gather' || o.uiTask === 'tower' || o.uiTask === 'battle' || o.uiTask === 'craft') ? o.uiTask : c.task;
     c.stuckSec = Math.max(0, Math.min(600, Math.round(+c.stuckSec || 0)));
     c.repairDurPct = Math.max(1, Math.min(100, Math.round(+c.repairDurPct || 15)));
     delete c.repairTurnsMin;   /* v1.8.1 已合并成单一的「维修阈值(%)」 */
@@ -679,6 +689,7 @@
     return a + Math.floor(Math.random() * (b - a + 1));
   }
   function idleActTick() {
+    if (craftHolding()) return;
     if (!cfg.humanIdleActOn || !inGame()) return;
     if (!st.idleActAt) { st.idleActAt = now() + humanIdleActMs(); return; }
     if (st.idleActBusy || now() < st.idleActAt) return;
@@ -7863,6 +7874,7 @@
 
   /* 主循环钩子：true = 本 tick 已被接管（副角色行程），false = 走正常逻辑（主角色 / 未启用） */
   function mcTick() {
+    if (craftHolding()) return false;
     if (!cfg.multiChar) return false;
     if (!rot) mcLoadRot();
     if (!rot.on) return false;
@@ -8473,6 +8485,298 @@
     if (main && inGame() && String(character.id) !== String(main.id)) mcSwitch(main.id);
   }
 
+  /* ======================= 制造清单（直接制造，跨 NPC / 城镇） ======================= */
+  let _craftBusy = false, _craftLoaded = '', _craftCooldown = 0, _craftMessage = '', _craftChoices = [];
+  function craftHolding() { return st.mode === 'craft' && (running || st.paused); }
+  function craftNormalizeJob(j) {
+    if (!j || !CRAFT_STATIONS[j.profession] || !(+j.recipe > 0) || !(+j.map > 0) || !(+j.charId > 0)) return null;
+    const qty = Math.max(1, Math.min(10000, Math.floor(+j.qty || 1)));
+    return { uid: String(j.uid || ('c' + Date.now() + Math.random().toString(36).slice(2))), charId: +j.charId,
+      map: +j.map, profession: j.profession, recipe: Math.floor(+j.recipe), name: String(j.name || '配方 ' + j.recipe).slice(0, 120),
+      cat: String(j.cat || '').slice(0, 80), subcat: String(j.subcat || '').slice(0, 80), statSet: String(j.statSet || '').slice(0, 80),
+      qty: qty, done: Math.max(0, Math.min(qty, Math.floor(+j.done || 0))), pending: !!j.pending };
+  }
+  function craftEditable() {
+    if (running) { setStatus('请先暂停，再调整制造清单'); return false; }
+    if (_craftBusy) { setStatus('正在等待上一项操作结束，请稍后调整'); return false; }
+    return true;
+  }
+  function craftCanStart() {
+    const jobs = cfg.craftJobs;
+    if (!jobs.length || jobs.every(function (j) { return j.done >= j.qty; })) {
+      setStatus(jobs.length ? '清单已完成，点「重做清单」可再做一轮' : '请先从工作台加入制造配方'); return false;
+    }
+    if (jobs.some(function (j) { return j.pending; })) { setStatus('有制造结果待核对，请先在清单中确认是否已完成'); craftRender(); return false; }
+    if (jobs.some(function (j) { return j.done < j.qty && +j.charId !== +character.id; })) { setStatus('清单包含其他角色的任务，请切回记录配方的角色'); return false; }
+    if (st.mcBusy || st.tripManual || st.repair.active || st.sell.active || st.bank.active || navBusy) { setStatus('请等待当前行程结束，再开始制造'); return false; }
+    if (inCombatNow() || (st.event && st.event.on) || ovlHolding()) { setStatus('请先结束战斗或活动，再开始制造'); return false; }
+    if (window.currentCraft != null) { setStatus('请先停止游戏里的手动制造，再开始清单'); return false; }
+    _craftMessage = ''; _craftLoaded = ''; navClearPending(); return true;
+  }
+  function craftReadJob(card) {
+    const frame = card.closest('[id^="frame_"]');
+    const select = frame && frame.querySelector('#select_category');
+    const option = select && select.options[select.selectedIndex];
+    const profession = option && option.getAttribute('skill');
+    if (!CRAFT_STATIONS[profession] || !renderSynced() || !inGame()) return null;
+    const tile = document.querySelector('.map_table .tile_poi[coords="' + character.x + '-' + character.y + '"][action="' + CRAFT_STATIONS[profession][0] + '"]');
+    if (!tile) return null;
+    const recipe = +card.getAttribute('data-craft-recipe-id');
+    if (!(recipe > 0)) return null;
+    const output = card.querySelector('.col-xs-4 .inv_slot > [res],.col-xs-4 [content],.col-xs-4 [hover_title]');
+    const name = output && (output.getAttribute('hover_title') || nrItemName(output.getAttribute('content') || '') || output.getAttribute('res'));
+    const stat = card.querySelector('#stat_set_' + recipe);
+    return craftNormalizeJob({ charId: character.id, map: character.current_map, profession: profession, recipe: recipe,
+      name: name || '配方 ' + recipe, cat: option.getAttribute('cat'), subcat: option.getAttribute('subcat'), statSet: stat ? stat.value : '', qty: 1 });
+  }
+  function craftAddJob(job, count) {
+    if (!craftEditable() || !job) return false;
+    if (cfg.craftJobs.length >= 100) { setStatus('制造清单最多 100 项，请先清除已完成项'); return false; }
+    const next = craftNormalizeJob(Object.assign({}, job, { uid: 'c' + now() + Math.random().toString(36).slice(2), qty: count || 1, done: 0, pending: false }));
+    if (!next) return false;
+    cfg.craftJobs.push(next); cfg.uiTask = 'craft'; cfg.uiTab = 'idle'; cfg.uiFold = false;
+    saveCfgNow(); craftRender(); renderTaskUI();
+    if (typeof syncUI === 'function') syncUI();
+    setStatus('已加入制造清单：' + next.name + ' × ' + next.qty);
+    return true;
+  }
+  function craftScanWorkbench() {
+    // 游戏使用全局 #craft_list；窗口保护留下旧工作台时，新配方会误写进旧窗口。
+    if (inGame() && renderSynced()) {
+      const tile = document.querySelector('.map_table .tile_poi[coords="' + character.x + '-' + character.y + '"][action]');
+      const profession = tile && Object.keys(CRAFT_STATIONS).find(function (p) { return CRAFT_STATIONS[p][0] === tile.getAttribute('action'); });
+      if (profession && craftPruneWorkbenches(profession)) {
+        const current = craftWorkbench(profession);
+        if (current && current.value) current.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+    }
+    _craftChoices = [];
+    const select = document.getElementById('nr-craft-recipe');
+    const previous = select && select.value;
+    const cards = document.querySelectorAll('[id^="frame_"] [data-craft-recipe-id]');
+    for (let i = 0; i < cards.length; i++) {
+      const card = cards[i], job = craftReadJob(card);
+      if (!job) continue;
+      _craftChoices.push(job);
+      if (!card.querySelector('.nr-craft-add-recipe')) {
+        const button = document.createElement('button'); button.type = 'button'; button.className = 'btn btn-default nr-craft-add-recipe';
+        button.textContent = '＋制造清单'; button.style.cssText = 'margin:6px 0 2px;font:12px/20px sans-serif!important;padding:3px 8px;background:#31577f!important;color:#fff!important;border:1px solid #7eabd6;border-radius:6px;text-shadow:none!important';
+        button.title = '加入一项（默认 1 次）；可在小伴侣的「制造」页修改数量和顺序';
+        button.addEventListener('click', function (event) { event.preventDefault(); event.stopPropagation(); craftAddJob(craftReadJob(card), 1); });
+        card.appendChild(button);
+      }
+    }
+    if (select) {
+      const html = '<option value="">选择当前工作台的配方</option>' + _craftChoices.map(function (j, i) {
+        return '<option value="' + i + '">' + escapeHtml(j.name) + (j.statSet ? ' · ' + escapeHtml(j.statSet) : '') + '</option>';
+      }).join('');
+      if (select.innerHTML !== html) { select.innerHTML = html; if (previous !== '') select.value = previous; }
+      if (select.selectedIndex < 1 && _craftChoices.length) select.selectedIndex = 1;
+    }
+    const source = document.getElementById('nr-craft-source');
+    if (source) source.textContent = _craftChoices.length ? (CRAFT_STATIONS[_craftChoices[0].profession][2] + ' · ' + _craftChoices.length + ' 个配方') : '打开 NPC 工作台并选分类，再读取';
+    return _craftChoices.length;
+  }
+  function craftRender() {
+    const list = document.getElementById('nr-craft-list'); if (!list) return;
+    const locked = running || _craftBusy;
+    list.innerHTML = cfg.craftJobs.map(function (j, i) {
+      const disabled = locked || j.pending ? ' disabled' : '';
+      const label = j.pending ? (_craftBusy ? '确认回包…' : '结果待核对') : (j.done >= j.qty ? '✓ 完成' : j.done + ' / ' + j.qty);
+      return '<div class="nr-craft-job" data-craft-index="' + i + '" style="padding:7px;margin-bottom:5px;border:1px solid #394356;border-radius:6px">' +
+        '<div style="display:flex;gap:5px;align-items:center"><b style="flex:1;min-width:0;overflow-wrap:anywhere">' + (i + 1) + '. ' + escapeHtml(j.name) + '</b><span style="color:' + (j.pending ? '#ffba76' : '#85cfaa') + '">' + label + '</span></div>' +
+        '<div style="font-size:11px;color:#9aa9c0;margin:3px 0">' + escapeHtml(navMapName(j.map)) + ' · ' + CRAFT_STATIONS[j.profession][2] + (j.statSet ? ' · ' + escapeHtml(j.statSet) : '') + '</div>' +
+        '<div style="display:flex;gap:4px;align-items:center"><span>次数</span><input data-craft-qty type="number" min="' + Math.max(1, j.done) + '" max="10000" value="' + j.qty + '" style="width:65px"' + disabled + '>' +
+        '<button class="mini" data-craft-action="up" title="上移"' + disabled + '>↑</button><button class="mini" data-craft-action="down" title="下移"' + disabled + '>↓</button><button class="mini" data-craft-action="remove"' + disabled + '>删除</button></div>' +
+        (j.pending && !locked ? '<div style="margin-top:5px;color:#ffba76;font-size:11px">先核对实际成品，再确认本次结果：</div><button class="mini" data-craft-action="count">已成功，计入1次</button> <button class="mini" data-craft-action="retry">未成功，允许重试</button>' : '') + '</div>';
+    }).join('') || '<div class="pathmsg">清单为空。打开工作台，在配方旁点「＋制造清单」。</div>';
+    const hint = document.getElementById('nr-craft-hint');
+    if (hint) hint.textContent = _craftMessage || ('共 ' + cfg.craftJobs.length + ' 项 · 完成 ' + cfg.craftJobs.filter(function (j) { return j.done >= j.qty; }).length + ' 项；支持暂停后调整顺序。');
+  }
+  function craftBindUI() {
+    document.getElementById('nr-craft-read').addEventListener('click', function () { if (!craftScanWorkbench()) setStatus('请先在游戏里打开制造工作台并选择分类'); });
+    document.getElementById('nr-craft-add').addEventListener('click', function () {
+      const select = document.getElementById('nr-craft-recipe');
+      if (select.value === '') { setStatus('请先读取工作台并选择配方'); return; }
+      craftAddJob(_craftChoices[+select.value], +document.getElementById('nr-craft-count').value);
+    });
+    const list = document.getElementById('nr-craft-list');
+    list.addEventListener('change', function (e) {
+      if (!e.target.matches('[data-craft-qty]') || !craftEditable()) return;
+      const job = cfg.craftJobs[+e.target.closest('[data-craft-index]').dataset.craftIndex];
+      if (!job || job.pending) return;
+      job.qty = Math.max(1, job.done, Math.min(10000, Math.floor(+e.target.value || 1))); saveCfgNow(); craftRender();
+    });
+    list.addEventListener('click', function (e) {
+      const button = e.target.closest('[data-craft-action]'); if (!button || !craftEditable()) return;
+      const i = +button.closest('[data-craft-index]').dataset.craftIndex, job = cfg.craftJobs[i], action = button.dataset.craftAction;
+      if (!job) return;
+      if (job.pending) {
+        if (action !== 'count' && action !== 'retry') return;
+        if (action === 'count') job.done = Math.min(job.qty, job.done + 1);
+        job.pending = false; _craftMessage = '';
+      } else if (action === 'remove') cfg.craftJobs.splice(i, 1);
+      else if (action === 'up' && i > 0) cfg.craftJobs.splice(i - 1, 0, cfg.craftJobs.splice(i, 1)[0]);
+      else if (action === 'down' && i < cfg.craftJobs.length - 1) cfg.craftJobs.splice(i + 1, 0, cfg.craftJobs.splice(i, 1)[0]);
+      saveCfgNow(); craftRender();
+    });
+    document.getElementById('nr-craft-clear').addEventListener('click', function () { if (!craftEditable()) return; cfg.craftJobs = cfg.craftJobs.filter(function (j) { return j.pending || j.done < j.qty; }); saveCfgNow(); craftRender(); });
+    document.getElementById('nr-craft-reset').addEventListener('click', function () {
+      if (!craftEditable()) return;
+      if (cfg.craftJobs.some(function (j) { return j.pending; })) { setStatus('请先核对未确认的制造结果'); return; }
+      cfg.craftJobs.forEach(function (j) { j.done = 0; }); _craftMessage = ''; saveCfgNow(); craftRender();
+    });
+    craftRender();
+  }
+  function craftBlock(message) {
+    if (running && st.mode === 'craft') pause();
+    _craftMessage = message; setStatus('制造暂停：' + message); logEvent('制造暂停：' + message); craftRender();
+  }
+  function craftErrorText(raw) {
+    const div = document.createElement('div'); div.innerHTML = String(raw || '');
+    const text = (div.textContent || '').trim().slice(0, 240);
+    if (/Inventory Full/i.test(text)) return '背包已满；腾出成品空间后继续';
+    return text || '未收到可确认的制造结果，请核对成品';
+  }
+  async function craftWait(test, alive, timeout) {
+    const end = now() + timeout;
+    while (alive() && now() < end) { const value = test(); if (value) return value; await sleep(200); }
+    if (!alive()) return null;
+    throw new Error('工作台未就绪，请检查 NPC、专业和配方后继续');
+  }
+  function craftWorkbench(profession) {
+    return Array.from(document.querySelectorAll('[id^="frame_"] select#select_category')).find(function (s) {
+      return Array.from(s.options).some(function (o) { return o.getAttribute('skill') === profession; });
+    });
+  }
+  function craftPruneWorkbenches(profession) {
+    let changed = false;
+    document.querySelectorAll('[id^="frame_"] select#select_category').forEach(function (s) {
+      if (Array.from(s.options).some(function (o) { return o.getAttribute('skill') === profession; })) return;
+      const frame = s.closest('[id^="frame_"]');
+      if (frame) { closeFrameById(frame.id); changed = true; }
+    });
+    return changed;
+  }
+  function craftReply(job, xml) {
+    const node = xml && xml.querySelector && xml.querySelector('xmlresponse');
+    if (!node) return { unknown: true, message: '返回内容无法识别，先核对成品再继续' };
+    const error = node.getAttribute('error'), warning = node.getAttribute('warning'), success = node.getAttribute('success');
+    if (error || warning) {
+      job.pending = false; saveCfgNow();
+      if (!error && /cooldown/i.test(warning)) { _craftCooldown = now() + Math.max(1000, +node.getAttribute('cooldown') || 5000); return { cooldown: true }; }
+      return { message: craftErrorText(error || warning) };
+    }
+    if (!success) return { unknown: true, message: '返回内容没有成功凭据，先核对成品再继续' };
+    job.done = Math.min(job.qty, job.done + 1); job.pending = false;
+    _craftCooldown = now() + Math.max(1000, Math.min(600000, +node.getAttribute('cooldown') || 3000));
+    saveCfgNow();
+    try {
+      const amounts = node.getAttribute('new_amounts'), inventory = node.getAttribute('inventory');
+      if (amounts && typeof window.showNewAmounts === 'function') window.showNewAmounts(amounts);
+      if (inventory && inventory !== 'null' && typeof window.updateInventorySlots === 'function') window.updateInventorySlots(inventory);
+      if (typeof window.applyCraftUiPayloadFromXml === 'function') window.applyCraftUiPayloadFromXml(xml);
+    } catch (e) { /* 显示刷新失败不影响已确认的生产进度 */ }
+    logEvent('制造：' + job.name + ' ' + job.done + '/' + job.qty); craftRender();
+    return { success: true };
+  }
+  async function craftExecute(job, alive) {
+    if (+character.current_map !== job.map) {
+      _craftLoaded = ''; setStatus('制造：前往 ' + navMapName(job.map));
+      if (!await navToMap(job.map, { alive: alive })) { if (alive()) throw new Error('无法到达「' + navMapName(job.map) + '」，请检查导航设置'); return; }
+    }
+    if (!alive()) return;
+    await craftWait(function () { return +character.current_map === job.map && renderSynced() && !mapLoadStuck(); }, alive, 20000);
+    if (!alive()) return;
+    const station = CRAFT_STATIONS[job.profession];
+    const tiles = $$q('.map_table .tile_poi[action="' + station[0] + '"]');
+    const tile = tiles.map(function (e) { const p = (e.getAttribute('coords') || '').split('-'); return { x: +p[0], y: +p[1] }; }).filter(function (p) { return p.x > 0 && p.y > 0; })
+      .sort(function (a, b) { return manhattan(character.x, character.y, a.x, a.y) - manhattan(character.x, character.y, b.x, b.y); })[0];
+    if (!tile) throw new Error('当前城镇没有「' + station[2] + '」NPC，请重新选择工作台添加任务');
+    if (character.x !== tile.x || character.y !== tile.y || !walkVisualArrived(tile.x, tile.y)) {
+      _craftLoaded = ''; setStatus('制造：前往' + station[2] + ' NPC');
+      const result = await walkTileCore(tile.x, tile.y, { alive: alive, timeoutMs: 60000 });
+      if (!alive()) return;
+      if (result !== 'ok') throw new Error('未能到达制造 NPC，请检查路线后继续');
+    }
+    if (!alive()) return;
+    craftPruneWorkbenches(job.profession);
+    let select = craftWorkbench(job.profession);
+    if (_craftLoaded !== job.uid || !select) {
+      if (typeof window.createDialog !== 'function') throw new Error('游戏制造窗口未就绪');
+      // 先等 NPC 对话再点工作台；到位后的异步 NPC 菜单会覆盖提前打开的工作台。
+      document.querySelectorAll('select#select_category').forEach(function (s) { const f = s.closest('[id^="frame_"]'); if (f) closeFrameById(f.id); });
+      const path = '/modal/' + station[0] + '/craft';
+      const linksBefore = new Set(document.querySelectorAll('[onclick]'));
+      window.createDialog(station[1], '', 'ajax', '/modal/' + station[0], true);
+      const findLink = function () { return Array.from(document.querySelectorAll('[id^="frame_"] [onclick]')).find(function (e) { return (e.getAttribute('onclick') || '').indexOf(path) >= 0; }); };
+      let link = await craftWait(function () { const l = findLink(); return l && !linksBefore.has(l) ? l : null; }, alive, 15000);
+      if (!link || !alive()) return;
+      link.click();
+      let reopened = 0;
+      select = await craftWait(function () {
+        const s = craftWorkbench(job.profession); if (s) return s;
+        const next = findLink();
+        // 只重开被迟到菜单覆盖的只读工作台，绝不在这里重试制造请求。
+        if (next && next !== link && reopened < 2) { link = next; reopened++; link.click(); }
+        return null;
+      }, alive, 15000);
+      if (!select || !alive()) return;
+      const option = Array.from(select.options).find(function (o) { return o.getAttribute('cat') === job.cat && o.getAttribute('subcat') === job.subcat && o.getAttribute('skill') === job.profession; });
+      if (!option) throw new Error('当前角色没有该配方分类，请检查专业等级');
+      select.value = option.value; select.dispatchEvent(new Event('change', { bubbles: true }));
+      await craftWait(function () { const frame = select.closest('[id^="frame_"]'); return frame && frame.querySelector('[data-craft-recipe-id="' + job.recipe + '"]'); }, alive, 15000);
+      if (!alive()) return;
+      _craftLoaded = job.uid;
+    }
+    const frame = select.closest('[id^="frame_"]');
+    const card = frame && frame.querySelector('[data-craft-recipe-id="' + job.recipe + '"]');
+    if (!card) { _craftLoaded = ''; throw new Error('配方窗口已改变，请重新打开后继续'); }
+    const button = card.querySelector('#craft_' + job.recipe), amount = card.querySelector('#amount_' + job.recipe);
+    if (!button || !amount || (+amount.max >= 0 && +amount.max < 1)) throw new Error('「' + job.name + '」材料不足、等级不够或配方未解锁；补齐后继续');
+    const stat = card.querySelector('#stat_set_' + job.recipe);
+    if (job.statSet && (!stat || (stat.options ? !Array.from(stat.options).some(function (o) { return o.value === job.statSet; }) : stat.value !== job.statSet))) throw new Error('该配方的属性组选项已改变，请重新添加任务');
+    if (stat) { stat.value = job.statSet || stat.value; if (!stat.value) throw new Error('请先选择珠宝属性组再添加任务'); }
+    const call = /doCraft\s*\(\s*["']?\d+["']?\s*,\s*(\d+)/.exec(button.getAttribute('onclick') || '');
+    const delay = Math.max(1000, Math.min(600000, call ? +call[1] : 3000));
+    if (now() < _craftCooldown) return;
+    const waitMs = _craftCooldown ? Math.max(0, _craftCooldown - now()) : delay;
+    _craftCooldown = now() + waitMs;
+    setStatus('制造：' + job.name + ' ' + job.done + '/' + job.qty + '，准备中…');
+    if (waitMs) await sleep(waitMs);
+    if (!alive() || !card.isConnected || +character.current_map !== job.map || character.x !== tile.x || character.y !== tile.y) return;
+    if (window.currentCraft != null) throw new Error('游戏正在手动制造，请先停止手动制造再继续清单');
+    job.pending = true; saveCfgNow(); craftRender();
+    const $ = jq();
+    let xml;
+    try {
+      xml = await new Promise(function (resolve, reject) {
+        // 与原生 doCraft 相同，把参数放 URL；游戏的安全预过滤器会将这类 GET 转为 POST。
+        // 用 data 对象会被该过滤器重写，导致服务端只收到无配方参数的请求。
+        const query = new URLSearchParams({ id: job.recipe, profession: job.profession, power_craft: 0, stat_set: stat ? stat.value : '', cat: job.cat, subcat: job.subcat });
+        $.ajax({ type: 'GET', url: '/includes/ajax_craft.php?' + query.toString(), dataType: 'xml', timeout: 15000,
+          success: resolve, error: function () { reject(new Error('网络结果未知，请先核对成品；不会自动重复提交')); } });
+      });
+    } catch (e) { craftBlock(e.message); return; }
+    // 暂停/停止发生在请求途中也必须记下服务器已经完成的产出，但不再启动下一次。
+    const result = craftReply(job, xml);
+    if (result.message) { craftBlock(result.message); return; }
+    if (alive() && result.success) setStatus('制造：' + job.name + ' ' + job.done + '/' + job.qty);
+  }
+  function craftTick() {
+    if (_craftBusy || now() < _craftCooldown) return;
+    if (document.getElementById('battle_defeat') || inCombatNow()) { craftBlock('遇到战斗，请处理后继续'); return; }
+    const job = cfg.craftJobs.find(function (j) { return j.pending || j.done < j.qty; });
+    if (!job) { _craftMessage = '✓ 制造清单全部完成'; stop('制造清单全部完成'); craftRender(); return; }
+    if (job.pending) { craftBlock('上一份结果待核对，请在清单中确认'); return; }
+    if (+character.id !== +job.charId) { craftBlock('当前角色与记录配方的角色不同'); return; }
+    const seq = runSeq;
+    const alive = function () { return running && st.mode === 'craft' && runSeq === seq && +character.id === +job.charId; };
+    _craftBusy = true;
+    craftExecute(job, alive).catch(function (e) { if (alive()) craftBlock(e.message || '制造操作失败'); }).finally(function () { _craftBusy = false; craftRender(); });
+  }
+  rhythmTimer(function () { try { craftScanWorkbench(); } catch (e) { /* ignore */ } }, 900);
+
   /* ======================= 15. 主循环 ======================= */
 
   function tick() {
@@ -8534,6 +8838,13 @@
 
   function step() {
     if (!inGame()) { setStatus('等待进入游戏…'); return; }
+    if (craftHolding()) {
+      if (running) {
+        if (now() - st.lastStats > 1200) { st.lastStats = now(); updateStats(); }
+        craftTick();
+      }
+      return;
+    }
 
     const dead = !!document.getElementById('battle_defeat');
     if (dead && st.mode === 'tower' && cfg.towerStopDeath) { stop('爬塔：角色阵亡，按设置停止'); return; }
@@ -9133,6 +9444,7 @@
             <button type="button" data-task="battle">战斗</button>
             <button type="button" data-task="gather">采集</button>
             <button type="button" data-task="tower">爬塔</button>
+            <button type="button" data-task="craft">制造</button>
           </div>
 
           <div class="nr-taskbox" data-task="battle">
@@ -9196,6 +9508,15 @@
               <span class="lbl" style="margin:0;flex:none">层停止（0=不限）</span>
             </div>
             <div class="pathmsg" style="color:#8fa3bd">流程：城镇 → 开塔 → 逐层「杀光怪 → 走下一层入口」，直到打不动 / 被弹出。</div>
+          </div>
+
+          <div class="nr-taskbox" data-task="craft" style="display:none">
+            <div class="row"><button class="mini" id="nr-craft-read">读取工作台</button><span id="nr-craft-source" class="pathmsg" style="flex:1;margin:0">先打开 NPC 工作台，选择配方分类</span></div>
+            <div class="row"><select id="nr-craft-recipe" style="flex:1;min-width:0"><option value="">请选择配方</option></select><input id="nr-craft-count" type="number" min="1" max="10000" value="1" title="按配方制作的次数" style="width:52px;flex:none"><button class="mini" id="nr-craft-add">＋加入</button></div>
+            <div id="nr-craft-list" style="max-height:280px;overflow-y:auto;margin-top:6px"></div>
+            <div class="row"><button class="mini" id="nr-craft-clear">清除已完成</button><button class="mini" id="nr-craft-reset">重做清单</button></div>
+            <div class="pathmsg" id="nr-craft-hint">按顺序移动、对话并制造；点击下方开始。可在游戏配方旁直接加入。</div>
+            <div class="pathmsg">制造期间活动、切号及自动清包等待。缺料 / 背包满时暂停，补齐后继续。</div>
           </div>
 
           <div class="btns">
@@ -9623,6 +9944,7 @@
         });
       });
     })();
+    craftBindUI();
     /* ★ 爬塔设置：难度 / 出发城镇 */
     (function () {
       const d = document.getElementById('nr-towerdiff');
@@ -9870,7 +10192,7 @@
   /* ★ v2.6.0：任务（战斗 / 采集 / 爬塔）决定运行模式；「无怪采集」只在战斗任务下影响模式。
      采集任务 → gather；战斗任务 → autoGather ? auto : battle；爬塔 → 占位（UI 拦住开始）。 */
   function deriveRunMode() {
-    const m = (cfg.task === 'tower') ? 'tower' : ((cfg.task === 'gather') ? 'gather' : (cfg.autoGather ? 'auto' : 'battle'));
+    const m = (cfg.task === 'craft') ? 'craft' : ((cfg.task === 'tower') ? 'tower' : ((cfg.task === 'gather') ? 'gather' : (cfg.autoGather ? 'auto' : 'battle')));
     if (cfg.runMode !== m) {
       cfg.runMode = m; saveCfg();
       if (running && !st.paused) { st.mode = m; setStatus('已切换为「' + MODE_CN[m] + '」'); logEvent('模式切换 → ' + MODE_CN[m]); }
@@ -10323,9 +10645,9 @@
     if (!cfg.autoResume || running) return;
     let rec = null;
     try { rec = JSON.parse(localStorage.getItem(RUN_KEY) || 'null'); } catch (e) { rec = null; }
-    if (!rec || !rec.at || (rec.mode !== 'battle' && rec.mode !== 'gather' && rec.mode !== 'auto' && rec.mode !== 'tower')) { clearRunMark(); return; }
+    if (!rec || !rec.at || (rec.mode !== 'battle' && rec.mode !== 'gather' && rec.mode !== 'auto' && rec.mode !== 'tower' && rec.mode !== 'craft')) { clearRunMark(); return; }
     if (now() - rec.at > RUN_TTL) { clearRunMark(); return; }
-    const what = rec.mode === 'gather' ? '采集' : (rec.mode === 'auto' ? '一键挂机' : '战斗');
+    const what = MODE_CN[rec.mode] || '战斗';
     setStatus('检测到上次是' + what + '中，等待游戏就绪后自动继续…');
     const deadline = now() + RUN_TTL;
     resumeTimer = setInterval(() => {
@@ -10344,17 +10666,20 @@
           logEvent('切号保护：上次挂机角色 #' + rec.charId + '，当前 #' + curId + '，取消自动续挂');
           return;
         }
-        clearInterval(resumeTimer); resumeTimer = null; beginRun(rec.mode, { resume: true }); setStatus('已自动恢复上次的' + what); return;
+        clearInterval(resumeTimer); resumeTimer = null; beginRun(rec.mode, { resume: true });
+        if (running) setStatus('已自动恢复上次的' + what); else clearRunMark();
+        return;
       }
       if (now() > deadline) { clearInterval(resumeTimer); resumeTimer = null; setStatus('等待游戏就绪超时，未自动恢复'); }
     }, 500);
   }
 
   function beginRun(mode, opts) {
-    if (mode !== 'auto' && mode !== 'battle' && mode !== 'gather' && mode !== 'tower') mode = 'battle';
+    if (mode !== 'auto' && mode !== 'battle' && mode !== 'gather' && mode !== 'tower' && mode !== 'craft') mode = 'battle';
     if (running && st.mode === mode) return;
     if (running) stop();
     if (!inGame()) { setStatus('请先进入游戏'); return; }
+    if (mode === 'craft' && !craftCanStart()) return;
     st.paused = false;
     runSeq++;
     running = true;
@@ -10394,13 +10719,13 @@
        - 站在重生泉水（1000）上开始时也不覆盖 —— 那里没怪，一旦覆盖就再也回不去了（实测踩过）。 */
     const curMap = character ? String(character.current_map) : '';
     /* ★ v2.6.54：锁定后不再改写挂机地图（用户要求：不再因为切图 / 重新开始而变化）。 */
-    if (cfg.farmMapLocked) {
+    if (mode !== 'craft' && cfg.farmMapLocked) {
       if (!cfg.farmMap && curMap) cfg.farmMap = curMap;   // 锁了但还没记录过 → 用当前地图补上
       else if (cfg.farmMap && curMap && String(curMap) !== String(cfg.farmMap)) {
         logEvent('保持锁定图 ' + townName(cfg.farmMap));
       }
-    } else if (curMap && !(opts && opts.resume) && curMap !== String(RESPAWN_MAP)) cfg.farmMap = curMap;
-    else if (curMap && !cfg.farmMap) cfg.farmMap = curMap;   // 兜底：还没有挂机地图时至少记一个
+    } else if (mode !== 'craft' && curMap && !(opts && opts.resume) && curMap !== String(RESPAWN_MAP)) cfg.farmMap = curMap;
+    else if (mode !== 'craft' && curMap && !cfg.farmMap) cfg.farmMap = curMap;   // 兜底
     /* ★ v2.6.76：采集 / 一键挂机开始时固定采集点 —— 运行期间下拉不再随换图变化。 */
     if (mode === 'gather' || mode === 'auto') {
       const _gp = document.getElementById('nr-gpoint');
@@ -10414,16 +10739,17 @@
       if (cfg.notifyOnStop && typeof Notification !== 'undefined' && Notification.permission === 'default') Notification.requestPermission();
     } catch (e) { /* ignore */ }
     refreshCurMap();
-    const what = mode === 'gather' ? '采集' : (mode === 'auto' ? '一键挂机' : (mode === 'tower' ? '爬塔' : '战斗'));
+    const what = MODE_CN[mode] || '战斗';
     setStatus('已开始' + what);
     logEvent('开始' + what);
     /* ★ v2.6.149：开始 / 断线续挂都先核对是否还在挂机地图，不在就先回图再干活。
        覆盖「锁定图 ≠ 当前图」的两种情况：弹窗选「保持原图」，或刷新后续挂。
        爬塔模式自己的导航负责，不插手。 */
-    if (mode !== 'tower') ensureAtFarmMap((opts && opts.resume) ? '断线续挂' : '开始挂机');
+    if (mode !== 'tower' && mode !== 'craft') ensureAtFarmMap((opts && opts.resume) ? '断线续挂' : '开始挂机');
     if (!timer) timer = rhythmTimer(tick, TICK);
     markRunning(mode);
     syncRunButtons();
+    if (mode === 'craft') craftRender();
   }
 
   /* 已挂机时长（暂停期间不计） */
@@ -10460,6 +10786,7 @@
   /* ★ 暂停：停掉循环，但保留本次统计与挂机地图 */
   function pause() {
     if (!running) return;
+    _craftLoaded = '';
     st.runElapsed = runElapsedMs();
     runSeq++;
     navCancelSeq++; navBusy = false; navHideBar();
@@ -10479,12 +10806,14 @@
     logEvent('已暂停挂机（本次统计保留）');
     setStatus('已暂停（本次统计保留）');
     syncRunButtons();
+    if (st.mode === 'craft') craftRender();
   }
 
   /* ★ 继续：从暂停恢复，不清空统计 */
   function resume() {
     if (running || !st.paused) return;
     if (!inGame()) { setStatus('请先进入游戏'); return; }
+    if (st.mode === 'craft' && !craftCanStart()) return;
     st.paused = false;
     runSeq++;
     running = true;
@@ -10495,11 +10824,11 @@
     st.blacklist = {}; st.reach = null; st.target = null;
     st.gatherRetryAt = 0; st.gatherFighting = false; st.inCollect = false;
     st.gatherDur = null; st.dur = null; st.gatherIdleSince = 0; st.gatherResync = 0;
-    const what = st.mode === 'gather' ? '采集' : (st.mode === 'auto' ? '一键挂机' : (st.mode === 'tower' ? '爬塔' : '战斗'));
+    const what = MODE_CN[st.mode] || '战斗';
     logEvent('继续' + what);
     /* ★ v2.6.148：继续挂机先核对「是不是还在挂机地图」——暂停期间被带离就先回图再干活。
        爬塔模式自己的导航负责，不插手。 */
-    if (st.mode !== 'tower' && ensureAtFarmMap('继续' + what)) {
+    if (st.mode !== 'tower' && st.mode !== 'craft' && ensureAtFarmMap('继续' + what)) {
       /* 状态与待办导航已在 ensureAtFarmMap 里设好 */
     } else {
       setStatus('已继续' + what);
@@ -10507,11 +10836,12 @@
     if (!timer) timer = rhythmTimer(tick, TICK);
     markRunning(st.mode);
     syncRunButtons();
+    if (st.mode === 'craft') craftRender();
   }
 
   /* 开始挂机前处理挂机地图锁定（战斗 / 采集 / 一键挂机）： */
   async function ensureFarmMapLock(mode) {
-    if (mode === 'tower') return;
+    if (mode === 'tower' || mode === 'craft') return;
     if (!inGame()) return;
     const curMap = character ? String(character.current_map) : '';
     if (!curMap || curMap === String(RESPAWN_MAP)) return;
@@ -10547,6 +10877,7 @@
 
   /* 清理运行态（不写日志 / 不改状态栏），供 stop() 与手动行程收尾复用 */
   function stopCore() {
+    _craftLoaded = '';
     navCancelSeq++; navBusy = false; navHideBar();
     runSeq++;
     running = false;
@@ -10587,6 +10918,7 @@
     try { localStorage.setItem(STOP_KEY, JSON.stringify({ reason: reason || '手动停止', t: (new Date()).toTimeString().slice(0, 8) })); } catch (e) { /* ignore */ }
     setStatus(reason ? ('已停止：' + reason) : '已停止');
     syncRunButtons();
+    craftRender();
   }
 
   /* ======================= 18. 初始化 ======================= */
@@ -11375,6 +11707,7 @@
   }
   /* 把「当前不在挂机地图」登记成待办导航。 */
   function ensureAtFarmMap(reason) {
+    if (st.mode === 'craft') return false;
     if (!cfg.farmMap) return false;
     if (!inGame()) return false;
     if (String(character.current_map) === String(cfg.farmMap)) return false;
@@ -11392,7 +11725,7 @@
   const HOME_GUARD_COOLDOWN_MS = 90000;
   function homeGuardTick() {
     if (!running || !inGame()) return false;
-    if (st.mode === 'tower') return false;
+    if (st.mode === 'tower' || st.mode === 'craft') return false;
     if (!cfg.farmMap) return false;
     if (cfg.autoMapSwitch) return false;                 /* 锁图刷怪：本来就要在挂机图与邻图之间来回 */
     if (String(character.current_map) === String(cfg.farmMap)) { st.homeOffSince = 0; return false; }
@@ -13356,6 +13689,9 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
   }
 
   window.__norrothFarm = {
+    craft: { jobs: function () { return cfg.craftJobs; }, scan: craftScanWorkbench, add: craftAddJob, read: craftReadJob,
+      render: craftRender, start: function () { cfg.task = cfg.uiTask = 'craft'; deriveRunMode(); beginRun('craft'); },
+      state: function () { return { busy: _craftBusy, loaded: _craftLoaded, message: _craftMessage }; } },
     event: { tick: eventTick, reset: eventReset, activitiesHasJoin: eventActivitiesHasJoin, enterGate: eventEnterGate, pickPoint: eventPickPoint, typeOf: eventTypeOf, res: function () { return st.event; }, mapId: EVENT_MAP_ID, combatMaps: EVENT_COMBAT_MAPS, combatTargetId: eventCombatTargetId, combatGate: eventCombatGate, combatActive: eventCombatActive, levelRange: eventLevelRange, dumpTiles: eventDumpTiles, backPortal: tryBackPortal },
     overlord: { tick: ovlTick, join: ovlJoin, hudBtn: ovlHudJoinBtn, inBattle: ovlInBattle, countdown: ovlReadCountdown, res: function () { return st.ovl; } },
     mc: { serviceTownNow: activeServiceTown, toggle: mcToggle, togglePause: mcTogglePause, syncBtns: syncMcBtns, queue: mcQueue, profLevels: mcProfLevels, profLevelsCached: mcProfLevelsCached, idleInfo: mcIdleInfo, startIdle: mcStartIdle, switch: mcSwitch, readChars: mcReadChars, setOn: mcSetOn, startAll: mcStartAll, stopAll: mcStopAll, validateAll: mcValidateAll, canGather: mcCanGather, render: mcRender, tick: mcTick, fillCurrent: mcFillCurrent, runTrip: mcRunTrip, beginTrip: mcBeginTrip, runRepairAndDeposit: runRepairAndDeposit, nearestGatherTile: nearestGatherTile, idleRaw: function () { return _mcGatherRaw; }, loadRot: mcLoadRot, saveRot: mcSaveRot, rot: function () { return rot; }, due: mcDue, chars: function () { return cfg.mcChars; }, queueCache: function () { return _mcQueueCache; }, claimIdleRewards: claimIdleRewards, closeIdleDialog: closeIdleResultDialog, refreshStatus: mcRefreshStatus, applyQueue: mcApplyQueue },

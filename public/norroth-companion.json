@@ -1,8 +1,8 @@
 {
-  "version": "2.6.236",
+  "version": "2.7.0",
   "date": "2026-11-02",
-  "notes": "活动离场回到进入前地图，或已离开 Elundi(16)，即结束 portal 返回流程，避免重复使用返回传送门。",
+  "notes": "新增制造任务：工作台配方一键加入清单，编辑数量与排序，自动跨NPC/城镇移动对话并逐项制造；进度持久化，缺料暂停，未知结果需核对，完成自动停止。已实测烹饪→珠宝顺序生产。",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 901662,
-  "sha256": "41f0b59603a2f0d4e9c2a21fa57607b709b8bfde5a3c04769fe2e78c04f6bb3e"
+  "size": 927739,
+  "sha256": "7ca149b9473eabb557848a7ce04b6c1645a4134005a537b12d9b45e2a869ea15"
 }
