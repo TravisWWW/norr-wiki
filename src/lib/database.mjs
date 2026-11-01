@@ -12,6 +12,7 @@ export const slug = (key) => String(key).normalize('NFKD').toLowerCase().replace
   + '-' + createHash('sha256').update(String(key)).digest('hex').slice(0, 8);
 export const entityPath = (kind, key) => `database/${kind}/${slug(key)}/`;
 export const baseMaps = Object.values(maps.maps);
+export const liveMapIds = new Set(live.maps.map((m) => String(m.id)));
 export const recipes = crafting.recipes;
 export const professions = crafting.professions;
 export const recipeLive = new Map(liveRecipes.recipes.map((r) => [r.id, r]));
@@ -21,8 +22,8 @@ const itemNames = [...new Set([...recipes.map((r) => r.name), ...materialNames])
 export const entities = [
   ...itemNames.map((name) => ({ kind: 'item', key: name, name, recipes: recipes.filter((r) => r.name === name), usedBy: recipes.filter((r) => r.materials.includes(name)), quests: live.quests.filter((q) => q.items.some((i) => i.name === name)), isMaterial: materialNames.has(name) })),
   ...live.maps.map((m) => ({ ...m, kind: 'map', key: String(m.id), recorded: maps.maps[m.id], gatheringLocations: live.gatheringLocations.filter((g) => g.coordinates === m.coordinates) })),
-  ...live.enemies.map((m) => ({ ...m, kind: 'monster', key: String(m.id), recorded: bestiary.find((r) => r.id === m.id), locations: baseMaps.filter((r) => (r.m ?? []).includes(m.name)) })),
-  ...dungeons.map((d) => ({ ...d, kind: 'boss', key: d.boss, name: d.boss, location: baseMaps.find((m) => `${m.wx}/${m.wy}` === d.coords) })),
+  ...live.enemies.map((m) => ({ ...m, kind: 'monster', key: String(m.id), recorded: bestiary.find((r) => r.id === m.id), locations: baseMaps.filter((r) => (r.m ?? []).includes(m.name) && liveMapIds.has(String(r.id))) })),
+  ...dungeons.map((d) => ({ ...d, kind: 'boss', key: d.boss, name: d.boss, location: baseMaps.find((m) => `${m.wx}/${m.wy}` === d.coords && liveMapIds.has(String(m.id))) })),
   ...live.quests.map((q) => ({ ...q, kind: 'quest', key: String(q.id) })),
   ...professions.map((p) => ({ ...p, kind: 'profession', key: p.id, name: `${p.zh}（${p.en}）`, recipes: recipes.filter((r) => r.prof === p.id) })),
 ];
@@ -30,3 +31,6 @@ export const entityByName = new Map(entities.filter((e) => e.kind === 'item').ma
 export const counts = Object.fromEntries(Object.keys(labels).map((kind) => [kind, entities.filter((e) => e.kind === kind).length]));
 export const byMonsterName = new Map(entities.filter((e) => e.kind === 'monster').map((e) => [e.name, e]));
 export { live };
+
+
+

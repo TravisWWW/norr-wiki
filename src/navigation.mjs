@@ -49,6 +49,10 @@ export const sections = [
             "slug": "release/v1-content"
           },
           {
+            "label": "1.0 上线后更新日志",
+            "slug": "release/v1-update-log"
+          },
+          {
             "label": "版本与更新历史",
             "slug": "release/ea-history"
           },
@@ -566,3 +570,4 @@ export function flattenItems(items) {
 }
 
 export const sidebar = [{label: "资料数据库", slug: "reference/database"}, ...sections.map(({ label, collapsed, items }) => ({ label, collapsed, items })), {label:"资料与维护", collapsed:true, items:referenceItems}];
+

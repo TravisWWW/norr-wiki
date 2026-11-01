@@ -2,7 +2,8 @@
 import mapdb from '../data/maps.json';
 import bestiary from '../data/bestiary.json';
 import liveBestiary from '../data/bestiary-live.json';
-import { entityPath } from '../lib/database.mjs';
+import { entityPath, entities } from '../lib/database.mjs';
+const mapEntityIds = new Set(entities.filter((e) => e.kind === 'map').map((e) => String(e.key)));
 const maps = Object.values(mapdb.maps).filter((m) => m && m.name);
 const bestiaryNames = new Set([
   ...bestiary.filter((b) => b && b.name).map((b) => b.name),
@@ -65,7 +66,7 @@ const rows = maps.map((m) => ({
         <tr class="map-detail" hidden>
           <td colspan="8">
             <div class="map-dgrid">
-              <div><a href={`${base}${entityPath('map', m.id)}`}>打开独立地图条目 →</a> · 当日官方信息与历史实地记录分开标注</div>
+              <div>{mapEntityIds.has(String(m.id)) ? <a href={`${base}${entityPath('map', m.id)}`}>打开独立地图条目 →</a> : <span class="map-plain" title="1.0 新扫描的图暂未生成独立条目">独立地图条目（暂无）</span>} · 当日官方信息与历史实地记录分开标注</div>
               <div><b>采集点（{m.gather.length}）</b>：{m.gather.length ? m.gather.map((x) => <span class="map-chip">{x}</span>) : '—'}</div>
               <div><b>设施 / NPC（{m.npc.length}）</b>：{m.npc.length ? m.npc.map((x) => <span class="map-chip">{x[1]}{x[2] ? ' · ' + x[2] : ''}</span>) : '—'}</div>
               <div><b>出口 / 传送门（{m.gates.length}）</b>：{m.gates.length ? m.gates.map((x) => <span class="map-chip">{x[1]}{x[2] ? ' · ' + x[2] : ''}</span>) : '—'}</div>
@@ -159,3 +160,4 @@ const rows = maps.map((m) => ({
   .map-dgrid { display: grid; gap: .3rem; font-size: .86rem; }
   .map-chip { border: 1px solid var(--nr-hair); background: var(--nr-panel-2); color: var(--nr-text-soft); border-radius: 4px; padding: .05rem .4rem; font-size: .78rem; margin: 0 .25rem .25rem 0; display: inline-block; }
 </style>
+

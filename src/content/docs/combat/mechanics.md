@@ -72,6 +72,17 @@ sources:
 | Ability | ✘ | ✘ | ✘ |
 | AoE / DoT / Buff / Debuff | ✘ | ✘ | ✘ |
 
+### 额外打击的来源与取整【实测 2026-10-30 · 规则存疑】
+
+> 来源：本项目在 1.0 正式服抓 `ajax_fight.php` 响应里的 `battle_log`（脚本 `tools/norroth-battlelog-recorder.user.js`）。
+
+- **战斗日志按来源分开列**：`N bonus strikes (Attack Speed advantage)`（攻速，**封顶 3**）与 `N bonus strikes (Combat buffs)`（buff，**独立叠加、不吃攻速那个 3 段上限**）。
+  - 总段数 = **技能基础段数 + 攻速段数(≤3) + buff 段数**。
+- **buff 给的段数是实数**（tooltip 显示小数，如 rapid_fire Lv2 = `Adds 1.25 additional strikes`），**出手时转成整数**（日志只显示整数）。
+- **实测数据点（内部值 → 实际段数）**：Frenzy Focus Lv1 `0.2 → 0`、Frenzy Focus Lv2 `0.4 → 1`、rapid_fire Lv1 `1.0 → 1`、rapid_fire Lv2 `1.25 → 2`、rapid_fire Lv10 `3.25 → 4`。
+- **确定性**：**不是概率** —— buff 激活期间每次出手都给同样的段数（FF Lv2 连打 6 次全是 1）。
+- **取整规则【存疑，未定论】**：拟合上面 5 点，最像「**小数部分 ≥ 0.25 就进位**」（等价：先四舍五入到最近 0.5 再向上取整）。**不要当已确认结论用。**
+
 ## 伤害结算【官方 1.0 Wiki】
 
 - 攻击可被**格挡（Block）**与**闪避（Evade）**；暴击（Crit）造成额外伤害。

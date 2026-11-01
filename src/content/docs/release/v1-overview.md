@@ -21,6 +21,7 @@ sources:
 - **两个服务器账号不互通**；跨平台（浏览器 / 手机 / 平板 / Steam / Steam Deck / 桌面）**同一账号**。
 - 旧玩家按 **Legacy 奖励码**领取补偿（按 Legacy **AP + 充值额**计算）。
 - **不计划在 1.0 上线后删档**。
+- ⚠️ **2026-10-14 官方更新**：**Steam 版发售延期**（审核积压 + 技术问题），**浏览器版仍于 2026-10-16 正式发售**；**排行榜改从 2027 Q1 第一个赛季开始**；官方 Wiki = [wiki.norroth.com](https://wiki.norroth.com)。上线后的每日热修见[1.0 上线后更新日志](/norr-wiki/release/v1-update-log/)。
 
 ## 1. 版本与发售【官方】
 
@@ -30,7 +31,7 @@ sources:
 | 前版本 | v0.8.40 = **Legacy Server**（EA / 抢先体验） |
 | 发售日 | **2026-10-16** |
 | 开服时间 | **13:00 CET**（官方原文）——10 月欧洲处于**夏令时 CEST（UTC+2）**，即 **11:00 UTC / 北京时间 19:00** |
-| 平台 | Steam + 浏览器 + 手机 / 平板（跨平台） |
+| 平台 | **浏览器**（2026-10-16 首发）+ Steam（延期）+ 手机 / 平板（跨平台） |
 | Steam 页面 | [Norroth Online（appid 2503480）](https://store.steampowered.com/app/2503480/Norroth_Online/) |
 | 新服注册开放 | 2026-10-16（与开服同日） |
 
@@ -79,7 +80,8 @@ sources:
 - **成就**：Norroth 共约 **547** 个成就；Steam 对新 / 小游戏有上限，**初期只能加 100 个**，达到 Valve 信任 / 活跃门槛后再解锁其余。
 - **定价**：Steam 渠道有 **30% 加价**，但官方**各平台售价保持一致**。
 - **Noble 订阅重做**：新增 **Gold Noble / Diamond Noble**（档位、权益与待核实项见[订阅与付费服务](/norr-wiki/systems/subscription/)）。
-- **Steam 客户端**：独立登录按钮、支付 API、成就同步（`steam_synced`）、独立 `Clear Cache`、分辨率 / 窗口 / 全屏设置。
+- **Steam 客户端**：独立登录按钮、支付 API、成就同步（steam_synced）、独立 Clear Cache、分辨率 / 窗口 / 全屏设置。
+- ⚠️ **Steam 发售延期**（2026-10-14 公告）：Steam 审核积压 + 技术问题，**无确认发售日**；浏览器版已先行发售。官方**手机 App 亦无 ETA**（目前没有任何官方 App）。
 - 官方呼吁：加愿望单 / 关注 / 游玩 / 评价 / 分享，以解锁更多成就位。
 
 ## 6. 官方 FAQ【官方 · 2025-12-17】
@@ -110,3 +112,5 @@ sources:
 
 - 官方 Discord：`#📣announcements`、`#🔔game-updates`、`#🔧dev-blog`、`#🗿questions`（2025-12 ~ 2026-10）。
 - 官方商店页（Steam）。
+
+
