@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.6.228
+// @version      2.6.229
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -187,7 +187,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.6.228';   // 与 @version 保持一致
+  const SCRIPT_VER = '2.6.229';   // 与 @version 保持一致
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -11281,14 +11281,22 @@
     return out;
   }
   /* 按边类型执行一跳：smugglers → Ride；其余 → 走普通门 */
-  /* 传送一跳：waygate_city（世界地图免费传 → 传送站 Cities 页兜底）/ waygate_wild（传送站 Wilderness 页） */
+  /* 传送一跳：waygate_city（本图有传送站就先走传送站，否则世界地图免费传）/ waygate_wild（传送站 Wilderness 页）
+     ★ v2.6.229：原来一律「先世界地图、失败再传送站」——实测世界地图打开后 SVG/marker 要 ~10s 才渲染出来
+     （而且经常渲染完发现没有 Teleport 按钮 = 非会员），于是每次城市传送都先原地愣 ~10s。
+     现在：本图就有传送站格 → 直接用传送站（几秒内完成）；本图没有传送站 → 才用世界地图（这是「任意图→城市」唯一手段）。 */
   async function navTeleportHop(destId, kind, alive) {
     const dest = +destId;
     if (+character.current_map === dest) return true;
     if (kind === 'waygate_city') {
-      const out = await navWorldTeleport(dest, alive);
+      if (findWaygateTile()) {
+        const out = await navWaygateOut(dest, alive, 'cities', true);
+        if (alive && !alive()) return false;
+        if (+out === dest) return true;
+      }
+      const w = await navWorldTeleport(dest, alive);
       if (alive && !alive()) return false;
-      if (+out === dest) return true;
+      if (+w === dest) return true;
       const out2 = await navWaygateOut(dest, alive, 'cities', true);
       return +out2 === dest;
     }

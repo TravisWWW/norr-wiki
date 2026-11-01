@@ -1,8 +1,8 @@
 {
-  "version": "2.6.228",
+  "version": "2.6.229",
   "date": "2026-11-01",
-  "notes": "v2.6.228：传送点做成「图里的边」，统一寻路。① 传送站/smuggler 一样是一条边，navHopStep 按类型分派；② 城市/野外边分别由对应开关启用，目标未「已发现」不启用（已发现 = /modal/world_map 里出现的图）；③ 不加权、删掉 5 跳判据；④ 不检测会员，勾了城市传送点即当会员（世界地图免费传，失败退传送站）。",
+  "notes": "v2.6.229：修「城市传送前先愣 ~10s」。根因：waygate_city 原来一律先试世界地图，实测世界地图 SVG/marker 要 ~10s 才渲染，等到了又常发现没有 Teleport 按钮（非会员）→ 每次城市传送都先原地愣 ~10s。现在：本图有传送站格就直接走传送站（~2-4s），本图没有才用世界地图。",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 887168,
-  "sha256": "ba507abb5c3e19a33b5c018a5f5024b727d4bff11f222b761d18fdb6c3f9245e"
+  "size": 887828,
+  "sha256": "7a61cd6f28ea872b730bfeba86fbcfbb27ab1f2b34683e8be681c7c1756d52fb"
 }
