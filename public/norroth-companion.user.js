@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.7.7
+// @version      2.7.8
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -168,7 +168,7 @@
     mapSwitchIdleSec: 6,        // 连续无目标多少秒后触发切图
     autoEvent: false,           // ★ 活动自动进入：检测到活动开启就进活动图采集，结束后回原图继续（战斗/采集/爬塔都生效）
     eventRes: '',               // ★ 活动图里要采的资源类型（'' = 自动，按外面的采集点类型匹配）
-    autoOverlord: false,        // ★ v2.6.135：自动打 Overlord（世界 Boss，服务器时间 01:00 / 10:00 / 19:00 刷新）
+    autoOverlord: false,        // ★ v2.6.135 / v2.7.8：自动打 Overlord（世界 Boss，服务器时间 01:00 / 10:00 / 19:00 刷新）；独立监控，不需要开挂机
     ovlLeadSec: 20,             // 刷新前多少秒开始尝试进入（以最新倒计时为准）
     ovlLeaveSec: 600,           // ★ v2.6.159：进房后多久还没开打就兜底离场（秒；不影响已开打的长战斗）
     disableCombatAuto: false,          // 最高优先级关闭游戏战斗 auto，默认不干预
@@ -197,7 +197,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.7.7';
+  const SCRIPT_VER = '2.7.8';
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -1235,7 +1235,7 @@
     setTimeout(function () {
       try {
         /* ★ v2.6.186：未开挂机时，只要在活动里，也要走「到位没触发战斗/动作」的兜底（否则活动里到位不开战就干等）。 */
-        if ((!running && !(st.event && st.event.on)) || seq !== runSeq || character.current_map !== mapId) return;
+        if ((!running && !(st.event && st.event.on) && !ovlInBattle()) || seq !== runSeq || character.current_map !== mapId) return;
         if (!inGame()) return;
         if (+character.x !== +x || +character.y !== +y) return;   /* 已经走开了 → 不管 */
         if (!walkVisualArrived(x, y) || st.settling || st.nudging || gameBusyAction()) return;
@@ -6371,10 +6371,9 @@
     /* ★ v2.6.157：从「活动」里参战 → 打完回活动（而不是挂机图）；
        同时把活动的「原图」也记成活动图，避免 Overlord 期间活动模块把角色拽回挂机图。 */
     const evm = eventReturnMap();
-    /* ★ v2.7.7：制造模式没有「挂机地图」—— 打完世界 Boss 回「参战前所在地图」（=制造图），
-       避免被带回上一次的挂机地图再折返。 */
-    const craftHome = (st.mode === 'craft') ? +character.current_map : 0;
-    O.homeMap = evm || craftHome || +cfg.farmMap || +character.current_map;
+    /* ★ v2.7.8：制造 / 未开挂机（独立 Overlord）都没有「挂机地图」—— 打完回「参战前所在地图」，避免被带回上一次的挂机地图再折返。 */
+    const localHome = (st.mode === 'craft' || !running) ? +character.current_map : 0;
+    O.homeMap = evm || localHome || +cfg.farmMap || +character.current_map;
     if (evm && st.event) st.event.homeMap = evm;
     O.joinedEpoch = O.nextEpoch;
     O.fought = false;                 /* ★ v2.6.154：新一场 → 复位「本场打过没」 */
@@ -6386,13 +6385,13 @@
     setStatus('Overlord：正在参战…');
     const joinedAt = O.joinedAt, mapId = character.current_map;
     humanDefer(function () {
-      if (!running || !cfg.autoOverlord || seq !== runSeq || character.id !== charId || character.current_map !== mapId || O.joinedAt !== joinedAt) return;
+      if (!ovlAlive() || !cfg.autoOverlord || seq !== runSeq || character.id !== charId || character.current_map !== mapId || O.joinedAt !== joinedAt) return;
       if (typeof window.createDialog === 'function') window.createDialog('Overlord Chamber', '', 'ajax', '/modal/overlord_chamber?src=activities', true);
     });
     /* 兜底：若面板里还要再点一次「Join / Enter」，就点它（跳过玩家排行榜行） */
     setTimeout(function () {
       try {
-        if (!running || !cfg.autoOverlord || seq !== runSeq || character.id !== charId || ovlInBattle()) return;
+        if (!ovlAlive() || !cfg.autoOverlord || seq !== runSeq || character.id !== charId || ovlInBattle()) return;
         const f = document.getElementById('frame_OverlordChamber') || document.querySelector('div[id^="frame_"][id*="verlord"]');
         if (!f) return;
         const btns = $$q('button,a', f);
@@ -6416,7 +6415,7 @@
       O.on = true; O.phase = 'waiting'; O.fought = false; O.leaveBusy = false; O.leaveAt = 0; O.leaveTries = 0;
       O.roomMap = +character.current_map;      /* ★ v2.6.159：锁定房间图，离房即失效 */
       O.enteredAt = now();
-      O.homeMap = O.homeMap || +cfg.farmMap || 0;
+      O.homeMap = O.homeMap || (running ? +cfg.farmMap : +character.current_map) || 0;
       logEvent('Overlord：已进房（map ' + O.roomMap + '），等待 Boss');
     }
     if (hasFrame('frame_Combat')) { O.fought = true; ensureAutoBattle(); noteCombat(); O.phase = 'combat'; return true; }
@@ -6468,7 +6467,7 @@
       O.phase = 'leaving';
       logEvent('Overlord：房内没有返回传送门 → 世界地图传送离场（第 ' + O.leaveTries + ' 次 → ' + navMapName(tgt) + '）');
       setStatus('Overlord：用世界地图传送离场…');
-      navWorldTeleport(tgt, function () { return running && cfg.autoOverlord; }).then(function (out) {
+      navWorldTeleport(tgt, function () { return ovlAlive() && cfg.autoOverlord; }).then(function (out) {
         O.leaveBusy = false;
         logEvent(out ? ('Overlord：世界地图传送成功 → ' + navMapName(out)) : 'Overlord：世界地图传送失败（没有传送道具 / 非 Noble）');
       }, function () { O.leaveBusy = false; });
@@ -6482,8 +6481,10 @@
     setStatus('Overlord：已打完，准备离场…');
     return true;
   }
+  /* ★ v2.7.8：Overlord 的「活跃」判据 —— 开了挂机，或单独勾了「自动打 Overlord」（不需要开挂机）。 */
+  function ovlAlive() { return running || !!cfg.autoOverlord; }
   function ovlHolding() {
-    return !!(running && cfg.autoOverlord && (ovlInBattle() ||
+    return !!(ovlAlive() && cfg.autoOverlord && (ovlInBattle() ||
       ((st.ovl.phase === 'joining' && now() - (st.ovl.joinedAt || 0) < 30000) ||
        st.ovl.phase === 'leaveEvent')));   /* ★ v2.6.180：正在「先退出活动再参战」时也算占用 */
   }
@@ -6506,7 +6507,7 @@
   function ovlTick() {
     const O = st.ovl;
     if (!cfg.autoOverlord) { if (O.on || O.phase !== 'idle') { O.on = false; O.phase = 'idle'; } return false; }
-    if (!running || !inGame()) return false;
+    if (!ovlAlive() || !inGame()) return false;
     /* ★ v2.6.159：点了参战但 60s 内没被传进房（还在参战前那张图）→ 视为参战失败，复位 */
     if (O.phase === 'joining' && O.joinMap && +character.current_map === +O.joinMap && now() - (O.joinedAt || 0) > 60000) { O.phase = 'idle'; O.joinMap = 0; }
     if (ovlInBattle()) return ovlRoomTick();
@@ -6574,7 +6575,7 @@
       (async function () {
         try {
           const r = await ovlReadCountdown();
-          if (!running || !cfg.autoOverlord || seq !== runSeq || character.id !== charId) return;
+          if (!ovlAlive() || !cfg.autoOverlord || seq !== runSeq || character.id !== charId) return;
           if (!r.epoch) return;
           const changed = (r.epoch !== O.nextEpoch);
           O.nextEpoch = r.epoch; O.boss = r.boss; O.countdownAt = now();
@@ -9099,11 +9100,11 @@
        原来整段被 navBusy / st.mapSwitch.active 挡住 → 挂机（频繁走位 + 切图刷怪）时活动开启很久都进不去。
        现在：检查照跑，只有「真正进入 / 参战」那一步等导航让出（见 eventTick / ovlTick 里的 navBusy 判据）。 */
     if (eventOvlMonitor()) return;
-    /* ★ v2.6.173：未开挂机 → 只跑「活动」相关逻辑（勾了「自动进活动」即生效，不需要开挂机）。 */
+    /* ★ v2.6.173 / v2.7.8：未开挂机 → 只跑「活动 / 世界 Boss」相关逻辑（勾了「自动进活动」或「自动打 Overlord」即生效，不需要开挂机）。 */
     if (!running) {
-      /* 活动单独运行（未开挂机）时，也要跑「自愈」兜底 —— 否则活动里一旦 */
+      /* 活动 / 世界 Boss 单独运行（未开挂机）时，也要跑「自愈」兜底 */
       if (hasFrame('frame_Loot')) takeAllLoot();
-      if (eventCombatActive() || (cfg.autoEvent && st.event && st.event.on && isEventLobby(character.current_map))) {
+      if (eventCombatActive() || ovlInBattle() || (cfg.autoEvent && st.event && st.event.on && isEventLobby(character.current_map))) {
         closeIdleResultDialog();
         checkFrozen();
         checkStuck();
@@ -9113,6 +9114,7 @@
       }
       if (eventCombatActive()) { ensureAutoBattle(); stepCombat(); return; }
       if (cfg.autoEvent && st.event && st.event.on && isEventLobby(character.current_map)) { stepGather(); return; }
+      if (navPendingTick()) return;   /* ★ v2.7.8：独立 Overlord 结束后回「参战前所在地图」 */
       return;
     }
     // ★ 卡死强恢复进行中：主循环短暂让路，避免和「点格」抢发 walkTo
@@ -9822,7 +9824,7 @@
 
           <div class="divblock_dark" style="margin-top:4px">
             <div class="nr-srow">
-              <label title="需 Lv30+；服务器时间 01/10/19 点刷新。按设定提前秒数进房打 Boss，打完直接离场（奖励走邮件，不再开宝箱）。"><input type="checkbox" class="chk" id="nr-autoovl">自动打 Overlord</label>
+              <label title="需 Lv30+；服务器时间 01/10/19 点刷新。按设定提前秒数进房打 Boss，打完直接离场（奖励走邮件，不再开宝箱）。勾上即独立监控：不需要开挂机。"><input type="checkbox" class="chk" id="nr-autoovl">自动打 Overlord</label>
               <span class="nr-sl">提前</span><input type="number" id="nr-ovl_lead" min="0" max="600" step="5" class="nr-snum" title="刷新前多少秒开始蹲点">
               <span class="nr-sl">秒</span>
               <span class="nr-sl" title="进房后多久还没开打就兜底离场（秒）；不影响已开打的长战斗。">空等</span><input type="number" id="nr-ovl_leave" min="30" max="3600" step="30" class="nr-snum" title="进房后多久还没开打就兜底离场(秒)">
@@ -11436,11 +11438,11 @@
   setInterval(function () { try { if (st.altTrip) altPageCombatPolicy(); } catch (e) { /* ignore */ } }, 700);
   /* ★ 离线模式结算弹窗：多角色模式下即使没开挂机也点掉（切号后常出现；单人模式不打扰） */
   rhythmTimer(function () { try { if (cfg.multiChar) closeIdleResultDialog(); } catch (e) { /* ignore */ } }, 5000);
-  /* ★ v2.6.173：未开挂机时的「活动单独监控」—— 勾了「自动进活动」即生效，不需要开挂机。
+  /* ★ v2.6.173 / v2.7.8：未开挂机时的「活动 / 世界 Boss 单独监控」—— 勾了「自动进活动」或「自动打 Overlord」即生效。
      挂机在跑时由主循环负责，这里让路（避免重复）。 */
   rhythmTimer(function () {
     if (running) return;
-    if (!cfg.autoEvent) return;
+    if (!cfg.autoEvent && !cfg.autoOverlord) return;
     if (!inGame()) return;
     try { step(); } catch (e) { /* ignore */ }
   }, TICK);
@@ -12141,7 +12143,7 @@
   /* 返回 true = 本 tick 被「待办导航」接管（主循环要 return，别开始任务） */
   function navPendingTick() {
     if (!navPending) return false;
-    if (!running || !inGame()) return false;
+    if (!(running || cfg.autoEvent || cfg.autoOverlord) || !inGame()) return false;
     const p = navPending;
     if (+character.current_map === p.dest) { navClearPending('已到达「' + navMapName(p.dest) + '」'); return false; }
     /* 正在维修 / 清包 / 切图 / 导航 → 让路，不插手 */
@@ -12163,7 +12165,7 @@
     setStatus('导航中 → ' + navMapName(p.dest) + '（第 ' + p.tries + ' 次）…');
     (async function () {
       try {
-        const ok = await navToMap(p.dest, { alive: function () { return running && navPending === p; }, allowCity: true });
+        const ok = await navToMap(p.dest, { alive: function () { return (running || cfg.autoEvent || cfg.autoOverlord) && navPending === p; }, allowCity: true });
         if (ok && navPending === p) navClearPending('已到达「' + navMapName(p.dest) + '」');
       } catch (e) { /* ignore */ }
     })();
@@ -13593,7 +13595,7 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
   function fleeWatchTick() {
     if (!cfg.gatherFlee) return;
     if (!inGame()) return;
-    if (running && cfg.autoOverlord && ovlInBattle()) return;
+    if (ovlAlive() && cfg.autoOverlord && ovlInBattle()) return;
     if (running && !st.paused && FLEE_MASK_TASKS.indexOf(String(cfg.task || 'battle')) >= 0) return;   /* 战斗 / 爬塔 → 屏蔽 */
     if (st.altTrip) return;
     if (!hasFrame('frame_Combat')) return;

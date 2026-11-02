@@ -1,8 +1,8 @@
 {
-  "version": "2.7.7",
-  "date": "2026-11-02",
-  "notes": "挂机制造纳入活动/世界Boss优先（有活动先参加、结束继续制造）；工作台外观战斗弹窗去掉中间战斗动画，保留血条/buff/技能栏",
+  "version": "2.7.8",
+  "date": "2026-11-03",
+  "notes": "Overlord 改为独立监控：勾选即生效，不需要开挂机（与活动一致）；打完回参战前所在地图",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 950439,
-  "sha256": "29d5b66b9f7076a32c99eb765c479e39ea8e7f319930d55a085645ee7728600b"
+  "size": 951114,
+  "sha256": "6ed68ce900c9fd02d953923d2cbbdd39ecaaf06ba38d2b78ddd50d19a6ec3542"
 }
