@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.7.10
+// @version      2.7.11
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -197,7 +197,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.7.10';
+  const SCRIPT_VER = '2.7.11';
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -9175,7 +9175,6 @@
 
     if (now() - st.lastStats > 1200) {
       st.lastStats = now();
-      updatePerf();
       if (cfg.questMonsters && now() - _questCache.at > rhythm(QUEST_TTL)) refreshQuestTargets().then(() => { updateStats(); renderRankList(); }).catch(() => {});
       updateStats();
       refreshCurMap();
@@ -11449,6 +11448,9 @@
   let spdTries = 0;
   /* ★ 空闲时也每 5 秒刷一次统计（挂机时由主循环负责），否则「攻速/连击」等异步读到的信息不会渲染 */
   rhythmTimer(() => { if (!running && document.getElementById('nr-stats')) { try { updateStats(); } catch (e) { /* ignore */ } } }, 5000);
+  /* ★ v2.7.11：收益统计（经验/金币/击杀采样）独立常开 —— 不再随挂机 / 任务 / 活动 / 制造 / 多角色 / 回图等状态冻结（用户要求）。
+     采样只在 inGame() 时进行，内部自带 3s 节流；面板渲染由上面那条 5s 定时器（空闲）与主循环（挂机中）负责。 */
+  rhythmTimer(function () { try { updatePerf(); } catch (e) { /* ignore */ } }, 1000);
   /* ★ v2.6.57：休整页的耐久信息定期刷新（原来只在 syncUI 时更新，盯着看也不会变）。
      周期走 rhythm()：开了「节拍抖动」就会在 30s 上下浮动；
      readEquipDur(false) 自带 30s 缓存（同样受 rhythm 影响），缓存新就不发请求，不会和主循环重复请求。 */
