@@ -1,8 +1,8 @@
 {
-  "version": "2.7.9",
+  "version": "2.7.10",
   "date": "2026-11-03",
-  "notes": "挂机制造：某项缺料/未解锁时自动跳过做下一项并标黄（不再整单暂停），补齐材料后点「重试」继续",
+  "notes": "修复反复点返回传送门：活动返回门每场只点一次；Overlord 离场门改为每5s一次、最多3次（原来每tick都点，异步重复点会被反复传送）",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 952992,
-  "sha256": "d3a22cd14490bc18759db9e553b3828c1975c91aa0eb2804d27532a7e6db389d"
+  "size": 954246,
+  "sha256": "e0b2b2e7c4c80e525be42e1ae627e2efcbd38db12224d1677ec78524012d22e9"
 }

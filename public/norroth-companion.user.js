@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.7.9
+// @version      2.7.10
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -197,7 +197,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.7.9';
+  const SCRIPT_VER = '2.7.10';
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -264,9 +264,9 @@
     /* ★ 活动自动进入（采集）：phase = idle | enter | in | return */
     event: { on: false, phase: 'idle', busy: false, homeMap: 0, homePoint: '', homeRes: '', homeType: '', pointName: '', enteredAt: 0, lastCheckAt: 0, timeLeft: null, score: null, lobbyMap: 0,   /* ★ v2.6.176：最后一次进入的活动大厅图 id */
              busyAt: 0, checkAt: 0, checkFails: 0, combatSkipAt: 0, lastLogAt: 0, lastHas: null,
-             gateBusy: false, gateLogAt: 0, combatMap: 0, insideHits: 0, insideAt: 0, enterFromMap: 0, returnTarget: 0 },   /* ★ v2.6.220 enterFromMap/returnTarget：进活动前所在图 / 返回目标图 */   /* ★ v2.6.101：战斗型活动的「进战斗区」状态 · ★ v2.6.191 insideHits/insideAt：Inside Event 退避 */
+             gateBusy: false, gateLogAt: 0, combatMap: 0, insideHits: 0, insideAt: 0, enterFromMap: 0, returnTarget: 0, portalUsed: false },   /* ★ v2.6.220 enterFromMap/returnTarget：进活动前所在图 / 返回目标图 */   /* ★ v2.6.101：战斗型活动的「进战斗区」状态 · ★ v2.6.191 insideHits/insideAt：Inside Event 退避 */
     /* ★ v2.6.135：Overlord（世界 Boss）自动参战 */
-    ovl: { on: false, phase: 'idle', nextEpoch: 0, boss: '', lastPoll: 0, logAt: 0, joinedAt: 0, fought: false, idleLogAt: 0, leaveBusy: false, leaveAt: 0, leaveTries: 0, roomMap: 0, joinMap: 0, enteredAt: 0, goneAt: 0, leaveEvSince: 0, leaveEvAt: 0 },
+    ovl: { on: false, phase: 'idle', nextEpoch: 0, boss: '', lastPoll: 0, logAt: 0, joinedAt: 0, fought: false, idleLogAt: 0, leaveBusy: false, leaveAt: 0, leaveTries: 0, roomMap: 0, joinMap: 0, enteredAt: 0, goneAt: 0, leaveEvSince: 0, leaveEvAt: 0, leavePortalAt: 0, leavePortalTries: 0 },
     tripManual: false, tripEvent: false, tripOrigin: null,
     gatherFighting: false,   // 采集模式里"正在打怪"的标记
     repair: { active: false, cooldownUntil: 0, failCount: 0, smith: null, route: null },
@@ -5879,7 +5879,7 @@
     E.dungeonLogAt = 0;                                     /* ★ v2.6.108 */
     E.gateMap = {}; E.gateTried = {};                       /* ★ v2.6.108：大厅等级门「门→目标图」实测表 / 已试过的门 */
     E.insideHits = 0; E.insideAt = 0;                       /* ★ v2.6.191：Inside Event 退避计数 */
-    E.exitSince = 0; E.exitMap = 0; E.exitAt = 0; E.exitResyncAt = 0; E.returnAt = 0; E.returnFromMap = 0; E.returnTarget = 0; E.enterFromMap = 0;
+    E.exitSince = 0; E.exitMap = 0; E.exitAt = 0; E.exitResyncAt = 0; E.returnAt = 0; E.returnFromMap = 0; E.returnTarget = 0; E.enterFromMap = 0; E.portalUsed = false;
   }
   /* 活动是否开启：/modal/activities 里有没有 Event Gate 的 Join 按钮（实测：活动结束按钮消失） */
   async function eventActivitiesHasJoin() {
@@ -6208,7 +6208,14 @@
         logEvent('活动：已离开活动图，已回原图或离开 Elundi（当前「' + currentMapName() + '」）→ 不点返回传送门');
         return false;
       }
+      /* ★ v2.7.10：返回传送门每场活动只点一次 —— 避免「已经出来了又反复点传送门、被传回去」。 */
+      if (E.portalUsed) {
+        E.phase = 'idle';
+        logEvent('活动：返回传送门本场已用过，不再重复点击（当前「' + currentMapName() + '」）');
+        return false;
+      }
       if (tryBackPortal('活动结束')) {
+        E.portalUsed = true;
         E.phase = 'returning';
         E.returnAt = now();
         E.returnFromMap = +character.current_map;
@@ -6268,6 +6275,7 @@
         /* ★ v2.6.220：记住「进入活动前所在的图」—— 活动结束用返回传送门回的就是它。
            用户要求：回图后确认已回到这张图，已回就不再点 portal（避免重复点 / 点错图）。 */
         E.enterFromMap = +character.current_map || 0;
+        E.portalUsed = false;   /* ★ v2.7.10：新一场活动重置「返回传送门已用」标记 */
         /* ★ 用 effectiveGatherPoint()：用户没手动选时 cfg.gatherPoint 可能是空的，
            真正在采的是下拉里自动识别的那个 —— 否则进活动后类型匹配失败，会去挖第一个（Quarry）。 */
         E.homePoint = String(effectiveGatherPoint() || cfg.gatherPoint || '');
@@ -6413,6 +6421,7 @@
     const O = st.ovl;
     if (!O.on) {
       O.on = true; O.phase = 'waiting'; O.fought = false; O.leaveBusy = false; O.leaveAt = 0; O.leaveTries = 0;
+      O.leavePortalAt = 0; O.leavePortalTries = 0;   /* ★ v2.7.10：离场传送门节流计数 */
       O.roomMap = +character.current_map;      /* ★ v2.6.159：锁定房间图，离房即失效 */
       O.enteredAt = now();
       O.homeMap = O.homeMap || (running ? +cfg.farmMap : +character.current_map) || 0;
@@ -6458,7 +6467,13 @@
       if (now() - O.goneAt < OVL_BOSS_GONE_MS) { setStatus('Overlord：Boss 暂时不见，等待…'); return true; }
     }
     /* 本场打过、房内已无 Boss → 离场。 */
-    if (tryBackPortal('Overlord 结束')) { O.phase = 'leaving'; return true; }
+    /* ★ v2.7.10：离场传送门节流 —— 每 5s 最多点一次、最多 3 次；原来每 tick 都点，
+       backPortal() 是异步的（成功后才 slideUp 隐藏门户），重复点会连发多次传送 → 「反复被传回去」。 */
+    if ((O.leavePortalTries || 0) < 3 && now() - (O.leavePortalAt || 0) >= 5000) {
+      O.leavePortalAt = now();
+      if (tryBackPortal('Overlord 结束')) { O.leavePortalTries = (O.leavePortalTries || 0) + 1; O.phase = 'leaving'; return true; }
+    }
+    if ((O.leavePortalTries || 0) < 3 && hudShown(document.getElementById('hud_portal'))) { setStatus('Overlord：用返回传送门离场…'); return true; }
     if (!O.leaveBusy && (O.leaveTries || 0) < 3 && now() - (O.leaveAt || 0) >= 5000) {
       const home = +O.homeMap || +cfg.farmMap || 0;
       const tgt = home > 0 ? (worldTeleportTarget(home) || home) : 0;
