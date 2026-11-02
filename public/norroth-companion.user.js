@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.7.11
+// @version      2.7.12
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -197,7 +197,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.7.11';
+  const SCRIPT_VER = '2.7.12';
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -13627,6 +13627,8 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
     if (!cfg.gatherFlee) return;
     if (!inGame()) return;
     if (ovlAlive() && cfg.autoOverlord && ovlInBattle()) return;
+    /* ★ v2.7.12：战斗型活动里强制战斗 —— 与 step()「活动战斗区强制开自动战斗」的意图一致，遇敌不逃跑。 */
+    if (eventCombatActive() || (cfg.autoEvent && cfg.eventRes === 'combat' && st.event && st.event.on && isEventLobby(character.current_map))) return;
     if (running && !st.paused && FLEE_MASK_TASKS.indexOf(String(cfg.task || 'battle')) >= 0) return;   /* 战斗 / 爬塔 → 屏蔽 */
     if (st.altTrip) return;
     if (!hasFrame('frame_Combat')) return;
