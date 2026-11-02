@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.7.8
+// @version      2.7.9
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -197,7 +197,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.7.8';
+  const SCRIPT_VER = '2.7.9';
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -8624,7 +8624,7 @@
     return { uid: String(j.uid || ('c' + Date.now() + Math.random().toString(36).slice(2))), charId: +j.charId,
       map: +j.map, profession: j.profession, recipe: Math.floor(+j.recipe), name: String(j.name || '配方 ' + j.recipe).slice(0, 120),
       cat: String(j.cat || '').slice(0, 80), subcat: String(j.subcat || '').slice(0, 80), statSet: String(j.statSet || '').slice(0, 80),
-      qty: qty, done: Math.max(0, Math.min(qty, Math.floor(+j.done || 0))), pending: !!j.pending };
+      qty: qty, done: Math.max(0, Math.min(qty, Math.floor(+j.done || 0))), pending: !!j.pending, blocked: !!j.blocked };
   }
   function craftEditable(job) {
     if (job && job.pending) { setStatus('这一项正在确认制造结果，数量与删除请等待回包；其他任务可以继续调整'); return false; }
@@ -8632,11 +8632,12 @@
   }
   function craftCanStart() {
     const jobs = cfg.craftJobs;
-    if (!jobs.length || jobs.every(function (j) { return j.done >= j.qty; })) {
-      setStatus(jobs.length ? '清单已完成，可清空后加入新配方' : '请先从工作台加入制造配方'); return false;
+    if (!jobs.length || jobs.every(function (j) { return j.done >= j.qty || j.blocked; })) {
+      const blockedLeft = jobs.filter(function (j) { return j.done < j.qty && j.blocked; }).length;
+      setStatus(jobs.length ? (blockedLeft ? '其余项因缺料已跳过，补齐材料后点「重试」再开始' : '清单已完成，可清空后加入新配方') : '请先从工作台加入制造配方'); return false;
     }
     if (jobs.some(function (j) { return j.pending; })) { setStatus('有制造结果待核对，请先在清单中确认是否已完成'); craftRender(); return false; }
-    if (jobs.some(function (j) { return j.done < j.qty && +j.charId !== +character.id; })) { setStatus('清单包含其他角色的任务，请切回记录配方的角色'); return false; }
+    if (jobs.some(function (j) { return j.done < j.qty && !j.blocked && +j.charId !== +character.id; })) { setStatus('清单包含其他角色的任务，请切回记录配方的角色'); return false; }
     if (st.mcBusy || st.tripManual || st.repair.active || st.sell.active || st.bank.active || navBusy) { setStatus('请等待当前行程结束，再开始制造'); return false; }
     if (inCombatNow() || (st.event && st.event.on) || ovlHolding()) { setStatus('请先结束战斗或活动，再开始制造'); return false; }
     if (window.currentCraft != null) { setStatus('请先停止游戏里的手动制造，再开始清单'); return false; }
@@ -8718,14 +8719,15 @@
       const detail = j.name + ' · ' + navMapName(j.map) + (j.statSet ? ' · ' + j.statSet : '') + ' · 已完成 ' + j.done + '/' + j.qty;
       return '<div class="nr-craft-job" data-craft-index="' + i + '" data-craft-uid="' + escapeHtml(j.uid) + '" style="padding:4px 0;margin-bottom:3px;border-bottom:1px solid #394356">' +
         '<div style="display:flex;gap:4px;align-items:center;white-space:nowrap">' +
-        '<span title="' + escapeHtml(detail) + '" style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;color:' + (remaining ? '#dfe4f0' : '#85cfaa') + '">' + escapeHtml(j.name) + '</span>' +
+        '<span title="' + escapeHtml(detail) + '" style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;color:' + (j.blocked ? '#ffd166' : (remaining ? '#dfe4f0' : '#85cfaa')) + '">' + escapeHtml(j.name) + '</span>' +
         '<span style="flex:none;color:#9aa9c0;font-size:11px">' + CRAFT_STATIONS[j.profession][2] + '</span>' +
         '<input data-craft-remaining aria-label="剩余次数" type="number" min="' + (j.done ? 0 : 1) + '" max="' + (10000 - j.done) + '" value="' + remaining + '" title="剩余次数（可修改）；已完成 ' + j.done + '/' + j.qty + '" style="width:43px;flex:none;padding:2px 3px;text-align:center"' + disabled + '>' +
         '<button class="mini" data-craft-action="up" title="上移" aria-label="上移" style="flex:none;padding:2px;width:24px">↑</button>' +
         '<button class="mini" data-craft-action="down" title="下移" aria-label="下移" style="flex:none;padding:2px;width:24px">↓</button>' +
         '<button class="mini" data-craft-action="remove" title="删除" aria-label="删除" style="flex:none;padding:2px;width:24px"' + disabled + '>×</button></div>' +
         (j.pending ? '<div style="font-size:11px;color:#ffba76">' + (_craftBusy ? '确认回包…' : '结果待核对') + '</div>' : '') +
-        (j.pending && !_craftBusy ? '<div style="margin-top:5px;color:#ffba76;font-size:11px">先核对实际成品，再确认本次结果：</div><button class="mini" data-craft-action="count">已成功，计入1次</button> <button class="mini" data-craft-action="retry">未成功，允许重试</button>' : '') + '</div>';
+        (j.pending && !_craftBusy ? '<div style="margin-top:5px;color:#ffba76;font-size:11px">先核对实际成品，再确认本次结果：</div><button class="mini" data-craft-action="count">已成功，计入1次</button> <button class="mini" data-craft-action="retry">未成功，允许重试</button>' : '') +
+        (j.blocked ? '<div style="margin-top:3px;color:#ffd166;font-size:11px">缺料跳过；补齐材料后点「重试」</div><button class="mini" data-craft-action="unblock">重试</button>' : '') + '</div>';
     }).join('') || '<div class="pathmsg">清单为空。打开工作台，在配方旁点「＋制造清单」。</div>';
     if (editing) {
       const row = Array.from(list.querySelectorAll('[data-craft-uid]')).find(function (r) { return r.dataset.craftUid === editing.uid; });
@@ -8733,7 +8735,7 @@
       if (input && !input.disabled) { input.value = editing.value; input.focus({ preventScroll: true }); }
     }
     const hint = document.getElementById('nr-craft-hint');
-    if (hint) hint.textContent = _craftMessage || ('共 ' + cfg.craftJobs.length + ' 项 · 完成 ' + cfg.craftJobs.filter(function (j) { return j.done >= j.qty; }).length + ' 项；运行中也可调整清单，下一份按新顺序执行。');
+    if (hint) hint.textContent = _craftMessage || ('共 ' + cfg.craftJobs.length + ' 项 · 完成 ' + cfg.craftJobs.filter(function (j) { return j.done >= j.qty; }).length + ' 项' + (cfg.craftJobs.some(function (j) { return j.done < j.qty && j.blocked; }) ? ' · 缺料跳过 ' + cfg.craftJobs.filter(function (j) { return j.done < j.qty && j.blocked; }).length + ' 项' : '') + '；运行中也可调整清单，下一份按新顺序执行。');
   }
   function craftBindUI() {
     document.getElementById('nr-craft-read').addEventListener('click', function () { if (!craftScanWorkbench()) setStatus('请先在游戏里打开制造工作台并选择分类'); });
@@ -8748,7 +8750,7 @@
       const job = cfg.craftJobs[+e.target.closest('[data-craft-index]').dataset.craftIndex];
       if (!job || !craftEditable(job)) return;
       const remaining = Math.max(0, Math.min(10000 - job.done, Math.floor(+e.target.value || 0)));
-      job.qty = Math.max(1, job.done + remaining); saveCfgNow(); craftRender();
+      job.qty = Math.max(1, job.done + remaining); job.blocked = false; saveCfgNow(); craftRender();
     });
     list.addEventListener('click', function (e) {
       const button = e.target.closest('[data-craft-action]'); if (!button || !craftEditable()) return;
@@ -8758,7 +8760,8 @@
         if (!job.pending || _craftBusy) return;
         if (action === 'count') job.done = Math.min(job.qty, job.done + 1);
         job.pending = false; _craftMessage = '';
-      } else if (action === 'remove') { if (!craftEditable(job)) return; cfg.craftJobs.splice(i, 1); }
+      } else if (action === 'unblock') { job.blocked = false; _craftMessage = ''; }
+      else if (action === 'remove') { if (!craftEditable(job)) return; cfg.craftJobs.splice(i, 1); }
       else if (action === 'up' && i > 0) cfg.craftJobs.splice(i - 1, 0, cfg.craftJobs.splice(i, 1)[0]);
       else if (action === 'down' && i < cfg.craftJobs.length - 1) cfg.craftJobs.splice(i + 1, 0, cfg.craftJobs.splice(i, 1)[0]);
       saveCfgNow(); craftRender();
@@ -8818,7 +8821,7 @@
       job.pending = false; saveCfgNow();
       if (!error && /cooldown/i.test(warning)) { _craftCooldown = now() + Math.max(1000, +node.getAttribute('cooldown') || 5000); return { cooldown: true }; }
       const message = craftErrorText(error || warning);
-      return { message: message, interaction: !!error && /^(?:Unable|There are currently no actions available)\.?$|not in (?:the )?(?:right|correct) location|not at (?:the )?(?:crafting |work)?(?:station|bench)|不在.{0,12}(?:位置|工作台)|没有可用.{0,6}操作/i.test(message) };
+      return { message: message, skip: /materials?|ingredients?|不足|缺少/i.test(message), interaction: !!error && /^(?:Unable|There are currently no actions available)\.?$|not in (?:the )?(?:right|correct) location|not at (?:the )?(?:crafting |work)?(?:station|bench)|不在.{0,12}(?:位置|工作台)|没有可用.{0,6}操作/i.test(message) };
     }
     if (!success) return { unknown: true, message: '返回内容没有成功凭据，先核对成品再继续' };
     job.done = Math.min(job.qty, job.done + 1); job.pending = false;
@@ -8905,7 +8908,7 @@
     const card = frame && frame.querySelector('[data-craft-recipe-id="' + job.recipe + '"]');
     if (!card) { _craftLoaded = ''; throw new Error('配方窗口已改变，请重新打开后继续'); }
     const button = card.querySelector('#craft_' + job.recipe), amount = card.querySelector('#amount_' + job.recipe);
-    if (!button || !amount || (+amount.max >= 0 && +amount.max < 1)) throw new Error('「' + job.name + '」材料不足、等级不够或配方未解锁；补齐后继续');
+    if (!button || !amount || (+amount.max >= 0 && +amount.max < 1)) { const err = new Error('「' + job.name + '」材料不足、等级不够或配方未解锁'); err.craftSkip = true; throw err; }
     const stat = card.querySelector('#stat_set_' + job.recipe);
     if (job.statSet && (!stat || (stat.options ? !Array.from(stat.options).some(function (o) { return o.value === job.statSet; }) : stat.value !== job.statSet))) throw new Error('该配方的属性组选项已改变，请重新添加任务');
     if (stat) { stat.value = job.statSet || stat.value; if (!stat.value) throw new Error('请先选择珠宝属性组再添加任务'); }
@@ -8938,6 +8941,7 @@
         if (!alive()) return;
         if (recovered) { _craftLoaded = ''; return; } // 明确拒绝生产，重新核对后再试
       }
+      if (result.skip && alive()) { job.blocked = true; saveCfgNow(); _craftMessage = '「' + job.name + '」缺料跳过，继续下一项'; logEvent('制造跳过（缺料）：' + job.name); craftRender(); return; }
       craftBlock(result.message); return;
     }
     if (alive() && result.success) setStatus('制造：' + job.name + ' ' + job.done + '/' + job.qty);
@@ -8947,19 +8951,29 @@
     /* ★ v2.7.7：活动 / 世界 Boss 期间不开始新的制造（与战斗 / 采集一致），出来后再继续。 */
     if (eventHolding() || ovlHolding()) return;
     if (document.getElementById('battle_defeat') || inCombatNow()) { craftBlock('遇到战斗，请处理后继续'); return; }
-    const job = cfg.craftJobs.find(function (j) { return j.pending || j.done < j.qty; });
-    if (!job) { _craftMessage = '✓ 制造清单全部完成'; stop('制造清单全部完成'); craftRender(); return; }
-    if (job.pending) { craftBlock('上一份结果待核对，请在清单中确认'); return; }
+    const pendingJob = cfg.craftJobs.find(function (j) { return j.pending; });
+    if (pendingJob) { craftBlock('上一份结果待核对，请在清单中确认'); return; }
+    /* ★ v2.7.9：某一项缺料 / 未解锁时跳过它，继续做下一项；被跳过的项标黄，补齐材料后点「重试」。 */
+    const job = cfg.craftJobs.find(function (j) { return j.done < j.qty && !j.blocked; });
+    if (!job) {
+      const blockedLeft = cfg.craftJobs.filter(function (j) { return j.done < j.qty && j.blocked; }).length;
+      _craftMessage = blockedLeft ? ('✓ 其余项完成；' + blockedLeft + ' 项因缺料跳过（补齐材料后点「重试」）') : '✓ 制造清单全部完成';
+      stop(blockedLeft ? '有制造项因缺料跳过' : '制造清单全部完成'); craftRender(); return;
+    }
     if (+character.id !== +job.charId) { craftBlock('当前角色与记录配方的角色不同'); return; }
     const seq = runSeq;
     const alive = function () {
       /* ★ v2.7.7：活动 / 世界 Boss 期间暂停制造（与战斗 / 采集一致），出来后再继续。 */
       return running && st.mode === 'craft' && runSeq === seq && +character.id === +job.charId &&
         !eventHolding() && !ovlHolding() &&
-        cfg.craftJobs.find(function (j) { return j.pending || j.done < j.qty; }) === job;
+        cfg.craftJobs.find(function (j) { return j.done < j.qty && !j.blocked; }) === job;
     };
     _craftBusy = true;
-    craftExecute(job, alive).catch(function (e) { if (alive()) craftBlock(e.message || '制造操作失败'); }).finally(function () { _craftBusy = false; craftRender(); });
+    craftExecute(job, alive).catch(function (e) {
+      if (!alive()) return;
+      if (e && e.craftSkip) { job.blocked = true; saveCfgNow(); _craftMessage = '「' + job.name + '」缺料跳过，继续下一项'; logEvent('制造跳过（缺料）：' + job.name); craftRender(); return; }
+      craftBlock(e.message || '制造操作失败');
+    }).finally(function () { _craftBusy = false; craftRender(); });
   }
   rhythmTimer(function () { try { craftScanWorkbench(); } catch (e) { /* ignore */ } }, 900);
 
@@ -9709,7 +9723,7 @@
             <div id="nr-craft-list" style="max-height:280px;overflow-y:auto;margin-top:6px"></div>
             <div class="row"><button class="mini" id="nr-craft-clear">清除已完成</button><button class="mini" id="nr-craft-reset">清空</button></div>
             <div class="pathmsg" id="nr-craft-hint">按顺序移动、对话并制造；点击下方开始。可在游戏配方旁直接加入。</div>
-            <div class="pathmsg">制造期间有活动 / 世界 Boss 会优先参加，结束后自动继续制造；切号及自动清包等待。缺料 / 背包满时暂停，补齐后继续。</div>
+            <div class="pathmsg">制造期间有活动 / 世界 Boss 会优先参加，结束后自动继续制造；切号及自动清包等待。某一项缺料会自动跳过并标黄，补齐材料后点「重试」；背包满时暂停。</div>
           </div>
 
           <div class="btns">

@@ -1,8 +1,8 @@
 {
-  "version": "2.7.8",
+  "version": "2.7.9",
   "date": "2026-11-03",
-  "notes": "Overlord 改为独立监控：勾选即生效，不需要开挂机（与活动一致）；打完回参战前所在地图",
+  "notes": "挂机制造：某项缺料/未解锁时自动跳过做下一项并标黄（不再整单暂停），补齐材料后点「重试」继续",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 951114,
-  "sha256": "6ed68ce900c9fd02d953923d2cbbdd39ecaaf06ba38d2b78ddd50d19a6ec3542"
+  "size": 952992,
+  "sha256": "d3a22cd14490bc18759db9e553b3828c1975c91aa0eb2804d27532a7e6db389d"
 }
