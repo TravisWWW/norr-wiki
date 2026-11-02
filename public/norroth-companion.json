@@ -1,8 +1,8 @@
 {
-  "version": "2.7.6",
+  "version": "2.7.7",
   "date": "2026-11-02",
-  "notes": "高级页新增完整配置字符串导入导出，紧凑单行输入与3秒状态提示，导入校验并确认覆盖",
+  "notes": "挂机制造纳入活动/世界Boss优先（有活动先参加、结束继续制造）；工作台外观战斗弹窗去掉中间战斗动画，保留血条/buff/技能栏",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 947301,
-  "sha256": "69b145fe63dceb09685175e2c5c9a1f74667a8070cd3c3d91766899850ced148"
+  "size": 950439,
+  "sha256": "29d5b66b9f7076a32c99eb765c479e39ea8e7f319930d55a085645ee7728600b"
 }

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.7.6
+// @version      2.7.7
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -197,7 +197,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.7.6';
+  const SCRIPT_VER = '2.7.7';
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -6371,7 +6371,10 @@
     /* ★ v2.6.157：从「活动」里参战 → 打完回活动（而不是挂机图）；
        同时把活动的「原图」也记成活动图，避免 Overlord 期间活动模块把角色拽回挂机图。 */
     const evm = eventReturnMap();
-    O.homeMap = evm || +cfg.farmMap || +character.current_map;
+    /* ★ v2.7.7：制造模式没有「挂机地图」—— 打完世界 Boss 回「参战前所在地图」（=制造图），
+       避免被带回上一次的挂机地图再折返。 */
+    const craftHome = (st.mode === 'craft') ? +character.current_map : 0;
+    O.homeMap = evm || craftHome || +cfg.farmMap || +character.current_map;
     if (evm && st.event) st.event.homeMap = evm;
     O.joinedEpoch = O.nextEpoch;
     O.fought = false;                 /* ★ v2.6.154：新一场 → 复位「本场打过没」 */
@@ -6586,6 +6589,18 @@
         } finally { O.pollBusy = false; }
       })();
     }
+    return false;
+  }
+
+  /* ★ v2.7.7：Event / Overlord 监控统一入口 —— 战斗 / 采集 / 一键挂机 / 制造 共用。
+     返回 true = 本 tick 已被活动 / 世界 Boss 接管（主循环应 return，别开始任务）。
+     即使 busy（导航 / 维修 / 多角色行程中）也照常「检查」（只是不抢占本 tick）。 */
+  function eventOvlMonitor() {
+    const busy = st.returning || st.mcBusy || st.repair.active || st.sell.active || st.bank.active ||
+                 (st.nudging && now() - st.nudging < 2600) ||
+                 (st.settling && now() - st.settling < 40000) || st.tripManual;
+    if (ovlTick() && !busy) return true;
+    if (eventTick() && !busy) return true;
     return false;
   }
 
@@ -8928,6 +8943,8 @@
   }
   function craftTick() {
     if (_craftBusy || now() < _craftCooldown) return;
+    /* ★ v2.7.7：活动 / 世界 Boss 期间不开始新的制造（与战斗 / 采集一致），出来后再继续。 */
+    if (eventHolding() || ovlHolding()) return;
     if (document.getElementById('battle_defeat') || inCombatNow()) { craftBlock('遇到战斗，请处理后继续'); return; }
     const job = cfg.craftJobs.find(function (j) { return j.pending || j.done < j.qty; });
     if (!job) { _craftMessage = '✓ 制造清单全部完成'; stop('制造清单全部完成'); craftRender(); return; }
@@ -8935,7 +8952,9 @@
     if (+character.id !== +job.charId) { craftBlock('当前角色与记录配方的角色不同'); return; }
     const seq = runSeq;
     const alive = function () {
+      /* ★ v2.7.7：活动 / 世界 Boss 期间暂停制造（与战斗 / 采集一致），出来后再继续。 */
       return running && st.mode === 'craft' && runSeq === seq && +character.id === +job.charId &&
+        !eventHolding() && !ovlHolding() &&
         cfg.craftJobs.find(function (j) { return j.pending || j.done < j.qty; }) === job;
     };
     _craftBusy = true;
@@ -9006,6 +9025,19 @@
     enforceCombatAutoOff(); // 所有任务、导航与早退之前的最高优先级
     if (!inGame()) { setStatus('等待进入游戏…'); return; }
     if (craftHolding()) {
+      /* ★ v2.7.7：阵亡处理与战斗 / 采集一致 —— 制造期间（含被活动打断后的活动战斗区）阵亡也按 autoRespawn 自动复活。 */
+      const _craftDead = !!document.getElementById('battle_defeat');
+      if (_craftDead && cfg.autoRespawn) { handleDefeat(); return; }
+      if (!_craftDead && defeatAt) { resetDefeat(); logEvent('制造：已复活 → 继续制造'); }
+      if (_craftDead) { stop('角色已阵亡，已停止（请手动复活后重新开始）'); return; }
+      /* ★ v2.7.7：制造与战斗 / 采集一致 —— Event / Overlord 优先：有活动 / 世界 Boss 就暂停制造去参加，
+         出来后再继续制造（进入 / 返回 / 让路细节与战斗 / 采集共用，详见 archive 历史实现说明）。 */
+      if (checkMapLoad()) return;
+      if (checkMapRender()) return;
+      if (eventOvlMonitor()) return;
+      /* 已在活动里 → 交给活动逻辑（战斗区=战斗 / 大厅=采集），制造让路。 */
+      if (eventCombatActive()) { ensureAutoBattle(); stepCombat(); return; }
+      if (cfg.autoEvent && st.event && st.event.on && isEventLobby(character.current_map)) { stepGather(); return; }
       if (running) {
         if (now() - st.lastStats > 1200) { st.lastStats = now(); updateStats(); }
         craftTick();
@@ -9066,13 +9098,7 @@
     /* ★ v2.6.182：Event / Overlord 监控即使在导航 / 切图进行中也照常「检查」（只是不让它们抢占本 tick）。
        原来整段被 navBusy / st.mapSwitch.active 挡住 → 挂机（频繁走位 + 切图刷怪）时活动开启很久都进不去。
        现在：检查照跑，只有「真正进入 / 参战」那一步等导航让出（见 eventTick / ovlTick 里的 navBusy 判据）。 */
-    {
-      const _evOvlBusy = st.returning || st.mcBusy || st.repair.active || st.sell.active || st.bank.active ||
-                         (st.nudging && now() - st.nudging < 2600) ||
-                         (st.settling && now() - st.settling < 40000) || st.tripManual;
-      if (ovlTick() && !_evOvlBusy) return;
-      if (eventTick() && !_evOvlBusy) return;
-    }
+    if (eventOvlMonitor()) return;
     /* ★ v2.6.173：未开挂机 → 只跑「活动」相关逻辑（勾了「自动进活动」即生效，不需要开挂机）。 */
     if (!running) {
       /* 活动单独运行（未开挂机）时，也要跑「自愈」兜底 —— 否则活动里一旦 */
@@ -9681,7 +9707,7 @@
             <div id="nr-craft-list" style="max-height:280px;overflow-y:auto;margin-top:6px"></div>
             <div class="row"><button class="mini" id="nr-craft-clear">清除已完成</button><button class="mini" id="nr-craft-reset">清空</button></div>
             <div class="pathmsg" id="nr-craft-hint">按顺序移动、对话并制造；点击下方开始。可在游戏配方旁直接加入。</div>
-            <div class="pathmsg">制造期间活动、切号及自动清包等待。缺料 / 背包满时暂停，补齐后继续。</div>
+            <div class="pathmsg">制造期间有活动 / 世界 Boss 会优先参加，结束后自动继续制造；切号及自动清包等待。缺料 / 背包满时暂停，补齐后继续。</div>
           </div>
 
           <div class="btns">
@@ -10468,6 +10494,14 @@
   html.nr-skin #frame_container [class*="res-icon-"]::before{display:none!important}
   html.nr-skin #frame_container img{filter:grayscale(1)!important}
   html.nr-skin #frame_container img:is([src*="/images/classes/"],[src*="/images/enemies/"],[src*="/images/characters/"],[src*="/images/npcs/"]){opacity:0!important}
+  /* ★ v2.7.7：战斗弹窗（工作台）—— 去掉中间的战斗动画（战场背景 + 角色/敌人/宠物精灵 + 特效），
+     只保留血条 / buff（.hud_bars_ / .buff_bar）与下方技能栏；战场区域收成一条紧凑的条。 */
+  html.nr-skin #frame_Combat .movement-bgr{background-image:none!important;height:auto!important;min-height:0!important;padding:0!important;top:0!important;animation:none!important}
+  html.nr-skin #frame_Combat .movement-container{top:0!important;height:auto!important;padding:6px 0!important}
+  html.nr-skin #frame_Combat .movement-container img{display:none!important}
+  html.nr-skin #frame_Combat .movement-container .buff_bar img{display:block!important}
+  html.nr-skin #frame_Combat #effect_container{display:none!important}
+  html.nr-skin #frame_Combat :is(#character_end_pos,#enemy_end_pos){display:none!important}
   html.nr-skin [data-nr-label-box]{position:relative}
   html.nr-skin :is(#frame_container,.character_hud) [data-nr-element-label]::after{content:attr(data-nr-element-label);position:absolute;inset:0;display:grid;place-items:center;overflow:hidden;padding:3px;font:9px/1.2 "Segoe UI",sans-serif;color:#444;background:#e9ebee;overflow-wrap:anywhere;pointer-events:none}
   html.nr-skin :is(.ui-tooltip,.ui-menu,.ui-dialog,.dropdown-menu,.bootstrap-dialog .modal-content):not(#nr-panel *):not(.nr-ask *){background:#f5f6f8!important;color:#444!important;border:1px solid #c5c8cd!important;border-radius:4px!important;box-shadow:none!important;filter:grayscale(1)!important}
