@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.7.1
+// @version      2.7.2
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -171,7 +171,7 @@
     autoOverlord: false,        // ★ v2.6.135：自动打 Overlord（世界 Boss，服务器时间 01:00 / 10:00 / 19:00 刷新）
     ovlLeadSec: 20,             // 刷新前多少秒开始尝试进入（以最新倒计时为准）
     ovlLeaveSec: 600,           // ★ v2.6.159：进房后多久还没开打就兜底离场（秒；不影响已开打的长战斗）
-    sweepFrames: true,          // ★ 自动关闭「意外弹窗」（挂机踩到 NPC/服务格时游戏自动弹的）；真人手动打开的窗口不受影响
+    disableCombatAuto: false,          // 最高优先级关闭游戏战斗 auto，默认不干预
 
     /* 其它 */
     moveTimeout: 15,
@@ -197,7 +197,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.7.1';   // 与 @version 保持一致
+  const SCRIPT_VER = '2.7.2';   // 与 @version 保持一致
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -284,7 +284,7 @@
     render: { map: 0, at: 0, hits: 0 },            // ★ 兜底[换图没重画] 上次检查的图 / 开始停留时间 / 连续重画次数
     render2: { key: '', at: 0, hits: 0 },          // ★ v2.6.191 兜底[画面没刷新] 独立看门狗：上次判定原因 / 开始停留时间 / 连续重画次数
     entity: { at: 0 },                             // ★ 兜底[怪物列表过期] 上次强制拉取实体列表的时间
-    userActAt: 0, userFrames: {},                  // ★ 真人操作时间 / 真人手动打开的窗口（自动关弹窗 + 游戏 closeFrames 都要跳过）
+    userActAt: 0, userFrames: {},                  // ★ 真人操作时间 / 真人手动打开的窗口（游戏 closeFrames 要跳过）
     log: [], logOpen: false,                       // 操作日志（环形缓冲）
     perf: { samples: [], lastAt: 0, lastExp: 0, total: 0 },   // 收益统计
     /* ── 兜底 / 看门狗状态（写法约定见下面「兜底机制总表」）───────────────
@@ -496,7 +496,7 @@
     c.autoRespawn = !!c.autoRespawn;
     c.pauseNoSupply = (c.pauseNoSupply === undefined) ? true : !!c.pauseNoSupply;
     c.bagScanned = !!c.bagScanned;
-    c.sweepFrames = (c.sweepFrames === undefined) ? true : !!c.sweepFrames;
+    c.disableCombatAuto = !!o.disableCombatAuto; delete c.sweepFrames;
     c.worldMapUnlock = (c.worldMapUnlock === undefined) ? true : !!c.worldMapUnlock;
     c.markBaseStats = (o.markBaseStats === undefined) ? true : !!o.markBaseStats;
     if (c.skin === 'gray') c.skin = 'grid';                 // ★ 去掉「灰阶」，游戏界面只剩 原版 / 工作台
@@ -702,7 +702,7 @@
     st.idleActBusy = true;
     logEvent('真人化：随手打开「' + p[0] + '」看一眼');
     humanDialog(p[0], '', 'ajax', p[1], true);
-    /* 把新开的窗口登记成「用户窗口」，免被自动关弹窗的扫描器瞬间关掉 */
+    /* 把新开的窗口登记成「用户窗口」，避免被游戏 closeFrames 提前关闭 */
     setTimeout(function () { try { $$q('[id^=frame_]').forEach(function (el) { if (!before[el.id]) st.userFrames[el.id] = now(); }); } catch (e) { /* ignore */ } }, 300);
     setTimeout(function () {
       try { $$q('[id^=frame_]').forEach(function (el) { if (!before[el.id]) { closeFrameById(el.id); delete st.userFrames[el.id]; } }); } catch (e) { /* ignore */ }
@@ -2312,13 +2312,12 @@
     return false;
   }
 
-  /* ★ 意外弹窗自愈：挂机时把「不是脚本自己用的」弹窗关掉。 */
+  /* 玩家窗口登记与游戏 closeFrames 保护；不再扫描关闭意外弹窗。 */
   const KEEP_FRAMES = ['frame_Combat', 'frame_Loot', 'frame_Scavenge', 'frame_CollectScrap',
                        'frame_Gathering', 'frame_FeedPet', 'frame_Use', 'frame_Inventory', 'frame_MapDetails', 'frame_OverlordLootbox',
                        'frame_TowerGate', 'frame_Entrance', 'frame_Quest', 'frame_AbyssalTower'];   /* ★ 爬塔：进/下一层的过渡窗与入口提示，被自动关弹窗关掉会打断传送 / 看不到任务要求 */
-  const USER_GRACE_MS = 6000;      // 真人点击后多久内出现的弹窗算「玩家自己开的」
 
-  /* 把当前所有「非白名单」弹窗登记成用户窗口（只在真人刚操作过的宽限期内调用） */
+  /* 把当前所有「非白名单」弹窗登记成用户窗口（真人操作后调用） */
   function registerUserFrames() {
     if (!inGame()) return;
     const all = document.querySelectorAll('[id^=frame_]');
@@ -2373,6 +2372,7 @@
             for (const id in st.userFrames) {
               const el = document.getElementById(id);
               if (el) { saved.push([el, id]); el.id = 'nrkeep_' + id; }
+              else delete st.userFrames[id];
             }
           }
           try { return cf.apply(this, arguments); }
@@ -2386,34 +2386,6 @@
     }, 250);
   }
   installCloseFramesGuard();
-
-  function sweepStrayFrames() {
-    if (!inGame()) return;
-    if (cfg.sweepFrames === false) return;      // ★ 用户关掉了「自动关弹窗」
-
-    const all = document.querySelectorAll('[id^=frame_]');
-    const seen = {};
-    for (let i = 0; i < all.length; i++) seen[all[i].id] = 1;
-
-    /* 登记表清理：窗口已经不在 DOM 里 → 忘掉它（下次再冒出来才会被当成意外弹窗关掉） */
-    for (const k in st.userFrames) if (!seen[k]) delete st.userFrames[k];
-
-    const grace = st.userActAt && (now() - st.userActAt < USER_GRACE_MS);
-    let closed = 0;
-    for (let i = 0; i < all.length && closed < 3; i++) {
-      const id = all[i].id;
-      if (id === 'frame_container') continue;
-      if (KEEP_FRAMES.indexOf(id) >= 0) continue;
-      if (st.userFrames[id]) continue;                      // 玩家自己开的 → 不关
-      if (grace) { st.userFrames[id] = now(); continue; }    // 真人刚点过 → 登记成用户窗口
-      closeFrameById(id);
-      closed++;
-    }
-    if (closed) {
-      logEvent('关闭意外弹窗', { key: 'frames', count: closed, unit: '个' });
-      setStatus('已关闭意外弹窗，继续挂机…');
-    }
-  }
 
   /* ★ 离线模式（Idle Mode）结算弹窗：切到副角色后游戏会弹出「Idle Mode Results」，
      右下角 OK 必须点掉 —— 否则 modal 遮罩挡住后续所有点击（维修 / 存仓 / 走位全部失效）。
@@ -6819,9 +6791,65 @@
   /* ---- ★ 新前端「自动战斗」保险：开战瞬间若 #auto_combat 未勾选就替玩家勾上。
      onchange 处理器就是 changeOpt('combat')，所以「checked=true + dispatch change」= 一次真实的开启操作；
      只在未勾选时动作，避免把已经开着的又切成关。节流：每个战斗窗口最多尝试一次/2 秒。 ---- */
+  // changeOpt('combat') 是“翻转”而非“设置”：以 user.combat_setting 为准，
+  // 已经关闭时不能因一个过期的 checked=true 再调用一次，否则反而打开。
+  let _combatOffDispatch = false;
+  function combatAutoState() {
+    try {
+      if (typeof user !== 'undefined' && user && user.combat_setting != null) {
+        return user.combat_setting === true || user.combat_setting === 1 || /^(1|true|on)$/i.test(String(user.combat_setting));
+      }
+    } catch (e) { /* ignore */ }
+    return null;
+  }
+  function installCombatAutoGuard() {
+    const original = window.changeOpt;
+    if (typeof original !== 'function' || original.__nrCombatAutoGuard) return;
+    const guarded = function (type) {
+      if (type === 'combat' && cfg.disableCombatAuto) {
+        const on = combatAutoState();
+        const checkbox = document.getElementById('auto_combat');
+        if (checkbox) checkbox.checked = false;
+        if (on !== true && !_combatOffDispatch) return false; // 阻止其他入口重新开启
+      }
+      return original.apply(this, arguments);
+    };
+    guarded.__nrCombatAutoGuard = true;
+    window.changeOpt = guarded;
+  }
+  let _combatOffAt = 0;
+  function enforceCombatAutoOff() {
+    if (!cfg.disableCombatAuto) return false;
+    installCombatAutoGuard();
+    const checkbox = document.getElementById('auto_combat');
+    const checked = !!(checkbox && checkbox.checked);
+    if (checkbox) checkbox.checked = false;
+    const on = combatAutoState();
+    if (on === false || (on == null && !checked)) return true;
+    if (now() - _combatOffAt < 500) return true;
+    _combatOffAt = now();
+    try {
+      if (on === true && typeof window.changeOpt === 'function') window.changeOpt('combat');
+      else if (on == null && checkbox) {
+        _combatOffDispatch = true;
+        try { checkbox.dispatchEvent(new Event('change', { bubbles: true })); }
+        finally { _combatOffDispatch = false; }
+      }
+      logEvent('已强制关闭游戏战斗 auto', { key: 'combat-auto-off' });
+    } catch (e) { /* 下次检查再同步 */ }
+    return true;
+  }
+  document.addEventListener('change', function (event) {
+    if (!cfg.disableCombatAuto || !event.target || event.target.id !== 'auto_combat') return;
+    if (combatAutoState() == null) return; // 未知旧前端交给其原生 handler 处理
+    event.stopImmediatePropagation();
+    enforceCombatAutoOff();
+  }, true);
+  rhythmTimer(function () { try { installCombatAutoGuard(); enforceCombatAutoOff(); } catch (e) { /* ignore */ } }, 500);
   let _abAt = 0;
   function ensureAutoBattle() {
-    /* ★ v2.6.1：自动战斗改为「保底」——不再有开关；只要没开「遇敌逃跑」就保证游戏自动战斗是开的 */
+    if (cfg.disableCombatAuto) { enforceCombatAutoOff(); return; }
+    /* ★ v2.6.1：自动战斗默认沿用保底管理；最高优先级关闭开关已在上方处理 */
     if (!hasFrame('frame_Combat')) return;
     if (now() - _abAt < 2000) return;
     _abAt = now();
@@ -8590,9 +8618,9 @@
         '<span title="' + escapeHtml(detail) + '" style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;color:' + (remaining ? '#dfe4f0' : '#85cfaa') + '">' + escapeHtml(j.name) + '</span>' +
         '<span style="flex:none;color:#9aa9c0;font-size:11px">' + CRAFT_STATIONS[j.profession][2] + '</span>' +
         '<input data-craft-remaining aria-label="剩余次数" type="number" min="' + (j.done ? 0 : 1) + '" max="' + (10000 - j.done) + '" value="' + remaining + '" title="剩余次数（可修改）；已完成 ' + j.done + '/' + j.qty + '" style="width:43px;flex:none;padding:2px 3px;text-align:center"' + disabled + '>' +
-        '<button class="mini" data-craft-action="up" title="上移" aria-label="上移" style="flex:none;padding:2px;width:24px"' + disabled + '>⬆️</button>' +
-        '<button class="mini" data-craft-action="down" title="下移" aria-label="下移" style="flex:none;padding:2px;width:24px"' + disabled + '>⬇️</button>' +
-        '<button class="mini" data-craft-action="remove" title="删除" aria-label="删除" style="flex:none;padding:2px;width:24px"' + disabled + '>❌</button></div>' +
+        '<button class="mini" data-craft-action="up" title="上移" aria-label="上移" style="flex:none;padding:2px;width:24px"' + disabled + '>↑</button>' +
+        '<button class="mini" data-craft-action="down" title="下移" aria-label="下移" style="flex:none;padding:2px;width:24px"' + disabled + '>↓</button>' +
+        '<button class="mini" data-craft-action="remove" title="删除" aria-label="删除" style="flex:none;padding:2px;width:24px"' + disabled + '>×</button></div>' +
         (j.pending ? '<div style="font-size:11px;color:#ffba76">' + (_craftBusy ? '确认回包…' : '结果待核对') + '</div>' : '') +
         (j.pending && !locked ? '<div style="margin-top:5px;color:#ffba76;font-size:11px">先核对实际成品，再确认本次结果：</div><button class="mini" data-craft-action="count">已成功，计入1次</button> <button class="mini" data-craft-action="retry">未成功，允许重试</button>' : '') + '</div>';
     }).join('') || '<div class="pathmsg">清单为空。打开工作台，在配方旁点「＋制造清单」。</div>';
@@ -8844,6 +8872,7 @@
   }
 
   function step() {
+    enforceCombatAutoOff(); // 所有任务、导航与早退之前的最高优先级
     if (!inGame()) { setStatus('等待进入游戏…'); return; }
     if (craftHolding()) {
       if (running) {
@@ -8918,7 +8947,6 @@
       /* 活动单独运行（未开挂机）时，也要跑「自愈」兜底 —— 否则活动里一旦 */
       if (hasFrame('frame_Loot')) takeAllLoot();
       if (eventCombatActive() || (cfg.autoEvent && st.event && st.event.on && isEventLobby(character.current_map))) {
-        sweepStrayFrames();
         closeIdleResultDialog();
         checkFrozen();
         checkStuck();
@@ -8992,7 +9020,6 @@
 
     if (st.mapSwitch.active || navBusy) { setStatus(st.statusText); return; }
 
-    sweepStrayFrames();   /* ★ 意外弹窗（踩到 NPC / 服务格）自动关掉，避免卡住 */
     closeIdleResultDialog();  /* ★ 离线模式结算弹窗（Idle Mode Results）随时点掉 */
 
     checkFrozen();
@@ -9428,7 +9455,7 @@
             <div class="opts" style="margin-top:0">
               <label id="nr-flee-wrap" title="勾选即生效；战斗、爬塔运行时禁用。"><input type="checkbox" class="chk" id="nr-gatherflee">遇敌逃跑</label>
               <label><input type="checkbox" class="chk" id="nr-autorespawn">阵亡复活</label>
-              <label title="自动关掉游戏因踩到 NPC / 服务格而弹出的挡路窗口；你自己开的窗口保留。"><input type="checkbox" class="chk" id="nr-sweepframes">自动关弹窗</label>
+              <label title="最高优先级：勾选后强制关闭游戏战斗 auto，覆盖战斗、爬塔、活动和 Overlord 的开启管理；不勾选沿用原设置。"><input type="checkbox" class="chk" id="nr-disableauto">关闭战斗auto</label>
               <label title="给自己加金色描边，人多时一眼找到自己。"><input type="checkbox" class="chk" id="nr-highlight">高亮自己</label>
             </div>
             <div class="opts" style="margin-top:5px">
@@ -9981,7 +10008,7 @@
       });
     })();
     bindCheck('nr-autorespawn', 'autoRespawn');
-    bindCheck('nr-sweepframes', 'sweepFrames');
+    bindCheck('nr-disableauto', 'disableCombatAuto', function () { installCombatAutoGuard(); enforceCombatAutoOff(); });
     bindCheck('nr-wmunlock', 'worldMapUnlock');
     (function () {
       const el = document.getElementById('nr-petfeed');
@@ -10356,7 +10383,7 @@
     const set = (id, v) => { const el = document.getElementById(id); if (el) el.checked = !!v; };
     set('nr-autorespawn', cfg.autoRespawn);
     try { const _ts = document.getElementById('nr-tmode'); if (_ts) _ts.querySelectorAll('button').forEach(function (b) { b.classList.toggle('on', b.dataset.tmode === (cfg.targetMode || 'priority')); }); } catch (e) { /* ignore */ }
-    set('nr-sweepframes', cfg.sweepFrames);
+    set('nr-disableauto', cfg.disableCombatAuto);
     set('nr-wmunlock', cfg.worldMapUnlock);
     set('nr-gscrap', cfg.gatherScrap); set('nr-autoevent', cfg.autoEvent);
     try { const _er = document.getElementById('nr-eventres'); if (_er) _er.value = cfg.eventRes || ''; } catch (e) { /* ignore */ }
@@ -13730,7 +13757,7 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
     handleDefeat: handleDefeat, resetDefeat: resetDefeat,
     refreshQuestTargets: refreshQuestTargets, loadEnemyNames: loadEnemyNames,
     nearestResource: nearestResource, checkFrozen: checkFrozen,
-    sweepStrayFrames: sweepStrayFrames, registerUserFrames: registerUserFrames,
+    registerUserFrames: registerUserFrames,
     tryGatherFlee: tryGatherFlee, gameRunAway: gameRunAway, altPageCombatPolicy: altPageCombatPolicy, applyHighlightSelf: applyHighlightSelf, exportErrorLog: exportErrorLog,
     supply: supply, verifyPotion: verifyPotion, togglePotion: togglePotion, startPotionLoop: startPotionLoop, stopPotionLoop: stopPotionLoop, healInfo: healInfo, ensureTTDB: ensureTTDB, potionKey: potionKey,
     questTargets: () => _questCache.list,

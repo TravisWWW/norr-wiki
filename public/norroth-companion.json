@@ -1,8 +1,8 @@
 {
-  "version": "2.7.1",
+  "version": "2.7.2",
   "date": "2026-11-02",
-  "notes": "制造清单按游戏配方当前填写的数量加入；清单改为名称、专业、可编辑剩余次数和⬆️⬇️❌的紧凑单行。",
+  "notes": "制造按钮恢复统一mini风格；移除自动清扫弹窗，将开关替换为最高优先级关闭战斗auto，勾选覆盖所有开启管理，未勾选沿用原逻辑。",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 928323,
-  "sha256": "0bbc72e2a44b289d4e83c374c8aad21fe3fcda9c9289c57181e100451c4cdb1a"
+  "size": 929591,
+  "sha256": "cb2641a49763760daaf682bf4e20ea10bf071070251ab16d37128f83973df2dd"
 }
