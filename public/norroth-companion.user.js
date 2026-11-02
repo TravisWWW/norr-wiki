@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.7.2
+// @version      2.7.3
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -197,7 +197,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.7.2';   // 与 @version 保持一致
+  const SCRIPT_VER = '2.7.3';   // 与 @version 保持一致
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -8524,9 +8524,8 @@
       cat: String(j.cat || '').slice(0, 80), subcat: String(j.subcat || '').slice(0, 80), statSet: String(j.statSet || '').slice(0, 80),
       qty: qty, done: Math.max(0, Math.min(qty, Math.floor(+j.done || 0))), pending: !!j.pending };
   }
-  function craftEditable() {
-    if (running) { setStatus('请先暂停，再调整制造清单'); return false; }
-    if (_craftBusy) { setStatus('正在等待上一项操作结束，请稍后调整'); return false; }
+  function craftEditable(job) {
+    if (job && job.pending) { setStatus('这一项正在确认制造结果，数量与删除请等待回包；其他任务可以继续调整'); return false; }
     return true;
   }
   function craftCanStart() {
@@ -8608,24 +8607,31 @@
   }
   function craftRender() {
     const list = document.getElementById('nr-craft-list'); if (!list) return;
-    const locked = running || _craftBusy;
+    const focused = document.activeElement;
+    const editing = list.contains(focused) && focused.matches('[data-craft-remaining]')
+      ? { uid: focused.closest('[data-craft-uid]').dataset.craftUid, value: focused.value } : null;
     list.innerHTML = cfg.craftJobs.map(function (j, i) {
-      const disabled = locked || j.pending ? ' disabled' : '';
+      const disabled = j.pending ? ' disabled' : '';
       const remaining = Math.max(0, j.qty - j.done);
       const detail = j.name + ' · ' + navMapName(j.map) + (j.statSet ? ' · ' + j.statSet : '') + ' · 已完成 ' + j.done + '/' + j.qty;
-      return '<div class="nr-craft-job" data-craft-index="' + i + '" style="padding:4px 0;margin-bottom:3px;border-bottom:1px solid #394356">' +
+      return '<div class="nr-craft-job" data-craft-index="' + i + '" data-craft-uid="' + escapeHtml(j.uid) + '" style="padding:4px 0;margin-bottom:3px;border-bottom:1px solid #394356">' +
         '<div style="display:flex;gap:4px;align-items:center;white-space:nowrap">' +
         '<span title="' + escapeHtml(detail) + '" style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;color:' + (remaining ? '#dfe4f0' : '#85cfaa') + '">' + escapeHtml(j.name) + '</span>' +
         '<span style="flex:none;color:#9aa9c0;font-size:11px">' + CRAFT_STATIONS[j.profession][2] + '</span>' +
         '<input data-craft-remaining aria-label="剩余次数" type="number" min="' + (j.done ? 0 : 1) + '" max="' + (10000 - j.done) + '" value="' + remaining + '" title="剩余次数（可修改）；已完成 ' + j.done + '/' + j.qty + '" style="width:43px;flex:none;padding:2px 3px;text-align:center"' + disabled + '>' +
-        '<button class="mini" data-craft-action="up" title="上移" aria-label="上移" style="flex:none;padding:2px;width:24px"' + disabled + '>↑</button>' +
-        '<button class="mini" data-craft-action="down" title="下移" aria-label="下移" style="flex:none;padding:2px;width:24px"' + disabled + '>↓</button>' +
+        '<button class="mini" data-craft-action="up" title="上移" aria-label="上移" style="flex:none;padding:2px;width:24px">↑</button>' +
+        '<button class="mini" data-craft-action="down" title="下移" aria-label="下移" style="flex:none;padding:2px;width:24px">↓</button>' +
         '<button class="mini" data-craft-action="remove" title="删除" aria-label="删除" style="flex:none;padding:2px;width:24px"' + disabled + '>×</button></div>' +
         (j.pending ? '<div style="font-size:11px;color:#ffba76">' + (_craftBusy ? '确认回包…' : '结果待核对') + '</div>' : '') +
-        (j.pending && !locked ? '<div style="margin-top:5px;color:#ffba76;font-size:11px">先核对实际成品，再确认本次结果：</div><button class="mini" data-craft-action="count">已成功，计入1次</button> <button class="mini" data-craft-action="retry">未成功，允许重试</button>' : '') + '</div>';
+        (j.pending && !_craftBusy ? '<div style="margin-top:5px;color:#ffba76;font-size:11px">先核对实际成品，再确认本次结果：</div><button class="mini" data-craft-action="count">已成功，计入1次</button> <button class="mini" data-craft-action="retry">未成功，允许重试</button>' : '') + '</div>';
     }).join('') || '<div class="pathmsg">清单为空。打开工作台，在配方旁点「＋制造清单」。</div>';
+    if (editing) {
+      const row = Array.from(list.querySelectorAll('[data-craft-uid]')).find(function (r) { return r.dataset.craftUid === editing.uid; });
+      const input = row && row.querySelector('[data-craft-remaining]');
+      if (input && !input.disabled) { input.value = editing.value; input.focus({ preventScroll: true }); }
+    }
     const hint = document.getElementById('nr-craft-hint');
-    if (hint) hint.textContent = _craftMessage || ('共 ' + cfg.craftJobs.length + ' 项 · 完成 ' + cfg.craftJobs.filter(function (j) { return j.done >= j.qty; }).length + ' 项；支持暂停后调整顺序。');
+    if (hint) hint.textContent = _craftMessage || ('共 ' + cfg.craftJobs.length + ' 项 · 完成 ' + cfg.craftJobs.filter(function (j) { return j.done >= j.qty; }).length + ' 项；运行中也可调整清单，下一份按新顺序执行。');
   }
   function craftBindUI() {
     document.getElementById('nr-craft-read').addEventListener('click', function () { if (!craftScanWorkbench()) setStatus('请先在游戏里打开制造工作台并选择分类'); });
@@ -8636,9 +8642,9 @@
     });
     const list = document.getElementById('nr-craft-list');
     list.addEventListener('change', function (e) {
-      if (!e.target.matches('[data-craft-remaining]') || !craftEditable()) return;
+      if (!e.target.matches('[data-craft-remaining]')) return;
       const job = cfg.craftJobs[+e.target.closest('[data-craft-index]').dataset.craftIndex];
-      if (!job || job.pending) return;
+      if (!job || !craftEditable(job)) return;
       const remaining = Math.max(0, Math.min(10000 - job.done, Math.floor(+e.target.value || 0)));
       job.qty = Math.max(1, job.done + remaining); saveCfgNow(); craftRender();
     });
@@ -8646,18 +8652,18 @@
       const button = e.target.closest('[data-craft-action]'); if (!button || !craftEditable()) return;
       const i = +button.closest('[data-craft-index]').dataset.craftIndex, job = cfg.craftJobs[i], action = button.dataset.craftAction;
       if (!job) return;
-      if (job.pending) {
-        if (action !== 'count' && action !== 'retry') return;
+      if (action === 'count' || action === 'retry') {
+        if (!job.pending || _craftBusy) return;
         if (action === 'count') job.done = Math.min(job.qty, job.done + 1);
         job.pending = false; _craftMessage = '';
-      } else if (action === 'remove') cfg.craftJobs.splice(i, 1);
+      } else if (action === 'remove') { if (!craftEditable(job)) return; cfg.craftJobs.splice(i, 1); }
       else if (action === 'up' && i > 0) cfg.craftJobs.splice(i - 1, 0, cfg.craftJobs.splice(i, 1)[0]);
       else if (action === 'down' && i < cfg.craftJobs.length - 1) cfg.craftJobs.splice(i + 1, 0, cfg.craftJobs.splice(i, 1)[0]);
       saveCfgNow(); craftRender();
     });
     document.getElementById('nr-craft-clear').addEventListener('click', function () { if (!craftEditable()) return; cfg.craftJobs = cfg.craftJobs.filter(function (j) { return j.pending || j.done < j.qty; }); saveCfgNow(); craftRender(); });
     document.getElementById('nr-craft-reset').addEventListener('click', function () {
-      if (!craftEditable()) return;
+      if (running || _craftBusy) { setStatus('重做整份清单请先暂停或停止；单项数量和顺序可直接修改'); return; }
       if (cfg.craftJobs.some(function (j) { return j.pending; })) { setStatus('请先核对未确认的制造结果'); return; }
       cfg.craftJobs.forEach(function (j) { j.done = 0; }); _craftMessage = ''; saveCfgNow(); craftRender();
     });
@@ -8806,7 +8812,10 @@
     if (job.pending) { craftBlock('上一份结果待核对，请在清单中确认'); return; }
     if (+character.id !== +job.charId) { craftBlock('当前角色与记录配方的角色不同'); return; }
     const seq = runSeq;
-    const alive = function () { return running && st.mode === 'craft' && runSeq === seq && +character.id === +job.charId; };
+    const alive = function () {
+      return running && st.mode === 'craft' && runSeq === seq && +character.id === +job.charId &&
+        cfg.craftJobs.find(function (j) { return j.pending || j.done < j.qty; }) === job;
+    };
     _craftBusy = true;
     craftExecute(job, alive).catch(function (e) { if (alive()) craftBlock(e.message || '制造操作失败'); }).finally(function () { _craftBusy = false; craftRender(); });
   }
@@ -10246,8 +10255,9 @@
     try { p.querySelectorAll('#nr-task>button').forEach(function (b) { b.classList.toggle('on', b.dataset.task === t); }); } catch (e) { /* ignore */ }
     try { p.querySelectorAll('.nr-taskbox').forEach(function (x) {
       x.style.display = (x.dataset.task === t) ? '' : 'none';
-      x.classList.toggle('locked', locked);
-      if (locked) x.setAttribute('data-lock', _lockMsg); else x.removeAttribute('data-lock');
+      const taskLocked = locked && x.dataset.task !== 'craft';
+      x.classList.toggle('locked', taskLocked);
+      if (taskLocked) x.setAttribute('data-lock', _lockMsg); else x.removeAttribute('data-lock');
     }); } catch (e) { /* ignore */ }
     /* ★ v2.6.124：「遇敌逃跑」不再只在采集任务可用 —— 勾上即生效（不需要开始挂机），
        只在「战斗 / 爬塔」任务运行中自动屏蔽。控件保持始终可用。 */
