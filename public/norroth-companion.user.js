@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.7.12
+// @version      2.7.13
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -197,7 +197,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.7.12';
+  const SCRIPT_VER = '2.7.13';
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -5560,7 +5560,8 @@
   function stepGather() {
     // 1) 战斗中：★ 只采集 + 勾了「遇怪逃跑」→ 点游戏自带的「逃跑」；否则交给游戏内置自动战斗
     if (hasFrame('frame_Combat')) {
-      if (cfg.gatherFlee && tryGatherFlee()) { st.phase = 'wait'; return; }
+      /* ★ v2.7.13：活动里强制战斗 —— 采集主循环里的「遇敌逃跑」也判活动，避免行走中随机遇敌时误逃。 */
+      if (cfg.gatherFlee && !eventForceCombat() && tryGatherFlee()) { st.phase = 'wait'; return; }
       noteCombat();
       st.gatherFighting = true;
       setStatus('战斗中…（游戏自动战斗）');
@@ -5853,6 +5854,19 @@
       const E = st.event; if (!E || !E.on) return false;
       return isEventCombatMap(character.current_map);
     } catch (e) { return false; }
+  }
+  /* ★ v2.7.13：活动里「强制战斗、遇敌不逃跑」的判据。比 eventCombatActive() 更宽：
+     ① 只要人在「活动战斗区」地图（不论活动类型 / 是否已置 E.on）→ 强制战斗（行走中随机遇敌也不逃）；
+     ② 战斗型活动的大厅（cfg.eventRes==='combat' 且 E.on）→ 也强制战斗。
+     采集型活动大厅不算（那里本来就该采集、遇敌逃跑）。 */
+  function eventForceCombat() {
+    try {
+      if (!cfg.autoEvent) return false;
+      const m = String(character.current_map);
+      if (isEventCombatMap(m)) return true;
+      if (cfg.eventRes === 'combat' && st.event && st.event.on && isEventLobby(m)) return true;
+    } catch (e) { /* ignore */ }
+    return false;
   }
   function eventExitPending(E) {
     const t = now(), id = +character.current_map;
@@ -13627,8 +13641,8 @@ const WM_POI={"2":{"m":[6,132]},"3":{"m":[91]},"4":{"g":[["foraging","1","1"]],"
     if (!cfg.gatherFlee) return;
     if (!inGame()) return;
     if (ovlAlive() && cfg.autoOverlord && ovlInBattle()) return;
-    /* ★ v2.7.12：战斗型活动里强制战斗 —— 与 step()「活动战斗区强制开自动战斗」的意图一致，遇敌不逃跑。 */
-    if (eventCombatActive() || (cfg.autoEvent && cfg.eventRes === 'combat' && st.event && st.event.on && isEventLobby(character.current_map))) return;
+    /* ★ v2.7.12/13：活动里强制战斗 —— 与 step()「活动战斗区强制开自动战斗」的意图一致，遇敌不逃跑（含行走中随机遇敌）。 */
+    if (eventForceCombat()) return;
     if (running && !st.paused && FLEE_MASK_TASKS.indexOf(String(cfg.task || 'battle')) >= 0) return;   /* 战斗 / 爬塔 → 屏蔽 */
     if (st.altTrip) return;
     if (!hasFrame('frame_Combat')) return;
