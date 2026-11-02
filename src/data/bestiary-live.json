@@ -1,6 +1,6 @@
 {
  "meta": {
-  "source": "游戏内 Inspect（/modal/inspect_enemy）· 小伴侣导出 · 9 位贡献者合并",
+  "source": "游戏内 Inspect（/modal/inspect_enemy）· 小伴侣导出 · 10 位贡献者合并",
   "fetched": "2026-11-02",
   "version": "1.0",
   "contributors": [
@@ -84,13 +84,22 @@
     "count": 194,
     "recorded": 85,
     "mergedAt": "2026-11-02"
+   },
+   {
+    "file": "char-3315.json",
+    "char": "#3315",
+    "level": 48,
+    "time": "2026-11-02T00:38:03.134Z",
+    "count": 194,
+    "recorded": 53,
+    "mergedAt": "2026-11-02"
    }
   ],
   "count": 200,
   "recordedCount": 194,
   "withLore": 199,
-  "withStats": 91,
-  "withSkills": 107,
+  "withStats": 92,
+  "withSkills": 110,
   "withBg": 184,
   "tabs": {
    "normal": 163,
@@ -1100,7 +1109,34 @@
      "res": "mucky_leather_glove_base",
      "pct": "8%"
     }
-   ]
+   ],
+   "skills": [
+    {
+     "name": "stump",
+     "id": 10133,
+     "level": 1
+    },
+    {
+     "name": "tail_sweep",
+     "id": 10149,
+     "level": 1
+    }
+   ],
+   "stats": {
+    "Base Damage": 15,
+    "Physical Damage": 3,
+    "Blunt Damage": 0,
+    "Spell Damage": 0,
+    "Bleed Damage": 0,
+    "Arcane Damage": 0,
+    "Cold Damage": 0,
+    "Dark Damage": 0,
+    "Fire Damage": 0,
+    "Light Damage": 0,
+    "Lightning Damage": 0,
+    "Poison Damage": 0,
+    "Thorn Damage": 0
+   }
   },
   {
    "id": 15,
@@ -3196,6 +3232,23 @@
      "res": "spirit_log",
      "pct": "31%"
     }
+   ],
+   "skills": [
+    {
+     "name": "sharp_leaf_strike",
+     "id": 10048,
+     "level": 1
+    },
+    {
+     "name": "root",
+     "id": 10086,
+     "level": 1
+    },
+    {
+     "name": "bleed",
+     "id": 10113,
+     "level": 1
+    }
    ]
   },
   {
@@ -3267,6 +3320,28 @@
      "name": "Mucky Leather Shoe Base",
      "res": "mucky_leather_shoe_base",
      "pct": "10%"
+    }
+   ],
+   "skills": [
+    {
+     "name": "boulder_hurl",
+     "id": 10031,
+     "level": 1
+    },
+    {
+     "name": "rock_splitter",
+     "id": 10176,
+     "level": 1
+    },
+    {
+     "name": "pick_swing",
+     "id": 10177,
+     "level": 1
+    },
+    {
+     "name": "rockslide",
+     "id": 10139,
+     "level": 1
     }
    ]
   },
@@ -3524,7 +3599,40 @@
    "tab": "normal",
    "icon": "https://www.norroth.com/images/maps/items/enemy_71.gif",
    "bg": "ratdom.jpg",
-   "recorded": true
+   "recorded": true,
+   "levelRange": "5 - 5",
+   "alignment": "Neutral",
+   "specials": "-",
+   "health": "Low",
+   "defense": "Medium",
+   "resistance": "Low",
+   "drops": [
+    {
+     "name": "Bronze Sestertii",
+     "res": "coin_bronze",
+     "pct": "100%"
+    },
+    {
+     "name": "Burlap Sack",
+     "res": "burlap_sack",
+     "pct": "35%"
+    },
+    {
+     "name": "Mucky String",
+     "res": "mucky_string",
+     "pct": "10%"
+    },
+    {
+     "name": "Mucky Leather Helmet Base",
+     "res": "mucky_leather_helmet_base",
+     "pct": "6%"
+    },
+    {
+     "name": "Mucky Leather",
+     "res": "mucky_leather",
+     "pct": "9%"
+    }
+   ]
   },
   {
    "id": 72,
