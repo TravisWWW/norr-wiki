@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.7.5
+// @version      2.7.6
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -197,7 +197,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.7.5';
+  const SCRIPT_VER = '2.7.6';
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -551,6 +551,87 @@
     _saveTimer = setTimeout(() => { _saveTimer = null; try { localStorage.setItem(CFG_KEY, JSON.stringify(cfg)); } catch (e) { /* ignore */ } }, 150);
   }
   window.addEventListener('beforeunload', saveCfgNow);   // 关页面/刷新前把最后一次改动落盘
+
+  /* 配置字符串导入导出：完整参数快照，确认覆盖后刷新生效。 */
+  function configExportString() {
+    return JSON.stringify({ format: 'norroth-companion-config', formatVersion: 1, scriptVersion: SCRIPT_VER, config: cfg });
+  }
+  function configParseString(text) {
+    if (!String(text || '').trim()) throw new Error('请先粘贴配置字符串');
+    const data = JSON.parse(String(text), function (key, value) {
+      if (key === '__proto__' || key === 'constructor' || key === 'prototype') throw new Error('配置含不支持的字段');
+      return value;
+    });
+    if (!data || data.format !== 'norroth-companion-config' || data.formatVersion !== 1 ||
+        !data.config || typeof data.config !== 'object' || Array.isArray(data.config)) throw new Error('不是有效的小伴侣配置字符串');
+    const input = data.config;
+    if (+input.__ver > CFG_VER) throw new Error('配置来自更新的版本，请先更新小伴侣');
+    Object.keys(DEFAULTS).forEach(function (key) {
+      if (!Object.prototype.hasOwnProperty.call(input, key)) return;
+      const value = input[key], sample = DEFAULTS[key];
+      if (sample === null ? value !== null && (typeof value !== 'number' || !Number.isFinite(value)) :
+          Array.isArray(sample) ? !Array.isArray(value) :
+          typeof value !== typeof sample || (typeof value === 'number' && !Number.isFinite(value))) {
+        throw new Error('配置字段格式错误：' + key);
+      }
+    });
+    return normalizeCfg(input);
+  }
+  function configImportReady() {
+    if (running || navBusy || _craftBusy || st.mcBusy || st.tripManual || st.repair.active || st.sell.active || st.bank.active || (rot && rot.on)) {
+      throw new Error('请先停止挂机、多角色轮转和导航，再导入配置');
+    }
+    if (cfg.craftJobs.some(function (job) { return job.pending; })) throw new Error('请先核对未确认的制造结果，再导入配置');
+  }
+  function configStoreImported(next) {
+    const keys = [CFG_KEY, RUN_KEY, ROT_KEY];
+    const previous = keys.map(function (key) { return localStorage.getItem(key); });
+    try {
+      localStorage.setItem(CFG_KEY, JSON.stringify(next));
+      localStorage.removeItem(RUN_KEY); localStorage.removeItem(ROT_KEY);
+    } catch (error) {
+      keys.forEach(function (key, index) {
+        try { if (previous[index] === null) localStorage.removeItem(key); else localStorage.setItem(key, previous[index]); } catch (e) { /* ignore */ }
+      });
+      throw new Error('配置保存失败，请检查浏览器存储空间');
+    }
+    if (_saveTimer) { clearTimeout(_saveTimer); _saveTimer = null; }
+    cfg = next;
+  }
+  function configBindUI() {
+    const text = document.getElementById('nr-config-text'), hint = document.getElementById('nr-config-hint');
+    let hintTimer = null;
+    const show = function (message) {
+      if (hintTimer) clearTimeout(hintTimer);
+      hint.textContent = message; hint.title = message;
+      hintTimer = setTimeout(function () { hint.textContent = ''; hint.title = ''; hintTimer = null; }, 3000);
+    };
+    document.getElementById('nr-config-export').addEventListener('click', function () {
+      text.value = configExportString(); text.focus(); text.select(); show('已生成');
+    });
+    document.getElementById('nr-config-copy').addEventListener('click', async function () {
+      if (!text.value.trim()) { show('请先导出配置或粘贴配置字符串。'); return; }
+      const value = text.value;
+      try {
+        if (!navigator.clipboard || !navigator.clipboard.writeText) throw new Error('clipboard unavailable');
+        await navigator.clipboard.writeText(value); show('已复制');
+      } catch (error) {
+        text.focus(); text.select();
+        let copied = false; try { copied = document.execCommand('copy'); } catch (e) { /* ignore */ }
+        show(copied ? '已复制' : '已选中配置字符串，请按 Ctrl+C 复制。');
+      }
+    });
+    document.getElementById('nr-config-import').addEventListener('click', async function () {
+      const button = this; if (button.disabled) return;
+      button.disabled = true;
+      try {
+        const next = configParseString(text.value); configImportReady();
+        if (!await nrConfirm('确定导入配置？将覆盖全部参数、多角色设置及制造清单，并刷新页面。挂机不会自动启动。', '导入并刷新', '取消')) return;
+        configImportReady(); configStoreImported(next); show('配置已导入，正在刷新页面…'); location.reload();
+      } catch (error) { show('导入失败：' + error.message); }
+      finally { button.disabled = false; }
+    });
+  }
 
   function inGame() {
     try { return typeof character === 'object' && character && character.id && !!document.getElementById('players_container'); }
@@ -9693,6 +9774,11 @@
         </div>
 
         <div class="pane" data-pane="speed">
+          <div class="divblock_dark" style="margin-bottom:8px">
+            <div class="row"><button class="mini" type="button" id="nr-config-export">导出配置</button><button class="mini" type="button" id="nr-config-copy">复制</button><button class="mini" type="button" id="nr-config-import" title="覆盖全部参数、多角色设置及制造清单，确认后刷新页面；需先停止任务。">导入配置</button><span id="nr-config-hint" role="status" style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:10px;color:#9aa4b2"></span></div>
+            <input type="text" id="nr-config-text" aria-label="配置字符串" spellcheck="false" autocomplete="off" placeholder="导出配置或粘贴配置字符串" style="width:100%;box-sizing:border-box;height:26px">
+          </div>
+
           <span class="lbl" title="仅加速战斗动画；移动、采集、生产等保持原速。">加速倍率（1 ~ 5，1 = 原速）</span>
           <div class="row">
             <input type="range" id="nr-speedk" min="1" max="5" step="0.1" style="flex:1">
@@ -10180,6 +10266,7 @@
     if (townSel) townSel.addEventListener('change', () => { cfg.serviceTown = townSel.value; saveCfg(); verifyPath(); });
     const townRefresh = panel.querySelector('#nr-townrefresh');
     if (townRefresh) townRefresh.addEventListener('click', () => { recordVisit(); renderTownSelect(); verifyPath(); });
+    configBindUI();
     const impBtn = panel.querySelector('#nr-importmaprec');
     const impFile = panel.querySelector('#nr-maprecfile');
     if (impBtn && impFile) {

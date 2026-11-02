@@ -1,8 +1,8 @@
 {
-  "version": "2.7.5",
+  "version": "2.7.6",
   "date": "2026-11-02",
-  "notes": "工作台浅灰格子外观，补齐聊天血条及交易所灰阶与货币文字；制造清空清单增加确认",
+  "notes": "高级页新增完整配置字符串导入导出，紧凑单行输入与3秒状态提示，导入校验并确认覆盖",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 941789,
-  "sha256": "0f5c286c8986d6c8e787ca07cc11ee88ac857beb582d71eee29bf5b1ac11275b"
+  "size": 947301,
+  "sha256": "69b145fe63dceb09685175e2c5c9a1f74667a8070cd3c3d91766899850ced148"
 }
