@@ -1,7 +1,7 @@
 {
  "meta": {
   "source": "小伴侣地图数据（MapDB）· 13 位贡献者合并",
-  "updated": "2026-11-02T05:03:25.618Z",
+  "updated": "2026-11-02T12:58:23.428Z",
   "version": "1.0",
   "contributors": [
    {
@@ -55,9 +55,9 @@
    {
     "file": "maps-3127.json",
     "char": "#3127",
-    "level": 20,
-    "time": "2026-10-25T15:23:23.326Z",
-    "count": 346,
+    "level": 31,
+    "time": "2026-11-02T12:57:57.670Z",
+    "count": 392,
     "mergedAt": "2026-11-02"
    },
    {
@@ -231,7 +231,7 @@
    ]
   },
   "5": {
-   "at": 1793579578194,
+   "at": 1793624157052,
    "name": "El Caspar",
    "type": "City",
    "g": [
@@ -1404,7 +1404,7 @@
    ]
   },
   "22": {
-   "at": 1793565722121,
+   "at": 1793566937590,
    "name": "Owranbu River",
    "type": "Normal",
    "g": [
@@ -1484,7 +1484,7 @@
    ]
   },
   "23": {
-   "at": 1793565719620,
+   "at": 1793566946486,
    "name": "Owranbu",
    "type": "City",
    "g": [
@@ -1496,22 +1496,6 @@
      28,
      "Combat Training"
     ]
-   ],
-   "m": [
-    "Bone Scarab",
-    "Dune Glider",
-    "Cassowary",
-    "Scorpion",
-    "Nomadic Cleric",
-    "Raider",
-    "Woodland Snake",
-    "Wild Hog",
-    "Wolf",
-    "Woodland Spider",
-    "Peasant",
-    "Badger",
-    "Tiny Spider",
-    "Bear"
    ],
    "ex": [
     [
@@ -4627,7 +4611,7 @@
    ]
   },
   "113": {
-   "at": 1793407893689,
+   "at": 1793624065235,
    "name": "Vileton",
    "type": "City",
    "m": [
@@ -4808,8 +4792,9 @@
    ]
   },
   "118": {
-   "at": 1793408881489,
+   "at": 1793624248264,
    "name": "Swamp",
+   "type": "Normal",
    "m": [
     "Wisp Phantom",
     "Swamp Dragon",
@@ -4877,7 +4862,7 @@
    ]
   },
   "119": {
-   "at": 1793408841658,
+   "at": 1793617918129,
    "name": "Swamp",
    "m": [
     "Wisp Phantom",
@@ -4919,7 +4904,7 @@
    ]
   },
   "120": {
-   "at": 1793404518603,
+   "at": 1793617873099,
    "name": "Swamp",
    "type": "Normal",
    "m": [
@@ -4962,8 +4947,9 @@
    ]
   },
   "121": {
-   "at": 1793409377295,
+   "at": 1793624212329,
    "name": "Marsh",
+   "type": "Normal",
    "m": [
     "Blood Queen",
     "Tarn Linnorm",
@@ -5071,7 +5057,7 @@
    ]
   },
   "123": {
-   "at": 1793405732216,
+   "at": 1793624276237,
    "name": "Swamp",
    "type": "Normal",
    "g": [
@@ -6874,7 +6860,7 @@
    ]
   },
   "204": {
-   "at": 1793577552998,
+   "at": 1793577580838,
    "name": "Pumpkin King`s Lodge",
    "m": [
     "Jacked-o-Lantern"
@@ -6887,6 +6873,7 @@
      "Marsh (Lv.19)"
     ]
    ],
+   "visited": true,
    "edges": [
     [
      204,
@@ -8925,7 +8912,7 @@
    ]
   },
   "281": {
-   "at": 1793579831424,
+   "at": 1793583921775,
    "name": "Trescan",
    "type": "City",
    "g": [
@@ -8943,13 +8930,6 @@
      38,
      "Medium Quality Patch"
     ]
-   ],
-   "m": [
-    "Dwarven Hunter",
-    "Dwarven Caster",
-    "Armored Ram",
-    "Dwarven Guard",
-    "Komodo Basilisk"
    ],
    "ex": [
     [
@@ -10335,7 +10315,7 @@
    ]
   },
   "324": {
-   "at": 1793552465117,
+   "at": 1793567729447,
    "name": "Dark Boreal",
    "m": [
     "Dwarven Guard",
@@ -10377,7 +10357,7 @@
    ]
   },
   "325": {
-   "at": 1793552625227,
+   "at": 1793567741966,
    "name": "Dark Boreal",
    "g": [
     "Mithril Mine"
@@ -10494,9 +10474,8 @@
    ]
   },
   "327": {
-   "at": 1793579710556,
+   "at": 1793590860128,
    "name": "Dark Boreal",
-   "type": "Normal",
    "g": [
     "Beech Grove"
    ],
@@ -10622,9 +10601,8 @@
    ]
   },
   "330": {
-   "at": 1793554203690,
+   "at": 1793566104487,
    "name": "Dark Boreal",
-   "type": "Normal",
    "g": [
     "Travertine Quarry"
    ],
@@ -10675,9 +10653,8 @@
    ]
   },
   "331": {
-   "at": 1793555436692,
+   "at": 1793566853151,
    "name": "Dark Boreal",
-   "type": "Normal",
    "m": [
     "Armored Ram",
     "Dwarven Guard",
@@ -11019,7 +10996,7 @@
    ]
   },
   "342": {
-   "at": 1793393806551,
+   "at": 1793587319761,
    "name": "Dark Boreal",
    "m": [
     "Armored Ram",
@@ -11061,7 +11038,7 @@
    ]
   },
   "343": {
-   "at": 1793393982660,
+   "at": 1793587365846,
    "name": "Dark Boreal",
    "m": [
     "Dwarven Guard",
@@ -11103,7 +11080,7 @@
    ]
   },
   "344": {
-   "at": 1793394077271,
+   "at": 1793587378201,
    "name": "Dark Boreal",
    "m": [
     "Dwarven Guard",
@@ -11145,7 +11122,7 @@
    ]
   },
   "345": {
-   "at": 1793394432257,
+   "at": 1793587396071,
    "name": "Dark Boreal",
    "m": [
     "Armored Ram",
@@ -11187,7 +11164,7 @@
    ]
   },
   "346": {
-   "at": 1793543055044,
+   "at": 1793587407864,
    "name": "Dark Boreal",
    "g": [
     "Laterite Quarry",
@@ -11264,7 +11241,7 @@
    ]
   },
   "347": {
-   "at": 1793551101087,
+   "at": 1793587425414,
    "name": "Dark Boreal",
    "g": [
     "Beech Grove"
@@ -11367,7 +11344,7 @@
    ]
   },
   "349": {
-   "at": 1793548001677,
+   "at": 1793566981801,
    "name": "Dark Boreal",
    "m": [
     "Dwarven Guard (?)",
