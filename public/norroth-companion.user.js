@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.7.0
+// @version      2.7.1
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -197,7 +197,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.7.0';   // 与 @version 保持一致
+  const SCRIPT_VER = '2.7.1';   // 与 @version 保持一致
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -8526,13 +8526,14 @@
     const output = card.querySelector('.col-xs-4 .inv_slot > [res],.col-xs-4 [content],.col-xs-4 [hover_title]');
     const name = output && (output.getAttribute('hover_title') || nrItemName(output.getAttribute('content') || '') || output.getAttribute('res'));
     const stat = card.querySelector('#stat_set_' + recipe);
+    const amount = card.querySelector('#amount_' + recipe);
     return craftNormalizeJob({ charId: character.id, map: character.current_map, profession: profession, recipe: recipe,
-      name: name || '配方 ' + recipe, cat: option.getAttribute('cat'), subcat: option.getAttribute('subcat'), statSet: stat ? stat.value : '', qty: 1 });
+      name: name || '配方 ' + recipe, cat: option.getAttribute('cat'), subcat: option.getAttribute('subcat'), statSet: stat ? stat.value : '', qty: amount ? +amount.value : 1 });
   }
   function craftAddJob(job, count) {
     if (!craftEditable() || !job) return false;
     if (cfg.craftJobs.length >= 100) { setStatus('制造清单最多 100 项，请先清除已完成项'); return false; }
-    const next = craftNormalizeJob(Object.assign({}, job, { uid: 'c' + now() + Math.random().toString(36).slice(2), qty: count || 1, done: 0, pending: false }));
+    const next = craftNormalizeJob(Object.assign({}, job, { uid: 'c' + now() + Math.random().toString(36).slice(2), qty: count == null ? job.qty : count, done: 0, pending: false }));
     if (!next) return false;
     cfg.craftJobs.push(next); cfg.uiTask = 'craft'; cfg.uiTab = 'idle'; cfg.uiFold = false;
     saveCfgNow(); craftRender(); renderTaskUI();
@@ -8561,8 +8562,8 @@
       if (!card.querySelector('.nr-craft-add-recipe')) {
         const button = document.createElement('button'); button.type = 'button'; button.className = 'btn btn-default nr-craft-add-recipe';
         button.textContent = '＋制造清单'; button.style.cssText = 'margin:6px 0 2px;font:12px/20px sans-serif!important;padding:3px 8px;background:#31577f!important;color:#fff!important;border:1px solid #7eabd6;border-radius:6px;text-shadow:none!important';
-        button.title = '加入一项（默认 1 次）；可在小伴侣的「制造」页修改数量和顺序';
-        button.addEventListener('click', function (event) { event.preventDefault(); event.stopPropagation(); craftAddJob(craftReadJob(card), 1); });
+        button.title = '按游戏中当前填写的数量加入制造清单';
+        button.addEventListener('click', function (event) { event.preventDefault(); event.stopPropagation(); craftAddJob(craftReadJob(card)); });
         card.appendChild(button);
       }
     }
@@ -8582,12 +8583,17 @@
     const locked = running || _craftBusy;
     list.innerHTML = cfg.craftJobs.map(function (j, i) {
       const disabled = locked || j.pending ? ' disabled' : '';
-      const label = j.pending ? (_craftBusy ? '确认回包…' : '结果待核对') : (j.done >= j.qty ? '✓ 完成' : j.done + ' / ' + j.qty);
-      return '<div class="nr-craft-job" data-craft-index="' + i + '" style="padding:7px;margin-bottom:5px;border:1px solid #394356;border-radius:6px">' +
-        '<div style="display:flex;gap:5px;align-items:center"><b style="flex:1;min-width:0;overflow-wrap:anywhere">' + (i + 1) + '. ' + escapeHtml(j.name) + '</b><span style="color:' + (j.pending ? '#ffba76' : '#85cfaa') + '">' + label + '</span></div>' +
-        '<div style="font-size:11px;color:#9aa9c0;margin:3px 0">' + escapeHtml(navMapName(j.map)) + ' · ' + CRAFT_STATIONS[j.profession][2] + (j.statSet ? ' · ' + escapeHtml(j.statSet) : '') + '</div>' +
-        '<div style="display:flex;gap:4px;align-items:center"><span>次数</span><input data-craft-qty type="number" min="' + Math.max(1, j.done) + '" max="10000" value="' + j.qty + '" style="width:65px"' + disabled + '>' +
-        '<button class="mini" data-craft-action="up" title="上移"' + disabled + '>↑</button><button class="mini" data-craft-action="down" title="下移"' + disabled + '>↓</button><button class="mini" data-craft-action="remove"' + disabled + '>删除</button></div>' +
+      const remaining = Math.max(0, j.qty - j.done);
+      const detail = j.name + ' · ' + navMapName(j.map) + (j.statSet ? ' · ' + j.statSet : '') + ' · 已完成 ' + j.done + '/' + j.qty;
+      return '<div class="nr-craft-job" data-craft-index="' + i + '" style="padding:4px 0;margin-bottom:3px;border-bottom:1px solid #394356">' +
+        '<div style="display:flex;gap:4px;align-items:center;white-space:nowrap">' +
+        '<span title="' + escapeHtml(detail) + '" style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;color:' + (remaining ? '#dfe4f0' : '#85cfaa') + '">' + escapeHtml(j.name) + '</span>' +
+        '<span style="flex:none;color:#9aa9c0;font-size:11px">' + CRAFT_STATIONS[j.profession][2] + '</span>' +
+        '<input data-craft-remaining aria-label="剩余次数" type="number" min="' + (j.done ? 0 : 1) + '" max="' + (10000 - j.done) + '" value="' + remaining + '" title="剩余次数（可修改）；已完成 ' + j.done + '/' + j.qty + '" style="width:43px;flex:none;padding:2px 3px;text-align:center"' + disabled + '>' +
+        '<button class="mini" data-craft-action="up" title="上移" aria-label="上移" style="flex:none;padding:2px;width:24px"' + disabled + '>⬆️</button>' +
+        '<button class="mini" data-craft-action="down" title="下移" aria-label="下移" style="flex:none;padding:2px;width:24px"' + disabled + '>⬇️</button>' +
+        '<button class="mini" data-craft-action="remove" title="删除" aria-label="删除" style="flex:none;padding:2px;width:24px"' + disabled + '>❌</button></div>' +
+        (j.pending ? '<div style="font-size:11px;color:#ffba76">' + (_craftBusy ? '确认回包…' : '结果待核对') + '</div>' : '') +
         (j.pending && !locked ? '<div style="margin-top:5px;color:#ffba76;font-size:11px">先核对实际成品，再确认本次结果：</div><button class="mini" data-craft-action="count">已成功，计入1次</button> <button class="mini" data-craft-action="retry">未成功，允许重试</button>' : '') + '</div>';
     }).join('') || '<div class="pathmsg">清单为空。打开工作台，在配方旁点「＋制造清单」。</div>';
     const hint = document.getElementById('nr-craft-hint');
@@ -8602,10 +8608,11 @@
     });
     const list = document.getElementById('nr-craft-list');
     list.addEventListener('change', function (e) {
-      if (!e.target.matches('[data-craft-qty]') || !craftEditable()) return;
+      if (!e.target.matches('[data-craft-remaining]') || !craftEditable()) return;
       const job = cfg.craftJobs[+e.target.closest('[data-craft-index]').dataset.craftIndex];
       if (!job || job.pending) return;
-      job.qty = Math.max(1, job.done, Math.min(10000, Math.floor(+e.target.value || 1))); saveCfgNow(); craftRender();
+      const remaining = Math.max(0, Math.min(10000 - job.done, Math.floor(+e.target.value || 0)));
+      job.qty = Math.max(1, job.done + remaining); saveCfgNow(); craftRender();
     });
     list.addEventListener('click', function (e) {
       const button = e.target.closest('[data-craft-action]'); if (!button || !craftEditable()) return;
