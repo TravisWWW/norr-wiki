@@ -1,8 +1,8 @@
 {
-  "version": "2.7.4",
+  "version": "2.7.5",
   "date": "2026-11-02",
-  "notes": "制造NPC交互失败复用休整走开一格再走回逻辑；同次访问只恢复一次并重开工作台，仍失败则暂停，未知制造结果不自动重发。",
+  "notes": "工作台浅灰格子外观，补齐聊天血条及交易所灰阶与货币文字；制造清空清单增加确认",
   "url": "https://traviswww.github.io/norr-wiki/norroth-companion.user.js",
-  "size": 932626,
-  "sha256": "1549926a184f48726179dac8d064c38ad24222560b38bb4bd2eed85487b4c740"
+  "size": 941789,
+  "sha256": "0f5c286c8986d6c8e787ca07cc11ee88ac857beb582d71eee29bf5b1ac11275b"
 }

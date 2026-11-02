@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.7.4
+// @version      2.7.5
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -197,7 +197,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.7.4';   // 与 @version 保持一致
+  const SCRIPT_VER = '2.7.5';
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -8536,7 +8536,7 @@
   function craftCanStart() {
     const jobs = cfg.craftJobs;
     if (!jobs.length || jobs.every(function (j) { return j.done >= j.qty; })) {
-      setStatus(jobs.length ? '清单已完成，点「重做清单」可再做一轮' : '请先从工作台加入制造配方'); return false;
+      setStatus(jobs.length ? '清单已完成，可清空后加入新配方' : '请先从工作台加入制造配方'); return false;
     }
     if (jobs.some(function (j) { return j.pending; })) { setStatus('有制造结果待核对，请先在清单中确认是否已完成'); craftRender(); return false; }
     if (jobs.some(function (j) { return j.done < j.qty && +j.charId !== +character.id; })) { setStatus('清单包含其他角色的任务，请切回记录配方的角色'); return false; }
@@ -8667,10 +8667,17 @@
       saveCfgNow(); craftRender();
     });
     document.getElementById('nr-craft-clear').addEventListener('click', function () { if (!craftEditable()) return; cfg.craftJobs = cfg.craftJobs.filter(function (j) { return j.pending || j.done < j.qty; }); saveCfgNow(); craftRender(); });
-    document.getElementById('nr-craft-reset').addEventListener('click', function () {
-      if (running || _craftBusy) { setStatus('重做整份清单请先暂停或停止；单项数量和顺序可直接修改'); return; }
-      if (cfg.craftJobs.some(function (j) { return j.pending; })) { setStatus('请先核对未确认的制造结果'); return; }
-      cfg.craftJobs.forEach(function (j) { j.done = 0; }); _craftMessage = ''; saveCfgNow(); craftRender();
+    document.getElementById('nr-craft-reset').addEventListener('click', async function () {
+      const button = this;
+      if (button.disabled || !cfg.craftJobs.length) return;
+      if (cfg.craftJobs.some(function (j) { return j.pending; })) { setStatus('请先核对未确认的制造结果，再清空清单'); return; }
+      button.disabled = true;
+      try {
+        if (!await nrConfirm('确定清空当前制造清单？所有配方和已记录进度都会删除。', '清空', '取消')) return;
+        if (cfg.craftJobs.some(function (j) { return j.pending; })) { setStatus('请先核对未确认的制造结果，再清空清单'); return; }
+        if (running && st.mode === 'craft') pause();
+        cfg.craftJobs = []; _craftMessage = '制造清单已清空'; saveCfgNow(); craftRender(); setStatus(_craftMessage);
+      } finally { button.disabled = false; }
     });
     craftRender();
   }
@@ -9591,7 +9598,7 @@
             <div class="row"><button class="mini" id="nr-craft-read">读取工作台</button><span id="nr-craft-source" class="pathmsg" style="flex:1;margin:0">先打开 NPC 工作台，选择配方分类</span></div>
             <div class="row"><select id="nr-craft-recipe" style="flex:1;min-width:0"><option value="">请选择配方</option></select><input id="nr-craft-count" type="number" min="1" max="10000" value="1" title="按配方制作的次数" style="width:52px;flex:none"><button class="mini" id="nr-craft-add">＋加入</button></div>
             <div id="nr-craft-list" style="max-height:280px;overflow-y:auto;margin-top:6px"></div>
-            <div class="row"><button class="mini" id="nr-craft-clear">清除已完成</button><button class="mini" id="nr-craft-reset">重做清单</button></div>
+            <div class="row"><button class="mini" id="nr-craft-clear">清除已完成</button><button class="mini" id="nr-craft-reset">清空</button></div>
             <div class="pathmsg" id="nr-craft-hint">按顺序移动、对话并制造；点击下方开始。可在游戏配方旁直接加入。</div>
             <div class="pathmsg">制造期间活动、切号及自动清包等待。缺料 / 背包满时暂停，补齐后继续。</div>
           </div>
@@ -10304,31 +10311,215 @@
   function onModeSwitch() { deriveRunMode(); renderTaskUI(); }
 
   /* ======================= 18c. 工作外观（） ======================= */
-  const SKIN_TITLE = '数据看板 · 内部';
-  const SKIN_CSS = [
-    /* 去色：只罩游戏表面，不碰小伴侣面板 */
-    'html.nr-skin #window_map,html.nr-skin #frame_container,html.nr-skin #note_container,',
-    'html.nr-skin #floating_chats_container,html.nr-skin #window_chat,html.nr-skin #hud_chat,',
-    'html.nr-skin .icons_hud,html.nr-skin .character_hud{filter:grayscale(.94) contrast(.86) brightness(1.1)}',
-    /* 木纹 / 底图换纯色 */
-    'html.nr-skin #window_map{background-image:none!important;background-color:#eef0f3!important}',
-    'html.nr-skin .icons_hud,html.nr-skin .character_hud,html.nr-skin #window_chat{background-image:none!important;background-color:#e8eaee!important}',
-    /* 关掉动画/过渡（只限游戏区） */
-    'html.nr-skin #window_map *,html.nr-skin .icons_hud *,html.nr-skin .character_hud *{animation:none!important;transition:none!important}',
-    /* 左上头像 / 右上小地图 -> 灰度色块（元素保留，脚本不读它们） */
-    'html.nr-skin .character_hud .avatar,html.nr-skin .character_hud .avatar img,',
-    'html.nr-skin #mini_map,html.nr-skin .avatar_border,html.nr-skin .avatar_border img{',
-    'filter:grayscale(1) contrast(0) brightness(1.15)!important;background-color:#c9ced6!important}',
-    'html.nr-skin .character_hud .character_level_dark{filter:grayscale(1) contrast(0) brightness(1.1)!important}',
-    /* 字体换系统字体 */
-    'html.nr-skin #window_map,html.nr-skin .icons_hud,html.nr-skin .character_hud,html.nr-skin #window_chat{font-family:"Segoe UI",system-ui,"Microsoft YaHei",sans-serif!important}',
-    /* 工作台档：地形贴图换成 48px 网格 */
-    'html.nr-skin-grid .map_table{background-image:repeating-linear-gradient(0deg,#dfe3e8 0 1px,transparent 1px 48px),repeating-linear-gradient(90deg,#dfe3e8 0 1px,transparent 1px 48px)!important;background-color:#fafbfc!important;filter:none!important}',
-    'html.nr-skin-grid .map_table .tile,html.nr-skin-grid .map_table .tile_poi{border-color:transparent!important}'
-  ].join('');
+  const SKIN_TITLE = '任务看板';
+  const SKIN_CSS = `
+  /* 游戏专用灰阶外观；不匹配小伴侣面板及其确认弹窗。 */
+  html.nr-skin body{background:#eef0f3!important}
+  html.nr-skin :is(#window_map,#frame_container,#window_chat,#hud_chat,.icons_hud,.character_hud,#note_container){font-family:"Segoe UI","Microsoft YaHei",Arial,sans-serif!important;text-shadow:none!important;filter:grayscale(1)!important}
+  html.nr-skin :is(#window_map,#frame_container,#window_chat) *{font-family:inherit!important;text-shadow:none!important}
+  html.nr-skin #window_map{background:#eef0f3!important}
+  html.nr-skin .map_table{background-image:linear-gradient(#e6e8ec 1px,transparent 1px),linear-gradient(90deg,#e6e8ec 1px,transparent 1px)!important;background-size:48px 48px!important;background-color:#fafbfc!important;filter:none!important}
+  html.nr-skin .map_table *{background-image:none!important;box-shadow:none!important}
+  html.nr-skin .map_table .tile_poi{background:none!important;border:0!important;border-radius:0!important;box-shadow:none!important}
+  html.nr-skin .map_table img,html.nr-skin #players_container img{opacity:0!important}
+  html.nr-skin [data-nr-map-cell="node"]::after,html.nr-skin [data-nr-map-cell="actor"]::before{content:attr(data-nr-cell-label);position:absolute;left:0;top:0;width:48px;height:48px;box-sizing:border-box!important;margin:0;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:1px!important;border:1px solid #bfc3c9;border-radius:0;background:#e8eaee;color:#3f3f3f;font:400 11px/12px Arial,"Microsoft YaHei",sans-serif!important;letter-spacing:0!important;text-align:center;white-space:pre-line;overflow-wrap:anywhere;pointer-events:none;box-shadow:none!important}
+  html.nr-skin .map_table [data-nr-decoration]{opacity:0!important;pointer-events:none!important;background-image:none!important}
+  html.nr-skin #players_container :is([id^="player_"],.enemy){background-image:none!important;box-shadow:none!important}
+  html.nr-skin #players_container .char_name_tag{opacity:0!important}
+  html.nr-skin #players_container [id^="player_"]::before{background:#e1e3e7;border-color:#a7abb1}
+  html.nr-skin #players_container [id^="player_"]::after{content:none!important;border:0!important;box-shadow:none!important}
+  html.nr-skin :is(.character_hud,.icons_hud){background-image:none!important;background-color:transparent!important;box-shadow:none!important;color:#444!important}
+  html.nr-skin .character_hud .avatar{background-image:none!important;background-color:#e8eaee!important;border:1px solid #c0c4ca;border-radius:4px!important;box-shadow:none!important}
+  html.nr-skin .character_hud .avatar img{opacity:0!important}
+  html.nr-skin #mini_map{filter:grayscale(1) contrast(.25)!important;border:1px solid #c4c8ce!important;border-radius:4px!important;box-shadow:none!important}
+  html.nr-skin .icons_hud [data-nr-hud-label]{background:#e8eaee!important;border:1px solid #c5c8cd!important;border-radius:3px!important;box-shadow:none!important}
+  html.nr-skin .icons_hud [data-nr-hud-label]::after{content:attr(data-nr-hud-label);position:absolute;inset:0;display:grid;place-items:center;overflow:hidden;padding:1px;color:#444;background:#e8eaee;border-radius:2px;font:9px/10px Arial,sans-serif;white-space:normal!important;overflow-wrap:anywhere;pointer-events:none}
+  html.nr-skin :is(#window_chat,#hud_chat,.floating_chat){background:#eceef1!important;border:1px solid #c4c8ce!important;border-radius:4px!important;box-shadow:none!important;color:#555!important}
+  html.nr-skin #window_chat *{color:#555!important}
+  html.nr-skin :is(#window_chat,.floating_chat_window,#chat_user_menu){background:#f3f4f6!important;color:#333!important;box-shadow:none!important;filter:grayscale(1)!important}
+  html.nr-skin :is(#window_chat,.floating_chat_window,#chat_user_menu) *{color:#333!important;text-shadow:none!important;box-shadow:none!important}
+  html.nr-skin :is(#window_chat,.floating_chat_window) :is(.chat_tab_content,.chat_container,.tab_container,.flex-container){background:#f3f4f6!important;background-image:none!important}
+  html.nr-skin :is(#window_chat,.floating_chat_window,#chat_user_menu) :is(.chat_tab,.chat_name,.chat-label,.chat-jump-present,.divblock,input,button){background:#e4e7eb!important;color:#333!important;border-color:#c5c8cd!important}
+  html.nr-skin :is(#window_chat,.floating_chat_window) :is(input,textarea){background:#fff!important;color:#333!important}
+  html.nr-skin :is(#window_chat,.floating_chat_window,#chat_user_menu) :is(.highlight,li:hover){background:#e1e4e8!important;color:#333!important;border-color:#aaa!important}
+  html.nr-skin .bar:not(#nr-panel *):not(.nr-ask *){background:#eef0f3!important;box-shadow:none!important;filter:grayscale(1)!important}
+  html.nr-skin .bar:not(#nr-panel *):not(.nr-ask *) :is(.success,.danger,.current_health,.current_mana,.current_exp,.current_shield,.current_orbs){background:#cdd2d8!important;border-color:#bcc2c9!important;box-shadow:none!important}
+  html.nr-skin .bar:not(#nr-panel *):not(.nr-ask *) .delayed_health{background:#e0e3e7!important;box-shadow:none!important}
+  html.nr-skin .bar:not(#nr-panel *):not(.nr-ask *) *{color:#303030!important;text-shadow:none!important}
+  html.nr-skin .bar:not(#nr-panel *):not(.nr-ask *) .shade{background:#fff!important;opacity:.12!important}
 
-  let _skinHowlerMuted = null, _skinMutedEls = [], _skinBaseTitle = null;
+  /* 覆盖弹窗本体及内部层次，包含之前漏掉的内嵌背景、表格、标签、进度条及装饰。 */
+  html.nr-skin #frame_container>[id^="frame_"]{background:#f5f6f8!important;border:1px solid #c4c7cc!important;border-image:none!important;border-radius:5px!important;box-shadow:0 5px 20px #0002!important;color:#444!important}
+  html.nr-skin #frame_container *{background-image:none!important;border-image:none!important;box-shadow:none!important;text-shadow:none!important;color:#444!important}
+  html.nr-skin #frame_container .frame-title{background:#e8eaee!important;border-bottom:1px solid #c4c8ce!important;font-size:14px!important;letter-spacing:.1px}
+  html.nr-skin #frame_container .frame-content{background:#f5f6f8!important;box-sizing:border-box!important;width:100%!important}
+  html.nr-skin #frame_container :is(.divblock,.panel,.well,.table-striped tbody tr:nth-of-type(odd)){background:#fafafa!important;border-color:#e1e3e7!important;border-radius:3px!important}
+  html.nr-skin #frame_container :is(.divblock_dark,.panel-heading,.tab-content,.dialog_bubble,.npc_bgr){background:#eceef1!important;border-color:#d0d3d8!important;border-radius:3px!important}
+  html.nr-skin #frame_container :is(h1,h2,h3){font-size:14px!important;color:#333!important}
+  html.nr-skin #frame_container :is(th,td){border-color:#c9cdd2!important}
+  html.nr-skin #frame_container :is(.coin_shop_item,.coin_shop_item_dark,.shop_item,.merchant_item,.client_order_item,.skill_item,.item_tooltip,.search_wrapper .results){background:#fafbfc!important;color:#333!important;border-color:#d0d3d8!important}
+  html.nr-skin #frame_container :is(.buy_label,.sell_label,.total_price,.label-left-top,.label-right-top,.bgr-magic,.bgr-set){background:#e4e7eb!important;color:#333!important;border-color:#c5c8cd!important}
+  html.nr-skin #frame_container .table-striped>tbody>tr:nth-child(odd),html.nr-skin #frame_container .table-striped>tbody>tr:nth-child(odd)>:is(td,th){background:#fafbfc!important}
+  html.nr-skin #frame_container .table-striped>tbody>tr:nth-child(even),html.nr-skin #frame_container .table-striped>tbody>tr:nth-child(even)>:is(td,th){background:#eceef1!important}
+
+  html.nr-skin #frame_container :is(.label,.badge,.progress,.experience_bar,.gathering_bar){background:#e1e4e8!important;border-color:#c4c8ce!important;border-radius:3px!important}
+  html.nr-skin #frame_container :is(.bar_length,.progress-bar){background:#cdd2d8!important}
+  html.nr-skin #frame_container :is(button,.btn,input,select,textarea){font-family:"Segoe UI","Microsoft YaHei",Arial,sans-serif!important;box-shadow:none!important;text-shadow:none!important;border-radius:3px!important}
+  html.nr-skin #frame_container :is(button,.btn){background:#e8eaee!important;color:#333!important;border:1px solid #c5c8cd!important;font-weight:500!important}
+  html.nr-skin #frame_container :is(button,.btn):hover{background:#c4c8ce!important}
+  html.nr-skin #frame_container :is(.btn-primary,.btn-success,.btn-danger,.btn-warning){background:#d8dadd!important;color:#333!important;border-color:#b8bcc2!important}
+  html.nr-skin #frame_container :is(input,select,textarea){background:#fff!important;color:#333!important;border:1px solid #c5c8cd!important}
+  html.nr-skin #frame_container :is(input,textarea)::placeholder{color:#777!important;opacity:1!important}
+  html.nr-skin #frame_container :is(.frame-close,.frame-back,.frame-help){background:#e8eaee!important;border:1px solid #c5c8cd;border-radius:3px!important;box-shadow:none!important}
+  html.nr-skin #frame_container .frame-close::after{content:"×"}html.nr-skin #frame_container .frame-back::after{content:"←"}html.nr-skin #frame_container .frame-help::after{content:"?"}
+  html.nr-skin #frame_container :is(.frame-close,.frame-back,.frame-help)::after{position:absolute;inset:0;display:grid;place-items:center;color:#444;font:16px/1 sans-serif;pointer-events:none}
+  html.nr-skin .quest_dialog:has(.quest_dialog_npc_art) .col-xs-4,html.nr-skin .quest_dialog .col-xs-4:has(img[src*="/images/classes/npc_"]){display:none!important}
+  html.nr-skin .quest_dialog .col-xs-8{width:100%!important;padding:8px 12px!important}
+  html.nr-skin #frame_container .quest_dialog{background:#eceef1!important;border-bottom:1px solid #c4c7cc!important}
+  html.nr-skin #frame_container :is(.quest_dialog,.quest_dialog .text,.dialog_bubble){height:auto!important;min-height:0!important}
+  html.nr-skin #frame_container :is(.avatar,.inv_slot,.stash_slot,[class*="res-icon-"]){background-image:none!important;background-color:#e9ebee!important;border:1px solid #c5c8cd!important;border-radius:2px!important;box-sizing:border-box!important;box-shadow:none!important;filter:grayscale(1)!important}
+  html.nr-skin #frame_container [class*="res-icon-"]::before{display:none!important}
+  html.nr-skin #frame_container img{filter:grayscale(1)!important}
+  html.nr-skin #frame_container img:is([src*="/images/classes/"],[src*="/images/enemies/"],[src*="/images/characters/"],[src*="/images/npcs/"]){opacity:0!important}
+  html.nr-skin [data-nr-label-box]{position:relative}
+  html.nr-skin :is(#frame_container,.character_hud) [data-nr-element-label]::after{content:attr(data-nr-element-label);position:absolute;inset:0;display:grid;place-items:center;overflow:hidden;padding:3px;font:9px/1.2 "Segoe UI",sans-serif;color:#444;background:#e9ebee;overflow-wrap:anywhere;pointer-events:none}
+  html.nr-skin :is(.ui-tooltip,.ui-menu,.ui-dialog,.dropdown-menu,.bootstrap-dialog .modal-content):not(#nr-panel *):not(.nr-ask *){background:#f5f6f8!important;color:#444!important;border:1px solid #c5c8cd!important;border-radius:4px!important;box-shadow:none!important;filter:grayscale(1)!important}
+  html.nr-skin :is(.ui-tooltip,.ui-menu,.ui-dialog,.dropdown-menu,.bootstrap-dialog .modal-content):not(#nr-panel *):not(.nr-ask *) *{background-image:none!important;color:#444!important;text-shadow:none!important}
+  /* 左侧全局增益、战斗增益及脱离 frame_container 的浮层也要去色。 */
+  html.nr-skin :is(.global_hud,#global_hud,#hud_buffs,#buffs_hud,#buff_container,#buffs_container,.buff_container,.buffs_container,.buff-list,.buffs,.buff,.buff_icon,.buff-icon,[id^="buff_"],#floating_chats_container,#error_container,.hoverbox .tooltiptext,.hoverbox .tooltiptext_down,.label-tooltip,.label-tooltip-left,ul.inv_menu,ul.stash_menu,[data-nr-gray-surface]):not(#nr-panel *):not(.nr-ask *){filter:grayscale(1)!important}
+  html.nr-skin :is(.hoverbox .tooltiptext,.hoverbox .tooltiptext_down,.label-tooltip,.label-tooltip-left,ul.inv_menu,ul.stash_menu,[data-nr-popup-surface]):not(#nr-panel *):not(.nr-ask *){background:#f3f4f6!important;color:#444!important;border:1px solid #c5c8cd!important;border-radius:4px!important;box-shadow:0 3px 12px #0001!important}
+  html.nr-skin :is(.hoverbox .tooltiptext,.hoverbox .tooltiptext_down,.label-tooltip,.label-tooltip-left,ul.inv_menu,ul.stash_menu,[data-nr-popup-surface]):not(#nr-panel *):not(.nr-ask *) *{background-image:none!important;color:#444!important;text-shadow:none!important;border-color:#c5c8cd!important}
+  html.nr-skin :is(.global_hud,#global_hud,#hud_buffs,#buffs_hud,#buff_container,#buffs_container):not(#nr-panel *):not(.nr-ask *){font-family:"Segoe UI","Microsoft YaHei",Arial,sans-serif!important;color:#555!important;text-shadow:none!important}
+  html.nr-skin .global_hud>div>.tooltip2{background:#e8eaee!important;color:#444!important;border:1px solid #c5c8cd!important;border-radius:3px!important;font-family:"Segoe UI","Microsoft YaHei",Arial,sans-serif!important;text-shadow:none!important}
+  html.nr-skin .character_hud *{color:#444!important;text-shadow:none!important}
+  html.nr-skin :is(.ui-tooltip,.ui-dialog,.bootstrap-dialog .modal-content,.hoverbox .tooltiptext,.hoverbox .tooltiptext_down):not(#nr-panel *):not(.nr-ask *) :is(.ui-tooltip-content,.modal-body,.modal-header,.modal-footer,.divblock,.divblock_dark){background:#f3f4f6!important;background-image:none!important;color:#444!important;border-color:#c5c8cd!important;box-shadow:none!important}
+  html.nr-skin :is(.ui-tooltip,.ui-menu,.ui-dialog,.dropdown-menu,.bootstrap-dialog .modal-content,.tooltiptext,.tooltiptext_down,ul.inv_menu,ul.stash_menu):not(#nr-panel *):not(.nr-ask *) *{box-shadow:none!important;border-image:none!important}
+  html.nr-skin :is(.tooltip,.popover,[role="tooltip"]):not(#nr-panel *):not(.nr-ask *){filter:grayscale(1)!important}
+  html.nr-skin :is(.tooltip,.popover,[role="tooltip"]):not(#nr-panel *):not(.nr-ask *) :is(.tooltip-inner,.popover-content,.popover-title){background:#f3f4f6!important;color:#444!important;border-color:#c5c8cd!important;text-shadow:none!important;box-shadow:none!important}
+  html.nr-skin span:is(.gold,.silver,.bronze):not(#nr-panel *):not(.nr-ask *){background-image:none!important;padding-left:0!important;color:#444!important;text-shadow:none!important}
+  html.nr-skin span:is(.gold,.silver,.bronze):not(#nr-panel *):not(.nr-ask *)::after{position:static!important;display:inline!important;background:none!important;color:inherit!important;font:inherit!important;pointer-events:none}
+  html.nr-skin span.gold:not(#nr-panel *):not(.nr-ask *)::after{content:" g"}
+  html.nr-skin span.silver:not(#nr-panel *):not(.nr-ask *)::after{content:" s"}
+  html.nr-skin span.bronze:not(#nr-panel *):not(.nr-ask *)::after{content:" b"}
+  html.nr-skin :is(#frame_container,#window_map,.character_hud,.global_hud,#global_hud,#window_chat,.floating_chat_window) :is(.critical_hp,.level_up,.poisoned,.bar_length,.buff,.buff_icon,.buff-icon,[class*="res-icon-"]){animation:none!important}
+  html.nr-skin #frame_container :is(.hoverlight,.cosmetic,.skill_item):hover{filter:grayscale(1)!important}
+  html.nr-skin :is(#frame_container,#window_chat,.floating_chat_window) :is(.hoverlight,.cosmetic,.skill_item,.chat_tab,.chat_tab_content,button,.btn){transition:none!important}
+  html.nr-skin :is(.bar,span.gold,span.silver,span.bronze,.total_price):not(#nr-panel *):not(.nr-ask *){font-variant-numeric:tabular-nums!important}
+  #nr-work-veil{display:none}
+  html.nr-skin #nr-work-veil{display:block;position:fixed;inset:0;z-index:2147483000;pointer-events:none;background:transparent;backdrop-filter:grayscale(1);-webkit-backdrop-filter:grayscale(1)}
+  `;
+
+  let _skinHowlerMuted = null, _skinMutedEls = [], _skinBaseTitle = null, _skinIconState = [], _skinOwnIcon = null;
+  const SKIN_ICON = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="7" fill="#555555"/><path d="M8 10h16M8 16h16M8 22h10" stroke="#dddddd" stroke-width="3" stroke-linecap="round"/></svg>');
   function skinOn() { try { return !!(cfg && cfg.skin && cfg.skin !== 'off'); } catch (e) { return false; } }
+  function applySkinIdentity() {
+    if (skinOn()) {
+      const icons = Array.from(document.querySelectorAll('link[rel~="icon"]'));
+      if (!icons.length && document.head) {
+        _skinOwnIcon = document.createElement('link'); _skinOwnIcon.rel = 'icon'; document.head.appendChild(_skinOwnIcon); icons.push(_skinOwnIcon);
+      }
+      icons.forEach(function (icon) {
+        if (icon !== _skinOwnIcon && !_skinIconState.some(function (s) { return s.el === icon; })) _skinIconState.push({ el: icon, href: icon.getAttribute('href'), type: icon.getAttribute('type') });
+        if (icon.getAttribute('href') !== SKIN_ICON) { icon.setAttribute('href', SKIN_ICON); icon.setAttribute('type', 'image/svg+xml'); }
+      });
+    } else {
+      _skinIconState.forEach(function (s) { ['href', 'type'].forEach(function (key) { if (s[key] == null) s.el.removeAttribute(key); else s.el.setAttribute(key, s[key]); }); });
+      _skinIconState = [];
+      if (_skinOwnIcon) { _skinOwnIcon.remove(); _skinOwnIcon = null; }
+    }
+  }
+  function skinElementName(el) {
+    const clean = function (text) {
+      const raw = String(text || '').replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, '').replace(/<[^>]*>/g, ' ');
+      const box = document.createElement('textarea'); box.innerHTML = raw;
+      return box.value.replace(/\s+/g, ' ').trim().slice(0, 90);
+    };
+    for (const key of ['hover_title', 'aria-label', 'data-original-title', 'title', 'alt']) {
+      const name = clean(el.getAttribute(key)); if (name) return name;
+    }
+    const content = el.getAttribute('content') || '';
+    if (content) {
+      const heading = /<h[1-3][^>]*>([\s\S]*?)<\/h[1-3]>/i.exec(content);
+      const name = clean(heading ? heading[1] : content); if (name) return name;
+    }
+    const named = clean(el.getAttribute('name')); if (named) return named.replace(/_/g, ' ');
+    const child = el.querySelector('[hover_title],[aria-label],img[alt]');
+    if (child) { const name = clean(child.getAttribute('hover_title') || child.getAttribute('aria-label') || child.getAttribute('alt')); if (name) return name; }
+    const text = clean(el.textContent); if (text && !/^[\d,\s+-]+$/.test(text)) return text;
+    // 无现成名称才使用元素自身标识，不再统一写成“工具/服务”等模糊词。
+    return clean((el.id || el.getAttribute('res') || '').replace(/^hud_/, '').replace(/_/g, ' ').replace(/([a-z])([A-Z])/g, '$1 $2'));
+  }
+  function applySkinVeil() {
+    let veil = document.getElementById('nr-work-veil');
+    if (!skinOn()) { if (veil) veil.remove(); return; }
+    if (!veil && document.body) {
+      veil = document.createElement('div'); veil.id = 'nr-work-veil'; veil.setAttribute('aria-hidden', 'true'); document.body.appendChild(veil);
+    }
+  }
+  function applySkinFloatingSurfaces() {
+    const buffs = '.global_hud,#global_hud,#hud_buffs,#buffs_hud,#buff_container,#buffs_container,.buff_container,.buffs_container,.buff-list,.buffs,.buff,.buff_icon,.buff-icon,[id^="buff_"]';
+    const popups = '.ui-tooltip,.ui-menu,.ui-dialog,.dropdown-menu,.bootstrap-dialog .modal-content,.hoverbox .tooltiptext,.hoverbox .tooltiptext_down,.label-tooltip,.label-tooltip-left,ul.inv_menu,ul.stash_menu,#floating_chats_container,#error_container,.tooltip,.popover,[role="tooltip"]';
+    document.querySelectorAll(buffs + ',' + popups).forEach(function (el) {
+      if (el.closest('#nr-panel,.nr-ask') || el.querySelector('#nr-panel,.nr-ask')) return;
+      if (!el.hasAttribute('data-nr-gray-surface')) el.setAttribute('data-nr-gray-surface', '');
+      if (el.matches(popups) && !el.hasAttribute('data-nr-popup-surface')) el.setAttribute('data-nr-popup-surface', '');
+    });
+  }
+  function applySkinMapCells() {
+    const groups = new Map();
+    const add = function (el, x, y, name, type, kind) {
+      el.setAttribute('data-nr-map-cell', kind);
+      const key = Number.isFinite(x) && Number.isFinite(y) ? x + '-' + y : 'entity:' + el.id;
+      const entries = groups.get(key) || []; entries.push({ el: el, name: name, type: type }); groups.set(key, entries);
+    };
+    const types = { gate: '出口', level_gate: '出口', gathering: '资源', bank: '银行', stash: '银行', trading_post: '交易所', post_office: '邮箱', quest_board: '任务板', waygate: '传送站', collect_scrap: '拾取', pick_up: '拾取' };
+    document.querySelectorAll('.map_table .tile_poi,.map_table [action][coords]').forEach(function (el) {
+      const p = (el.getAttribute('coords') || '').split('-').map(Number), action = el.getAttribute('action') || '';
+      const name = el.getAttribute('name') || skinElementName(el) || action;
+      const npc = Object.keys(CRAFT_STATIONS).some(function (key) { return CRAFT_STATIONS[key][0] === action; });
+      add(el, p.length === 2 ? p[0] : NaN, p.length === 2 ? p[1] : NaN, name.replace(/\s*\(Lv\.?\s*[^)]*\)\s*$/i, ''), types[action] || (npc ? 'NPC' : action), 'node');
+    });
+    document.querySelectorAll('#players_container [id^="player_"],#players_container span.enemy,#players_container [id^="pet_"],#players_container .pet').forEach(function (el) {
+      const enemy = /^enemy(\d+)-(\d+)$/.exec(el.id), anchor = (el.getAttribute('data-anchor') || '').split('-').map(Number);
+      const nameEl = el.querySelector('b.char_name_tag,.char_name_tag:not(.text_small)');
+      const name = ((nameEl && nameEl.textContent) || skinElementName(el) || el.id).trim().replace(/\s*\(\d+\)\s*$/, '');
+      let x = parseFloat(el.style.left) / 48, y = parseFloat(el.style.top) / 48;
+      if (enemy) { x = +enemy[1]; y = +enemy[2]; }
+      else if (anchor.length === 2 && anchor.every(Number.isFinite)) { x = anchor[0]; y = anchor[1]; }
+      const own = typeof character === 'object' && character && el.id === 'player_' + character.id;
+      if (own && (!Number.isFinite(x) || !Number.isFinite(y))) { x = +character.x; y = +character.y; }
+      const pet = el.classList.contains('pet') || /^pet_|_pet$/.test(el.id);
+      add(el, Math.round(x), Math.round(y), name, enemy ? '怪物' : (pet ? '宠物' : (own ? '角色' : '玩家')), 'actor');
+    });
+    groups.forEach(function (entries) {
+      const names = Array.from(new Set(entries.map(function (e) { return e.name; }))), types = Array.from(new Set(entries.map(function (e) { return e.type; })));
+      const lineTypes = names.length > 1 ? types.map(function (type) { return type === '角色' ? '我' : type; }) : types;
+      const label = names.slice(0, 2).join('\n') + (names.length > 2 ? '\n+' + (names.length - 2) + '个对象' : '\n' + lineTypes.join('·'));
+      entries.forEach(function (e) { e.el.setAttribute('data-nr-cell-label', label); e.el.setAttribute('data-nr-cell-detail', entries.map(function (n) { return n.name + ' (' + n.type + ')'; }).join(' / ')); });
+    });
+    document.querySelectorAll('.map_table [style*="/images/maps/items/"],.map_table img[src*="/images/maps/items/"],.map_table .decoration,.map_table .map_decoration').forEach(function (el) {
+      if (el.parentElement && el.parentElement.closest('[data-nr-map-cell]')) return;
+      if (el.matches('[action],[coords],[data-poi],.tile_poi,[data-nr-map-cell],#players_container') || el.querySelector('[action],[coords],.tile_poi,[data-nr-map-cell],button,a')) return;
+      el.setAttribute('data-nr-decoration', '');
+    });
+  }
+  function applySkinDecor() {
+    if (!skinOn()) return;
+    applySkinVeil();
+    applySkinFloatingSurfaces();
+    document.querySelectorAll('.icons_hud [id^="hud_"]').forEach(function (el) {
+      const label = skinElementName(el);
+      if (label) { if (el.getAttribute('data-nr-hud-label') !== label) el.setAttribute('data-nr-hud-label', label); }
+      else el.removeAttribute('data-nr-hud-label');
+    });
+    applySkinMapCells();
+    document.querySelectorAll('#frame_container [res],#frame_container .avatar,#frame_container .inv_slot>[content],#frame_container .stash_slot>[content],#frame_container [class*="res-icon-"][hover_title],#frame_container [class*="res-icon-"][name],#frame_container [class*="res-icon-"][content],.character_hud .avatar').forEach(function (el) {
+      const label = skinElementName(el);
+      if (!label) return;
+      if (getComputedStyle(el).position === 'static') el.setAttribute('data-nr-label-box', '');
+      if (el.getAttribute('data-nr-element-label') !== label) el.setAttribute('data-nr-element-label', label);
+    });
+  }
   function applySkinMute() {
     const on = skinOn() && !!cfg.skinMute;
     try {
@@ -10348,6 +10539,7 @@
       if (skinOn()) { if (_skinBaseTitle == null) _skinBaseTitle = document.title; if (document.title !== SKIN_TITLE) document.title = SKIN_TITLE; }
       else if (_skinBaseTitle != null) { document.title = _skinBaseTitle; _skinBaseTitle = null; }
     } catch (e) { /* ignore */ }
+    applySkinIdentity();
   }
   function applySkin() {
     const on = skinOn();
@@ -10361,7 +10553,7 @@
       cl.toggle('nr-skin', !!on);
       cl.toggle('nr-skin-grid', cfg.skin === 'grid');
     } catch (e) { /* ignore */ }
-    applySkinMute(); applySkinTitle(); applyHighlightSelf();
+    applySkinMute(); applySkinTitle(); applySkinVeil(); applySkinDecor(); applyHighlightSelf();
     try { const g = document.getElementById('nr-gameskin'); if (g) g.querySelectorAll('button').forEach(function (b) { b.classList.toggle('on', b.dataset.skin === cfg.skin); }); } catch (e) { /* ignore */ }
     try { const b = document.getElementById('nr-skinmute'); if (b) b.classList.toggle('on', !!cfg.skinMute); } catch (e) { /* ignore */ }
     try { updateHeader(); } catch (e) { /* ignore */ }
@@ -10370,8 +10562,9 @@
     cfg.skin = (v === 'grid') ? 'grid' : 'off';
     if (cfg.skin !== 'off') cfg.skinLast = 'grid';
     saveCfg(); applySkin();
-    setStatus(cfg.skin === 'off' ? '游戏界面：原版' : '游戏界面：工作台');
+    setStatus(cfg.skin === 'off' ? '界面：原版' : '界面：工作台');
   }
+  rhythmTimer(function () { try { if (skinOn()) { applySkinTitle(); applySkinDecor(); } } catch (e) { /* ignore */ } }, 1200);
   /* 热键 Ctrl+Shift+X：原版 ↔ 上一个工作外观 */
   document.addEventListener('keydown', function (e) {
     try {
