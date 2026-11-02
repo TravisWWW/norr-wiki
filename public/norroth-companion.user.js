@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         norroth小伴侣
 // @namespace    https://www.norroth.com/
-// @version      2.7.3
+// @version      2.7.4
 // @description  Norroth 挂机助手：自动战斗与采集、跨图导航、自动补给、维修清包、多角色轮转、运行统计。
 // @author       TravisWWW
 // @updateURL    https://traviswww.github.io/norr-wiki/norroth-companion.user.js
@@ -197,7 +197,7 @@
   const STOP_KEY = 'norroth_autofarm_laststop';    // ★ 上次为什么停
   const RESPAWN_MAP = 1000;                        // ★ 重生泉水（Fountain of Rebirth）：只有传送站、没怪，绝不能当挂机地图
   const CFG_VER = 2;         // 配置结构版本：升级时做一次迁移
-  const SCRIPT_VER = '2.7.3';   // 与 @version 保持一致
+  const SCRIPT_VER = '2.7.4';   // 与 @version 保持一致
 
   /* ★ 图鉴数据放在一个【只放图鉴数据】的专用仓库里，绝不放网站代码。
      原因：GitHub 细粒度令牌只能按仓库授权、不能按路径授权。要让令牌「只能传图鉴数据」，
@@ -4271,13 +4271,18 @@
      doSmithServices 会两次 ensureSmithDialog（清包前 / 维修前），维修失败还会再重试一次；
      若每次都走开，最坏会连发 3 次（6~18 次 walkTo）。这里用 st.repair.smithNudged 去重，
      doSmithServices 入口复位。返回 true = 本次真的走开并走回了。 */
-  async function smithNudgeOnce(smith, why) {
-    if (!smith || !Number.isFinite(smith.x) || !Number.isFinite(smith.y)) return false;
-    if (st.repair && st.repair.smithNudged) return false;   /* 本次访问已走过 → 不再走（也不打日志，避免重复刷屏） */
-    if (st.repair) st.repair.smithNudged = true;
-    try { logEvent((why ? why + ' → ' : '') + '走开一格再走回重触发（' + smith.x + '-' + smith.y + '）'); } catch (e) { /* ignore */ }
+  async function npcNudgeOnce(npc, why, opts) {
+    opts = opts || {};
+    const callerAlive = opts.alive || tripAlive, state = opts.state || {}, key = opts.key || 'nudged';
+    const alive = function () { return callerAlive() && (opts.map == null || +character.current_map === +opts.map); };
+    if (!npc || !Number.isFinite(npc.x) || !Number.isFinite(npc.y) || !alive() || state[key]) return false;
+    state[key] = true; // 同一次访问最多恢复一次；休整与制造共用同一实际移动流程
+    try { logEvent((why ? why + ' → ' : '') + '走开一格再走回重触发（' + npc.x + '-' + npc.y + '）'); } catch (e) { /* ignore */ }
     try { setStatus('走开再走回重触发…'); } catch (e) { /* ignore */ }
-    return await stepAsideAndBack(smith.x, smith.y, { alive: tripAlive });
+    return await stepAsideAndBack(npc.x, npc.y, { alive: alive });
+  }
+  async function smithNudgeOnce(smith, why) {
+    return await npcNudgeOnce(smith, why, { alive: tripAlive, state: st.repair, key: 'smithNudged' });
   }
 
   async function ensureSmithFrame(smith, page, readyCheck, timeoutMs, retried) {
@@ -8514,7 +8519,7 @@
   }
 
   /* ======================= 制造清单（直接制造，跨 NPC / 城镇） ======================= */
-  let _craftBusy = false, _craftLoaded = '', _craftCooldown = 0, _craftMessage = '', _craftChoices = [];
+  let _craftBusy = false, _craftLoaded = '', _craftCooldown = 0, _craftMessage = '', _craftChoices = [], _craftVisit = null;
   function craftHolding() { return st.mode === 'craft' && (running || st.paused); }
   function craftNormalizeJob(j) {
     if (!j || !CRAFT_STATIONS[j.profession] || !(+j.recipe > 0) || !(+j.map > 0) || !(+j.charId > 0)) return null;
@@ -8538,7 +8543,7 @@
     if (st.mcBusy || st.tripManual || st.repair.active || st.sell.active || st.bank.active || navBusy) { setStatus('请等待当前行程结束，再开始制造'); return false; }
     if (inCombatNow() || (st.event && st.event.on) || ovlHolding()) { setStatus('请先结束战斗或活动，再开始制造'); return false; }
     if (window.currentCraft != null) { setStatus('请先停止游戏里的手动制造，再开始清单'); return false; }
-    _craftMessage = ''; _craftLoaded = ''; navClearPending(); return true;
+    _craftMessage = ''; _craftLoaded = ''; _craftVisit = null; navClearPending(); return true;
   }
   function craftReadJob(card) {
     const frame = card.closest('[id^="frame_"]');
@@ -8683,7 +8688,9 @@
     const end = now() + timeout;
     while (alive() && now() < end) { const value = test(); if (value) return value; await sleep(200); }
     if (!alive()) return null;
-    throw new Error('工作台未就绪，请检查 NPC、专业和配方后继续');
+    const error = new Error('工作台未就绪，请检查 NPC、专业和配方后继续');
+    error.craftInteraction = true;
+    throw error;
   }
   function craftWorkbench(profession) {
     return Array.from(document.querySelectorAll('[id^="frame_"] select#select_category')).find(function (s) {
@@ -8706,7 +8713,8 @@
     if (error || warning) {
       job.pending = false; saveCfgNow();
       if (!error && /cooldown/i.test(warning)) { _craftCooldown = now() + Math.max(1000, +node.getAttribute('cooldown') || 5000); return { cooldown: true }; }
-      return { message: craftErrorText(error || warning) };
+      const message = craftErrorText(error || warning);
+      return { message: message, interaction: !!error && /^(?:Unable|There are currently no actions available)\.?$|not in (?:the )?(?:right|correct) location|not at (?:the )?(?:crafting |work)?(?:station|bench)|不在.{0,12}(?:位置|工作台)|没有可用.{0,6}操作/i.test(message) };
     }
     if (!success) return { unknown: true, message: '返回内容没有成功凭据，先核对成品再继续' };
     job.done = Math.min(job.qty, job.done + 1); job.pending = false;
@@ -8720,6 +8728,49 @@
     } catch (e) { /* 显示刷新失败不影响已确认的生产进度 */ }
     logEvent('制造：' + job.name + ' ' + job.done + '/' + job.qty); craftRender();
     return { success: true };
+  }
+  async function craftEnsureWorkbench(job, station, tile, visit, alive) {
+    for (let attempt = 0; attempt < 2; attempt++) {
+      if (!alive()) return null;
+      try {
+        craftPruneWorkbenches(job.profession);
+        let select = craftWorkbench(job.profession);
+        if (_craftLoaded !== job.uid || !select || !select.closest('[id^="frame_"]').querySelector('[data-craft-recipe-id="' + job.recipe + '"]')) {
+          if (typeof window.createDialog !== 'function') throw new Error('游戏制造窗口未就绪');
+          // 先等 NPC 对话再点工作台；到位后的异步 NPC 菜单会覆盖提前打开的工作台。
+          document.querySelectorAll('select#select_category').forEach(function (s) { const f = s.closest('[id^="frame_"]'); if (f) closeFrameById(f.id); });
+          const path = '/modal/' + station[0] + '/craft';
+          const linksBefore = new Set(document.querySelectorAll('[onclick]'));
+          window.createDialog(station[1], '', 'ajax', '/modal/' + station[0], true);
+          const findLink = function () { return Array.from(document.querySelectorAll('[id^="frame_"] [onclick]')).find(function (e) { return (e.getAttribute('onclick') || '').indexOf(path) >= 0; }); };
+          let link = await craftWait(function () { const l = findLink(); return l && !linksBefore.has(l) ? l : null; }, alive, 15000);
+          if (!link || !alive()) return;
+          link.click();
+          let reopened = 0;
+          select = await craftWait(function () {
+            const s = craftWorkbench(job.profession); if (s) return s;
+            const next = findLink();
+            // 只重开被迟到菜单覆盖的只读工作台，绝不在这里重试制造请求。
+            if (next && next !== link && reopened < 2) { link = next; reopened++; link.click(); }
+            return null;
+          }, alive, 15000);
+          if (!select || !alive()) return;
+          const option = Array.from(select.options).find(function (o) { return o.getAttribute('cat') === job.cat && o.getAttribute('subcat') === job.subcat && o.getAttribute('skill') === job.profession; });
+          if (!option) throw new Error('当前角色没有该配方分类，请检查专业等级');
+          select.value = option.value; select.dispatchEvent(new Event('change', { bubbles: true }));
+          await craftWait(function () { const frame = select.closest('[id^="frame_"]'); return frame && frame.querySelector('[data-craft-recipe-id="' + job.recipe + '"]'); }, alive, 15000);
+          if (!alive()) return;
+          _craftLoaded = job.uid;
+        }
+        return select;
+      } catch (error) {
+        if (!alive()) return null;
+        _craftLoaded = '';
+        if (!error.craftInteraction || attempt || !await npcNudgeOnce(tile, '制造工作台交互失败', { alive: alive, state: visit, map: job.map })) throw error;
+        // 仅重新进入对话/配方页面；这里从不提交制造请求。
+      }
+    }
+    return null;
   }
   async function craftExecute(job, alive) {
     if (+character.current_map !== job.map) {
@@ -8741,35 +8792,11 @@
       if (result !== 'ok') throw new Error('未能到达制造 NPC，请检查路线后继续');
     }
     if (!alive()) return;
-    craftPruneWorkbenches(job.profession);
-    let select = craftWorkbench(job.profession);
-    if (_craftLoaded !== job.uid || !select) {
-      if (typeof window.createDialog !== 'function') throw new Error('游戏制造窗口未就绪');
-      // 先等 NPC 对话再点工作台；到位后的异步 NPC 菜单会覆盖提前打开的工作台。
-      document.querySelectorAll('select#select_category').forEach(function (s) { const f = s.closest('[id^="frame_"]'); if (f) closeFrameById(f.id); });
-      const path = '/modal/' + station[0] + '/craft';
-      const linksBefore = new Set(document.querySelectorAll('[onclick]'));
-      window.createDialog(station[1], '', 'ajax', '/modal/' + station[0], true);
-      const findLink = function () { return Array.from(document.querySelectorAll('[id^="frame_"] [onclick]')).find(function (e) { return (e.getAttribute('onclick') || '').indexOf(path) >= 0; }); };
-      let link = await craftWait(function () { const l = findLink(); return l && !linksBefore.has(l) ? l : null; }, alive, 15000);
-      if (!link || !alive()) return;
-      link.click();
-      let reopened = 0;
-      select = await craftWait(function () {
-        const s = craftWorkbench(job.profession); if (s) return s;
-        const next = findLink();
-        // 只重开被迟到菜单覆盖的只读工作台，绝不在这里重试制造请求。
-        if (next && next !== link && reopened < 2) { link = next; reopened++; link.click(); }
-        return null;
-      }, alive, 15000);
-      if (!select || !alive()) return;
-      const option = Array.from(select.options).find(function (o) { return o.getAttribute('cat') === job.cat && o.getAttribute('subcat') === job.subcat && o.getAttribute('skill') === job.profession; });
-      if (!option) throw new Error('当前角色没有该配方分类，请检查专业等级');
-      select.value = option.value; select.dispatchEvent(new Event('change', { bubbles: true }));
-      await craftWait(function () { const frame = select.closest('[id^="frame_"]'); return frame && frame.querySelector('[data-craft-recipe-id="' + job.recipe + '"]'); }, alive, 15000);
-      if (!alive()) return;
-      _craftLoaded = job.uid;
-    }
+    const visitKey = job.uid + ':' + job.map + ':' + tile.x + '-' + tile.y;
+    if (!_craftVisit || _craftVisit.key !== visitKey) _craftVisit = { key: visitKey, nudged: false };
+    const visit = _craftVisit;
+    const select = await craftEnsureWorkbench(job, station, tile, visit, alive);
+    if (!select || !alive()) return;
     const frame = select.closest('[id^="frame_"]');
     const card = frame && frame.querySelector('[data-craft-recipe-id="' + job.recipe + '"]');
     if (!card) { _craftLoaded = ''; throw new Error('配方窗口已改变，请重新打开后继续'); }
@@ -8801,7 +8828,14 @@
     } catch (e) { craftBlock(e.message); return; }
     // 暂停/停止发生在请求途中也必须记下服务器已经完成的产出，但不再启动下一次。
     const result = craftReply(job, xml);
-    if (result.message) { craftBlock(result.message); return; }
+    if (result.message) {
+      if (result.interaction && !result.unknown && alive()) {
+        const recovered = await npcNudgeOnce(tile, '制造被拒：' + result.message, { alive: alive, state: visit, map: job.map });
+        if (!alive()) return;
+        if (recovered) { _craftLoaded = ''; return; } // 明确拒绝生产，重新核对后再试
+      }
+      craftBlock(result.message); return;
+    }
     if (alive() && result.success) setStatus('制造：' + job.name + ' ' + job.done + '/' + job.qty);
   }
   function craftTick() {
